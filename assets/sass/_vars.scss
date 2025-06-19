@@ -1,0 +1,31 @@
+/*
+ * Fonts
+ */
+$text-font: var(--e-global-typography-text-font-family, "Outfit");
+$primary-font: var(--e-global-typography-primary-font-family, "Outfit");
+$secondary-font: var(--e-global-typography-secondary-font-family, "Outfit");
+$accent-font: var(--e-global-typography-accent-font-family, "Outfit");
+/*
+ * colors
+ */
+
+$color-primary: var(--e-global-color-primary, #181818);
+$color-secondary: var(--e-global-color-secondary, #5A86A9);
+$color-text: var(--e-global-color-text, #616365);
+$color-accent: var(--e-global-color-accent, #DF4242);
+
+/* Layout */
+$container: var(--container-max-width, 1290px);
+$padding-start: var(--container-default-padding-block-start, 15px);
+$padding-end: var(--container-default-padding-block-end, 15px);
+$grid-column-gap: var(--grid-column-gap, 30px);
+$grid-row-gap: var(--grid-row-gap, 30px);
+
+/* Breakpoints */
+$break-lg: 1200px - 0.02;
+$break-tl: 1025px - 0.02;
+$break-md: 992px - 0.02;
+$break-sm: 768px - 0.02;
+$break-xs: 520px - 0.02;
+
+$transition: all 0.25s ease-in-out;

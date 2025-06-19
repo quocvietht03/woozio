@@ -1,0 +1,17 @@
+{
+    "name": "huynhhuynh/import-pack",
+    "description": "WordPress import demo",
+    "authors": [
+        {
+            "name": "Hieuhuynh",
+            "email": "conghieu20@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "files": ["/functions.php"]
+    }
+}

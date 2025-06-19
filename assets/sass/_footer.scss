@@ -1,0 +1,54 @@
+.bt-site-footer {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #fff;
+  background: $color-primary;
+  padding: 30px 0;
+  .bt-copyright a {
+    color: #fff;
+  }
+}
+.elementor-location-footer {
+  .elementor-element {
+    .elementor-icon-list-items {
+      li.elementor-icon-list-item {
+        a {
+          &:hover {
+            color: $color-accent;
+            span {
+              color: $color-accent;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.elementor-element {
+  &.bt-site-footer-main {
+    > .e-con-inner {
+      > .elementor-element {
+        .bt-google-maps {
+          a {
+            text-decoration-line: underline;
+            text-decoration-style: solid;
+            text-decoration-skip-ink: none;
+            text-decoration-thickness: auto;
+            text-underline-offset: auto;
+            text-underline-position: from-font;
+            display: flex;
+          }
+        }
+        .bt-elwg-site-social {
+          gap: 8px;
+          a {
+            border: 1px solid #a2a3ab;
+            &:hover {
+              border-color: $color-secondary;
+            }
+          }
+        }
+      }
+    }
+  }
+}
