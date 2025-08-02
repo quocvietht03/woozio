@@ -239,6 +239,38 @@
 				});
 			});
 		}
+
+		if ($('.bt-single-product .bt-js-open-popup-link').length > 0) {
+			$('.bt-js-open-popup-link').magnificPopup({
+				type: 'inline',
+				midClick: true,
+				mainClass: 'mfp-fade'
+			});
+		}
+
+		$( '.bt-copy-btn' ).on( 'click', function(e) {
+			e.preventDefault();			
+			var $button = $(this),
+			$buttonurl = $(this).closest('form').find('#bt-product-share-url');
+			if ( navigator.clipboard ) {
+				navigator.clipboard.writeText( $buttonurl.val() ).then(() => {
+					$buttonurl.select();
+					$button.text($button.data('copied'));
+					setTimeout( function() {
+						$button.text($button.data('copy'))
+					}, 1000 );
+				},() => {
+				return prompt( "Copy to clipboard: Ctrl+C, Enter", $buttonurl.value );
+				});	
+			}else{
+				$buttonurl.select();
+				document.execCommand('copy');       
+				$button.text($button.data('copied'));
+				setTimeout( function() {
+					$button.text($button.data('copy'))
+				}, 1000 );
+			}			
+		});
 	}
 	/* load Shop Quick View */
 	function WoozioLoadShopQuickView() {

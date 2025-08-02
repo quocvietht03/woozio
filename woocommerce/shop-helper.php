@@ -1835,42 +1835,61 @@ if (!function_exists('woozio_product_share_render')) {
         $social_item = array();
         $social_item[] = '<li>
                         <a target="_blank" data-btIcon="fa fa-linkedin" data-toggle="tooltip" title="' . esc_attr__('Linkedin', 'woozio') . '" href="https://www.linkedin.com/shareArticle?url=' . get_the_permalink() . '">
-                          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" fill="currentColor">
                             <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"/>
                           </svg>
                         </a>
                       </li>';
         $social_item[] = '<li>
                         <a target="_blank" data-btIcon="fa fa-facebook" data-toggle="tooltip" title="' . esc_attr__('Facebook', 'woozio') . '" href="https://www.facebook.com/sharer/sharer.php?u=' . get_the_permalink() . '">
-                          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512" fill="currentColor">
                             <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
                           </svg>
                         </a>
                       </li>';
         $social_item[] = '<li>
                       <a target="_blank" data-btIcon="fa fa-twitter" data-toggle="tooltip" title="' . esc_attr__('Twitter', 'woozio') . '" href="https://twitter.com/share?url=' . get_the_permalink() . '">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="currentColor">
                           <path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/>
                         </svg>
                       </a>
                     </li>';
         $social_item[] = '<li>
                         <a target="_blank" data-btIcon="fa fa-pinterest" data-toggle="tooltip" title="' . esc_attr__('Pinterest', 'woozio') . '" href="https://pinterest.com/pin/create/button/?url=' . get_the_permalink() . '&media=' . wp_get_attachment_url(get_post_thumbnail_id()) . '&description=' . get_the_title() . '">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16" fill="none">
-                            <path d="M6.53967 0C3.2506 0 0 2.19271 0 5.74145C0 7.99827 1.26947 9.28056 2.03884 9.28056C2.3562 9.28056 2.53893 8.39578 2.53893 8.14574C2.53893 7.8476 1.77918 7.21287 1.77918 5.97226C1.77918 3.39486 3.74108 1.5676 6.28001 1.5676C8.4631 1.5676 10.0788 2.80821 10.0788 5.08748C10.0788 6.78972 9.39597 9.98261 7.18402 9.98261C6.3858 9.98261 5.70298 9.40558 5.70298 8.57851C5.70298 7.36675 6.54929 6.19345 6.54929 4.94322C6.54929 2.82103 3.53912 3.20572 3.53912 5.7703C3.53912 6.30886 3.60644 6.90512 3.84686 7.3956C3.40448 9.2998 2.50046 12.1369 2.50046 14.0988C2.50046 14.7046 2.58702 15.3009 2.64472 15.9068C2.75371 16.0286 2.69922 16.0158 2.86591 15.9549C4.4816 13.7429 4.42389 13.3102 5.1548 10.4154C5.5491 11.1655 6.56852 11.5694 7.37636 11.5694C10.7808 11.5694 12.31 8.25152 12.31 5.26059C12.31 2.07731 9.55946 0 6.53967 0Z" fill="#212121"/>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 13 16" fill="currentColor">
+                            <path d="M6.53967 0C3.2506 0 0 2.19271 0 5.74145C0 7.99827 1.26947 9.28056 2.03884 9.28056C2.3562 9.28056 2.53893 8.39578 2.53893 8.14574C2.53893 7.8476 1.77918 7.21287 1.77918 5.97226C1.77918 3.39486 3.74108 1.5676 6.28001 1.5676C8.4631 1.5676 10.0788 2.80821 10.0788 5.08748C10.0788 6.78972 9.39597 9.98261 7.18402 9.98261C6.3858 9.98261 5.70298 9.40558 5.70298 8.57851C5.70298 7.36675 6.54929 6.19345 6.54929 4.94322C6.54929 2.82103 3.53912 3.20572 3.53912 5.7703C3.53912 6.30886 3.60644 6.90512 3.84686 7.3956C3.40448 9.2998 2.50046 12.1369 2.50046 14.0988C2.50046 14.7046 2.58702 15.3009 2.64472 15.9068C2.75371 16.0286 2.69922 16.0158 2.86591 15.9549C4.4816 13.7429 4.42389 13.3102 5.1548 10.4154C5.5491 11.1655 6.56852 11.5694 7.37636 11.5694C10.7808 11.5694 12.31 8.25152 12.31 5.26059C12.31 2.07731 9.55946 0 6.53967 0Z"/>
                           </svg>
                         </a>
                       </li>';
 
         ob_start();
         if (is_singular('product')) {
-    ?>
+        ?>   
             <div class="bt-product-share">
-                <?php if (!empty($social_item)) {
-                    echo '<div class="button-share"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-<path d="M13.7526 12.5005C13.3357 12.5004 12.923 12.5839 12.5389 12.7462C12.1549 12.9084 11.8073 13.1461 11.5167 13.4451L7.91513 11.1302C8.19843 10.4038 8.19843 9.59734 7.91513 8.87086L11.5167 6.55602C12.0577 7.11017 12.7851 7.44372 13.5581 7.49198C14.331 7.54024 15.0943 7.29978 15.7 6.81723C16.3057 6.33467 16.7107 5.64439 16.8364 4.88023C16.9621 4.11606 16.7995 3.33245 16.3803 2.68131C15.9611 2.03017 15.315 1.5579 14.5673 1.35606C13.8196 1.15421 13.0236 1.23718 12.3337 1.58887C11.6437 1.94057 11.1089 2.53592 10.8329 3.25953C10.557 3.98313 10.5596 4.78342 10.8401 5.50524L7.23857 7.82008C6.80487 7.37483 6.24824 7.06902 5.63985 6.94175C5.03145 6.81449 4.39892 6.87154 3.82312 7.10563C3.24731 7.33971 2.7544 7.74019 2.40738 8.25586C2.06036 8.77154 1.875 9.37898 1.875 10.0005C1.875 10.6221 2.06036 11.2296 2.40738 11.7452C2.7544 12.2609 3.24731 12.6614 3.82312 12.8955C4.39892 13.1296 5.03145 13.1866 5.63985 13.0593C6.24824 12.9321 6.80487 12.6263 7.23857 12.181L10.8401 14.4959C10.5989 15.1181 10.5632 15.8013 10.7382 16.4454C10.9133 17.0894 11.29 17.6605 11.8132 18.075C12.3363 18.4894 12.9784 18.7255 13.6454 18.7487C14.3124 18.7718 14.9694 18.5808 15.52 18.2036C16.0706 17.8264 16.4859 17.2828 16.7053 16.6524C16.9246 16.0221 16.9363 15.338 16.7387 14.7005C16.5412 14.063 16.1447 13.5055 15.6074 13.1096C15.07 12.7137 14.4201 12.5003 13.7526 12.5005ZM13.7526 2.50055C14.1235 2.50055 14.486 2.61052 14.7943 2.81654C15.1027 3.02257 15.343 3.31541 15.4849 3.65802C15.6268 4.00063 15.6639 4.37763 15.5916 4.74134C15.5193 5.10506 15.3407 5.43915 15.0785 5.70137C14.8162 5.9636 14.4821 6.14217 14.1184 6.21452C13.7547 6.28687 13.3777 6.24974 13.0351 6.10782C12.6925 5.96591 12.3997 5.72559 12.1936 5.41724C11.9876 5.1089 11.8776 4.74639 11.8776 4.37555C11.8776 3.87827 12.0752 3.40135 12.4268 3.04972C12.7784 2.69809 13.2553 2.50055 13.7526 2.50055ZM5.00263 11.8755C4.63179 11.8755 4.26928 11.7656 3.96093 11.5596C3.65259 11.3535 3.41227 11.0607 3.27036 10.7181C3.12844 10.3755 3.09131 9.99847 3.16366 9.63475C3.236 9.27104 3.41458 8.93695 3.6768 8.67472C3.93903 8.4125 4.27312 8.23392 4.63683 8.16158C5.00055 8.08923 5.37755 8.12636 5.72016 8.26827C6.06277 8.41019 6.35561 8.65051 6.56163 8.95885C6.76766 9.2672 6.87763 9.62971 6.87763 10.0005C6.87763 10.4978 6.68008 10.9747 6.32845 11.3264C5.97682 11.678 5.49991 11.8755 5.00263 11.8755ZM13.7526 17.5005C13.3818 17.5005 13.0193 17.3906 12.7109 17.1846C12.4026 16.9785 12.1623 16.6857 12.0204 16.3431C11.8784 16.0005 11.8413 15.6235 11.9137 15.2598C11.986 14.896 12.1646 14.5619 12.4268 14.2997C12.689 14.0375 13.0231 13.8589 13.3868 13.7866C13.7505 13.7142 14.1275 13.7514 14.4702 13.8933C14.8128 14.0352 15.1056 14.2755 15.3116 14.5839C15.5177 14.8922 15.6276 15.2547 15.6276 15.6255C15.6276 16.1228 15.4301 16.5997 15.0785 16.9514C14.7268 17.303 14.2499 17.5005 13.7526 17.5005Z" fill="#212121"/>
-</svg>' . esc_html__('Share', 'woozio') . '</div><ul>' . implode(' ', $social_item) . '</ul>';
-                } ?>
+                <div id="bt_product_share" class="bt-product-share__popup mfp-content__popup mfp-hide">
+                    <div class="bt-product-share__content mfp-content__inner">
+                        <h3 class="bt-product-share__title"><?php echo esc_html__('Share', 'woozio'); ?></h3>
+                        <?php 
+                            if (!empty($social_item)) {
+                                echo '<ul class="bt-product-share__socials">' . implode(' ', $social_item) . '</ul>';
+                            } 
+                        ?>
+                        <div class="bt-product-share__link bt-copy-link-wrap">
+                            <h5 class="bt-copy-link-title"><?php echo esc_html__('Copy URL', 'woozio'); ?></h5>
+                            <form class="bt-product-share-form">
+                                <input id="bt-product-share-url" type="text" value="<?php the_permalink(); ?>" readonly="">
+                                <button class="button bt-copy-btn" data-copy="<?php echo esc_attr__('Copy', 'woozio'); ?>" data-copied="<?php echo esc_attr__('Copied', 'woozio'); ?>"><?php echo esc_html__('Copy', 'woozio'); ?></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#bt_product_share" class="bt-product-share__link bt-js-open-popup-link">   
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                    </svg>
+                    <?php echo esc_html__('Share', 'woozio'); ?>
+                </a>
             </div>
         <?php
         }
@@ -2353,83 +2372,83 @@ function woozio_woocommerce_single_product_more_information()
         return;
     }
 
-    $delivery_return = !empty($more_information['delivery_return']) ? $more_information['delivery_return'] : array();
-    $ask_question = !empty($more_information['ask_question']) ? $more_information['ask_question'] : array();
-
-    // Get SVG icons
-    $icon_delivery_svg = !empty($delivery_return['icon']) ? file_get_contents($delivery_return['icon']['url']) : '';
-    $icon_ask_svg = !empty($ask_question['icon']) ? file_get_contents($ask_question['icon']['url']) : '';
+    $estimated_delivery = !empty($more_information['estimated_delivery']) ? $more_information['estimated_delivery'] : false;
+    $product_return = !empty($more_information['product_return']) ? $more_information['product_return'] : false;
+    $store_location = !empty($more_information['store_location']) ? $more_information['store_location'] : false;
+    $delivery_return = !empty($more_information['delivery_return']) ? $more_information['delivery_return'] : false;
+    $ask_a_question = !empty($more_information['ask_a_question']) ? $more_information['ask_a_question'] : false;
+    $product_share = !empty($more_information['product_share']) ? $more_information['product_share'] : false;
+    
     ?>
     <div class="bt-more-information">
-        <?php
-        $list_info = $more_information['list_info'];
-        if ($list_info):
-            echo '<ul class="bt-list-info">';
-            foreach ($list_info as $item):
-                if (!empty($item['icon'])) {
-                    $icon_svg = file_get_contents($item['icon']['url']);
-                } else {
-                    $icon_svg = '';
-                }
-                echo '<li>';
-                if (!empty($item['link_text'])) {
-                    echo '<a href="' . esc_url($item['link_text']) . '">';
-                }
-                if (!empty($icon_svg)) {
-                    echo '<div class="bt-icon">' . $icon_svg . '</div>';
-                }
-                if (!empty($item['text'])) {
-                    echo '<p>' . $item['text'] . '</p>';
-                }
-                if (!empty($item['link_text'])) {
-                    echo '</a>';
-                }
-                echo '</li>';
-            endforeach;
-            echo '</ul>';
-        endif;
-        ?>
-        <div class="bt-policy-share">
-            <ul>
-                <li>
-                    <?php if (!empty($icon_delivery_svg)): ?>
-                        <?php echo '<div class="bt-icon">' . $icon_delivery_svg . '</div>'; ?>
-                    <?php endif; ?>
-
-                    <?php
-                    $title_and_link = $delivery_return['title_and_link'];
-                    if ($title_and_link):
-                        $link_title = $title_and_link['title'];
-                        $link_url = $title_and_link['url'];
-                    ?>
-                        <div class="bt-link">
-                            <a href="<?php echo esc_url($link_url); ?>">
-                                <?php echo esc_html($link_title); ?>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </li>
-                <li>
-                    <?php if (!empty($icon_ask_svg)): ?>
-                        <?php echo '<div class="bt-icon">' . $icon_ask_svg . '</div>'; ?>
-                    <?php endif; ?>
-
-                    <?php
-                    $title_and_link = $ask_question['title_and_link'];
-                    if ($title_and_link):
-                        $link_title = $title_and_link['title'];
-                        $link_url = $title_and_link['url'];
-                    ?>
-                        <div class="bt-link">
-                            <a href="<?php echo esc_url($link_url); ?>">
-                                <?php echo esc_html($link_title); ?>
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </li>
-            </ul>
-            <?php echo woozio_product_share_render(); ?>
+        <?php if ($estimated_delivery) { ?>
+        <div class="bt-estimated-delivery">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+            <?php echo '<span>' . $estimated_delivery . '</span>'; ?>
         </div>
+        <?php } ?>
+
+        <?php if ($product_return) { ?>
+            <div class="bt-product-return">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+                </svg>
+                <?php echo '<span>' . $product_return . '</span>'; ?>
+            </div>
+        <?php } ?>
+
+        <?php if ($store_location) { ?>
+            <div class="bt-store-location">
+                <div id="bt_store_location" class="bt-store-location__popup mfp-content__popup mfp-hide">
+                    <?php echo '<div class="bt-store-location__content mfp-content__inner">' . $store_location . '</div>'; ?>
+                </div>
+                <a href="#bt_store_location" class="bt-store-location__link bt-js-open-popup-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z"/>
+                    </svg>
+                    <span><?php echo esc_html__('View Store Information', 'woozio'); ?></span>
+                </a>
+            </div>
+        <?php } ?>
+        
+        <?php if ($delivery_return || $ask_a_question || $product_share) { ?>
+            <div class="bt-policy-share">
+                <?php if ($delivery_return) { ?>
+                    <div class="bt-delivery-return">
+                        <div id="bt_delivery_return" class="bt-delivery-return__popup mfp-content__popup mfp-hide">
+                            <?php echo '<div class="bt-delivery-return__content mfp-content__inner">' . $delivery_return . '</div>'; ?>
+                        </div>
+                        <a href="#bt_delivery_return" class="bt-delivery-return__link bt-js-open-popup-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                            </svg>
+                            <?php echo esc_html__('Delivery & Return', 'woozio'); ?>
+                        </a>
+                    </div>
+                <?php } ?>
+
+                <?php if ($ask_a_question) { ?>
+                    <div class="bt-ask-a-question">
+                        <div id="bt_ask_a_question" class="bt-ask-a-question__popup mfp-content__popup mfp-hide">
+                            <?php echo '<div class="bt-ask-a-question__content mfp-content__inner">' . do_shortcode($ask_a_question) . '</div>'; ?>
+                        </div>
+                        <a href="#bt_ask_a_question" class="bt-ask-a-question__link bt-js-open-popup-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.529 9.988a2.502 2.502 0 1 1 5 .191A2.441 2.441 0 0 1 12 12.582V14m-.01 3.008H12M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                            <?php echo esc_html__('Ask A Question', 'woozio'); ?>
+                        </a>
+                    </div>
+                <?php } ?>
+
+                <?php if ($product_share) { ?>
+                    <?php echo woozio_product_share_render(); ?>
+                <?php } ?>
+            </div>
+        <?php } ?>
     </div>
 <?php
 }
