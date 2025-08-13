@@ -3310,119 +3310,43 @@
     }
   }
   div.product {
+    &.bt-left-thumbnail {
+      div.images .woocommerce-product-gallery__wrapper {
+        flex-direction: row-reverse;
+      }
+    }
+    &.bt-left-thumbnail,
+    &.bt-right-thumbnail {
+      div.images {
+        .woocommerce-product-gallery {
+          &__wrapper {
+            display: flex;
+            gap: 20px;
+          }
+          &__slider {
+            flex-basis: calc(100% - 100px);
+            max-width: calc(100% - 100px);
+          }
+          &__slider-thumbs {
+            flex-basis: 80px;
+            max-width: 80px;
+            margin-top: 0;
+          }
+        }
+      }
+    }
+    
     .bt-product-inner {
       display: flex;
-      gap: 30px 60px;
+      gap: 60px;
       flex-wrap: wrap;
       .onsale {
         display: none;
       }
-      @media (max-width: 1470px) and (min-width: $break-md) {
-        div.images {
-          .woocommerce-product-gallery__slider-nav {
-            margin: 12px 0 0 0;
-          }
-        }
-      }
-      &:not(.bt-quickview-product) {
-        @media (max-width: 1470px) and (min-width: $break-lg) {
-          // Height 800px - 960px
-          @media (max-height: 960px) and (min-height: 800px) {
-            div {
-              &.images {
-                width: calc(42% - 30px);
-              }
-              &.summary {
-                width: calc(58% - 30px);
-              }
-            }
-          }
-
-          // Height 766px - 799px
-          @media (max-height: 799px) and (min-height: 766px) {
-            gap: 90px;
-            div {
-              &.images {
-                width: calc(50% - 60px);
-                .woocommerce-product-gallery {
-                  &__image {
-                    padding-bottom: 86%;
-                  }
-                }
-              }
-              &.summary {
-                width: calc(50% - 30px);
-              }
-            }
-          }
-
-          // Height 730px - 765px
-          @media (max-height: 765px) and (min-height: 728px) {
-            gap: 90px;
-            div {
-              &.images {
-                width: calc(50% - 60px);
-                .woocommerce-product-gallery {
-                  &__image {
-                    padding-bottom: 81%;
-                  }
-                }
-              }
-              &.summary {
-                width: calc(50% - 30px);
-              }
-            }
-          }
-          // Height 650px - 728px
-          @media (max-height: 727px) and (min-height: 650px) {
-            gap: 90px;
-            div {
-              &.images {
-                width: calc(50% - 60px);
-                .woocommerce-product-gallery {
-                  &__image {
-                    padding-bottom: 70%;
-                  }
-                }
-              }
-              &.summary {
-                width: calc(50% - 30px);
-              }
-            }
-          }
-        }
-        @media (max-width: $break-lg) and (min-width: 1100px) {
-          div.images {
-            width: calc(45% - 30px);
-            .woocommerce-product-gallery__image {
-              padding-bottom: 95%;
-            }
-          }
-          div.summary {
-            width: calc(55% - 30px);
-          }
-        }
-        @media (max-width: 1100px) and (min-width: $break-tl) {
-          div.images {
-            width: calc(46% - 30px);
-          }
-          div.summary {
-            width: calc(54% - 30px);
-          }
-        }
-        @media (max-width: $break-tl) and (min-width: $break-md) {
-          gap: 30px;
-          div.images {
-            width: calc(50% - 15px);
-          }
-          div.summary {
-            width: calc(50% - 15px);
-          }
-        }
-      }
-      @media (max-width: $break-md) {
+      
+      @media (max-width: $break-sm) {
         flex-direction: column;
-        gap: 30px;
+        gap: 40px;
       }
     }
 
@@ -3431,6 +3355,7 @@
       margin: 0;
       .woocommerce-product-gallery {
         &__wrapper {
+          position: relative;
           line-height: 0;
           @media (min-width: $break-md) {
             position: sticky;
@@ -3441,89 +3366,43 @@
             top: 140px;
           }
         }
-        &__slider {
-          cursor: zoom-in;
-        }
         &__image {
           overflow: hidden;
-          border-radius: 8px;
-          padding-bottom: 100%;
+          border-radius: 8px; 
+          padding-bottom: 133.5%;
           position: relative;
+          line-height: 0;
           img {
             object-fit: cover;
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
           }
         }
         &__slider {
-          .woocommerce-product-gallery__image {
-            img {
-              height: 100%;
-            }
-          }
+          position: relative;
+          overflow: hidden;
+          cursor: zoom-in;
         }
-        &__slider-nav {
+        &__slider-thumbs {
           margin: 20px 0 0 0;
-          @media (max-width: $break-xs) {
-            margin: 10px 0 0 0;
-          }
-          .slick-track {
-            margin-left: initial;
-            display: flex;
-            gap: 10px;
-            @media (max-width: $break-xs) {
-              gap: 5px;
-            }
-            &::before,
-            &::after {
-              display: none;
-            }
-          }
-          .slick-slide {
-            &.slick-current {
-              > div {
-                cursor: auto;
-                > div {
-                  position: relative;
-                  &::before {
-                    content: "";
-                    right: 1px;
-                    left: 0;
-                    bottom: 1px;
-                    top: 0;
-                    display: flex;
-                    border-radius: 4px;
-                    border: 2px solid $color-primary;
-                    position: absolute;
-                    z-index: 1;
-                    box-sizing: border-box;
-                    @media (max-width: $break-xs) {
-                      border-width: 1px;
-                      border-radius: 2px;
-                    }
-                  }
-                }
-              }
-            }
-            > div {
-              width: 100%;
+          overflow: hidden;
+          cursor: pointer;
+          .swiper-slide-thumb-active {
+            > div::before {
+              content: "";
+              right: 1px;
+              left: 0;
+              bottom: 1px;
+              top: 0;
+              display: flex;
+              border-radius: 8px;
+              border: 1px solid $color-primary;
+              position: absolute;
+              z-index: 1;
               box-sizing: border-box;
-              cursor: pointer;
-              > div {
-                border-radius: 4px;
-                img {
-                  height: calc(100% - 1px);
-                  width: calc(100% - 1px);
-                  border-radius: 4px;
-                }
-                @media (max-width: $break-xs) {
-                  border-radius: 2px;
-                  img {
-                    border-radius: 2px;
-                  }
-                }
-              }
             }
           }
         }
@@ -3542,7 +3421,7 @@
             }
           }
           .bt-cover-image {
-            padding-bottom: 100%;
+            padding-bottom: 133.5%;
             border-radius: 12px;
           }
           @media (max-width: $break-md) {

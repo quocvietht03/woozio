@@ -39,9 +39,11 @@ if ( $attachment_ids && has_post_thumbnail() ) {
 			'data-large_image_height' => $full_size_image[2] ?? '',
 		);
 
-		$html  = '<div data-thumb="' . esc_url( $thumbnail[0] ?? wc_placeholder_img_src() ) . '" class="woocommerce-product-gallery__image">';
+		$html = '<div class="swiper-slide">';
+		$html .= '<div data-thumb="' . esc_url( $thumbnail[0] ?? wc_placeholder_img_src() ) . '" class="woocommerce-product-gallery__image">';
 		$html .= wp_get_attachment_image( $attachment_id, 'shop_thumbnail', false, $attributes );
- 		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
 
 		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $attachment_id );
 	}

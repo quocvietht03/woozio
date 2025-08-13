@@ -31,10 +31,18 @@ if (post_password_required()) {
     return;
 }
 $layout = get_post_meta($product->get_id(), '_layout_product', true);
-if ($layout && $layout == 'layout-product-2') {
-	get_template_part('woocommerce/single-product/layout-single/product-layout-02');
-}else {
-	get_template_part('woocommerce/single-product/layout-single/product-layout-01');
+
+if(isset($_GET['layout']) && !empty($_GET['layout'])) {
+    $layout = sanitize_text_field($_GET['layout']);
 }
+
+if(in_array($layout, ['bottom-thumbnail', 'left-thumbnail', 'right-thumbnail'])) {
+    get_template_part('woocommerce/single-product/layout-single/product', 'slider-thumbnail', array('layout' => $layout));
+} elseif(in_array($layout, ['gallery-one-column', 'gallery-two-column', 'gallery-stacked'])) {
+    get_template_part('woocommerce/single-product/layout-single/product', 'gallery-grid', array('layout' => $layout));
+} else {
+    get_template_part('woocommerce/single-product/layout-single/product', $layout, array('layout' => $layout));
+}
+
 do_action('woocommerce_after_single_product');
 ?>

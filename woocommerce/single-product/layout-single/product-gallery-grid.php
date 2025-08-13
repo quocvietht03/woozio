@@ -3,7 +3,7 @@ defined('ABSPATH') || exit;
 
 global $product;
 ?>
-<div id="product-<?php the_ID(); ?>" <?php wc_product_class('bt-layout-product-2', $product); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('bt-' . $args['layout'], $product); ?>>
     <div class="bt-product-inner">
         <?php
 
@@ -83,7 +83,8 @@ global $product;
                 do_action('woozio_woocommerce_template_single_more_information');
                 ?>
             </div>
-            <?php do_action('woozio_woocommerce_template_single_meta');
+            <?php 
+            do_action('woozio_woocommerce_template_single_meta');
             do_action('woozio_woocommerce_template_upsell_products');
             do_action('woozio_woocommerce_template_single_safe_checkout');
             do_action('woozio_woocommerce_template_single_toggle');

@@ -1586,14 +1586,20 @@ function woozio_woocommerce_custom_field()
     global $post, $product_object;
     // Add layout selector
     $layout_options = array(
-        'layout-product-1' => __('Layout 1', 'woozio'),
-        'layout-product-2' => __('Layout 2', 'woozio')
+        'bottom-thumbnail' => __('Bottom Thumbnail', 'woozio'),
+        'left-thumbnail' => __('Left Thumbnail', 'woozio'),
+        'right-thumbnail' => __('Right Thumbnail', 'woozio'),
+        'gallery-one-column' => __('Gallery One Column', 'woozio'),
+        'gallery-two-column' => __('Gallery Two Column', 'woozio'),
+        'gallery-stacked' => __('Gallery Stacked', 'woozio'),
+        'container-slider' => __('Container Slider', 'woozio'),
+        'fullwidth-slider' => __('Fullwidth Slider', 'woozio')
     );
 
     // Save layout value or use default layout-1
     $layout_value = get_post_meta($post->ID, '_layout_product', true);
     if (empty($layout_value)) {
-        $layout_value = 'layout-product-1';
+        $layout_value = 'bottom-thumbnail'; // Default layout
     }
 
     woocommerce_wp_select(array(

@@ -60,24 +60,70 @@
 	/* Shop */
 	function WoozioShop() {
 		if ($('.bt-single-product .woocommerce-product-gallery__wrapper').length > 0) {
+			
+			// $('.bt-single-product .woocommerce-product-zoom__image').zoom();
 
-			$('.bt-single-product .woocommerce-product-zoom__image').zoom();
-			$('.bt-single-product .woocommerce-product-gallery__slider').slick({
-				slidesToShow: 1,
-				slidesToScroll: 1,
-				fade: true,
-				arrows: false,
-				asNavFor: '.bt-single-product .woocommerce-product-gallery__slider-nav',
-				prevArrow: '<button type=\"button\" class=\"slick-prev\">Prev</button>',
-				nextArrow: '<button type=\"button\" class=\"slick-next\">Next</button>'
+			$('.bt-single-product .woocommerce-product-gallery__slider').magnificPopup({
+				delegate: 'img',
+				type: 'image',
+				removalDelay: 500,
+				callbacks: {
+					beforeOpen: function() {
+						this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+						this.st.mainClass = 'mfp-with-zoom mfp-img-mobile';
+					},
+					elementParse: function(item) {  item.src = item.el.attr('src'); },
+				},
+				image: {
+					verticalFit: true
+				},
+				gallery: {
+					enabled: true,
+					navigateByImgClick: true
+				},
 			});
-			$('.bt-single-product .woocommerce-product-gallery__slider-nav').slick({
-				slidesToShow: 5,
-				slidesToScroll: 1,
-				arrows: false,
-				focusOnSelect: true,
-				asNavFor: '.bt-single-product .woocommerce-product-gallery__slider'
+
+			
+
+			var thumbDirection = 'horizontal';
+			if($('.bt-left-thumbnail').length > 0 || $('.bt-right-thumbnail').length > 0) {
+				thumbDirection = 'vertical';
+			}
+			
+			var galleryThumbs = new Swiper('.woocommerce-product-gallery__slider-thumbs', {
+				direction: thumbDirection,
+				spaceBetween: 10,
+				autoHeight: true,
+				loop: true,
+				freeMode: true,
+				loopedSlides: 6, //looped slides should be the same
+				watchSlidesVisibility: true,
+				watchSlidesProgress: true,
+				breakpoints: {
+					0: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+					},
+					768: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
+					},
+					1025: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 6,
+					}
+				}
 			});
+			var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
+				spaceBetween: 20,
+				loop: true,
+				loopedSlides: 6, //looped slides should be the same
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				thumbs: {
+					swiper: galleryThumbs,
+				},
+			});
+
 		}
 		if ($('.quantity input').length > 0) {
 			/* Plus Qty */
@@ -134,7 +180,7 @@
 													<div class="bt-skeleton-thumb"></div>
 												</div>
 										</div>`;
-							if ($('.bt-layout-product-2').length > 0) {
+							if ($('.bt-gallery-one-column').length > 0) {
 								$('.bt-gallery-products').addClass('loading');
 								$('.bt-gallery-products').append(skeletonHtml);
 							} else {
@@ -147,8 +193,8 @@
 						},
 						success: function (response) {
 							if (response.success) {
-								if ($('.bt-layout-product-2').length > 0) {
-									$('.bt-gallery-product').html(response.data['gallery-layout02']);
+								if ($('.bt-gallery-one-column').length > 0) {
+									$('.bt-gallery-product').html(response.data['gallery-one-column']);
 									if (response.data['itemgallery'] <= 3) {
 										$('.bt-show-more').hide();
 									} else {
@@ -381,7 +427,7 @@
 													<div class="bt-skeleton-thumb"></div>
 												</div>
 										</div>`;
-							if ($('.bt-quickview-product .bt-layout-product-2').length > 0) {
+							if ($('.bt-quickview-product .bt-gallery-one-column').length > 0) {
 								$('.bt-quickview-product .bt-gallery-products').addClass('loading');
 								$('.bt-quickview-product .bt-gallery-products').append(skeletonHtml);
 							} else {
@@ -394,7 +440,7 @@
 						},
 						success: function (response) {
 							if (response.success) {
-								if ($('.bt-quickview-product .bt-layout-product-2').length > 0) {
+								if ($('.bt-quickview-product .bt-gallery-one-column').length > 0) {
 									$('.bt-quickview-product .bt-gallery-product').html(response.data['gallery-layout02']);
 									if (response.data['itemgallery'] <= 3) {
 										$('.bt-quickview-product .bt-show-more').hide();
