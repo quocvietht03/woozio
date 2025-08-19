@@ -40,6 +40,8 @@ if(in_array($layout, ['bottom-thumbnail', 'left-thumbnail', 'right-thumbnail']))
     get_template_part('woocommerce/single-product/layout-single/product', 'slider-thumbnail', array('layout' => $layout));
 } elseif(in_array($layout, ['gallery-one-column', 'gallery-two-column', 'gallery-stacked'])) {
     get_template_part('woocommerce/single-product/layout-single/product', 'gallery-grid', array('layout' => $layout));
+} elseif(in_array($layout, ['gallery-slider-container', 'gallery-slider-fullwidth'])) {
+    get_template_part('woocommerce/single-product/layout-single/product', 'gallery-slider', array('layout' => $layout));
 } else {
     get_template_part('woocommerce/single-product/layout-single/product', $layout, array('layout' => $layout));
 }

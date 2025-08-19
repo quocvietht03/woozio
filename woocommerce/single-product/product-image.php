@@ -22,12 +22,8 @@ global $product;
 $post_thumbnail_id = $product->get_image_id();
 $attachment_ids = $product->get_gallery_image_ids();
 $full_size_image = wp_get_attachment_image_src($post_thumbnail_id, 'full');
-$columns = apply_filters('woocommerce_product_thumbnails_columns', 4);
-$placeholder = has_post_thumbnail() ? 'with-images' : 'without-images';
 $wrapper_classes = apply_filters('woocommerce_single_product_image_gallery_classes', [
     'woocommerce-product-gallery',
-    'woocommerce-product-gallery--' . $placeholder,
-    'woocommerce-product-gallery--columns-' . absint($columns),
     'images',
 ]);
 
@@ -50,7 +46,7 @@ function generate_image_html($attachment_id, $size = 'shop_single', $zoom_class 
     $attributes = get_image_attributes($attachment_id);
     
     $html = '<div class="swiper-slide">';
-    $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image' . ($zoom_class ? ' woocommerce-product-zoom__image' : '') . '">';
+    $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image '. ($zoom_class ? 'zoomable' : '') . '">';
     $html .= wp_get_attachment_image($attachment_id, $size, false, $attributes);
     $html .= '</div>';
     $html .= '</div>';
@@ -59,13 +55,13 @@ function generate_image_html($attachment_id, $size = 'shop_single', $zoom_class 
 }
 
 ?>
-<div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?>" data-columns="<?php echo esc_attr($columns); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
+<div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
     <figure class="woocommerce-product-gallery__wrapper<?php echo (!empty($attachment_ids) && has_post_thumbnail()) ? ' bt-active-nav-gallery' : ''; ?>">
         <?php
         
         if (!empty($attachment_ids) && has_post_thumbnail()) {
             ?>
-            <div class="woocommerce-product-gallery__slider">
+            <div class="woocommerce-product-gallery__slider bt-gallery-lightbox bt-gallery-zoomable">
                 <div class="swiper-wrapper">
                 <?php
                     echo apply_filters('woocommerce_single_product_image_thumbnail_html', generate_image_html($post_thumbnail_id, 'shop_single', true), $post_thumbnail_id);

@@ -1430,3 +1430,17 @@
     }
   }
 }
+
+// Zoomable
+.zoomable {
+  position: relative;
+  overflow: hidden;
+}
+.zoomable img {
+  transform-origin: var(--zoom-pos-x, 0%) var(--zoom-pos-y, 0%);
+  transition: transform 0.15s linear;
+}
+.zoomable--zoomed img {
+  cursor: zoom-in;
+  transform: scale(var(--zoom, 2));
+}

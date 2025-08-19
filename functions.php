@@ -58,7 +58,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 		if (is_singular('product')) {
 			wp_enqueue_script('swiper-slider', get_template_directory_uri() . '/assets/libs/swiper/swiper.min.js', array('jquery'), '', true);
 			wp_enqueue_style('swiper-slider', get_template_directory_uri() . '/assets/libs/swiper/swiper.min.css', array(), false);
-			wp_enqueue_script('zoom-master', get_template_directory_uri() . '/assets/libs/zoom-master/jquery.zoom.min.js', array('jquery'), '', true);
+			wp_enqueue_script('zoomable', get_template_directory_uri() . '/assets/libs/zoomable.js', array('jquery'), '', true);
 			wp_enqueue_script('magnific-popup', get_template_directory_uri() . '/assets/libs/magnific-popup/jquery.magnific-popup.js', array('jquery'), '', true);
 			wp_enqueue_style('magnific-popup', get_template_directory_uri() . '/assets/libs/magnific-popup/magnific-popup.css', array(), false);
 		}
