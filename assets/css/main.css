@@ -16,7 +16,7 @@ dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
   border: 0;
 }
 
-body,
+body, 
 html :where(.editor-styles-wrapper) {
   max-width: 100%;
   font-family: var(--e-global-typography-text-font-family, "Outfit");
