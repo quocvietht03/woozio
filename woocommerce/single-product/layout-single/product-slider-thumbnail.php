@@ -4,7 +4,7 @@ defined('ABSPATH') || exit;
 global $product;
 ?>
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('bt-' . $args['layout'], $product); ?>>
-	<div class="bt-product-inner bt-single-product">
+	<div class="bt-product-inner">
 		<?php
 		/**
 		 * Hook: woocommerce_before_single_product_summary.

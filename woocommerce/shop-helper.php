@@ -1592,8 +1592,8 @@ function woozio_woocommerce_custom_field()
         'gallery-one-column' => __('Gallery One Column', 'woozio'),
         'gallery-two-column' => __('Gallery Two Column', 'woozio'),
         'gallery-stacked' => __('Gallery Stacked', 'woozio'),
-        'container-slider' => __('Container Slider', 'woozio'),
-        'fullwidth-slider' => __('Fullwidth Slider', 'woozio')
+        'gallery-slider-container' => __('Gallery Slider Container', 'woozio'),
+        'gallery-slider-fullwidth' => __('Gallery Slider Fullwidth', 'woozio')
     );
 
     // Save layout value or use default layout-1
@@ -2634,7 +2634,7 @@ function woozio_load_product_gallery()
     $variation = wc_get_product($variation_id);
     $variation_image_id = $variation->get_image_id();
     ob_start();
-    echo '<div class="woocommerce-product-gallery__slider">';
+    echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox">';
 
     // Add main product image variation
 
@@ -2649,7 +2649,7 @@ function woozio_load_product_gallery()
             'data-large_image_height' => $full_size_image[2],
         );
 
-        $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($variation_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image">';
+        $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($variation_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image zoomable">';
         $html .= wp_get_attachment_image($variation_image_id, 'shop_single', false, $attributes);
         $html .= '</div>';
 
@@ -2669,14 +2669,14 @@ function woozio_load_product_gallery()
                 'data-large_image_width' => $full_size[1] ?? '',
                 'data-large_image_height' => $full_size[2] ?? '',
             ];
-            $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($gallery_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image">';
+            $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($gallery_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image zoomable">';
             $html .= wp_get_attachment_image($gallery_image_id, 'shop_single', false, $attributes);
             $html .= '</div>';
             echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
         }
     }
     echo '</div>';
-    echo '<div class="woocommerce-product-gallery__slider-nav">';
+    echo '<div class="woocommerce-product-gallery__slider-thumbs">';
     if ($gallery_images) {
         // Add main product image variation
         if ($variation_image_id) {

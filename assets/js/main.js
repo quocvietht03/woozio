@@ -59,11 +59,11 @@
 	}
 	/* Shop */
 	function WoozioShop() {
-		if ($('.bt-single-product .woocommerce-product-gallery__wrapper').length > 0) {
-			
-			// $('.bt-single-product .woocommerce-product-zoom__image').zoom();
+		if ($('.single-product div.images').length > 0) {
 
-			$('.bt-single-product .woocommerce-product-gallery__slider').magnificPopup({
+			// $('.bt-gallery-zoomable img').zoom();
+
+			$('.bt-gallery-lightbox').magnificPopup({
 				delegate: 'img',
 				type: 'image',
 				removalDelay: 500,
@@ -83,8 +83,6 @@
 				},
 			});
 
-			
-
 			var thumbDirection = 'horizontal';
 			if($('.bt-left-thumbnail').length > 0 || $('.bt-right-thumbnail').length > 0) {
 				thumbDirection = 'vertical';
@@ -96,25 +94,31 @@
 				autoHeight: true,
 				loop: true,
 				freeMode: true,
-				loopedSlides: 6, //looped slides should be the same
+				loopedSlides: 5, //looped slides should be the same
 				watchSlidesVisibility: true,
 				watchSlidesProgress: true,
 				breakpoints: {
 					0: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 3,
+					},
+					480: {
 						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
 					},
 					768: {
 						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
 					},
-					1025: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 6,
+					992: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+					},
+					1200: {
+						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
 					}
 				}
 			});
 			var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
 				spaceBetween: 20,
 				loop: true,
-				loopedSlides: 6, //looped slides should be the same
+				loopedSlides: 5, //looped slides should be the same
 				navigation: {
 					nextEl: '.swiper-button-next',
 					prevEl: '.swiper-button-prev',
@@ -208,7 +212,7 @@
 									setTimeout(function () {
 										$('.woocommerce-product-gallery__wrapper').html(response.data['gallery']);
 										// Initialize zoom
-										$('.woocommerce-product-zoom__image').zoom();
+										// $('.woocommerce-product-zoom__image').zoom();
 										// Initialize nav slider
 										$('.woocommerce-product-gallery__slider-nav').slick({
 											slidesToShow: 5,
