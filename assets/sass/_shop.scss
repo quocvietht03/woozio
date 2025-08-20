@@ -2119,6 +2119,9 @@
             .bt-attributes--item {
               max-width: calc(100% - 50px);
               overflow-x: auto;
+              &[data-attribute-name="pa_color"] {
+                overflow: initial;
+              }
               &::-webkit-scrollbar {
                 width: 3px;
                 height: 3px;
@@ -2162,6 +2165,8 @@
                   background: transparent;
                   gap: 8px;
                   padding: 0;
+                  flex-wrap: wrap;
+                  max-width: 215px;
                   .bt-item-color {
                     border: 2px solid transparent;
                     position: relative;
@@ -2188,7 +2193,37 @@
                       }
                     }
                     label {
-                      display: none;
+                      position: absolute;
+                      top: -25px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      background: #333;
+                      color: #fff;
+                      padding: 4px 8px;
+                      border-radius: 4px;
+                      font-size: 12px;
+                      line-height: 1;
+                      white-space: nowrap;
+                      opacity: 0;
+                      visibility: hidden;
+                      transition: opacity 0.3s ease, visibility 0.3s ease;
+                      z-index: 100;
+                      &::after {
+                        content: "";
+                        position: absolute;
+                        top: 100%;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        border-width: 4px;
+                        border-style: solid;
+                        border-color: #333 transparent transparent transparent;
+                      }
+                    }
+                    &:hover {
+                      label {
+                        opacity: 1;
+                        visibility: visible;
+                      }
                     }
                     &.active {
                       border: 2px solid #fff;
