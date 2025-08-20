@@ -1750,9 +1750,10 @@ function woozio_woocommerce_product_label()
 {
     global $product;
     $label = get_post_meta($product->get_id(), '_label', true);
-
+    $label_text = str_replace('-', ' ', $label);
+    
     if (!empty($label)) {
-        echo '<div class="woocommerce-product-label ' . esc_attr(woozio_convert_title_to_slug($label)) . '">' . esc_html($label) . '</div>';
+        echo '<div class="woocommerce-product-label ' . esc_attr(woozio_convert_title_to_slug($label)) . '">' . esc_html($label_text) . '</div>';
     }
 }
 // hook button buy now after add to cart
@@ -2926,3 +2927,81 @@ function woozio_load_product_toast()
 }
 add_action('wp_ajax_woozio_load_product_toast', 'woozio_load_product_toast');
 add_action('wp_ajax_nopriv_woozio_load_product_toast', 'woozio_load_product_toast');
+
+add_action('woozio_woocommerce_template_loop_add_to_cart_variable', 'woozio_woocommerce_template_loop_add_to_cart_variable', 10);
+function woozio_woocommerce_template_loop_add_to_cart_variable()
+{
+    global $product;
+    if ($product->is_type('variable')) {
+        // Get all available variations
+        $available_variations = $product->get_available_variations();
+        $color_variations_data = array();
+        
+        foreach ($available_variations as $variation_data) {
+            $variation_id = $variation_data['variation_id'];
+            $variation = wc_get_product($variation_id);
+            
+            // Get variation attributes
+            $attributes = $variation->get_attributes();
+            
+            // Check if this variation has color attribute
+            $color_value = '';
+            if (isset($attributes['pa_color'])) {
+                $color_value = $attributes['pa_color'];
+            } elseif (isset($attributes['color'])) {
+                $color_value = $attributes['color'];
+            }
+            
+            // Only process if color is found and not already processed
+            if (!empty($color_value) && !isset($color_variations_data[$color_value])) {
+                // Get main variation image
+                $main_image_id = $variation->get_image_id();
+                $main_image_url = '';
+                if ($main_image_id) {
+                    $main_image_url = wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail');
+                }
+                
+                // Get variation gallery images
+                $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
+                $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
+                
+                // Get first gallery image
+                $first_gallery_image_url = '';
+                if (!empty($gallery_images) && isset($gallery_images[0])) {
+                    $first_gallery_image_url = wp_get_attachment_image_url($gallery_images[0], 'woocommerce_thumbnail');
+                }
+                
+                // Get color term info for display
+                $color_term = get_term_by('slug', $color_value, 'pa_color');
+                $color_name = $color_term ? $color_term->name : $color_value;
+                
+                // Get color hex value from ACF if available
+                $color_hex = '';
+                if ($color_term) {
+                    $color_hex = get_field('color', 'pa_color_' . $color_term->term_id);
+                }
+                if (empty($color_hex)) {
+                    $color_hex = $color_value; // fallback to slug
+                }
+                
+                // Store color variation data
+                $color_variations_data[$color_value] = array(
+                    'variation_id' => $variation_id,
+                    'color_name' => $color_name,
+                    'color_hex' => $color_hex,
+                    'main_image' => $main_image_url,
+                    'first_gallery_image' => $first_gallery_image_url,
+                    'has_gallery' => !empty($gallery_images)
+                );
+            }
+        }
+        
+        // Convert color variations data to JSON for JavaScript
+        $color_variations_json = !empty($color_variations_data) ? json_encode($color_variations_data) : '{}';
+        
+        echo '<div class="bt-product-add-to-cart-variable" data-color-variations="' . esc_attr($color_variations_json) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
+        
+        do_action('woozio_woocommerce_template_single_add_to_cart');
+        echo '</div>';
+    }
+}

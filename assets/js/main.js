@@ -2172,6 +2172,35 @@
 			}
 		}
 	}
+	function WoozioProductColorVariationsLoadImage() {
+		if ($('.bt-product-add-to-cart-variable').length > 0) {
+			$(document).on('click', '.bt-product-add-to-cart-variable .bt-value-color .bt-item-color', function (e) {
+				var valueColor = $(this).data('value');
+				const productContainer = $(this).closest('.woocommerce-loop-product');
+				const colorVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
+				const colorVariations = colorVariationsContainer.data('color-variations');
+				
+				// Check if colorVariations exists and is an object
+				if (colorVariations && typeof colorVariations === 'object') {
+					// Find the matching color variation
+					const matchingColor = Object.keys(colorVariations).find(colorSlug => {
+						return colorSlug === valueColor;
+					});
+					
+					if (matchingColor && colorVariations[matchingColor]) {
+						const colorData = colorVariations[matchingColor];
+						productContainer.find('.product-images-wrapper .main-image').attr('src', colorData.main_image);
+						productContainer.find('.product-images-wrapper .secondary-image').attr('src', colorData.first_gallery_image);
+
+					} else {
+						console.log('No matching color found for:', valueColor);
+					}
+				} else {
+					console.log('Color variations data not found or invalid');
+				}
+			});
+		}
+	}
 	jQuery(document).ready(function ($) {
 		WoozioSubmenuAuto();
 		WoozioToggleMenuMobile();
@@ -2205,6 +2234,7 @@
 		WoozioCustomizeProductToggle();
 		WoozioCustomizeGroupedProduct();
 		WoozioPopupNewsletter();
+		WoozioProductColorVariationsLoadImage();
 	});
 	$(document.body).on('added_to_cart', function (event, fragments, cart_hash, $button) {
 		// Only show toast if not in Elementor editor

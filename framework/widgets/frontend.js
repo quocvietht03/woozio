@@ -235,6 +235,7 @@
 			checkIfElementInView();
 		});
 	}
+
 	var TiktokShopSliderHandler = function ($scope, $) {
 		const $tiktokSlider = $scope.find('.bt-elwg-tiktok-shop-slider--default');
 		// Get Elementor breakpoints
@@ -834,6 +835,10 @@
 					delay: autoplayDelay,
 					disableOnInteraction: false
 				} : false,
+				navigation: {
+					nextEl: $notificationWrapper.find('.bt-site-notification--next')[0],
+					prevEl: $notificationWrapper.find('.bt-site-notification--prev')[0],
+				},
 			});
 
 			// Pause autoplay on hover if autoplay is enabled
@@ -1014,6 +1019,49 @@
 
 		}
 	}
+	
+	var SwitcherHandler = function ($scope, $) {
+		const $switcher = $scope.find('.js-switcher-dropdown');
+		if ($switcher.length) {
+			const $currentItem = $switcher.find('.bt-current-item .bt-current-item-text');
+			const $dropdownItems = $switcher.find('.bt-item');
+			const $dropdown = $switcher.find('.bt-has-dropdown');
+			
+			// Toggle dropdown on click
+			$currentItem.parent().on('click', function(e) {
+				e.preventDefault();
+				$dropdown.toggleClass('active');
+			});
+			
+			// Handle dropdown item click
+			$dropdownItems.on('click', function(e) {
+				e.preventDefault();
+				const selectedText = $(this).html();
+			
+				console.log(selectedText);
+				
+				// Remove active class from all items
+				$dropdownItems.removeClass('active');
+				
+				// Add active class to clicked item
+				$(this).addClass('active');
+				
+				// Update current item text
+				$currentItem.html(selectedText);
+				
+				// Close dropdown
+				$dropdown.removeClass('active');
+			});
+			
+			// Close dropdown when clicking outside
+			$(document).on('click', function(e) {
+				if (!$switcher.is(e.target) && $switcher.has(e.target).length === 0) {
+					$dropdown.removeClass('active');
+				}
+			});
+		}
+	};
+	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -1029,6 +1077,8 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-site-notification.default', NotificationSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mini-cart.default', MiniCartHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-item.default', ProductItemHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-currency-switcher.default', SwitcherHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
 	});
 
 })(jQuery);

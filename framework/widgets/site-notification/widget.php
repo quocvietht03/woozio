@@ -72,6 +72,16 @@ class Widget_SiteNotification extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'slider_navigation',
+            [
+                'label' => __('Navigation', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'yes',
+            ]
+        );
         $this->end_controls_section();
     }
 
@@ -151,7 +161,7 @@ class Widget_SiteNotification extends Widget_Base
                 ],
                 'default' => 'center',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-site-notification--text' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .bt-site-notification--item' => 'justify-content: {{VALUE}};',
                 ],
             ]
         );
@@ -178,20 +188,33 @@ class Widget_SiteNotification extends Widget_Base
         }
         if (!empty($site_infor) && isset($site_infor)) { ?>
             <div class="bt-elwg-site-notification--default " data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
-                <div class="bt-site-notification">
+                <div class="bt-site-notification <?php echo $settings['slider_navigation'] == 'yes' ? 'bt-navigation-enabled' : ''; ?>">
                     <div class="swiper bt-site-notification--content js-notification-content">
                         <div class="swiper-wrapper">
                             <?php foreach ($site_infor['site_notification'] as $item) : ?>
                                 <div class="swiper-slide">
                                     <div class="bt-site-notification--item">
-                                        <?php if (!empty($item['text_notification'])) : 
-                                           echo  '<div class="bt-site-notification--text">'. $item['text_notification'] . '</div>';
+                                        <?php if (!empty($item['icon'])) : ?>
+                                            <img src="<?php echo $item['icon']['url']; ?>" alt="<?php echo $item['icon']['alt']; ?>" class="bt-site-notification--icon">
+                                        <?php endif; ?>
+                                        <?php if (!empty($item['text_notification'])) :
+                                            echo  '<div class="bt-site-notification--text">' . $item['text_notification'] . '</div>';
                                         endif; ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                     </div>
+                    <?php if ($settings['slider_navigation'] == 'yes') : ?>
+                        <div class="bt-site-notification--nav swiper-button-wrapper">
+                            <div class="bt-site-notification--prev"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M12.9417 15.8079C12.9998 15.866 13.0458 15.9349 13.0773 16.0108C13.1087 16.0867 13.1249 16.168 13.1249 16.2501C13.1249 16.3322 13.1087 16.4135 13.0773 16.4894C13.0458 16.5653 12.9998 16.6342 12.9417 16.6923C12.8836 16.7504 12.8147 16.7964 12.7388 16.8278C12.663 16.8593 12.5816 16.8755 12.4995 16.8755C12.4174 16.8755 12.3361 16.8593 12.2602 16.8278C12.1843 16.7964 12.1154 16.7504 12.0573 16.6923L5.80733 10.4423C5.74922 10.3842 5.70312 10.3153 5.67167 10.2394C5.64021 10.1636 5.62402 10.0822 5.62402 10.0001C5.62402 9.91797 5.64021 9.83664 5.67167 9.76077C5.70312 9.68489 5.74922 9.61596 5.80733 9.55792L12.0573 3.30792C12.1746 3.19064 12.3337 3.12476 12.4995 3.12476C12.6654 3.12476 12.8244 3.19064 12.9417 3.30792C13.059 3.42519 13.1249 3.58425 13.1249 3.7501C13.1249 3.91596 13.059 4.07502 12.9417 4.19229L7.13311 10.0001L12.9417 15.8079Z" fill="currentColor" />
+                                </svg></div>
+                            <div class="bt-site-notification--next"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M14.1925 10.4423L7.94254 16.6923C7.88447 16.7504 7.81553 16.7964 7.73966 16.8278C7.66379 16.8593 7.58247 16.8755 7.50035 16.8755C7.41823 16.8755 7.33691 16.8593 7.26104 16.8278C7.18517 16.7964 7.11623 16.7504 7.05816 16.6923C7.00009 16.6342 6.95403 16.5653 6.9226 16.4894C6.89117 16.4135 6.875 16.3322 6.875 16.2501C6.875 16.168 6.89117 16.0867 6.9226 16.0108C6.95403 15.9349 7.00009 15.866 7.05816 15.8079L12.8668 10.0001L7.05816 4.19229C6.94088 4.07502 6.875 3.91596 6.875 3.7501C6.875 3.58425 6.94088 3.42519 7.05816 3.30792C7.17544 3.19064 7.3345 3.12476 7.50035 3.12476C7.6662 3.12476 7.82526 3.19064 7.94254 3.30792L14.1925 9.55792C14.2506 9.61596 14.2967 9.68489 14.3282 9.76077C14.3597 9.83664 14.3758 9.91797 14.3758 10.0001C14.3758 10.0822 14.3597 10.1636 14.3282 10.2394C14.2967 10.3153 14.2506 10.3842 14.1925 10.4423Z" fill="currentColor" />
+                                </svg></div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 <?php
