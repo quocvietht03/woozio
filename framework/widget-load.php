@@ -59,6 +59,7 @@ class ElementorWidgets
 			'post-loop-item-style-3',
 			'product-loop-item',
 			'product-loop-item-style-1',
+			'product-category-loop-item',
 			'product-wishlist',
 			'product-compare',
 			'highlighted-heading',
@@ -79,7 +80,9 @@ class ElementorWidgets
 			'testimonial-slider',
 			'countdown',
 			'our-teams',
-			'our-store'
+			'our-store',
+			'currency-switcher',
+			'language-switcher'
 		);
 
 		return $this->widgets;
@@ -183,6 +186,7 @@ class ElementorWidgets
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItem\Widget_ProductLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle1\Widget_ProductLoopItemStyle1());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCategoryLoopItem\Widget_ProductCategoryLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductWishlist\Widget_ProductWishlist());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCompare\Widget_ProductCompare());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccountLogin\Widget_AccountLogin());
@@ -206,6 +210,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountDown\Widget_CountDown());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurTeams\Widget_OurTeams());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurStore\Widget_OurStore());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CurrencySwitcher\Widget_CurrencySwitcher());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\LanguageSwitcher\Widget_LanguageSwitcher());
 	}
 
 	/**
