@@ -2633,131 +2633,145 @@ function woozio_load_product_gallery()
     $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
     $variation = wc_get_product($variation_id);
     $variation_image_id = $variation->get_image_id();
+
     ob_start();
-    echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox">';
-
-    // Add main product image variation
-
-    if ($variation_image_id) {
-        $full_size_image = wp_get_attachment_image_src($variation_image_id, 'full');
-        $attributes = array(
-            'title' => get_post_field('post_title', $variation_image_id),
-            'data-caption' => get_post_field('post_excerpt', $variation_image_id),
-            'data-src' => $full_size_image[0],
-            'data-large_image' => $full_size_image[0],
-            'data-large_image_width' => $full_size_image[1],
-            'data-large_image_height' => $full_size_image[2],
-        );
-
-        $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($variation_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image zoomable">';
-        $html .= wp_get_attachment_image($variation_image_id, 'shop_single', false, $attributes);
-        $html .= '</div>';
-
-        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id);
-    }
-
-    // Add gallery images
-    if ($gallery_images) {
-        foreach ($gallery_images as $gallery_image_id) {
-            $thumbnail = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
-            $full_size = wp_get_attachment_image_src($gallery_image_id, 'full');
-            $attributes = [
-                'title' => get_post_field('post_title', $gallery_image_id),
-                'data-caption' => get_post_field('post_excerpt', $gallery_image_id),
-                'data-src' => $full_size[0] ?? '',
-                'data-large_image' => $full_size[0] ?? '',
-                'data-large_image_width' => $full_size[1] ?? '',
-                'data-large_image_height' => $full_size[2] ?? '',
-            ];
-            $html = '<div data-thumb="' . esc_url(wp_get_attachment_image_url($gallery_image_id, 'full')) . '" class="woocommerce-product-gallery__image woocommerce-product-zoom__image zoomable">';
-            $html .= wp_get_attachment_image($gallery_image_id, 'shop_single', false, $attributes);
-            $html .= '</div>';
-            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
-        }
-    }
-    echo '</div>';
-    echo '<div class="woocommerce-product-gallery__slider-thumbs">';
-    if ($gallery_images) {
+    echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox bt-gallery-zoomable">';
         // Add main product image variation
-        if ($variation_image_id) {
-            $full_size_image = wp_get_attachment_image_src($variation_image_id, 'full');
-            $thumbnail       = wp_get_attachment_image_src($variation_image_id, 'shop_thumbnail');
-            $attributes      = array(
-                'title'                   => get_post_field('post_title', $variation_image_id),
-                'data-caption'            => get_post_field('post_excerpt', $variation_image_id),
-                'data-src'                => $full_size_image[0] ?? '',
-                'data-large_image'        => $full_size_image[0] ?? '',
-                'data-large_image_width'  => $full_size_image[1] ?? '',
-                'data-large_image_height' => $full_size_image[2] ?? '',
-            );
+        echo '<div class="swiper-wrapper">';
+            if ($variation_image_id) {
+                $full_size_image = wp_get_attachment_image_src($variation_image_id, 'full');
+                $attributes = array(
+                    'title' => get_post_field('post_title', $variation_image_id),
+                    'data-caption' => get_post_field('post_excerpt', $variation_image_id),
+                    'data-src' => $full_size_image[0],
+                    'data-large_image' => $full_size_image[0],
+                    'data-large_image_width' => $full_size_image[1],
+                    'data-large_image_height' => $full_size_image[2],
+                );
+                $html = '<div class="swiper-slide">';
+                $html .= '<div data-thumb="' . esc_url(wp_get_attachment_image_url($variation_image_id, 'full')) . '" class="woocommerce-product-gallery__image zoomable">';
+                $html .= wp_get_attachment_image($variation_image_id, 'shop_single', false, $attributes);
+                $html .= '</div>';
+                $html .= '</div>';
 
-            $html  = '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
-            $html .= wp_get_attachment_image($variation_image_id, 'shop_thumbnail', false, $attributes);
-            $html .= '</div>';
+                echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id);
+            }
 
-            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id);
-        }
-        // Add gallery images
-        foreach ($gallery_images as $gallery_image_id) {
-            $full_size_image = wp_get_attachment_image_src($gallery_image_id, 'full');
-            $thumbnail       = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
-            $attributes      = array(
-                'title'                   => get_post_field('post_title', $gallery_image_id),
-                'data-caption'            => get_post_field('post_excerpt', $gallery_image_id),
-                'data-src'                => $full_size_image[0] ?? '',
-                'data-large_image'        => $full_size_image[0] ?? '',
-                'data-large_image_width'  => $full_size_image[1] ?? '',
-                'data-large_image_height' => $full_size_image[2] ?? '',
-            );
-
-            $html  = '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
-            $html .= wp_get_attachment_image($gallery_image_id, 'shop_thumbnail', false, $attributes);
-            $html .= '</div>';
-
-            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
-        }
-    }
+            // Add gallery images
+            if ($gallery_images) {
+                foreach ($gallery_images as $gallery_image_id) {
+                    $thumbnail = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
+                    $full_size = wp_get_attachment_image_src($gallery_image_id, 'full');
+                    $attributes = [
+                        'title' => get_post_field('post_title', $gallery_image_id),
+                        'data-caption' => get_post_field('post_excerpt', $gallery_image_id),
+                        'data-src' => $full_size[0] ?? '',
+                        'data-large_image' => $full_size[0] ?? '',
+                        'data-large_image_width' => $full_size[1] ?? '',
+                        'data-large_image_height' => $full_size[2] ?? '',
+                    ];
+                    $html = '<div class="swiper-slide">';
+                    $html .= '<div data-thumb="' . esc_url(wp_get_attachment_image_url($gallery_image_id, 'full')) . '" class="woocommerce-product-gallery__image zoomable">';
+                    $html .= wp_get_attachment_image($gallery_image_id, 'shop_single', false, $attributes);
+                    $html .= '</div>';
+                    $html .= '</div>';
+                    echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
+                }
+            }
+        echo '</div>';
+        echo '<div class="swiper-button-prev"></div>';
+        echo '<div class="swiper-button-next"></div>';
     echo '</div>';
 
-    $output['gallery'] = ob_get_clean();
-    // load gallery product layout 02    
+    echo '<div class="woocommerce-product-gallery__slider-thumbs">';
+        echo '<div class="swiper-wrapper">';
+        if ($gallery_images) {
+            // Add main product image variation
+            if ($variation_image_id) {
+                $full_size_image = wp_get_attachment_image_src($variation_image_id, 'full');
+                $thumbnail       = wp_get_attachment_image_src($variation_image_id, 'shop_thumbnail');
+                $attributes      = array(
+                    'title'                   => get_post_field('post_title', $variation_image_id),
+                    'data-caption'            => get_post_field('post_excerpt', $variation_image_id),
+                    'data-src'                => $full_size_image[0] ?? '',
+                    'data-large_image'        => $full_size_image[0] ?? '',
+                    'data-large_image_width'  => $full_size_image[1] ?? '',
+                    'data-large_image_height' => $full_size_image[2] ?? '',
+                );
+
+                $html = '<div class="swiper-slide">';
+                $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
+                $html .= wp_get_attachment_image($variation_image_id, 'shop_thumbnail', false, $attributes);
+                $html .= '</div>';
+                $html .= '</div>';
+
+                echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id);
+            }
+            // Add gallery images
+            foreach ($gallery_images as $gallery_image_id) {
+                $full_size_image = wp_get_attachment_image_src($gallery_image_id, 'full');
+                $thumbnail       = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
+                $attributes      = array(
+                    'title'                   => get_post_field('post_title', $gallery_image_id),
+                    'data-caption'            => get_post_field('post_excerpt', $gallery_image_id),
+                    'data-src'                => $full_size_image[0] ?? '',
+                    'data-large_image'        => $full_size_image[0] ?? '',
+                    'data-large_image_width'  => $full_size_image[1] ?? '',
+                    'data-large_image_height' => $full_size_image[2] ?? '',
+                );
+
+                $html .= '<div class="swiper-slide">';
+                $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
+                $html .= wp_get_attachment_image($gallery_image_id, 'shop_thumbnail', false, $attributes);
+                $html .= '</div>';
+                $html .= '</div>';
+
+                echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
+            }
+        }
+        echo '</div>';
+    echo '</div>';
+
+    $output['slider-thumb'] = ob_get_clean();
+
+    // load gallery grid
     ob_start();
     if ($variation_image_id) {
         $image_url = wp_get_attachment_image_url($variation_image_id, 'full');
-        echo '<a href="' . esc_url($image_url) . '" class="bt-gallery-product--image elementor-clickable show" data-elementor-lightbox-slideshow="bt-gallery-ins">';
-        echo '<div class="bt-cover-image">';
+        echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
+        echo '<div class="bt-cover-image zoomable">';
         echo wp_get_attachment_image($variation_image_id, 'full', false, array(
             'class' => 'wp-post-image',
             'title' => get_post_field('post_title', $variation_image_id),
             'alt' => get_post_meta($variation_image_id, '_wp_attachment_image_alt', true)
         ));
         echo '</div>';
-        echo '</a>';
+        echo '</div>';
     }
 
     // Add gallery images
     if ($gallery_images) {
         foreach ($gallery_images as $index => $gallery_image_id) {
             $image_url = wp_get_attachment_image_url($gallery_image_id, 'full');
-            $show_class = $index < 3 ? ' show' : '';
-            echo '<a href="' . esc_url($image_url) . '" class="bt-gallery-product--image elementor-clickable' . $show_class . '" data-elementor-lightbox-slideshow="bt-gallery-ins">';
-            echo '<div class="bt-cover-image">';
+            echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
+            echo '<div class="bt-cover-image zoomable">';
             echo wp_get_attachment_image($gallery_image_id, 'full', false, array(
                 'class' => 'gallery-image',
                 'title' => get_post_field('post_title', $gallery_image_id),
                 'alt' => get_post_meta($gallery_image_id, '_wp_attachment_image_alt', true)
             ));
             echo '</div>';
-            echo '</a>';
+            echo '</div>';
         }
     }
-    $itemgallery = count($gallery_images);
-    $output['gallery-layout02'] = ob_get_clean();
+    $itemgallery = count($gallery_images) + 1;
+    $output['gallery-grid'] = ob_get_clean();
     $output['itemgallery'] = $itemgallery;
     wp_send_json_success($output);
 }
 add_action('wp_ajax_woozio_load_product_gallery', 'woozio_load_product_gallery');
 add_action('wp_ajax_nopriv_woozio_load_product_gallery', 'woozio_load_product_gallery');
+
 // ajax load product single variation
 function woozio_load_product_variation()
 {

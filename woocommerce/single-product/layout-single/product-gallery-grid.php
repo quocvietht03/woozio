@@ -14,17 +14,27 @@ global $product;
          * @hooked woocommerce_show_product_images - 20
          */
         //   do_action('woocommerce_before_single_product_summary');
+
+        $attachment_ids = $product->get_gallery_image_ids();
+        $featured_image_id = $product->get_image_id();
+        $itemgallery = count($attachment_ids) + 1;
+
+        if ($args['layout'] === 'gallery-two-column') {
+            $show_number = 6;
+        } elseif ($args['layout'] === 'gallery-stacked') {
+            $show_number = 5;
+        } else {
+            $show_number = 3;
+        }
+
         ?>
-        <div class="images bt-gallery-products">
+        <div class="images bt-gallery-products" data-items="<?php echo esc_attr($itemgallery); ?>" data-shown="<?php echo esc_attr($show_number); ?>">
             
             <div class="bt-gallery-product bt-gallery-lightbox bt-gallery-zoomable">
                 <?php
-                $attachment_ids = $product->get_gallery_image_ids();
-                $featured_image_id = $product->get_image_id();
-
                 if ($featured_image_id) {
                     $image_url = wp_get_attachment_image_url($featured_image_id, 'full');
-                    echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image show">';
+                    echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
                     echo '<div class="bt-cover-image zoomable">';
                     echo wp_get_attachment_image($featured_image_id, 'full', false, array(
                         'class' => 'wp-post-image',
@@ -36,18 +46,9 @@ global $product;
                 }
 
                 if ($attachment_ids) {
-                    if ($args['layout'] === 'gallery-two-column') {
-                        $show_number = 5;
-                    } elseif ($args['layout'] === 'gallery-stacked') {
-                        $show_number = 4;
-                    } else {
-                        $show_number = 2;
-                    }
-
                     foreach ($attachment_ids as $index => $attachment_id) {
                         $image_url = wp_get_attachment_image_url($attachment_id, 'full');
-                        $show_class = $index < $show_number ? ' show' : '';
-                        echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image' . $show_class . '">';
+                        echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
                         echo '<div class="bt-cover-image zoomable">';
                         echo wp_get_attachment_image($attachment_id, 'full', false, array(
                             'class' => 'gallery-image',
@@ -58,13 +59,10 @@ global $product;
                         echo '</div>';
                     }
                 }
-                $itemgallery = count($attachment_ids);
                 ?>
             </div>
             <?php
-            if ($itemgallery > $show_number) {
-                echo '<button class="bt-show-more">' . esc_html__('Show More', 'woozio') . '</button>';
-            }
+            echo '<button class="bt-show-more">' . esc_html__('Show More', 'woozio') . '</button>';
             ?>
         </div>
         <div class="summary entry-summary">

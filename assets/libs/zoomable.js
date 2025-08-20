@@ -143,12 +143,3 @@ class Zoomable {
         };
     }
 }
-
-/*
- * Implementation
- */
-const zoomables = document.querySelectorAll(".bt-gallery-zoomable .zoomable");
-
-for (const el of zoomables) {
-    new Zoomable(el);
-}
