@@ -58,77 +58,109 @@
 		});
 	}
 	/* Shop */
+	function WoozioImageZoomable() {
+		const zoomables = $('.bt-gallery-zoomable .zoomable');
+		for (const el of zoomables) {
+			new Zoomable(el);
+		}
+	}
+
+	function WoozioGalleryLightbox() {
+		$('.bt-gallery-lightbox').magnificPopup({
+			delegate: 'img',
+			type: 'image',
+			removalDelay: 500,
+			callbacks: {
+				beforeOpen: function() {
+					this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
+					this.st.mainClass = 'mfp-with-zoom mfp-img-mobile';
+				},
+				elementParse: function(item) {  item.src = item.el.attr('src'); },
+			},
+			image: {
+				verticalFit: true
+			},
+			gallery: {
+				enabled: true,
+				navigateByImgClick: true
+			},
+		});
+	}
+
+	function WoozioSliderThumbs() {
+		var thumbDirection = 'horizontal';
+		if($('.bt-left-thumbnail').length > 0 || $('.bt-right-thumbnail').length > 0) {
+			thumbDirection = 'vertical';
+		}
+		
+		var galleryThumbs = new Swiper('.woocommerce-product-gallery__slider-thumbs', {
+			direction: thumbDirection,
+			spaceBetween: 10,
+			autoHeight: true,
+			loop: true,
+			freeMode: true,
+			loopedSlides: 5,
+			watchSlidesVisibility: true,
+			watchSlidesProgress: true,
+			breakpoints: {
+				0: {
+					slidesPerView: 'vertical' == thumbDirection ? 'auto' : 3,
+				},
+				480: {
+					slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+				},
+				768: {
+					slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
+				},
+				992: {
+					slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+				},
+				1200: {
+					slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
+				}
+			}
+		});
+		var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
+			spaceBetween: 20,
+			loop: true,
+			loopedSlides: 5,
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			thumbs: {
+				swiper: galleryThumbs,
+			},
+		});
+	}
+
 	function WoozioShop() {
 		if ($('.single-product div.images').length > 0) {
-
-			// $('.bt-gallery-zoomable img').zoom();
-
-			$('.bt-gallery-lightbox').magnificPopup({
-				delegate: 'img',
-				type: 'image',
-				removalDelay: 500,
-				callbacks: {
-					beforeOpen: function() {
-						this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
-						this.st.mainClass = 'mfp-with-zoom mfp-img-mobile';
-					},
-					elementParse: function(item) {  item.src = item.el.attr('src'); },
-				},
-				image: {
-					verticalFit: true
-				},
-				gallery: {
-					enabled: true,
-					navigateByImgClick: true
-				},
-			});
-
-			var thumbDirection = 'horizontal';
-			if($('.bt-left-thumbnail').length > 0 || $('.bt-right-thumbnail').length > 0) {
-				thumbDirection = 'vertical';
-			}
-			
-			var galleryThumbs = new Swiper('.woocommerce-product-gallery__slider-thumbs', {
-				direction: thumbDirection,
-				spaceBetween: 10,
-				autoHeight: true,
-				loop: true,
-				freeMode: true,
-				loopedSlides: 5, //looped slides should be the same
-				watchSlidesVisibility: true,
-				watchSlidesProgress: true,
-				breakpoints: {
-					0: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 3,
-					},
-					480: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
-					},
-					768: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
-					},
-					992: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
-					},
-					1200: {
-						slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
-					}
+			WoozioImageZoomable();
+			WoozioGalleryLightbox();
+			WoozioSliderThumbs();
+			if ($('.bt-gallery-products').length > 0) {
+				var items =  $('.bt-gallery-products').data('items'),
+					shown =  $('.bt-gallery-products').data('shown');
+				$('.bt-gallery-product--image:lt('+shown+')').addClass('show');
+				if(shown < items) {
+					$('.bt-gallery-products .bt-show-more').show();
+				} else {
+					$('.bt-gallery-products .bt-show-more').hide();
 				}
-			});
-			var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
-				spaceBetween: 20,
-				loop: true,
-				loopedSlides: 5, //looped slides should be the same
-				navigation: {
-					nextEl: '.swiper-button-next',
-					prevEl: '.swiper-button-prev',
-				},
-				thumbs: {
-					swiper: galleryThumbs,
-				},
-			});
-
+				$('.bt-gallery-products .bt-show-more').on('click', function () {
+					items =  $('.bt-gallery-products').data('items');
+					shown = $('.bt-gallery-product--image.show').length + 2;
+					if(shown < items) {
+						$('.bt-gallery-product--image:lt('+shown+')').addClass('show');
+					} else {
+						$('.bt-gallery-product--image:lt('+items+')').addClass('show');
+						$('.bt-gallery-products .bt-show-more').hide();
+					}
+				});
+			}
 		}
+
 		if ($('.quantity input').length > 0) {
 			/* Plus Qty */
 			$(document).on('click', '.qty-plus', function () {
@@ -145,6 +177,7 @@
 				}
 			});
 		}
+		
 		if ($('.variations_form').length > 0) {
 			$('.bt-attributes-wrap .bt-js-item').on('click', function () {
 				var valueItem = $(this).data('value');
@@ -184,58 +217,47 @@
 													<div class="bt-skeleton-thumb"></div>
 												</div>
 										</div>`;
-							if ($('.bt-gallery-one-column').length > 0) {
-								$('.bt-gallery-products').addClass('loading');
-								$('.bt-gallery-products').append(skeletonHtml);
-							} else {
-								// Remove existing gallery
-								$('.woocommerce-product-gallery').addClass('loading');
-								$('.woocommerce-product-gallery__wrapper').html('');
-								$('.woocommerce-product-gallery').prepend(skeletonHtml);
-							}
+							// Remove existing gallery
+							$('.woocommerce-product-gallery, .bt-gallery-products').addClass('loading');
+							$('.woocommerce-product-gallery__wrapper').html('');
+							$('.woocommerce-product-gallery, .bt-gallery-products').prepend(skeletonHtml);
+							
 							$('.bt-attributes-wrap .bt-js-item').addClass('disable');
 						},
 						success: function (response) {
 							if (response.success) {
-								if ($('.bt-gallery-one-column').length > 0) {
-									$('.bt-gallery-product').html(response.data['gallery-one-column']);
-									if (response.data['itemgallery'] <= 3) {
-										$('.bt-show-more').hide();
-									} else {
-										$('.bt-show-more').show();
-									}
+								if ($('.bt-gallery-one-column').length > 0 || $('.bt-gallery-two-column').length > 0 || $('.bt-gallery-stacked').length > 0) {
 									setTimeout(function () {
-										$('.bt-skeleton-gallery').remove();
-										$('.bt-gallery-products').removeClass('loading');
+										$('.bt-gallery-product').html(response.data['gallery-grid']);
+										$('.bt-gallery-products').data('items', response.data['itemgallery']);
+
+										WoozioImageZoomable();
+										
+										var items =  $('.bt-gallery-products').data('items'),
+											shown =  $('.bt-gallery-products').data('shown');
+										$('.bt-gallery-product--image:lt('+shown+')').addClass('show');
+										if(shown < items) {
+											$('.bt-gallery-products .bt-show-more').show();
+										} else {
+											$('.bt-gallery-products .bt-show-more').hide();
+										}
+
+										setTimeout(function () {
+											$('.bt-skeleton-gallery').remove();
+											$('.bt-gallery-products').removeClass('loading');
+										}, 200);
 									}, 300);
 								} else {
 									setTimeout(function () {
-										$('.woocommerce-product-gallery__wrapper').html(response.data['gallery']);
-										// Initialize zoom
-										// $('.woocommerce-product-zoom__image').zoom();
-										// Initialize nav slider
-										$('.woocommerce-product-gallery__slider-nav').slick({
-											slidesToShow: 5,
-											slidesToScroll: 1,
-											arrows: false,
-											focusOnSelect: true,
-											asNavFor: '.woocommerce-product-gallery__slider'
-										});
-										// Initialize main slider with proper callbacks
-										$('.woocommerce-product-gallery__slider').slick({
-											slidesToShow: 1,
-											slidesToScroll: 1,
-											fade: true,
-											arrows: false,
-											asNavFor: '.woocommerce-product-gallery__slider-nav',
-											prevArrow: '<button type="button" class="slick-prev">Prev</button>',
-											nextArrow: '<button type="button" class="slick-next">Next</button>'
-										});
+										$('.woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
+										WoozioImageZoomable();
+										WoozioGalleryLightbox();
+										WoozioSliderThumbs();
 										// Remove loading class and remove skeleton
 										setTimeout(function () {
 											$('.woocommerce-product-gallery').removeClass('loading');
 											$('.bt-skeleton-gallery').remove();
-										}, 500);
+										}, 200);
 									}, 300);
 								}
 								$('.bt-attributes-wrap .bt-js-item').removeClass('disable');
@@ -325,23 +347,9 @@
 	/* load Shop Quick View */
 	function WoozioLoadShopQuickView() {
 		if ($('.bt-quickview-product').length > 0) {
-			$('.bt-quickview-product .woocommerce-product-zoom__image').zoom();
-			$('.bt-quickview-product .woocommerce-product-gallery__slider').slick({
-				slidesToShow: 1,
-				slidesToScroll: 1,
-				fade: true,
-				arrows: false,
-				asNavFor: '.bt-quickview-product .woocommerce-product-gallery__slider-nav',
-				prevArrow: '<button type=\"button\" class=\"slick-prev\">Prev</button>',
-				nextArrow: '<button type=\"button\" class=\"slick-next\">Next</button>'
-			});
-			$('.bt-quickview-product .woocommerce-product-gallery__slider-nav').slick({
-				slidesToShow: 5,
-				slidesToScroll: 1,
-				arrows: false,
-				focusOnSelect: true,
-				asNavFor: '.bt-quickview-product .woocommerce-product-gallery__slider'
-			});
+			WoozioImageZoomable();
+			WoozioGalleryLightbox();
+			WoozioSliderThumbs();
 		}
 		// check button add to cart 
 		if ($('.bt-quickview-product .grouped_form').length > 0) {
@@ -431,60 +439,26 @@
 													<div class="bt-skeleton-thumb"></div>
 												</div>
 										</div>`;
-							if ($('.bt-quickview-product .bt-gallery-one-column').length > 0) {
-								$('.bt-quickview-product .bt-gallery-products').addClass('loading');
-								$('.bt-quickview-product .bt-gallery-products').append(skeletonHtml);
-							} else {
-								// Remove existing gallery
-								$('.bt-quickview-product .woocommerce-product-gallery').addClass('loading');
-								$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html('');
-								$('.bt-quickview-product .woocommerce-product-gallery').prepend(skeletonHtml);
-							}
+							
+							// Remove existing gallery
+							$('.bt-quickview-product .woocommerce-product-gallery').addClass('loading');
+							$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html('');
+							$('.bt-quickview-product .woocommerce-product-gallery').prepend(skeletonHtml);
 							$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').addClass('disable');
 						},
 						success: function (response) {
 							if (response.success) {
-								if ($('.bt-quickview-product .bt-gallery-one-column').length > 0) {
-									$('.bt-quickview-product .bt-gallery-product').html(response.data['gallery-layout02']);
-									if (response.data['itemgallery'] <= 3) {
-										$('.bt-quickview-product .bt-show-more').hide();
-									} else {
-										$('.bt-quickview-product .bt-show-more').show();
-									}
+								setTimeout(function () {
+									$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
+									WoozioImageZoomable();
+									WoozioGalleryLightbox();
+									WoozioSliderThumbs();
+									// Remove loading class and remove skeleton
 									setTimeout(function () {
+										$('.bt-quickview-product .woocommerce-product-gallery').removeClass('loading');
 										$('.bt-quickview-product .bt-skeleton-gallery').remove();
-										$('.bt-quickview-product .bt-gallery-products').removeClass('loading');
-									}, 300);
-								} else {
-									setTimeout(function () {
-										$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html(response.data['gallery']);
-										// Initialize zoom
-										$('.bt-quickview-product .woocommerce-product-zoom__image').zoom();
-										// Initialize nav slider
-										$('.bt-quickview-product .woocommerce-product-gallery__slider-nav').slick({
-											slidesToShow: 5,
-											slidesToScroll: 1,
-											arrows: false,
-											focusOnSelect: true,
-											asNavFor: '.bt-quickview-product .woocommerce-product-gallery__slider'
-										});
-										// Initialize main slider with proper callbacks
-										$('.bt-quickview-product .woocommerce-product-gallery__slider').slick({
-											slidesToShow: 1,
-											slidesToScroll: 1,
-											fade: true,
-											arrows: false,
-											asNavFor: '.bt-quickview-product .woocommerce-product-gallery__slider-nav',
-											prevArrow: '<button type="button" class="slick-prev">Prev</button>',
-											nextArrow: '<button type="button" class="slick-next">Next</button>'
-										});
-										// Remove loading class and remove skeleton
-										setTimeout(function () {
-											$('.bt-quickview-product .woocommerce-product-gallery').removeClass('loading');
-											$('.bt-quickview-product .bt-skeleton-gallery').remove();
-										}, 500);
-									}, 300);
-								}
+									}, 200);
+								}, 300);
 								$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').removeClass('disable');
 							}
 						},
@@ -2144,27 +2118,7 @@
 			}
 		});
 	}
-
-	function WoozioGalleryProductShowMore() {
-		if (!$('body').hasClass('single-product')) {
-			return;
-		}
-		if ($('.bt-gallery-products').length > 0) {
-			const increment = 2;  // Items to show on each click
-
-			$(document).on('click', '.bt-show-more', function (e) {
-				// Show next set of items
-				const $items = $('.bt-gallery-product--image:not(.show)');
-
-				$items.slice(0, increment).addClass('show');
-
-				// Hide button if all items are shown
-				if ($('.bt-gallery-product--image:not(.show)').length === 0) {
-					$('.bt-show-more').hide();
-				}
-			});
-		}
-	}
+	
 	/* popup newsletter */
 	function WoozioPopupNewsletter() {
 		// Check if newsletter popup exists
@@ -2279,7 +2233,6 @@
 		WoozioCountdownProductSale();
 		WoozioCustomizeProductToggle();
 		WoozioCustomizeGroupedProduct();
-		WoozioGalleryProductShowMore();
 		WoozioPopupNewsletter();
 		WoozioProductColorVariationsLoadImage();
 	});

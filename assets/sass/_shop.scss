@@ -3594,14 +3594,6 @@
         &__wrapper {
           position: relative;
           line-height: 0;
-          @media (min-width: $break-md) {
-            position: sticky;
-            top: 78px;
-          }
-          @media (min-width: $break-tl) {
-            position: sticky;
-            top: 140px;
-          }
         }
         &__image {
           overflow: hidden;
@@ -3729,19 +3721,8 @@
         top: 0;
         z-index: 1;
         width: 100%;
-        @media (min-width: $break-md) {
-          position: sticky;
-          top: 110px;
-        }
-        @media (min-width: $break-tl) {
-          position: sticky;
-          top: 195px;
-        }
-        @media (max-width: $break-xs) {
-          gap: 10px;
-        }
         .bt-skeleton-main-image {
-          padding-bottom: 100%;
+          padding-bottom: 133.5%;
           border-radius: 8px;
           width: 100%;
           box-sizing: border-box;
@@ -3754,7 +3735,7 @@
           grid-template-columns: repeat(5, 1fr);
           .bt-skeleton-thumb {
             display: block;
-            padding-bottom: 100%;
+            padding-bottom: 133.5%;
             box-sizing: border-box;
             height: auto;
             @extend .__bt-animation-loading-card;
@@ -5920,38 +5901,7 @@
     }
   }
 }
-.admin-bar {
-  .woocommerce-product-gallery__wrapper {
-    @media (min-width: $break-md) {
-      top: 110px !important;
-    }
-    @media (min-width: $break-tl) {
-      top: 170px !important;
-    }
-  }
-  div.product {
-    .bt-product-inner {
-      &:not(.bt-quickview-product) {
-        @media (max-width: 1470px) and (min-width: $break-lg) {
-          @media (max-height: 799px) and (min-height: 766px) {
-            div.images {
-              .woocommerce-product-gallery__image {
-                padding-bottom: 83%;
-              }
-            }
-          }
-          @media (max-height: 766px) and (min-height: 728px) {
-            div.images {
-              .woocommerce-product-gallery__image {
-                padding-bottom: 78%;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+
 .woocommerce,
 .woocommerce-js {
   .add_to_cart_button {

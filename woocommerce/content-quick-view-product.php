@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 
 global $product;
 ?>
-<div id="product-<?php echo esc_attr($product->get_id()); ?>" <?php wc_product_class('', $product); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('bt-bottom-thumbnail', $product); ?>>
 	<div class="bt-product-inner bt-quickview-product">
 		<?php
 		do_action('woocommerce_before_single_product_summary');
