@@ -1061,6 +1061,119 @@
 			});
 		}
 	};
+
+	const AccordionWithProductSliderHandler = function ($scope) {
+		const $AccordionWithProductSlider = $scope.find('.bt-elwg-accordion-with-product-slider--default');
+		const $accordionProducts = $AccordionWithProductSlider.find('.js-accordion-products');
+
+		if ($accordionProducts.length > 0) {
+			const $sliderSettings = $AccordionWithProductSlider.data('slider-settings');
+			const sliderSpeed = $sliderSettings.speed || 1000;
+			const autoplay = $sliderSettings.autoplay || false;
+			const autoplayDelay = $sliderSettings.autoplay_delay || 3000;
+			
+			// Clone first slide and append to end for smooth loop effect
+			const $swiperWrapper = $accordionProducts.find('.swiper-wrapper');
+			const $firstSlide = $swiperWrapper.find('.swiper-slide').first();
+			
+			if ($firstSlide.length > 0) {
+				// Clone first two slides and append to end for smooth loop effect
+				const $secondSlide = $swiperWrapper.find('.swiper-slide').eq(1);
+				
+				const $clonedFirstSlide = $firstSlide.clone();
+				$clonedFirstSlide.addClass('swiper-slide-duplicate-end'); // Add identifier class
+				$swiperWrapper.append($clonedFirstSlide);
+				
+				if ($secondSlide.length > 0) {
+					const $clonedSecondSlide = $secondSlide.clone();
+					$clonedSecondSlide.addClass('swiper-slide-duplicate-end'); // Add identifier class
+					$swiperWrapper.append($clonedSecondSlide);
+				}
+			}
+
+			// Initialize the accordion products slider
+			const accordionProductsSwiper = new Swiper($accordionProducts[0], {
+				slidesPerView: 1,
+				loop: false,
+				speed: sliderSpeed,
+				centeredSlides: false,
+				autoplay: autoplay ? {
+					delay: autoplayDelay,
+					disableOnInteraction: false
+				} : false,
+				allowTouchMove: true,
+				breakpoints: {
+					767: {
+						slidesPerView: 2,
+						centeredSlides: false,
+						spaceBetween: 20
+					},
+					1025: {
+						slidesPerView: 2.7,
+						centeredSlides: true,
+						spaceBetween: 30
+					}
+				},
+			});
+
+			// Handle accordion navigation item click
+			$AccordionWithProductSlider.find('.bt-accordion-nav-item').on('click', function() {
+				const clickedIndex = parseInt($(this).data('index'));
+				
+				// Update active accordion nav item
+				$AccordionWithProductSlider.find('.bt-accordion-nav-item').removeClass('active');
+				$(this).addClass('active');
+				
+				// Slide to corresponding products
+				accordionProductsSwiper.slideTo(clickedIndex);
+			});
+
+			// Get total number of original slides (not including cloned)
+			const totalOriginalSlides = $AccordionWithProductSlider.find('.bt-accordion-nav-item').length;
+
+			// Update accordion nav when slider changes (via navigation arrows or pagination)
+			accordionProductsSwiper.on('slideChange', function() {
+				const activeIndex = this.activeIndex;
+				
+				// If we're on the cloned slide (last slide), jump to first slide without stopping autoplay
+				if (activeIndex >= totalOriginalSlides) {
+					// Store autoplay state before reset
+					const wasAutoplayRunning = this.autoplay && this.autoplay.running;
+					
+					setTimeout(() => {
+						this.slideTo(0, 0); // Slide to first slide with 0 speed (no animation)
+						
+						// Restart autoplay if it was running before reset
+						if (wasAutoplayRunning && autoplay) {
+							setTimeout(() => {
+								this.autoplay.start();
+							}, 50); // Small delay to ensure slide transition is complete
+						}
+					}, sliderSpeed); // Wait for current transition to complete
+				}
+				
+				// Update accordion nav (use modulo to handle cloned slide)
+				const navIndex = activeIndex % totalOriginalSlides;
+				$AccordionWithProductSlider.find('.bt-accordion-nav-item').removeClass('active');
+				$AccordionWithProductSlider.find('.bt-accordion-nav-item[data-index="' + navIndex + '"]').addClass('active');
+			});
+
+			// Pause autoplay on hover if autoplay is enabled
+			if (autoplay) {
+				$accordionProducts[0].addEventListener('mouseenter', () => {
+					if (accordionProductsSwiper.autoplay) {
+						accordionProductsSwiper.autoplay.stop();
+					}
+				});
+
+				$accordionProducts[0].addEventListener('mouseleave', () => {
+					if (accordionProductsSwiper.autoplay) {
+						accordionProductsSwiper.autoplay.start();
+					}
+				});
+			}
+		}
+	};
 	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
@@ -1079,6 +1192,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-item.default', ProductItemHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-currency-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
 	});
 
 })(jQuery);
