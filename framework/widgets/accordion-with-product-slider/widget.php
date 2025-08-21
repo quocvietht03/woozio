@@ -522,7 +522,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                                                             <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
                                                                 <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
                                                             <?php else : ?>
-                                                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button wc-forward"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button"><?php echo esc_html__('View Product', 'woozio'); ?></a>
                                                             <?php endif; ?>
                                                         </div>
                                                     </div>
