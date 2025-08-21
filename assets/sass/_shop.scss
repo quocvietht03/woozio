@@ -2008,6 +2008,10 @@
         }
       }
       a.button.loading {
+        &:before{
+          opacity: 0;
+          visibility: hidden;
+        }
         &:after {
           font-family: WooCommerce;
           content: "\e01c";

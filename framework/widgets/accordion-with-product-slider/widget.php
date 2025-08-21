@@ -245,113 +245,33 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
+        $this->add_control(
+            'sub_title_heading',
+            [
+                'label' => __('Sub Title', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+              
+            ]
+        );
 
         $this->add_control(
-            'accordion_item_heading',
+            'sub_title_color',
             [
-                'label' => __('Accordion Item', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'accordion_item_padding',
-            [
-                'label' => __('Padding', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'default' => [
-                    'top' => '20',
-                    'right' => '20',
-                    'bottom' => '20',
-                    'left' => '20',
-                    'unit' => 'px',
-                    'isLinked' => true,
-                ],
+                'label' => __('Sub Title Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'accordion_item_margin',
-            [
-                'label' => __('Margin Bottom', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 50,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 15,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-heading .bt-accordion-sub-title' => 'color: {{VALUE}};',
                 ],
             ]
         );
 
         $this->add_group_control(
-            Group_Control_Border::get_type(),
+            Group_Control_Typography::get_type(),
             [
-                'name' => 'accordion_item_border',
-                'selector' => '{{WRAPPER}} .bt-accordion-item',
+                'name' => 'sub_title_typography',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-heading .bt-accordion-sub-title',
             ]
         );
-
-        $this->add_responsive_control(
-            'accordion_item_border_radius',
-            [
-                'label' => __('Border Radius', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => '8',
-                    'right' => '8',
-                    'bottom' => '8',
-                    'left' => '8',
-                    'unit' => 'px',
-                    'isLinked' => true,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        // Normal state
-        $this->add_control(
-            'accordion_item_bg_color',
-            [
-                'label' => __('Background Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#F8F9FA',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        // Active state
-        $this->add_control(
-            'accordion_item_active_bg_color',
-            [
-                'label' => __('Active Background Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#007cba',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item.active' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
         $this->add_control(
             'title_heading',
             [
@@ -366,21 +286,8 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             [
                 'label' => __('Title Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-title' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'title_active_color',
-            [
-                'label' => __('Title Active Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item.active .bt-accordion-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-heading .bt-accordion-title' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -389,7 +296,35 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             Group_Control_Typography::get_type(),
             [
                 'name' => 'title_typography',
-                'selector' => '{{WRAPPER}} .bt-accordion-title',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-heading .bt-accordion-title',
+            ]
+        );
+
+        $this->add_control(
+            'nav_title_heading',
+            [
+                'label' => __('Navigation Title', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'nav_title_color',
+            [
+                'label' => __('Navigation Title Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-nav-title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'nav_title_typography',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-nav-title',
             ]
         );
 
@@ -407,21 +342,8 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             [
                 'label' => __('Description Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#6C757D',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-description' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'description_active_color',
-            [
-                'label' => __('Description Active Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#E8F4FD',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-item.active .bt-accordion-description' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-description' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -430,9 +352,11 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             Group_Control_Typography::get_type(),
             [
                 'name' => 'description_typography',
-                'selector' => '{{WRAPPER}} .bt-accordion-description',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-description',
             ]
         );
+
+      
 
         $this->end_controls_section();
 
@@ -446,54 +370,10 @@ class Widget_AccordionWithProductSlider extends Widget_Base
         );
 
         $this->add_control(
-            'product_item_heading',
-            [
-                'label' => __('Product Item', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-            ]
-        );
-        $this->add_group_control(
-            Group_Control_Border::get_type(),
-            [
-                'name' => 'product_item_border',
-                'selector' => '{{WRAPPER}} .bt-product-item',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'product_item_border_radius',
-            [
-                'label' => __('Border Radius', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => '8',
-                    'right' => '8',
-                    'bottom' => '8',
-                    'left' => '8',
-                    'unit' => 'px',
-                    'isLinked' => true,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Box_Shadow::get_type(),
-            [
-                'name' => 'product_item_box_shadow',
-                'selector' => '{{WRAPPER}} .bt-product-item',
-            ]
-        );
-
-        $this->add_control(
             'product_title_heading',
             [
                 'label' => __('Product Title', 'woozio'),
                 'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
             ]
         );
 
@@ -502,9 +382,8 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             [
                 'label' => __('Title Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -513,27 +392,44 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             Group_Control_Typography::get_type(),
             [
                 'name' => 'product_title_typography',
-                'selector' => '{{WRAPPER}} .bt-product-title',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title',
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Button Style Section
+        $this->start_controls_section(
+            'section_button_style',
+            [
+                'label' => __('Button Style', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+                'condition' => [
+                    'button_text!' => '',
+                ],
             ]
         );
 
         $this->add_control(
-            'product_price_heading',
+            'button_text_color',
             [
-                'label' => __('Product Price', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'product_price_color',
-            [
-                'label' => __('Price Color', 'woozio'),
+                'label' => __('Text Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#007cba',
+
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-price' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-button .bt-button' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+
+        $this->add_control(
+            'button_hover_text_color',
+            [
+                'label' => __('Hover Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-button .bt-button:hover' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -541,148 +437,8 @@ class Widget_AccordionWithProductSlider extends Widget_Base
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
-                'name' => 'product_price_typography',
-                'selector' => '{{WRAPPER}} .bt-product-price',
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // Navigation Style Section
-        $this->start_controls_section(
-            'section_navigation_style',
-            [
-                'label' => __('Navigation Style', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-                'condition' => [
-                    'slider_arrows' => 'yes',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_color',
-            [
-                'label' => __('Arrow Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_background_color',
-            [
-                'label' => __('Arrow Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_border_color',
-            [
-                'label' => __('Arrow Border Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_color',
-            [
-                'label' => __('Arrow Hover Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_background_color',
-            [
-                'label' => __('Arrow Hover Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'arrow_size',
-            [
-                'label' => __('Arrow Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 10,
-                        'max' => 50,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 24,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'arrow_padding',
-            [
-                'label' => __('Arrow Padding', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 30,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 11,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'padding: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'arrow_border_radius',
-            [
-                'label' => __('Border Radius', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => '50',
-                    'right' => '50',
-                    'bottom' => '50',
-                    'left' => '50',
-                    'unit' => '%',
-                    'isLinked' => true,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
+                'name' => 'button_typography',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-button .bt-button',
             ]
         );
 
@@ -741,46 +497,49 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                         <div class="swiper-wrapper">
                             <?php foreach ($settings['accordion_items'] as $accordion_index => $accordion_item) : ?>
                                 <div class="swiper-slide">
-                                    <div class="bt-products-grid" data-products-per-view="3">
                                         <?php
                                         if (!empty($accordion_item['accordion_products'])) {
-                                            foreach ($accordion_item['accordion_products'] as $product_id) {
-                                                $product = wc_get_product($product_id);
-                                                if ($product) :
+                                            $product_id = $accordion_item['accordion_products'];
+                                            $product = wc_get_product($product_id);
+                                            if ($product) :
                                         ?>
-                                                    <div class="bt-product-item">
+                                                <div class="bt-product-item">
 
-                                                        <div class="bt-product-image bt-cover-image">
-                                                            <?php
-                                                            $attachment = wp_get_attachment_image_src($product->get_image_id(), $settings['product_thumbnail_size']);
-                                                            if ($attachment) {
-                                                                echo '<img src="' . esc_url($attachment[0]) . '" alt="' . esc_attr($product->get_name()) . '">';
-                                                            } else {
-                                                                echo wp_kses_post($product->get_image());
-                                                            }
-                                                            ?>
-                                                        </div>
-                                                        <div class="bt-product-content">
-                                                            <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                            <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
-                                                            <div class="bt-product-add-to-cart">
-                                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                                <?php else : ?>
-                                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button wc-forward"><?php echo esc_html__('View Product', 'woozio'); ?></a>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        </div>
-
+                                                    <div class="bt-product-image bt-cover-image">
+                                                        <?php
+                                                        $attachment = wp_get_attachment_image_src($product->get_image_id(), $settings['product_thumbnail_size']);
+                                                        if ($attachment) {
+                                                            echo '<img src="' . esc_url($attachment[0]) . '" alt="' . esc_attr($product->get_name()) . '">';
+                                                        } else {
+                                                            echo wp_kses_post($product->get_image());
+                                                        }
+                                                        ?>
                                                     </div>
+                                                    <div class="bt-product-content">
+                                                        <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
+                                                        <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                        <div class="bt-product-add-to-cart">
+                                                            <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                                <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                                            <?php else : ?>
+                                                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button wc-forward"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
                                         <?php
-                                                endif;
-                                            }
-                                        } else {
-                                            echo '<p class="no-products">' . __('No products selected for this accordion item.', 'woozio') . '</p>';
+                                            endif;
+                                        }else{
+                                        ?>
+                                        <div class="bt-product-item">
+                                            <div class="bt-product-image bt-cover-image">
+                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder-image.jpg" alt="Product Placeholder">
+                                            </div>
+                                        </div>
+                                        <?php
                                         }
                                         ?>
-                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
