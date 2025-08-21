@@ -1929,6 +1929,7 @@
           border-radius: 0;
           border: 1px solid #fff;
           opacity: 0;
+          visibility: hidden;
           transform: translateX(100px);
           transition:
             opacity 0.5s ease,
@@ -1992,11 +1993,16 @@
         @media (max-width: $break-sm) {
           .bt-icon-btn {
             opacity: 1;
+            visibility: visible;
             transform: translateX(0);
           }
         }
       }
       a.button.loading {
+        &:before{
+          opacity: 0;
+          visibility: hidden;
+        }
         &:after {
           font-family: WooCommerce;
           content: "\e01c";
@@ -2010,6 +2016,11 @@
         }
       }
       .bt-add-to-cart {
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.5s ease,
+          visibility 0.5s ease;
         a {
           background: $color-primary;
           color: #fff;
@@ -2077,13 +2088,9 @@
               max-width: 100%;
               padding: 0;
               border-radius: 0;
-              opacity: 0;
-              transform: translateY(60px);
               transition:
                 opacity 0.5s ease,
                 transform 0.5s ease;
-              opacity: 1;
-              transform: translateY(0);
               display: block;
               &.disabled {
                 opacity: 0.5;
@@ -2110,6 +2117,9 @@
             .bt-attributes--item {
               max-width: calc(100% - 50px);
               overflow-x: auto;
+              &[data-attribute-name="pa_color"] {
+                overflow: initial;
+              }
               &::-webkit-scrollbar {
                 width: 3px;
                 height: 3px;
@@ -2153,6 +2163,8 @@
                   background: transparent;
                   gap: 8px;
                   padding: 0;
+                  flex-wrap: wrap;
+                  max-width: 215px;
                   .bt-item-color {
                     border: 2px solid transparent;
                     position: relative;
@@ -2179,7 +2191,37 @@
                       }
                     }
                     label {
-                      display: none;
+                      position: absolute;
+                      top: -25px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      background: #333;
+                      color: #fff;
+                      padding: 4px 8px;
+                      border-radius: 4px;
+                      font-size: 12px;
+                      line-height: 1;
+                      white-space: nowrap;
+                      opacity: 0;
+                      visibility: hidden;
+                      transition: opacity 0.3s ease, visibility 0.3s ease;
+                      z-index: 100;
+                      &::after {
+                        content: "";
+                        position: absolute;
+                        top: 100%;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        border-width: 4px;
+                        border-style: solid;
+                        border-color: #333 transparent transparent transparent;
+                      }
+                    }
+                    &:hover {
+                      label {
+                        opacity: 1;
+                        visibility: visible;
+                      }
                     }
                     &.active {
                       border: 2px solid #fff;
@@ -2256,11 +2298,12 @@
       justify-content: flex-end;
       gap: 8px;
       align-items: baseline;
+      color: $color-primary;
       .woocommerce-Price-amount {
         font-size: 16px;
         font-style: normal;
         font-weight: 400;
-        line-height: 26px;
+        line-height: 1.62;
         color: $color-primary;
       }
       ins {
@@ -2272,7 +2315,7 @@
           font-size: 14px;
           font-style: normal;
           font-weight: 400;
-          line-height: 22px;
+          line-height: 1.57;
           color: $color-text;
         }
       }
@@ -2282,6 +2325,7 @@
         .bt-product-icon-btn {
           .bt-icon-btn {
             opacity: 1;
+            visibility: visible;
             transform: translateX(0);
             &.bt-product-wishlist-btn {
               transition-delay: 0.1s;
@@ -2295,10 +2339,8 @@
           }
         }
         .bt-add-to-cart {
-          a {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          opacity: 1;
+          visibility: visible;
         }
       }
     }
@@ -2387,11 +2429,12 @@
         justify-content: flex-end;
         gap: 8px;
         align-items: baseline;
+        color: $color-primary;
         .woocommerce-Price-amount {
-          font-size: 18px;
+          font-size: 16px;
           font-style: normal;
-          font-weight: 500;
-          line-height: 1.5;
+          font-weight: 400;
+          line-height: 1.62;
           color: $color-primary;
         }
         ins {
@@ -2400,18 +2443,15 @@
         }
         del {
           .woocommerce-Price-amount {
-            font-size: 16px;
+            font-size: 14px;
             font-style: normal;
             font-weight: 400;
-            line-height: 1.5;
-            color: #a0a0a0;
+            line-height: 1.57;
+            color: $color-text;
           }
         }
         @media (max-width: $break-xs) {
           gap: 4px;
-          .woocommerce-Price-amount {
-            font-size: 16px;
-          }
         }
       }
       &-rating {

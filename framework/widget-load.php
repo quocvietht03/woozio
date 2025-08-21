@@ -82,7 +82,8 @@ class ElementorWidgets
 			'our-teams',
 			'our-store',
 			'currency-switcher',
-			'language-switcher'
+			'language-switcher',
+			'accordion-with-product-slider'
 		);
 
 		return $this->widgets;
@@ -212,6 +213,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurStore\Widget_OurStore());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CurrencySwitcher\Widget_CurrencySwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\LanguageSwitcher\Widget_LanguageSwitcher());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccordionWithProductSlider\Widget_AccordionWithProductSlider());
 	}
 
 	/**
