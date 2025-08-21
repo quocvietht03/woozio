@@ -28,38 +28,10 @@ global $product;
         }
 
         ?>
-        <div class="images bt-gallery-products" data-items="<?php echo esc_attr($itemgallery); ?>" data-shown="<?php echo esc_attr($show_number); ?>">
+        <div class="images bt-gallery-grid-products" data-items="<?php echo esc_attr($itemgallery); ?>" data-shown="<?php echo esc_attr($show_number); ?>">
             
-            <div class="bt-gallery-product bt-gallery-lightbox bt-gallery-zoomable">
-                <?php
-                if ($featured_image_id) {
-                    $image_url = wp_get_attachment_image_url($featured_image_id, 'full');
-                    echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
-                    echo '<div class="bt-cover-image zoomable">';
-                    echo wp_get_attachment_image($featured_image_id, 'full', false, array(
-                        'class' => 'wp-post-image',
-                        'title' => get_post_field('post_title', $featured_image_id),
-                        'alt' => get_post_meta($featured_image_id, '_wp_attachment_image_alt', true)
-                    ));
-                    echo '</div>';
-                    echo '</div>';
-                }
-
-                if ($attachment_ids) {
-                    foreach ($attachment_ids as $index => $attachment_id) {
-                        $image_url = wp_get_attachment_image_url($attachment_id, 'full');
-                        echo '<div data-thumb="' . esc_url($image_url) . '" class="bt-gallery-product--image">';
-                        echo '<div class="bt-cover-image zoomable">';
-                        echo wp_get_attachment_image($attachment_id, 'full', false, array(
-                            'class' => 'gallery-image',
-                            'title' => get_post_field('post_title', $attachment_id),
-                            'alt' => get_post_meta($attachment_id, '_wp_attachment_image_alt', true)
-                        ));
-                        echo '</div>';
-                        echo '</div>';
-                    }
-                }
-                ?>
+            <div class="bt-gallery-grid-product bt-gallery-lightbox bt-gallery-zoomable">
+                <?php woozio_get_variation_gallery_grid($featured_image_id, $attachment_ids); ?>
             </div>
             <?php
             echo '<button class="bt-show-more">' . esc_html__('Show More', 'woozio') . '</button>';

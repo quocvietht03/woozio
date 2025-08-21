@@ -1534,16 +1534,7 @@
         div.images {
           width: calc(50% - 15px);
           overflow: hidden;
-          .woocommerce-product-gallery__wrapper {
-            &.bt-active-nav-gallery {
-              @media (min-width: $break-lg) {
-                min-height: 523px;
-              }
-              @media (min-width: 1500px) {
-                min-height: 716px;
-              }
-            }
-          }
+
         }
         div.summary {
           width: calc(50% - 15px);
@@ -3510,6 +3501,17 @@
           &__wrapper {
             display: flex;
             gap: 20px;
+            &:not(.bt-has-slide-thumbs) {
+              .woocommerce-product-gallery {
+                &__slider {
+                  flex-basis: 100%;
+                  max-width: 100%;
+                }
+                &__slider-thumbs {
+                  display: none;
+                }
+              }
+            }
           }
           &__slider {
             flex-basis: calc(100% - 100px);
@@ -3524,17 +3526,62 @@
       }
     }
     &.bt-gallery-two-column {
-      div.images.bt-gallery-products .bt-gallery-product--image {
+      div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(50% - 10px);
       }
     }
 
     &.bt-gallery-stacked {
-      div.images.bt-gallery-products .bt-gallery-product--image {
+      div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(50% - 10px);
         &:first-child {
           width: 100%;
         }
+      }
+    }
+
+    &.bt-gallery-slider-container,
+    &.bt-gallery-slider-fullwidth {
+      .bt-product-inner {
+        flex-direction: column;
+      }
+      div.images {
+        width: 100%;
+      }
+      div.summary {
+        width: 100%;
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        gap: 60px;
+      }
+      .bt-single-product-info {
+        width: calc(42% - 30px);
+        &__inner {
+          position: sticky;
+          top: 50px;
+          z-index: 9;
+          background: #FFFFFF;
+          box-shadow: 0px 5px 18px 5px rgba(43, 52, 74, 0.12);
+          border-radius: 8px;
+          padding: 32px;
+        }
+      }
+      .bt-single-product-sumary {
+        width: calc(58% - 30px);
+      }
+      .bt-gallery-slider-products {
+        position: relative;
+        overflow: hidden;
+        @extend .__bt-swiper-navigation-style;
+      }
+    }
+
+    &.bt-gallery-slider-fullwidth {
+      div.images {
+        width: calc(100vw - 30px);
+        position: relative;
+        left: calc(50% - 50vw + 15px);
       }
     }
 
@@ -3559,10 +3606,14 @@
         &__wrapper {
           position: relative;
           line-height: 0;
+          &:not(.bt-has-slide-thumbs) {
+            .woocommerce-product-gallery__slider-thumbs {
+              display: none;
+            }
+          }
         }
         &__image {
           overflow: hidden;
-          border-radius: 8px;
           padding-bottom: 133.5%;
           position: relative;
           line-height: 0;
@@ -3579,6 +3630,7 @@
           position: relative;
           overflow: hidden;
           cursor: zoom-in;
+          @extend .__bt-swiper-navigation-style;
         }
         &__slider-thumbs {
           margin: 20px 0 0 0;
@@ -3592,7 +3644,6 @@
               bottom: 1px;
               top: 0;
               display: flex;
-              border-radius: 8px;
               border: 1px solid $color-primary;
               position: absolute;
               z-index: 1;
@@ -3601,23 +3652,19 @@
           }
         }
       }
-      &.bt-gallery-products {
+      &.bt-gallery-grid-products {
         position: relative;
-        .bt-gallery-product {
+        .bt-gallery-grid-product {
           display: flex;
           flex-wrap: wrap;
           gap: 20px;
           position: relative;
-          &--image {
-            display: none;
-            width: 100%;
-            &.show {
-              display: block;
-            }
-          }
-          .bt-cover-image {
-            padding-bottom: 133.5%;
-            border-radius: 12px;
+        }
+        .bt-gallery-grid-product__item {
+          display: none;
+          width: 100%;
+          &.show {
+            display: block;
           }
         }
         .bt-skeleton-gallery {
@@ -3673,7 +3720,8 @@
           padding-bottom: calc(100% + 20%);
         }
         .woocommerce-product-gallery__wrapper,
-        .bt-gallery-product--image {
+        .bt-gallery-grid-product,
+        .bt-gallery-slider-product {
           opacity: 0;
           visibility: hidden;
         }
