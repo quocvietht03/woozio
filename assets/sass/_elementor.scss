@@ -4772,6 +4772,10 @@ body {
                 margin-right: 0 !important;
               }
               del {
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.57;
                 .woocommerce-Price-amount {
                   font-size: 14px;
                   font-style: normal;
@@ -4815,6 +4819,10 @@ body {
                   transform 0.5s ease;
                 display: block;
                 &.loading {
+                  &::before {
+                    opacity: 0;
+                    visibility: hidden;
+                  }
                   &:after {
                     left: 33% !important;
                     top: 33% !important;
