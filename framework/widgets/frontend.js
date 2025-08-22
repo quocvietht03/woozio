@@ -1174,6 +1174,41 @@
 			}
 		}
 	};
+
+	var CollectionBannerHandler = function ($scope, $) {
+		var $collectionBanner = $scope.find('.bt-collection-banner');
+		
+		if ($collectionBanner.length) {
+			// Store the index of the default active item on page load
+			var $defaultActiveItem = $collectionBanner.find('.collection-item.active').first();
+			var defaultActiveIndex = $defaultActiveItem.length ? $defaultActiveItem.data('index') : null;
+			
+			// Handle hover events
+			$collectionBanner.find('.collection-item').on('mouseenter', function() {
+				var $this = $(this);
+				var $container = $this.closest('.bt-collection-banner');
+				
+				// Remove active class from all items
+				$container.find('.collection-item').removeClass('active');
+				
+				// Add active class to hovered item
+				$this.addClass('active');
+			});
+
+			// Optional: Reset to default active item when mouse leaves container
+			$collectionBanner.on('mouseleave', function() {
+				var $container = $(this);
+				
+				// Remove active class from all items
+				$container.find('.collection-item').removeClass('active');
+				
+				// If we have a default active item, restore it
+				if (defaultActiveIndex !== null) {
+					$container.find('.collection-item[data-index="' + defaultActiveIndex + '"]').addClass('active');
+				}
+			});
+		}
+	};
 	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
@@ -1193,6 +1228,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-currency-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
 	});
 
 })(jQuery);
