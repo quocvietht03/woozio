@@ -84,7 +84,8 @@ class ElementorWidgets
 			'currency-switcher',
 			'language-switcher',
 			'accordion-with-product-slider',
-			'collection-banner'
+			'collection-banner',
+			'item-hotspot-product'
 		);
 
 		return $this->widgets;
@@ -216,6 +217,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\LanguageSwitcher\Widget_LanguageSwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccordionWithProductSlider\Widget_AccordionWithProductSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ItemHotspotProduct\Widget_ItemHotspotProduct());
 	}
 
 	/**

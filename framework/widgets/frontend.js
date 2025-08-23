@@ -1209,6 +1209,32 @@
 			});
 		}
 	};
+
+	const ItemHotspotProductHandler = function ($scope) {
+		const $itemHotspotProduct = $scope.find('.bt-elwg-item-hotspot-product--default');
+		
+		if ($itemHotspotProduct.length > 0) {
+			const $hotspotPoints = $itemHotspotProduct.find('.bt-hotspot-point');
+			const $productItems = $itemHotspotProduct.find('.bt-hotspot-product-item');
+			
+			// Handle hotspot point clicks
+			$hotspotPoints.on('click', function(e) {
+				e.preventDefault();
+				const $this = $(this);
+				const productId = $this.data('product-id');
+				
+				// Remove active state from all points and products
+				$hotspotPoints.removeClass('active');
+				$productItems.removeClass('active');
+				
+				// Add active state to clicked point
+				$this.addClass('active');
+				
+				// Show corresponding product
+				$productItems.filter(`[data-product-id="${productId}"]`).addClass('active');
+			});
+		}
+	};
 	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
@@ -1229,6 +1255,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-item-hotspot-product.default', ItemHotspotProductHandler);
 	});
 
 })(jQuery);
