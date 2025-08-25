@@ -345,36 +345,34 @@ class Widget_ItemHotspotProduct extends Widget_Base
                 </div>
 
                 <div class="bt-hotspot-product-display">
-                    <div class="bt-product-content">
-                        <?php if (!empty($settings['hotspot_items'])) : ?>
-                            <?php foreach ($settings['hotspot_items'] as $index => $item) : ?>
-                                <?php
-                                $product = wc_get_product($item['id_product']);
-                                if ($product) :
-                                ?>
-                                    <div class="bt-hotspot-product-item <?php echo $index === 0 ? 'active' : ''; ?>"
-                                        data-product-id="<?php echo esc_attr($item['id_product']); ?>">
-                                        <div class="bt-product-thumbnail">
-                                            <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                <?php echo get_the_post_thumbnail($item['id_product'], 'medium'); ?>
-                                            </a>
-                                        </div>
-                                        <div class="bt-product-content">
-                                            <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                            <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
-                                            <div class="bt-product-add-to-cart">
-                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                <?php else : ?>
-                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
-                                                <?php endif; ?>
-                                            </div>
+                    <?php if (!empty($settings['hotspot_items'])) : ?>
+                        <?php foreach ($settings['hotspot_items'] as $index => $item) : ?>
+                            <?php
+                            $product = wc_get_product($item['id_product']);
+                            if ($product) :
+                            ?>
+                                <div class="bt-product-item-minimal <?php echo $index === 0 ? 'active' : ''; ?>"
+                                    data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                    <div class="bt-product-thumbnail">
+                                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                            <?php echo get_the_post_thumbnail($item['id_product'], 'medium'); ?>
+                                        </a>
+                                    </div>
+                                    <div class="bt-product-content">
+                                        <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
+                                        <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                        <div class="bt-product-add-to-cart">
+                                            <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                            <?php else : ?>
+                                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

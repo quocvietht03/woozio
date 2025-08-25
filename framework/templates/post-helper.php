@@ -134,13 +134,17 @@ if (!function_exists('woozio_post_cover_featured_render')) {
 
 /* Post Publish */
 if (!function_exists('woozio_post_publish_render')) {
-  function woozio_post_publish_render()
+  function woozio_post_publish_render($format = null)
   {
     ob_start();
-
+    if ($format) {
+      $date = get_the_date($format);
+    } else {
+      $date = get_the_date(get_option('date_format'));
+    }
   ?>
     <div class="bt-post--publish">
-      <span> <?php echo get_the_date(get_option('date_format')); ?> </span>
+      <span> <?php echo $date; ?> </span>
     </div>
   <?php
 

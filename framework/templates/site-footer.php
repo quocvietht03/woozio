@@ -11,7 +11,7 @@
       <?php
         printf(
           esc_html__( '© All right reserved by %s.', 'woozio' ),
-          '<a href="' . esc_url( __( 'https://themeforest.net/user/bearsthemes/', 'woozio' ) ) . '" target="_blank">Bearstheme</a>'
+          '<a href="' . esc_url( __( 'https://themeforest.net/user/bearsthemes/', 'woozio' ) ) . '" target="_blank">Bearsthemes</a>'
         );
       ?>
     </div>

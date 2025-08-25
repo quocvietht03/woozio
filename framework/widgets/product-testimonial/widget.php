@@ -66,15 +66,6 @@ class Widget_ProductTestimonial extends Widget_Base
                 'label' => __('Testimonial', 'woozio'),
             ]
         );
-        $this->add_control(
-            'testimonial_label',
-            [
-                'label' => __('Testimonial Label', 'woozio'),
-                'type' => Controls_Manager::TEXT,
-                'default' => __('Customer Say!', 'woozio'),
-                'placeholder' => __('Enter testimonial label', 'woozio'),
-            ]
-        );
         $this->add_group_control(
             Group_Control_Image_Size::get_type(),
             [
@@ -83,6 +74,85 @@ class Widget_ProductTestimonial extends Widget_Base
                 'show_label' => true,
                 'default' => 'medium_large',
                 'exclude' => ['custom'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'image_ratio',
+            [
+                'label' => __('Image Ratio', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'default' => [
+                    'size' => 0.67,
+                ],
+                'range' => [
+                    'px' => [
+                        'min' => 0.3,
+                        'max' => 2,
+                        'step' => 0.01,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--images .bt-image-cover' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+                ],
+            ]
+        );
+        $this->add_control(
+            'image_position',
+            [
+                'label' => __('Image Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'row-reverse' => __('Left', 'woozio'),
+                    'row' => __('Right', 'woozio'),
+                ],
+                'default' => 'row-reverse',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => 'flex-direction: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'gap',
+            [
+                'label' => __('Gap', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 10,
+                        'step' => 0.1,
+                    ],
+                    '%' => [
+                        'min' => 0,
+                        'max' => 50,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 30,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => '--column-gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'background_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#FFFFFF',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => 'background-color: {{VALUE}};',
+                ],
             ]
         );
 
@@ -206,9 +276,9 @@ class Widget_ProductTestimonial extends Widget_Base
             ]
         );
         $this->add_control(
-            'slider_arrows',
+            'slider_pagination',
             [
-                'label' => __('Show Arrows', 'woozio'),
+                'label' => __('Show Pagination', 'woozio'),
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
@@ -228,78 +298,18 @@ class Widget_ProductTestimonial extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
-
         $this->add_control(
-            'label_heading',
+            'content_background_color',
             [
-                'label' => __('Label', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'label_color',
-            [
-                'label' => __('Label Color', 'woozio'),
+                'label' => __('Content Background Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
+                'default' => '#FFFFFF',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial--label' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-testimonial--content' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
 
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'label_typography',
-                'selector' => '{{WRAPPER}} .bt-product-testimonial--label',
-            ]
-        );
-        $this->add_control(
-            'quote_icon_heading',
-            [
-                'label' => __('Quote Icon', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'quote_icon_color',
-            [
-                'label' => __('Quote Icon Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial--quote svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'quote_icon_size',
-            [
-                'label' => __('Quote Icon Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 20,
-                        'max' => 100,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 60,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial--quote svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
         $this->add_control(
             'text_heading',
             [
@@ -427,156 +437,48 @@ class Widget_ProductTestimonial extends Widget_Base
         );
         $this->end_controls_section();
 
-        // Navigation Style Section
+        // Pagination Style Section
         $this->start_controls_section(
-            'section_navigation_style',
+            'section_pagination_style',
             [
-                'label' => __('Navigation Style', 'woozio'),
+                'label' => __('Pagination Style', 'woozio'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'condition' => [
-                    'slider_arrows' => 'yes',
+                    'slider_pagination' => 'yes',
                 ],
             ]
         );
-
-        $this->add_control(
-            'arrow_color',
-            [
-                'label' => __('Arrow Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_background_color',
-            [
-                'label' => __('Arrow Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_border_color',
-            [
-                'label' => __('Arrow Border Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_color',
-            [
-                'label' => __('Arrow Hover Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_background_color',
-            [
-                'label' => __('Arrow Hover Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_border_color',
-            [
-                'label' => __('Arrow Hover Border Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
         $this->add_responsive_control(
-            'arrow_size',
+            'pagination_margin_top',
             [
-                'label' => __('Arrow Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
+                'label' => __('Pagination Margin Top', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
                 'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 10,
-                        'max' => 50,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 24,
-                ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-nav svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-swiper-pagination' => 'margin-top: {{VALUE}}px;',
                 ],
             ]
         );
-
-        $this->add_responsive_control(
-            'arrow_padding',
+        $this->add_control(
+            'pagination_color',
             [
-                'label' => __('Arrow Padding', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 30,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 11,
-                ],
+                'label' => __('Pagination Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'padding: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-swiper-pagination .swiper-pagination-bullet' => 'background: {{VALUE}};',
                 ],
             ]
         );
-
-        $this->add_responsive_control(
-            'arrow_border_radius',
+        $this->add_control(
+            'pagination_active_color',
             [
-                'label' => __('Border Radius', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => '50',
-                    'right' => '50',
-                    'bottom' => '50',
-                    'left' => '50',
-                    'unit' => '%',
-                    'isLinked' => true,
-                ],
+                'label' => __('Pagination Active Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-swiper-pagination .swiper-pagination-bullet-active' => 'background: {{VALUE}};',
                 ],
             ]
         );
-
         $this->end_controls_section();
     }
 
@@ -598,66 +500,43 @@ class Widget_ProductTestimonial extends Widget_Base
             <div class="bt-product-testimonial">
                 <div class="bt-product-testimonial--content">
                     <div class="swiper js-testimonial-content">
-                    <div class="bt-product-testimonial--quote"><svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
-                            <path d="M27.1875 16.875V37.5C27.1844 40.4827 25.9981 43.3424 23.889 45.4515C21.7799 47.5606 18.9202 48.7469 15.9375 48.75C15.4402 48.75 14.9633 48.5525 14.6117 48.2008C14.26 47.8492 14.0625 47.3723 14.0625 46.875C14.0625 46.3777 14.26 45.9008 14.6117 45.5492C14.9633 45.1975 15.4402 45 15.9375 45C17.9266 45 19.8343 44.2098 21.2408 42.8033C22.6473 41.3968 23.4375 39.4891 23.4375 37.5V35.625H9.375C8.38044 35.625 7.42661 35.2299 6.72335 34.5266C6.02009 33.8234 5.625 32.8696 5.625 31.875V16.875C5.625 15.8804 6.02009 14.9266 6.72335 14.2233C7.42661 13.5201 8.38044 13.125 9.375 13.125H23.4375C24.4321 13.125 25.3859 13.5201 26.0891 14.2233C26.7924 14.9266 27.1875 15.8804 27.1875 16.875ZM50.625 13.125H36.5625C35.5679 13.125 34.6141 13.5201 33.9109 14.2233C33.2076 14.9266 32.8125 15.8804 32.8125 16.875V31.875C32.8125 32.8696 33.2076 33.8234 33.9109 34.5266C34.6141 35.2299 35.5679 35.625 36.5625 35.625H50.625V37.5C50.625 39.4891 49.8348 41.3968 48.4283 42.8033C47.0218 44.2098 45.1141 45 43.125 45C42.6277 45 42.1508 45.1975 41.7992 45.5492C41.4475 45.9008 41.25 46.3777 41.25 46.875C41.25 47.3723 41.4475 47.8492 41.7992 48.2008C42.1508 48.5525 42.6277 48.75 43.125 48.75C46.1077 48.7469 48.9674 47.5606 51.0765 45.4515C53.1856 43.3424 54.3719 40.4827 54.375 37.5V16.875C54.375 15.8804 53.9799 14.9266 53.2766 14.2233C52.5734 13.5201 51.6196 13.125 50.625 13.125Z" fill="#5A86A9" />
-                        </svg></div>
-                    <?php if (!empty($settings['testimonial_label'])) : ?>
-                        <div class="bt-product-testimonial--label"><?php echo esc_html($settings['testimonial_label']); ?></div>
-                    <?php endif; ?>
-                    <div class="swiper-wrapper">
-                        <?php if (!empty($settings['testimonial_items'])) : ?>
-                            <?php foreach ($settings['testimonial_items'] as $item) : ?>
-                                <div class="swiper-slide">
-                                    <div class="bt-product-testimonial--item">
-                                        <?php if (!empty($item['testimonial_text'])) : ?>
-                                            <div class="bt-product-testimonial--text"><?php echo esc_html($item['testimonial_text']); ?></div>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($item['testimonial_rating'])) : ?>
-                                            <div class="bt-product-testimonial--rating">
-                                                <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                    <?php if ($i <= $item['testimonial_rating']) : ?>
-                                                        <span class="star filled"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M18.3039 8.97177L14.7882 12.0054L15.8593 16.5421C15.9184 16.7884 15.9032 17.0466 15.8156 17.2843C15.728 17.5219 15.5719 17.7282 15.3671 17.8772C15.1623 18.0262 14.9179 18.1111 14.6648 18.1213C14.4118 18.1314 14.1614 18.0664 13.9453 17.9343L9.99995 15.5061L6.0523 17.9343C5.83622 18.0656 5.58613 18.13 5.3335 18.1195C5.08087 18.109 4.837 18.0239 4.63261 17.8751C4.42822 17.7262 4.27243 17.5202 4.18488 17.283C4.09732 17.0458 4.08191 16.788 4.14058 16.5421L5.21558 12.0054L1.69995 8.97177C1.50878 8.80654 1.37052 8.58866 1.30244 8.34532C1.23436 8.10198 1.23947 7.84398 1.31715 7.60354C1.39483 7.3631 1.54162 7.15086 1.73919 6.99335C1.93677 6.83583 2.17637 6.74001 2.42808 6.71786L7.03745 6.34599L8.81558 2.04286C8.91182 1.80834 9.07563 1.60774 9.28618 1.46656C9.49673 1.32538 9.7445 1.25 9.998 1.25C10.2515 1.25 10.4993 1.32538 10.7098 1.46656C10.9204 1.60774 11.0842 1.80834 11.1804 2.04286L12.9578 6.34599L17.5671 6.71786C17.8193 6.73919 18.0596 6.83447 18.2579 6.99177C18.4562 7.14907 18.6037 7.36139 18.6819 7.60212C18.76 7.84286 18.7654 8.10131 18.6973 8.34509C18.6292 8.58887 18.4907 8.80714 18.2992 8.97255L18.3039 8.97177Z" fill="#5A86A9" />
-                                                            </svg></span>
-                                                    <?php else : ?>
-                                                        <span class="star"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M18.3039 8.97177L14.7882 12.0054L15.8593 16.5421C15.9184 16.7884 15.9032 17.0466 15.8156 17.2843C15.728 17.5219 15.5719 17.7282 15.3671 17.8772C15.1623 18.0262 14.9179 18.1111 14.6648 18.1213C14.4118 18.1314 14.1614 18.0664 13.9453 17.9343L9.99995 15.5061L6.0523 17.9343C5.83622 18.0656 5.58613 18.13 5.3335 18.1195C5.08087 18.109 4.837 18.0239 4.63261 17.8751C4.42822 17.7262 4.27243 17.5202 4.18488 17.283C4.09732 17.0458 4.08191 16.788 4.14058 16.5421L5.21558 12.0054L1.69995 8.97177C1.50878 8.80654 1.37052 8.58866 1.30244 8.34532C1.23436 8.10198 1.23947 7.84398 1.31715 7.60354C1.39483 7.3631 1.54162 7.15086 1.73919 6.99335C1.93677 6.83583 2.17637 6.74001 2.42808 6.71786L7.03745 6.34599L8.81558 2.04286C8.91182 1.80834 9.07563 1.60774 9.28618 1.46656C9.49673 1.32538 9.7445 1.25 9.998 1.25C10.2515 1.25 10.4993 1.32538 10.7098 1.46656C10.9204 1.60774 11.0842 1.80834 11.1804 2.04286L12.9578 6.34599L17.5671 6.71786C17.8193 6.73919 18.0596 6.83447 18.2579 6.99177C18.4562 7.14907 18.6037 7.36139 18.6819 7.60212C18.76 7.84286 18.7654 8.10131 18.6973 8.34509C18.6292 8.58887 18.4907 8.80714 18.2992 8.97255L18.3039 8.97177Z" fill="#E9E9E9" />
-                                                            </svg></span>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($item['testimonial_author'])) : ?>
-                                            <div class="bt-product-testimonial--author"><?php echo esc_html($item['testimonial_author']); ?><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                    <g clip-path="url(#clip0_2071_927)">
-                                                        <path d="M6.875 10.625L8.75 12.5L13.125 8.125" stroke="#3DAB25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z" stroke="#3DAB25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                                    </g>
-                                                    <defs>
-                                                        <clipPath id="clip0_2071_927">
-                                                            <rect width="20" height="20" fill="white" />
-                                                        </clipPath>
-                                                    </defs>
-                                                </svg></div>
-                                        <?php endif; ?>
+                        <div class="swiper-wrapper">
+                            <?php if (!empty($settings['testimonial_items'])) : ?>
+                                <?php foreach ($settings['testimonial_items'] as $item) : ?>
+                                    <div class="swiper-slide">
+                                        <div class="bt-product-testimonial--item">
+                                            <?php if (!empty($item['testimonial_rating'])) : ?>
+                                                <div class="bt-product-testimonial--rating">
+                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                        <?php if ($i <= $item['testimonial_rating']) : ?>
+                                                            <span class="star filled"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="25" viewBox="0 0 26 25" fill="none">
+                                                                    <path d="M24.6254 11.5605L19.7035 15.8075L21.2031 22.1589C21.2858 22.5037 21.2645 22.8653 21.1418 23.198C21.0192 23.5306 20.8007 23.8195 20.5139 24.0281C20.2272 24.2366 19.885 24.3555 19.5308 24.3698C19.1765 24.384 18.8259 24.2929 18.5234 24.108L12.9999 20.7086L7.47321 24.108C7.17071 24.2918 6.82058 24.3821 6.4669 24.3673C6.11322 24.3526 5.7718 24.2335 5.48565 24.0251C5.1995 23.8167 4.98141 23.5283 4.85883 23.1963C4.73625 22.8642 4.71467 22.5032 4.79681 22.1589L6.30181 15.8075L1.37993 11.5605C1.11229 11.3292 0.918725 11.0241 0.823413 10.6834C0.728101 10.3428 0.735265 9.98158 0.844011 9.64495C0.952757 9.30833 1.15826 9.01121 1.43487 8.79069C1.71147 8.57016 2.04692 8.43602 2.39931 8.405L8.85243 7.88438L11.3418 1.86C11.4765 1.53168 11.7059 1.25084 12.0006 1.05319C12.2954 0.855535 12.6423 0.75 12.9972 0.75C13.3521 0.75 13.699 0.855535 13.9937 1.05319C14.2885 1.25084 14.5178 1.53168 14.6526 1.86L17.1409 7.88438L23.594 8.405C23.9471 8.43487 24.2835 8.56826 24.5611 8.78848C24.8387 9.0087 25.0452 9.30594 25.1546 9.64297C25.264 9.98 25.2716 10.3418 25.1762 10.6831C25.0809 11.0244 24.887 11.33 24.6188 11.5616L24.6254 11.5605Z" fill="#181818" />
+                                                                </svg></span>
+                                                        <?php else : ?>
+                                                            <span class="star">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="25" viewBox="0 0 26 25" fill="none">
+                                                                    <path d="M24.6254 11.5605L19.7035 15.8075L21.2031 22.1589C21.2858 22.5037 21.2645 22.8653 21.1418 23.198C21.0192 23.5306 20.8007 23.8195 20.5139 24.0281C20.2272 24.2366 19.885 24.3555 19.5308 24.3698C19.1765 24.384 18.8259 24.2929 18.5234 24.108L12.9999 20.7086L7.47321 24.108C7.17071 24.2918 6.82058 24.3821 6.4669 24.3673C6.11322 24.3526 5.7718 24.2335 5.48565 24.0251C5.1995 23.8167 4.98141 23.5283 4.85883 23.1963C4.73625 22.8642 4.71467 22.5032 4.79681 22.1589L6.30181 15.8075L1.37993 11.5605C1.11229 11.3292 0.918725 11.0241 0.823413 10.6834C0.728101 10.3428 0.735265 9.98158 0.844011 9.64495C0.952757 9.30833 1.15826 9.01121 1.43487 8.79069C1.71147 8.57016 2.04692 8.43602 2.39931 8.405L8.85243 7.88438L11.3418 1.86C11.4765 1.53168 11.7059 1.25084 12.0006 1.05319C12.2954 0.855535 12.6423 0.75 12.9972 0.75C13.3521 0.75 13.699 0.855535 13.9937 1.05319C14.2885 1.25084 14.5178 1.53168 14.6526 1.86L17.1409 7.88438L23.594 8.405C23.9471 8.43487 24.2835 8.56826 24.5611 8.78848C24.8387 9.0087 25.0452 9.30594 25.1546 9.64297C25.264 9.98 25.2716 10.3418 25.1762 10.6831C25.0809 11.0244 24.887 11.33 24.6188 11.5616L24.6254 11.5605Z" fill="#E9E9E9" />
+                                                                </svg></span>
+                                                        <?php endif; ?>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($item['testimonial_text'])) : ?>
+                                                <div class="bt-product-testimonial--text"><?php echo esc_html($item['testimonial_text']); ?></div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($item['testimonial_author'])) : ?>
+                                                <div class="bt-product-testimonial--author"><?php echo esc_html($item['testimonial_author']); ?></div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
-                                </div>
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
+                        </div>
+                        <?php if ($settings['slider_pagination'] === 'yes') : ?>
+                            <div class="bt-swiper-pagination"></div>
                         <?php endif; ?>
 
-                    </div>
-                    <?php if ($settings['slider_arrows'] === 'yes') : ?>
-                        <div class="bt-swiper-navigation">
-
-                            <div class="bt-nav bt-button-prev"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M15.5307 18.9698C15.6004 19.0395 15.6557 19.1222 15.6934 19.2132C15.7311 19.3043 15.7505 19.4019 15.7505 19.5004C15.7505 19.599 15.7311 19.6965 15.6934 19.7876C15.6557 19.8786 15.6004 19.9614 15.5307 20.031C15.461 20.1007 15.3783 20.156 15.2873 20.1937C15.1962 20.2314 15.0986 20.2508 15.0001 20.2508C14.9016 20.2508 14.804 20.2314 14.7129 20.1937C14.6219 20.156 14.5392 20.1007 14.4695 20.031L6.96948 12.531C6.89974 12.4614 6.84443 12.3787 6.80668 12.2876C6.76894 12.1966 6.74951 12.099 6.74951 12.0004C6.74951 11.9019 6.76894 11.8043 6.80668 11.7132C6.84443 11.6222 6.89974 11.5394 6.96948 11.4698L14.4695 3.96979C14.6102 3.82906 14.8011 3.75 15.0001 3.75C15.1991 3.75 15.39 3.82906 15.5307 3.96979C15.6715 4.11052 15.7505 4.30139 15.7505 4.50042C15.7505 4.69944 15.6715 4.89031 15.5307 5.03104L8.56041 12.0004L15.5307 18.9698Z" fill="currentColor" />
-                                </svg></div>
-                            <div class="bt-nav bt-button-next"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M17.0306 12.531L9.53055 20.031C9.46087 20.1007 9.37815 20.156 9.2871 20.1937C9.19606 20.2314 9.09847 20.2508 8.99993 20.2508C8.90138 20.2508 8.8038 20.2314 8.71276 20.1937C8.62171 20.156 8.53899 20.1007 8.4693 20.031C8.39962 19.9614 8.34435 19.8786 8.30663 19.7876C8.26892 19.6965 8.24951 19.599 8.24951 19.5004C8.24951 19.4019 8.26892 19.3043 8.30663 19.2132C8.34435 19.1222 8.39962 19.0395 8.4693 18.9698L15.4396 12.0004L8.4693 5.03104C8.32857 4.89031 8.24951 4.69944 8.24951 4.50042C8.24951 4.30139 8.32857 4.11052 8.4693 3.96979C8.61003 3.82906 8.80091 3.75 8.99993 3.75C9.19895 3.75 9.38982 3.82906 9.53055 3.96979L17.0306 11.4698C17.1003 11.5394 17.1556 11.6222 17.1933 11.7132C17.2311 11.8043 17.2505 11.9019 17.2505 12.0004C17.2505 12.099 17.2311 12.1966 17.1933 12.2876C17.1556 12.3787 17.1003 12.4614 17.0306 12.531Z" fill="currentColor" />
-                                </svg></div>
-                        </div>
-                    <?php endif; ?>
                     </div>
                 </div>
                 <div class="swiper bt-product-testimonial--images js-testimonial-images">
@@ -676,15 +555,25 @@ class Widget_ProductTestimonial extends Widget_Base
                                     <?php if (!empty($item['id_product'])) :
                                         $product = wc_get_product($item['id_product']);
                                         if ($product) : ?>
-                                            <a href="<?php echo esc_url($product->get_permalink()); ?>" class="product-info">
-                                                <div class="product-img">
-                                                    <?php echo wp_kses_post($product->get_image()); ?>
+                                            <div class="bt-product-item-minimal active"
+                                                data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                                <div class="bt-product-thumbnail">
+                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                                        <?php echo get_the_post_thumbnail($item['id_product'], 'medium'); ?>
+                                                    </a>
                                                 </div>
-                                                <div class="product-content">
-                                                    <h3 class="product-title"><?php echo esc_html($product->get_name()); ?></h3>
-                                                    <?php echo '<div class="product-price">' . $product->get_price_html() . '</div>'; ?>
+                                                <div class="bt-product-content">
+                                                    <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
+                                                    <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                    <div class="bt-product-add-to-cart">
+                                                        <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                            <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                                        <?php else : ?>
+                                                            <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </div>
-                                            </a>
+                                            </div>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </div>

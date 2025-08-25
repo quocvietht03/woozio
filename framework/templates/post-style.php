@@ -7,9 +7,9 @@ $category = get_the_terms($post_id, 'category');
     <?php echo woozio_post_cover_featured_render($args['image-size']); ?>
     <div class="bt-post--content">
       <?php 
-      echo woozio_post_meta_render();
+      echo woozio_post_publish_render('d F');
       echo woozio_post_title_render();
-      echo woozio_post_button_render('Read More');
+      echo woozio_post_excerpt_render();
       ?>
     </div>
   </div>

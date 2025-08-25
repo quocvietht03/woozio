@@ -85,7 +85,8 @@ class ElementorWidgets
 			'language-switcher',
 			'accordion-with-product-slider',
 			'collection-banner',
-			'item-hotspot-product'
+			'item-hotspot-product',
+			'site-icon-payment'
 		);
 
 		return $this->widgets;
@@ -218,6 +219,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccordionWithProductSlider\Widget_AccordionWithProductSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ItemHotspotProduct\Widget_ItemHotspotProduct());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 	}
 
 	/**

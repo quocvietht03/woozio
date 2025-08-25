@@ -672,6 +672,15 @@
 					nextEl: $ProductTestimonial.find('.bt-button-next')[0],
 					prevEl: $ProductTestimonial.find('.bt-button-prev')[0],
 				},
+				pagination: {
+					el: $ProductTestimonial.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+
 			});
 			// Initialize the testimonial images slider
 			const testimonialImagesSwiper = new Swiper($testimonialImages[0], {
@@ -1215,7 +1224,7 @@
 		
 		if ($itemHotspotProduct.length > 0) {
 			const $hotspotPoints = $itemHotspotProduct.find('.bt-hotspot-point');
-			const $productItems = $itemHotspotProduct.find('.bt-hotspot-product-item');
+			const $productItems = $itemHotspotProduct.find('.bt-product-item-minimal');
 			
 			// Handle hotspot point clicks
 			$hotspotPoints.on('click', function(e) {

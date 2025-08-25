@@ -248,6 +248,34 @@
                     ]
                 },
                 {
+                    "key": "field_68ac0f8301e24",
+                    "label": "Payment Icons",
+                    "name": "payment_icons",
+                    "aria-label": "",
+                    "type": "gallery",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min": "",
+                    "max": "",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "insert": "append",
+                    "preview_size": "medium"
+                },
+                {
                     "key": "field_653c7d5153030",
                     "label": "Copyright",
                     "name": "site_copyright",
@@ -1685,5 +1713,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1755498869
+    "modified": 1756106649
 }
