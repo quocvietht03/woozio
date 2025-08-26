@@ -321,7 +321,7 @@ class Widget_InstagramPosts extends Widget_Base
 				'label' => __('Icon Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-icon-view' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-icon-view svg path' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -343,7 +343,7 @@ class Widget_InstagramPosts extends Widget_Base
 				'label' => __('Icon Hover Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-icon-view:hover' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-icon-view:hover svg path' => 'fill: {{VALUE}};',
 				],
 			]
 		);
