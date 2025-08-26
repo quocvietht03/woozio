@@ -1244,6 +1244,49 @@
 			});
 		}
 	};
+
+	const InstagramPostsHandler = function ($scope) {
+		const $instagramPosts = $scope.find('.bt-elwg-instagram-posts');
+		
+		if ($instagramPosts.length > 0 && $instagramPosts.hasClass('bt-elwg-instagram-posts--slider')) {
+			const $sliderSettings = $instagramPosts.data('slider-settings');
+			const swiperOptions = {
+				slidesPerView: $sliderSettings.slidesPerView,
+				loop: $sliderSettings.loop,
+				spaceBetween: $sliderSettings.spaceBetween,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: 3000,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $instagramPosts.find('.bt-button-next')[0],
+					prevEl: $instagramPosts.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $instagramPosts.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints
+			};
+
+			const swiper = new Swiper($instagramPosts.find('.swiper')[0], swiperOptions);
+
+			if ($sliderSettings.autoplay) {
+				$instagramPosts.find('.swiper')[0].addEventListener('mouseenter', () => {
+					swiper.autoplay.stop();
+				});
+
+				$instagramPosts.find('.swiper')[0].addEventListener('mouseleave', () => {
+					swiper.autoplay.start();
+				});
+			}
+		}
+	};
 	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
@@ -1251,6 +1294,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-list-faq.default', FaqHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product.default', SearchProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-heading-animation.default', headingAnimationHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-tiktok-shop-slider.default', TiktokShopSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-hotspot-product.default', HotspotProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);

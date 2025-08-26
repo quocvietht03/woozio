@@ -672,6 +672,30 @@
       }
     }
   }
+  &.bt-elwg-instagram-posts--slider {
+    .bt-swiper-navigation {
+      .bt-nav {
+        padding: 10px;
+        background: #fff;
+        color: $color-primary;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        z-index: 1;
+        transform: translateY(-50%);
+        cursor: pointer;
+        &.bt-button-prev{
+          left: 10px;
+        }
+        &.bt-button-next{
+          right: 10px;
+        }
+      }
+    }
+  }
 }
 
 .bt-elwg-page-breadcrumb {
@@ -5515,7 +5539,7 @@ body {
     @media (max-width: $break-sm) {
       gap: 4px;
     }
-    img{
+    img {
       display: block;
     }
   }
