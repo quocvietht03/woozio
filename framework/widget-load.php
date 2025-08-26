@@ -86,7 +86,8 @@ class ElementorWidgets
 			'accordion-with-product-slider',
 			'collection-banner',
 			'item-hotspot-product',
-			'site-icon-payment'
+			'site-icon-payment',
+			'text-slider'
 		);
 
 		return $this->widgets;
@@ -220,6 +221,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ItemHotspotProduct\Widget_ItemHotspotProduct());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 	}
 
 	/**

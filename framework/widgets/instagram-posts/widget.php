@@ -235,6 +235,50 @@ class Widget_InstagramPosts extends Widget_Base
 				],
 			]
 		);
+		$this->add_control(
+			'slider_offset_sides',
+			[
+				'label' => __('Offset Sides', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'none',
+				'options' => [
+					'none' => __('None', 'woozio'),
+					'both' => __('Both', 'woozio'),
+					'left' => __('Left', 'woozio'),
+					'right' => __('Right', 'woozio'),
+				],
+				'condition' => [
+					'enable_slider' => 'yes',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'slider_offset_width',
+			[
+				'label' => __('Offset Width', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'default' => [
+					'size' => 0,
+					'unit' => 'px',
+				],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-instagram-posts' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+				],
+				'render_type' => 'ui',
+				'condition' => [
+					'enable_slider' => 'yes',
+					'slider_offset_sides!' => 'none',
+				],
+			]
+		);
 
 		$this->end_controls_section();
 
@@ -683,7 +727,7 @@ class Widget_InstagramPosts extends Widget_Base
 			}
 		}
 ?>
-		<div class="<?php echo esc_attr(implode(' ', $classes)); ?>" <?php echo $settings['enable_slider'] === 'yes' ? 'data-slider-settings="' . esc_attr(json_encode($slider_settings)) . '"' : ''; ?>>
+		<div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" <?php echo $settings['enable_slider'] === 'yes' ? 'data-slider-settings="' . esc_attr(json_encode($slider_settings)) . '"' : ''; ?>>
 			<?php if ($settings['enable_slider'] === 'yes') : ?>
 				<div class="swiper">
 					<div class="swiper-wrapper">

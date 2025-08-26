@@ -439,6 +439,17 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			'separator' => 'before'
 		]
 	);
+	$element->add_control(
+		'add_style_themes',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Add Style Themes', 'woozio'),
+			'default' => 'no',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'yes',
+		]
+	);
 });
 add_action('elementor/element/loop-carousel/section_navigation_settings/before_section_end', function ($element) {
 	$element->add_control(
@@ -477,6 +488,18 @@ function woozio_widget_loop_carousel_custom($widget_content, $widget)
 			// Add editor class
 			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-swiper-button') !== false) {
 				$widget_content = str_replace('elementor-swiper-button', 'bt-hinden-arrow-mobile elementor-swiper-button', $widget_content);
+			}
+		}
+		$add_style_themes = isset($settings['add_style_themes']) ? $settings['add_style_themes'] : '';
+		if ($add_style_themes == 'yes') {
+			// Add class for both frontend
+			$widget->add_render_attribute('_wrapper', 'class', 'bt-add-style-pagination-themes');
+			// Add editor class
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-loop-container') !== false) {
+				$widget_content = str_replace('elementor-loop-container', 'elementor-loop-container bt-add-style-pagination-themes', $widget_content);
+			}
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
+				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-style-pagination-themes', $widget_content);
 			}
 		}
 	}

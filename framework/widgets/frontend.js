@@ -1287,7 +1287,29 @@
 			}
 		}
 	};
-	
+	var TextSliderHandler = function ($scope, $) {
+		var $textslider = $scope.find('.bt-elwg-text-slider--default');
+		if ($textslider.length > 0) {
+			var $direction = $textslider.data('direction');
+			var $speed = $textslider.data('speed');
+			var $spaceBetween = $textslider.data('spacebetween');
+
+			var $swiper = new Swiper($textslider[0], {
+				slidesPerView: 'auto',
+				loop: true,
+				spaceBetween: $spaceBetween,
+				speed: $speed,
+				freeMode: true,
+				allowTouchMove: true,
+				autoplay:
+				{
+					delay: 0,
+					reverseDirection: $direction == 'rtl' ? true : false,
+					disableOnInteraction: false,
+				}
+			});
+		}
+	};
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -1309,6 +1331,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-item-hotspot-product.default', ItemHotspotProductHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 	});
 
 })(jQuery);
