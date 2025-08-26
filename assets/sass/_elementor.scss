@@ -687,10 +687,10 @@
         z-index: 1;
         transform: translateY(-50%);
         cursor: pointer;
-        &.bt-button-prev{
+        &.bt-button-prev {
           left: 10px;
         }
-        &.bt-button-next{
+        &.bt-button-next {
           right: 10px;
         }
       }
@@ -4707,7 +4707,7 @@ body {
         display: flex;
         align-items: center;
         gap: 8px;
-        color: #fff;
+        color: $color-primary;
         .bt-current-item-text {
           display: flex;
           align-items: center;
@@ -5449,72 +5449,60 @@ body {
         position: absolute;
         z-index: 10;
         cursor: pointer;
+        transform: translate(-50%, -50%);
         .bt-hotspot-marker {
-          position: relative;
-          width: 24px;
-          height: 24px;
-          background-color: transparent;
+          display: block;
+          width: 25px;
+          height: 25px;
           border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          background-color: transparent;
           border: 8px solid #ffffff;
+          cursor: pointer;
+          margin: 0.5rem;
+          -webkit-transition: all 0.3s ease;
+          -moz-transition: all 0.3s ease;
+          -ms-transition: all 0.3s ease;
+          -o-transition: all 0.3s ease;
           transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+          &::after,
           &::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 22px;
-            height: 22px;
-            border: 2px solid #fff;
+            border: solid 1px #ffffff;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-            opacity: 0;
-            visibility: hidden;
+            position: absolute;
+            content: "";
+            top: 7px;
+            right: 7px;
+            bottom: 7px;
+            left: 7px;
           }
-          &:after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 26px;
-            height: 26px;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-            opacity: 0;
-            visibility: hidden;
+          &::before {
+            animation: ripple-line 2s linear infinite;
+          }
+          &::after {
+            animation: ripple-line 2s 1s linear infinite;
+          }
+          @keyframes ripple-line {
+            to {
+              transform: scale(2);
+              opacity: 0;
+            }
+          }
+          &:hover {
+            background-color: $color-accent;
           }
         }
         // Active State
         &.active {
           .bt-hotspot-marker {
-            &::before {
-              opacity: 1;
-              visibility: visible;
-            }
-            &:after {
-              opacity: 1;
-              visibility: visible;
-            }
+            background-color: $color-accent;
           }
         }
 
         // Hover State
         &:hover {
           .bt-hotspot-marker {
-            &::before {
-              opacity: 1;
-              visibility: visible;
-            }
-            &:after {
-              opacity: 1;
-              visibility: visible;
-            }
+            background-color: $color-accent;
           }
         }
       }
