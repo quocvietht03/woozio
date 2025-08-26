@@ -109,7 +109,7 @@
 			direction: thumbDirection,
 			spaceBetween: 10,
 			autoHeight: true,
-			loop: true,
+			loop: false,
 			freeMode: true,
 			loopedSlides: 5,
 			watchSlidesVisibility: true,
