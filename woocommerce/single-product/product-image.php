@@ -83,7 +83,7 @@ function generate_image_html($attachment_id, $size = 'shop_single', $zoom_class 
             <div class="woocommerce-product-gallery__slider-thumbs">
                 <div class="swiper-wrapper">
                     <?php
-                        echo apply_filters('woocommerce_single_product_image_thumbnail_html', generate_image_html($post_thumbnail_id, 'shop_thumbnail'), $post_thumbnail_id);
+                        echo apply_filters('woocommerce_single_product_image_thumbnail_html', generate_image_html($post_thumbnail_id, 'woocommerce_thumbnail'), $post_thumbnail_id);
                         
                         do_action('woocommerce_product_thumbnails');
                     ?>

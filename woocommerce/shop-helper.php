@@ -2672,7 +2672,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
     if ($gallery_images) {
         if ($variation_image_id) {
             $full_size_image = wp_get_attachment_image_src($variation_image_id, 'full');
-            $thumbnail       = wp_get_attachment_image_src($variation_image_id, 'shop_thumbnail');
+            $thumbnail       = wp_get_attachment_image_src($variation_image_id, 'woocommerce_thumbnail');
             $attributes      = array(
                 'title'                   => get_post_field('post_title', $variation_image_id),
                 'data-caption'            => get_post_field('post_excerpt', $variation_image_id),
@@ -2684,7 +2684,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
             
             $html = '<div class="swiper-slide">';
             $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
-            $html .= wp_get_attachment_image($variation_image_id, 'shop_thumbnail', false, $attributes);
+            $html .= wp_get_attachment_image($variation_image_id, 'woocommerce_thumbnail', false, $attributes);
             $html .= '</div>';
             $html .= '</div>';
 
@@ -2693,7 +2693,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
         
         foreach ($gallery_images as $gallery_image_id) {
             $full_size_image = wp_get_attachment_image_src($gallery_image_id, 'full');
-            $thumbnail       = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
+            $thumbnail       = wp_get_attachment_image_src($gallery_image_id, 'woocommerce_thumbnail');
             $attributes      = array(
                 'title'                   => get_post_field('post_title', $gallery_image_id),
                 'data-caption'            => get_post_field('post_excerpt', $gallery_image_id),
@@ -2705,7 +2705,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
             
             $html = '<div class="swiper-slide">';
             $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
-            $html .= wp_get_attachment_image($gallery_image_id, 'shop_thumbnail', false, $attributes);
+            $html .= wp_get_attachment_image($gallery_image_id, 'woocommerce_thumbnail', false, $attributes);
             $html .= '</div>';
             $html .= '</div>';
             

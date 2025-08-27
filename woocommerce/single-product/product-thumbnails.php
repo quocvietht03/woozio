@@ -29,7 +29,8 @@ $attachment_ids = $product->get_gallery_image_ids();
 if ( $attachment_ids && has_post_thumbnail() ) {
 	foreach ( $attachment_ids as $attachment_id ) {
 		$full_size_image = wp_get_attachment_image_src( $attachment_id, 'full' );
-		$thumbnail       = wp_get_attachment_image_src( $attachment_id, 'shop_thumbnail' );
+		$thumbnail       = wp_get_attachment_image_src( $attachment_id, 'woocommerce_thumbnail' );
+		
 		$attributes      = array(
 			'title'                   => get_post_field( 'post_title', $attachment_id ),
 			'data-caption'            => get_post_field( 'post_excerpt', $attachment_id ),
@@ -41,7 +42,7 @@ if ( $attachment_ids && has_post_thumbnail() ) {
 
 		$html = '<div class="swiper-slide">';
 		$html .= '<div data-thumb="' . esc_url( $thumbnail[0] ?? wc_placeholder_img_src() ) . '" class="woocommerce-product-gallery__image">';
-		$html .= wp_get_attachment_image( $attachment_id, 'shop_thumbnail', false, $attributes );
+		$html .= wp_get_attachment_image( $attachment_id, 'woocommerce_thumbnail', false, $attributes );
 		$html .= '</div>';
 		$html .= '</div>';
 
