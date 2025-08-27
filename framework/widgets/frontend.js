@@ -1114,12 +1114,12 @@
 				allowTouchMove: true,
 				breakpoints: {
 					767: {
-						slidesPerView: 2,
+						slidesPerView: 1,
 						centeredSlides: false,
 						spaceBetween: 20
 					},
-					1025: {
-						slidesPerView: 2.7,
+					1024: {
+						slidesPerView: 1.9,
 						centeredSlides: true,
 						spaceBetween: 30
 					}
