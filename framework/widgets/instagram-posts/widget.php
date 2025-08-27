@@ -675,7 +675,9 @@ class Widget_InstagramPosts extends Widget_Base
 				'loop' => $settings['slider_loop'] === 'yes',
 				'speed' => (int)$settings['slider_speed'],
 				'slidesPerView' => !empty($settings['slider_item_mobile']) ? (int)$settings['slider_item_mobile'] : 1,
-				'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 20,
+				'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 
+					(!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] : 
+					(!empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20)),
 				'breakpoints' => []
 			];
 

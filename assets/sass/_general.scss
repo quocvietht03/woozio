@@ -1376,7 +1376,7 @@
 .bt-enable-pagination-mobile {
   @media (min-width: $break-sm) {
     .swiper {
-      padding: 0 !important;
+      padding-bottom: 0 !important;
     }
     .swiper-pagination {
       display: none !important;
