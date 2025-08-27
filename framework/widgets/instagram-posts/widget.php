@@ -260,7 +260,7 @@ class Widget_InstagramPosts extends Widget_Base
 				'type' => Controls_Manager::SLIDER,
 				'size_units' => [ 'px' ],
 				'default' => [
-					'size' => 0,
+					'size' => 80,
 					'unit' => 'px',
 				],
 				'range' => [

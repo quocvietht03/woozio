@@ -1103,6 +1103,7 @@
 			// Initialize the accordion products slider
 			const accordionProductsSwiper = new Swiper($accordionProducts[0], {
 				slidesPerView: 1,
+				spaceBetween: 20,
 				loop: false,
 				speed: sliderSpeed,
 				centeredSlides: false,

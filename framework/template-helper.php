@@ -465,6 +465,46 @@ add_action('elementor/element/loop-carousel/section_navigation_settings/before_s
 		]
 	);
 });
+/* Hook add Field Caroucel Elementor */
+add_action('elementor/element/nested-carousel/section_carousel_pagination/before_section_end', function ($element) {
+	$element->add_control(
+		'enable_pagination_mobile',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Mobile-Only Pagination', 'woozio'),
+			'default' => 'no',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'yes',
+			'separator' => 'before'
+		]
+	);
+	$element->add_control(
+		'add_style_themes',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Add Style Themes', 'woozio'),
+			'default' => 'no',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'yes',
+		]
+	);
+});
+add_action('elementor/element/nested-carousel/section_navigation_settings/before_section_end', function ($element) {
+	$element->add_control(
+		'enable_hidden_arrow_mobile',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Hidden Arrow Mobile', 'woozio'),
+			'default' => 'no',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'yes',
+			'separator' => 'before'
+		]
+	);
+});
 
 // Hook for frontend render
 function woozio_widget_loop_carousel_custom($widget_content, $widget)
@@ -497,6 +537,40 @@ function woozio_widget_loop_carousel_custom($widget_content, $widget)
 			// Add editor class
 			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-loop-container') !== false) {
 				$widget_content = str_replace('elementor-loop-container', 'elementor-loop-container bt-add-style-pagination-themes', $widget_content);
+			}
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
+				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-style-pagination-themes', $widget_content);
+			}
+		}
+	}
+	if ('nested-carousel' === $widget->get_name()) {
+		$settings = $widget->get_settings();
+		$enable_pagination_mobile = isset($settings['enable_pagination_mobile']) ? $settings['enable_pagination_mobile'] : '';
+
+		if ($enable_pagination_mobile == 'yes') {
+			// Add class for both frontend
+			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-pagination-mobile');
+			// Add editor class
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
+				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-show-pagination-mobile', $widget_content);
+			}
+		}
+		$enable_hidden_arrow_mobile = isset($settings['enable_hidden_arrow_mobile']) ? $settings['enable_hidden_arrow_mobile'] : '';
+		if ($enable_hidden_arrow_mobile == 'yes') {
+			// Add class for both frontend
+			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-hidden-arrow-mobile');
+			// Add editor class
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-swiper-button') !== false) {
+				$widget_content = str_replace('elementor-swiper-button', 'bt-hinden-arrow-mobile elementor-swiper-button', $widget_content);
+			}
+		}
+		$add_style_themes = isset($settings['add_style_themes']) ? $settings['add_style_themes'] : '';
+		if ($add_style_themes == 'yes') {
+			// Add class for both frontend
+			$widget->add_render_attribute('_wrapper', 'class', 'bt-add-style-pagination-themes');
+			// Add editor class
+			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'e-n-carousel') !== false) {
+				$widget_content = str_replace('e-n-carousel', 'e-n-carousel bt-add-style-pagination-themes', $widget_content);
 			}
 			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
 				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-style-pagination-themes', $widget_content);
