@@ -375,7 +375,7 @@
 			});
 		}
 
-		if ($('.bt-single-product .bt-js-open-popup-link').length > 0) {
+		if ($('.bt-js-open-popup-link').length > 0) {
 			$('.bt-js-open-popup-link').magnificPopup({
 				type: 'inline',
 				midClick: true,
