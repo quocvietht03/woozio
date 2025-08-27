@@ -1472,7 +1472,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 
 @media (min-width: 767.98px) {
   .bt-enable-pagination-mobile .swiper {
-    padding: 0 !important;
+    padding-bottom: 0 !important;
   }
   .bt-enable-pagination-mobile .swiper-pagination {
     display: none !important;

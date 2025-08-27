@@ -57,7 +57,6 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'options' => [
                     'default' => __('Default', 'woozio'),
                     'style-1' => __('Style 1', 'woozio'),
-                    'layout-1' => __('Layout 1', 'woozio'),
                 ],
             ]
         );
@@ -103,22 +102,6 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'label_off' => __('Hide', 'woozio'),
                 'return_value' => 'yes',
                 'default' => 'no',
-            ]
-        );
-
-        $this->add_control(
-            'image_style',
-            [
-                'label' => __('Image Style', 'woozio'),
-                'type' => Controls_Manager::SELECT,
-                'default' => 'normal',
-                'options' => [
-                    'normal' => __('Normal', 'woozio'),
-                    'transparent' => __('Transparent', 'woozio'),
-                ],
-                'condition' => [
-                    'layout_style' => 'style-1',
-                ],
             ]
         );
 
