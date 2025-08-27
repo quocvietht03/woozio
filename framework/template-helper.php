@@ -428,155 +428,131 @@ if (!function_exists('woozio_popup_newslleter_form')) {
 /* Hook add Field Loop Caroucel Elementor */
 add_action('elementor/element/loop-carousel/section_carousel_pagination/before_section_end', function ($element) {
 	$element->add_control(
-		'enable_pagination_mobile',
+		'pagination_show_only_mobile',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Mobile-Only Pagination', 'woozio'),
+			'label' => esc_html__('Show Pagination Only Mobile?', 'woozio'),
 			'default' => 'no',
+			'prefix_class' => 'bt-',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
-			'return_value' => 'yes',
-			'separator' => 'before'
+			'return_value' => 'pagination-show-only-mobile',
+			'separator' => 'before',
 		]
 	);
 	$element->add_control(
-		'add_style_themes',
+		'pagination_use_theme_style',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Add Style Themes', 'woozio'),
+			'label' => esc_html__('Use Theme Style?', 'woozio'),
 			'default' => 'no',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
 			'return_value' => 'yes',
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-bullet' => 'width: auto; height: auto; padding: 2px 10px; border-radius: 0; transition: all 0.3s ease;',
+				'{{WRAPPER}} .swiper-pagination-bullet:hover,
+				{{WRAPPER}} .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'padding: 2px 20px;',
+			],
 		]
 	);
 });
 add_action('elementor/element/loop-carousel/section_navigation_settings/before_section_end', function ($element) {
 	$element->add_control(
-		'enable_hidden_arrow_mobile',
+		'navigation_hidden_mobile',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Hidden Arrow Mobile', 'woozio'),
+			'label' => esc_html__('Hidden Navigation Mobile?', 'woozio'),
+			'default' => 'no',
+			'prefix_class' => 'bt-',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'navigation-hidden-mobile',
+			'separator' => 'before'
+		]
+	);
+	$element->add_control(
+		'navigation_use_theme_style',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Use Theme Style?', 'woozio'),
 			'default' => 'no',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
 			'return_value' => 'yes',
-			'separator' => 'before'
+			'selectors' => [
+				'{{WRAPPER}} .elementor-swiper-button' => 'color: var(--arrow-normal-color, #181818); background: #FFFFFF; padding: 12px;',
+				'{{WRAPPER}} .elementor-swiper-button svg' => 'width: var(--arrow-size, 20px); height: var(--arrow-size, 20px); fill: var(--arrow-normal-color, #181818);',
+				'{{WRAPPER}} .elementor-swiper-button:hover' => 'color: var(--arrow-normal-color, #FFFFFF); background: #181818;',
+				'{{WRAPPER}} .elementor-swiper-button:hover svg' => 'fill: var(--arrow-hover-color, #FFFFFF);',
+			],
 		]
 	);
 });
 /* Hook add Field Caroucel Elementor */
 add_action('elementor/element/nested-carousel/section_carousel_pagination/before_section_end', function ($element) {
 	$element->add_control(
-		'enable_pagination_mobile',
+		'pagination_show_only_mobile',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Mobile-Only Pagination', 'woozio'),
+			'label' => esc_html__('Show Pagination Only Mobile?', 'woozio'),
 			'default' => 'no',
+			'prefix_class' => 'bt-',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
-			'return_value' => 'yes',
-			'separator' => 'before'
+			'return_value' => 'pagination-show-only-mobile',
+			'separator' => 'before',
 		]
 	);
+	
 	$element->add_control(
-		'add_style_themes',
+		'pagination_use_theme_style',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Add Style Themes', 'woozio'),
+			'label' => esc_html__('Use Theme Style?', 'woozio'),
 			'default' => 'no',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
 			'return_value' => 'yes',
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-bullet' => 'width: auto; height: auto; padding: 2px 10px; border-radius: 0; transition: all 0.3s ease;',
+				'{{WRAPPER}} .swiper-pagination-bullet:hover,
+				{{WRAPPER}} .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'padding: 2px 20px;',
+			],
 		]
 	);
 });
 add_action('elementor/element/nested-carousel/section_navigation_settings/before_section_end', function ($element) {
 	$element->add_control(
-		'enable_hidden_arrow_mobile',
+		'navigation_hidden_mobile',
 		[
 			'type' => \Elementor\Controls_Manager::SWITCHER,
-			'label' => esc_html__('Hidden Arrow Mobile', 'woozio'),
+			'label' => esc_html__('Hidden Navigation Mobile?', 'woozio'),
+			'default' => 'no',
+			'prefix_class' => 'bt-',
+			'label_on' => esc_html__('Yes', 'woozio'),
+			'label_off' => esc_html__('No', 'woozio'),
+			'return_value' => 'navigation-hidden-mobile',
+			'separator' => 'before'
+		]
+	);
+	$element->add_control(
+		'navigation_use_theme_style',
+		[
+			'type' => \Elementor\Controls_Manager::SWITCHER,
+			'label' => esc_html__('Use Theme Style?', 'woozio'),
 			'default' => 'no',
 			'label_on' => esc_html__('Yes', 'woozio'),
 			'label_off' => esc_html__('No', 'woozio'),
 			'return_value' => 'yes',
-			'separator' => 'before'
+			'selectors' => [
+				'{{WRAPPER}} .elementor-swiper-button' => 'color: var(--e-n-carousel-arrow-normal-color, #181818); background: #FFFFFF; padding: 12px;',
+				'{{WRAPPER}} .elementor-swiper-button svg' => 'width: var(--e-n-carousel-arrow-size, 20px); height: var(--e-n-carousel-arrow-size, 20px); fill: var(--e-n-carousel-arrow-normal-color, #181818);',
+				'{{WRAPPER}} .elementor-swiper-button:hover' => 'color: var(--e-n-carousel-arrow-hover-color, #FFFFFF); background: #181818;',
+				'{{WRAPPER}} .elementor-swiper-button:hover svg' => 'fill: var(--e-n-carousel-arrow-hover-color, #FFFFFF);',
+			],
 		]
 	);
 });
 
-// Hook for frontend render
-function woozio_widget_loop_carousel_custom($widget_content, $widget)
-{
-	if ('loop-carousel' === $widget->get_name()) {
-		$settings = $widget->get_settings();
-		$enable_pagination_mobile = isset($settings['enable_pagination_mobile']) ? $settings['enable_pagination_mobile'] : '';
 
-		if ($enable_pagination_mobile == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-pagination-mobile');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
-				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-show-pagination-mobile', $widget_content);
-			}
-		}
-		$enable_hidden_arrow_mobile = isset($settings['enable_hidden_arrow_mobile']) ? $settings['enable_hidden_arrow_mobile'] : '';
-		if ($enable_hidden_arrow_mobile == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-hidden-arrow-mobile');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-swiper-button') !== false) {
-				$widget_content = str_replace('elementor-swiper-button', 'bt-hinden-arrow-mobile elementor-swiper-button', $widget_content);
-			}
-		}
-		$add_style_themes = isset($settings['add_style_themes']) ? $settings['add_style_themes'] : '';
-		if ($add_style_themes == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-add-style-pagination-themes');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-loop-container') !== false) {
-				$widget_content = str_replace('elementor-loop-container', 'elementor-loop-container bt-add-style-pagination-themes', $widget_content);
-			}
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
-				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-style-pagination-themes', $widget_content);
-			}
-		}
-	}
-	if ('nested-carousel' === $widget->get_name()) {
-		$settings = $widget->get_settings();
-		$enable_pagination_mobile = isset($settings['enable_pagination_mobile']) ? $settings['enable_pagination_mobile'] : '';
-
-		if ($enable_pagination_mobile == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-pagination-mobile');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
-				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-show-pagination-mobile', $widget_content);
-			}
-		}
-		$enable_hidden_arrow_mobile = isset($settings['enable_hidden_arrow_mobile']) ? $settings['enable_hidden_arrow_mobile'] : '';
-		if ($enable_hidden_arrow_mobile == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-enable-hidden-arrow-mobile');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'elementor-swiper-button') !== false) {
-				$widget_content = str_replace('elementor-swiper-button', 'bt-hinden-arrow-mobile elementor-swiper-button', $widget_content);
-			}
-		}
-		$add_style_themes = isset($settings['add_style_themes']) ? $settings['add_style_themes'] : '';
-		if ($add_style_themes == 'yes') {
-			// Add class for both frontend
-			$widget->add_render_attribute('_wrapper', 'class', 'bt-add-style-pagination-themes');
-			// Add editor class
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'e-n-carousel') !== false) {
-				$widget_content = str_replace('e-n-carousel', 'e-n-carousel bt-add-style-pagination-themes', $widget_content);
-			}
-			if (\Elementor\Plugin::$instance->editor->is_edit_mode() && strpos($widget_content, 'swiper-pagination') !== false) {
-				$widget_content = str_replace('swiper-pagination', 'swiper-pagination bt-style-pagination-themes', $widget_content);
-			}
-		}
-	}
-	return $widget_content;
-}
-add_filter('elementor/widget/render_content', 'woozio_widget_loop_carousel_custom', 10, 2);

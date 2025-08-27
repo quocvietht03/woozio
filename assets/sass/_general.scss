@@ -1360,7 +1360,6 @@
 }
 .bt-style-pagination-themes{
   &.swiper-pagination{
-    --swiper-pagination-size: 4px !important;
     .swiper-pagination-bullet {
       width: auto;
       height: auto;
@@ -1383,16 +1382,18 @@
     }
   }
 }
-.bt-enable-hidden-arrow-mobile {
+.bt-navigation-hidden-mobile {
   @media (max-width: $break-sm) {
     .elementor-swiper-button {
       display: none !important;
     }
   }
 }
-.bt-show-pagination-mobile {
+.bt-pagination-show-only-mobile {
   @media (min-width: $break-sm) {
-    display: none !important;
+    .swiper-pagination {
+      display: none !important;
+    }
   }
 }
 .bt-hinden-arrow-mobile {
