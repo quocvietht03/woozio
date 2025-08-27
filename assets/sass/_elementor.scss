@@ -699,14 +699,14 @@
   &.bt-slider-offset-sides-left {
     padding-left: var(--slider-offset-width);
     overflow: hidden;
-    .swiper{
+    .swiper {
       overflow: visible;
     }
   }
   &.bt-slider-offset-sides-right {
     padding-right: var(--slider-offset-width);
     overflow: hidden;
-    .swiper{
+    .swiper {
       overflow: visible;
     }
   }
@@ -714,7 +714,7 @@
     padding-left: var(--slider-offset-width);
     padding-right: var(--slider-offset-width);
     overflow: hidden;
-    .swiper{
+    .swiper {
       overflow: visible;
     }
   }
@@ -4884,6 +4884,22 @@ body {
 }
 .bt-elwg-accordion-with-product-slider {
   &--default {
+    &.bt-slider-offset-sides-left {
+      .swiper {
+        padding-inline-start: var(--slider-offset-width);
+      }
+    }
+    &.bt-slider-offset-sides-right {
+      .swiper {
+        padding-inline-end: var(--slider-offset-width);
+      }
+    }
+    &.bt-slider-offset-sides-both {
+      .swiper {
+        padding-inline-start: var(--slider-offset-width);
+        padding-inline-end: var(--slider-offset-width);
+      }
+    }
     .bt-accordion-with-product-slider {
       display: flex;
       flex-direction: row;
@@ -4985,7 +5001,8 @@ body {
         width: 59%;
         overflow: hidden;
         .js-accordion-products {
-          margin-left: -47%;
+          left: -25%;
+          overflow: visible;
         }
         .bt-product-item {
           margin: 0;
@@ -5147,7 +5164,7 @@ body {
           }
         }
       }
-      @media (max-width: $break-lg) and (min-width: $break-tl) {
+      @media (max-width: $break-lg) and (min-width: 1023.98px) {
         .bt-accordion-left {
           .bt-accordion-heading {
             .bt-accordion-title {
@@ -5183,11 +5200,15 @@ body {
           }
         }
       }
-      @media (max-width: $break-tl) {
+      @media (max-width: 1024.98px) and (min-width: 1023.98px) {
+        --slider-offset-width: 0;
+      }
+      @media (max-width: 1023.98px) {
         flex-direction: column;
         gap: 40px;
         .bt-accordion-left {
           width: 100%;
+          padding-right: 15px;
           > * {
             max-width: 100%;
             padding-right: 0;
@@ -5212,7 +5233,7 @@ body {
         .bt-product-slider-right {
           width: 100%;
           .js-accordion-products {
-            margin-left: auto;
+            left: 0;
           }
         }
       }
@@ -5635,7 +5656,7 @@ body {
         width: auto;
         display: flex;
         align-items: center;
-        gap: 40px;
+        gap: 12px;
         span {
           display: inline-block;
           color: #111;

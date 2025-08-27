@@ -1339,9 +1339,11 @@
   --swiper-pagination-size: 4px !important;
   &.swiper{
     padding-bottom: var(--swiper-pagination-spacing) !important;
+    padding-bottom: var(--e-n-carousel-swiper-pagination-spacing) !important;
   }
   .swiper{
     padding-bottom: var(--swiper-pagination-spacing) !important;
+    padding-bottom: var(--e-n-carousel-swiper-pagination-spacing) !important;
   }
   .swiper-pagination {
     .swiper-pagination-bullet {
@@ -1387,7 +1389,7 @@
     }
   }
 }
-.bt-pagination-show-only-mobile  {
+.bt-pagination-show-only-mobile {
   @media (min-width: $break-sm) {
     .swiper-pagination {
       display: none !important;

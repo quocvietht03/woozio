@@ -231,7 +231,44 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                 'exclude' => ['custom'],
             ]
         );
+	$this->add_control(
+			'slider_offset_sides',
+			[
+				'label' => __('Offset Sides', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'none',
+				'options' => [
+					'none' => __('None', 'woozio'),
+					'right' => __('Right', 'woozio'),
+				],
+			]
+		);
 
+		$this->add_responsive_control(
+			'slider_offset_width',
+			[
+				'label' => __('Offset Width', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'default' => [
+					'size' => 80,
+					'unit' => 'px',
+				],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-accordion-with-product-slider--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+				],
+				'render_type' => 'ui',
+				'condition' => [
+					'slider_offset_sides!' => 'none',
+				],
+			]
+		);
         $this->end_controls_section();
     }
 
@@ -464,7 +501,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             return;
         }
 ?>
-        <div class="bt-elwg-accordion-with-product-slider--default" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
+        <div class="bt-elwg-accordion-with-product-slider--default bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
             <div class="bt-accordion-with-product-slider">
                 <div class="bt-accordion-left">
                     <?php if (!empty($settings['heading'])) : ?>
