@@ -1339,9 +1339,11 @@
   --swiper-pagination-size: 4px !important;
   &.swiper{
     padding-bottom: var(--swiper-pagination-spacing) !important;
+    padding-bottom: var(--e-n-carousel-swiper-pagination-spacing) !important;
   }
   .swiper{
     padding-bottom: var(--swiper-pagination-spacing) !important;
+    padding-bottom: var(--e-n-carousel-swiper-pagination-spacing) !important;
   }
   .swiper-pagination {
     .swiper-pagination-bullet {
