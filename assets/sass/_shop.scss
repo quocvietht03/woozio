@@ -4944,17 +4944,26 @@
       }
 
       #tab-description {
+        @extend .__bt-format-post-content;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 162.5%;
         border-radius: 8px;
         border: 1px solid #e9e9e9;
         padding: 40px;
         margin: 28px 0 0 0;
-        @extend .__bt-format-post-content;
+        &:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
         .row {
           display: flex;
           flex-wrap: wrap;
           gap: 10px 40px;
         }
-        .col-6 {
+        .col-6, .col-4 {
           @media (min-width: $break-md) {
             width: calc(50% - 20px);
           }
@@ -4974,15 +4983,19 @@
         }
         p {
           margin: 12px 0;
-          font-size: 16px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 26px;
         }
-        &:after {
-          content: "";
-          display: block;
-          clear: both;
+        ul > li,
+        ol > li {
+          &:not(.blocks-gallery-item):not(:last-child) {
+            margin-bottom: 8px;
+          }
+          img {
+            display: inline-block;
+            vertical-align: middle;
+            width: 24px;
+            height: auto;
+            margin: 0 4px 0 0;
+          }
         }
         a {
           text-decoration: underline;
@@ -4996,6 +5009,7 @@
       }
 
       #tab-additional_information {
+        @extend.__bt-format-post-content;
         border-radius: 8px;
         border: 1px solid #e9e9e9;
         padding: 40px;
@@ -5004,7 +5018,6 @@
         font-style: normal;
         font-weight: 400;
         line-height: 26px;
-        @extend.__bt-format-post-content;
         > *:first-child {
           margin-top: 0;
         }
@@ -5016,9 +5029,11 @@
           border: 1px solid #e5e7eb;
           th,
           td {
+            font-style: normal;
             border: none;
           }
           th {
+            font-weight: 500;
             @media (max-width: $break-xs) {
               width: 100px;
               vertical-align: top;
