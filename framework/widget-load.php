@@ -59,6 +59,7 @@ class ElementorWidgets
 			'post-loop-item-style-3',
 			'product-loop-item',
 			'product-loop-item-style-1',
+			'product-loop-item-style-2',
 			'product-category-loop-item',
 			'product-wishlist',
 			'product-compare',
@@ -71,6 +72,7 @@ class ElementorWidgets
 			'product-category-style-1',
 			'product-brand',
 			'product-item',
+			'product-showcase',
 			'heading-animation',
 			'mini-wishlist',
 			'tiktok-shop-slider',
@@ -191,6 +193,7 @@ class ElementorWidgets
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItem\Widget_ProductLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle1\Widget_ProductLoopItemStyle1());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle2\Widget_ProductLoopItemStyle2());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCategoryLoopItem\Widget_ProductCategoryLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductWishlist\Widget_ProductWishlist());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCompare\Widget_ProductCompare());
@@ -222,6 +225,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ItemHotspotProduct\Widget_ItemHotspotProduct());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());
 	}
 
 	/**

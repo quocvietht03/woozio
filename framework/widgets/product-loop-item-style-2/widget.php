@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\ProductLoopItemStyle1;
+namespace WoozioElementorWidgets\Widgets\ProductLoopItemStyle2;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -10,17 +10,17 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 
-class Widget_ProductLoopItemStyle1 extends Widget_Base
+class Widget_ProductLoopItemStyle2 extends Widget_Base
 {
 
 	public function get_name()
 	{
-		return 'bt-product-loop-item-style-1';
+		return 'bt-product-loop-item-style-2';
 	}
 
 	public function get_title()
 	{
-		return __('Product Loop Item Style 1', 'woozio');
+		return __('Product Loop Item Style 2', 'woozio');
 	}
 
 	public function get_icon()
@@ -52,14 +52,26 @@ class Widget_ProductLoopItemStyle1 extends Widget_Base
 			return;
 		}
 ?>
-		<div class="bt-elwg-product-loop-item--style-1">
+		<div class="bt-elwg-product-loop-item--style-2">
 			<div class="bt-product">
-				<div class="bt-product--image">
+				<div class="bt-product--image bt-cover-image">
 					<a href="<?php echo esc_url(get_permalink()); ?>">
 						<?php echo woocommerce_get_product_thumbnail(); ?>
 					</a>
 				</div>
 				<div class="bt-product--content">
+					<div class="bt-product--category">
+						<?php
+						$categories = get_the_terms(get_the_ID(), 'product_cat');
+						if ($categories && !is_wp_error($categories)) {
+							$cat_links = array();
+							foreach ($categories as $category) {
+								$cat_links[] = '<a href="' . esc_url(get_term_link($category)) . '">' . esc_html($category->name) . '</a>';
+							}
+							echo implode(', ', $cat_links);
+						}
+						?>
+					</div>
 					<h3 class="bt-product--title">
 						<a href="<?php echo esc_url(get_permalink()); ?>">
 							<?php echo get_the_title(); ?>
@@ -70,15 +82,22 @@ class Widget_ProductLoopItemStyle1 extends Widget_Base
 							<?php if ($product->get_price_html()) : ?>
 								<?php echo '<div class="bt-product--price">' . $product->get_price_html() . '</div>'; ?>
 							<?php endif; ?>
-							<?php if ($product->get_average_rating()) :
-								do_action('woozio_woocommerce_template_loop_rating');
-							endif; ?>
-
+							<?php do_action('woozio_woocommerce_show_product_loop_sale_flash'); ?>
 						</div>
+						<?php if ($short_description = $product->get_short_description()) : ?>
+							<div class="bt-product--short-description">
+								<?php echo wp_kses_post($short_description); ?>
+							</div>
+						<?php endif; ?>
 						<div class="bt-product--add-to-cart">
 							<?php
-							woocommerce_template_loop_add_to_cart();
+							if ($product->is_type('simple')) {
+								woocommerce_template_loop_add_to_cart();
+							} else {
+								echo '<a href="' . esc_url(get_permalink()) . '" class="bt-btn bt-btn-primary button">' . esc_html__('View Product', 'woozio') . '</a>';
+							}
 							?>
+
 						</div>
 					</div>
 

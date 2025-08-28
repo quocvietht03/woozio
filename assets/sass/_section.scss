@@ -24,7 +24,6 @@ body {
         &.bt-col-container-left-1770 {
             --container-max-width: 1770px;
             padding-left: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
-
         }
         &.bt-col-container-right-1770 {
             --container-max-width: 1770px;
@@ -34,24 +33,57 @@ body {
 }
 
 .elementor-element {
-    &.bt-tabs-section-product{
-        @media(max-width:370px){
+    &.bt-tabs-section-product {
+        @media (max-width: 370px) {
             --n-tabs-title-font-size: 18px !important;
         }
     }
-    // note 
+    &.bt-image-text-sale {
+        .elementor-image-box-img {
+            flex-grow: 1;
+            flex-shrink: 0;
+        }
+        .elementor-image-box-content {
+            .elementor-image-box-title {
+                &:hover {
+                    text-decoration-line: underline;
+                    text-decoration-style: solid;
+                    text-decoration-skip-ink: auto;
+                    text-decoration-thickness: 2px;
+                    text-underline-offset: 2px;
+                    text-underline-position: from-font;
+                    text-decoration-color: var(--color-primary);
+                }
+            }
+        }
+        @media (max-width: $break-sm) {
+            .elementor-image-box-wrapper {
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                text-align: left;
+            }
+        }
+        @media(max-width:370px){
+            .elementor-image-box-wrapper{
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    }
+    // note
     &.bt-section-banner {
-        >.e-con-inner {
-            > .elementor-element{
-                &:hover{
-                    .elementor-widget-image{
-                        img{
+        > .e-con-inner {
+            > .elementor-element {
+                &:hover {
+                    .elementor-widget-image {
+                        img {
                             transform: scale(1.1, 1.1) translateZ(0);
                         }
                     }
                 }
-                .elementor-widget-image{
-                    img{
+                .elementor-widget-image {
+                    img {
                         transform: scale(1, 1) translateZ(0);
                         transition: all 2s cubic-bezier(0, 0, 0.44, 1.18);
                     }
@@ -97,7 +129,7 @@ body {
         @media (max-width: $break-lg) and (min-width: $break-tl) {
             > .e-con-inner {
                 --column-gap: 20px;
-                .bt-elwg-product-loop-item-style-1 {
+                .bt-elwg-product-loop-item--style-1 {
                     .bt-product--price {
                         gap: 4px;
                         line-height: 1.5;
@@ -147,21 +179,20 @@ body {
                                 line-height: 40px;
                             }
                         }
-                        .elementor-widget-icon-box{
-                            &:not(:last-child){
-                                > .elementor-widget-container{
-                                   margin-bottom: 15px;
+                        .elementor-widget-icon-box {
+                            &:not(:last-child) {
+                                > .elementor-widget-container {
+                                    margin-bottom: 15px;
                                 }
                             }
-                            
                         }
-                        .elementor-icon-box-wrapper{
-                            .elementor-icon-box-icon{
-                                .elementor-icon{
+                        .elementor-icon-box-wrapper {
+                            .elementor-icon-box-icon {
+                                .elementor-icon {
                                     font-size: 60px;
                                 }
                             }
-                            .elementor-icon-box-title{
+                            .elementor-icon-box-title {
                                 font-size: 26px;
                                 line-height: 32px;
                             }
@@ -171,20 +202,20 @@ body {
             }
         }
     }
-    &.bt-open-time{
-        ul{
+    &.bt-open-time {
+        ul {
             list-style: none;
             padding: 0;
             margin: 0;
-            li{
+            li {
                 display: flex;
                 align-items: center;
                 gap: 4px;
-                strong{
+                strong {
                     font-weight: 400;
                     min-width: 80px;
                 }
-                &:not(:last-child){
+                &:not(:last-child) {
                     margin-bottom: 4px;
                 }
             }

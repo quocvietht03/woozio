@@ -1311,6 +1311,22 @@
 			});
 		}
 	};
+		// product showcase
+		const ProductShowcaseHandler = function ($scope) {
+			const $productShowcase = $scope.find('.bt-elwg-product-showcase--default');
+			if ($productShowcase.length > 0) {
+				const $variationForm = $productShowcase.find('.variations_form');
+				if ($variationForm.length > 0) {
+					$variationForm.find('.bt-attributes--item').each(function () {
+						const $firstJsItem = $(this).find('.bt-js-item').first();
+						if ($firstJsItem.length) {
+							$firstJsItem.trigger('click');
+						}
+					});
+				}
+	
+			}
+		}
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -1333,6 +1349,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-item-hotspot-product.default', ItemHotspotProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
 	});
 
 })(jQuery);

@@ -72,9 +72,12 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 					</div>
 					<?php if ($attribute_name == 'pa_color') { ?>
 						<div class="bt-attributes--value bt-value-color">
-							<?php foreach ($options as $option) :
-								$term_id = get_term_by('slug', $option, $attribute_name)->term_id;
-								$color = get_field('color', 'pa_color_' . $term_id);
+							<?php
+							$reversed_options = array_reverse($options);
+							foreach ($reversed_options as $option) :
+								$term = get_term_by('slug', $option, $attribute_name);
+								$term_id = $term ? $term->term_id : '';
+								$color = $term_id ? get_field('color', 'pa_color_' . $term_id) : '';
 								if (!$color) {
 									$color = $option;
 								}
@@ -87,7 +90,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 											</svg>
 										</span>
 									</div>
-									<label><?php echo esc_html(get_term_by('slug', $option, $attribute_name)->name); ?></label>
+									<label><?php echo esc_html($term ? $term->name : $option); ?></label>
 								</div>
 							<?php endforeach; ?>
 						</div>

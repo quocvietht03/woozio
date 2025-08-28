@@ -45,7 +45,7 @@ if ($upsells) : ?>
 				return;
 			}
 			?>
-			<div class="bt-elwg-product-loop-item-style-1">
+			<div class="bt-elwg-product-loop-item--style-1">
 				<div class="bt-product">
 					<div class="bt-product--image">
 						<a href="<?php echo esc_url(get_permalink()); ?>">

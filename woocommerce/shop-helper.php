@@ -1179,57 +1179,57 @@ function woozio_products_compare()
                     }
                     ?>
                     <?php
-               //     if ($ex_items > 0) {
-                        for ($i = 0; $i < 3; $i++) {
+                    //     if ($ex_items > 0) {
+                    for ($i = 0; $i < 3; $i++) {
                     ?>
-                            <div class="bt-table--row bt-product-add-compare<?php echo ($i < $ex_items) ? ' active' : ''; ?>">
-                                <div class="bt-table--col bt-thumb">
-                                    <div class="bt-cover-image">
-                                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" fill="currentColor">
-                                            <path d="M256 512a25 25 0 0 1-25-25V25a25 25 0 0 1 50 0v462a25 25 0 0 1-25 25z"></path>
-                                            <path d="M487 281H25a25 25 0 0 1 0-50h462a25 25 0 0 1 0 50z"></path>
-                                        </svg>
-                                        <span> <?php echo __('Add Product To Compare', 'woozio'); ?></span>
-                                    </div>
+                        <div class="bt-table--row bt-product-add-compare<?php echo ($i < $ex_items) ? ' active' : ''; ?>">
+                            <div class="bt-table--col bt-thumb">
+                                <div class="bt-cover-image">
+                                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" fill="currentColor">
+                                        <path d="M256 512a25 25 0 0 1-25-25V25a25 25 0 0 1 50 0v462a25 25 0 0 1-25 25z"></path>
+                                        <path d="M487 281H25a25 25 0 0 1 0-50h462a25 25 0 0 1 0 50z"></path>
+                                    </svg>
+                                    <span> <?php echo __('Add Product To Compare', 'woozio'); ?></span>
                                 </div>
-                                <div class="bt-table--col bt-name"></div>
-                                <?php if (!empty($fields_show_compare)) {
-                                    if (in_array('short_desc', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-description"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('price', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-price"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('rating', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-rating woocommerce"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('brand', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-brand"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('stock_status', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-stock"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('sku', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-sku"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('weight', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-weight"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('dimensions', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-dimensions"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('color', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-color"></div>
-                                    <?php } ?>
-                                    <?php if (in_array('size', $fields_show_compare)) { ?>
-                                        <div class="bt-table--col bt-size"></div>
-                                    <?php } ?>
-                                <?php } ?>
-                                <div class="bt-table--col"></div>
                             </div>
+                            <div class="bt-table--col bt-name"></div>
+                            <?php if (!empty($fields_show_compare)) {
+                                if (in_array('short_desc', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-description"></div>
+                                <?php } ?>
+                                <?php if (in_array('price', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-price"></div>
+                                <?php } ?>
+                                <?php if (in_array('rating', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-rating woocommerce"></div>
+                                <?php } ?>
+                                <?php if (in_array('brand', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-brand"></div>
+                                <?php } ?>
+                                <?php if (in_array('stock_status', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-stock"></div>
+                                <?php } ?>
+                                <?php if (in_array('sku', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-sku"></div>
+                                <?php } ?>
+                                <?php if (in_array('weight', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-weight"></div>
+                                <?php } ?>
+                                <?php if (in_array('dimensions', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-dimensions"></div>
+                                <?php } ?>
+                                <?php if (in_array('color', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-color"></div>
+                                <?php } ?>
+                                <?php if (in_array('size', $fields_show_compare)) { ?>
+                                    <div class="bt-table--col bt-size"></div>
+                                <?php } ?>
+                            <?php } ?>
+                            <div class="bt-table--col"></div>
+                        </div>
                     <?php
-                        }
-                //    }
+                    }
+                    //    }
                     ?>
                 </div>
             </div>
@@ -1751,7 +1751,7 @@ function woozio_woocommerce_product_label()
     global $product;
     $label = get_post_meta($product->get_id(), '_label', true);
     $label_text = str_replace('-', ' ', $label);
-    
+
     if (!empty($label)) {
         echo '<div class="woocommerce-product-label ' . esc_attr(woozio_convert_title_to_slug($label)) . '">' . esc_html($label_text) . '</div>';
     }
@@ -1835,6 +1835,36 @@ function woozio_products_buy_now()
     }
 }
 
+/* ajax add to cart variable */
+
+function woozio_products_add_to_cart_variable()
+{
+    $product_id = intval($_POST['product_id']);
+    $variation_id = intval($_POST['variation_id']);
+    $quantity = intval($_POST['quantity']);
+    $variation = $variation_id > 0 ? array() : null;
+
+    $product = wc_get_product($product_id);
+    if ($product) {
+        if ($variation_id > 0 && $product->is_type('variable')) {
+            $variation_product = wc_get_product($variation_id);
+            if ($variation_product) {
+                $attributes = $variation_product->get_attributes();
+                foreach ($attributes as $attribute_name => $attribute_value) {
+                    $variation[$attribute_name] = $attribute_value;
+                }
+            }
+        }
+
+        WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation);
+
+        wp_send_json_success(array('success' => true));
+        wp_die();
+    }
+}
+add_action('wp_ajax_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
+add_action('wp_ajax_nopriv_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
+
 /* Product share */
 if (!function_exists('woozio_product_share_render')) {
     function woozio_product_share_render()
@@ -1871,15 +1901,15 @@ if (!function_exists('woozio_product_share_render')) {
 
         ob_start();
         if (is_singular('product')) {
-        ?>   
+    ?>
             <div class="bt-product-share">
                 <div id="bt_product_share" class="bt-product-share__popup mfp-content__popup mfp-hide">
                     <div class="bt-product-share__content mfp-content__inner">
                         <h3 class="bt-product-share__title"><?php echo esc_html__('Share', 'woozio'); ?></h3>
-                        <?php 
-                            if (!empty($social_item)) {
-                                echo '<ul class="bt-product-share__socials">' . implode(' ', $social_item) . '</ul>';
-                            } 
+                        <?php
+                        if (!empty($social_item)) {
+                            echo '<ul class="bt-product-share__socials">' . implode(' ', $social_item) . '</ul>';
+                        }
                         ?>
                         <div class="bt-product-share__link bt-copy-link-wrap">
                             <h5 class="bt-copy-link-title"><?php echo esc_html__('Copy URL', 'woozio'); ?></h5>
@@ -1891,9 +1921,9 @@ if (!function_exists('woozio_product_share_render')) {
                     </div>
                 </div>
 
-                <a href="#bt_product_share" class="bt-product-share__link bt-js-open-popup-link">   
+                <a href="#bt_product_share" class="bt-product-share__link bt-js-open-popup-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
                     </svg>
                     <?php echo esc_html__('Share', 'woozio'); ?>
                 </a>
@@ -2385,22 +2415,22 @@ function woozio_woocommerce_single_product_more_information()
     $delivery_return = !empty($more_information['delivery_return']) ? $more_information['delivery_return'] : false;
     $ask_a_question = !empty($more_information['ask_a_question']) ? $more_information['ask_a_question'] : false;
     $product_share = !empty($more_information['product_share']) ? $more_information['product_share'] : false;
-    
+
     ?>
     <div class="bt-more-information">
         <?php if ($estimated_delivery) { ?>
-        <div class="bt-estimated-delivery">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-            </svg>
-            <?php echo '<span>' . $estimated_delivery . '</span>'; ?>
-        </div>
+            <div class="bt-estimated-delivery">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <?php echo '<span>' . $estimated_delivery . '</span>'; ?>
+            </div>
         <?php } ?>
 
         <?php if ($product_return) { ?>
             <div class="bt-product-return">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
                 </svg>
                 <?php echo '<span>' . $product_return . '</span>'; ?>
             </div>
@@ -2413,14 +2443,14 @@ function woozio_woocommerce_single_product_more_information()
                 </div>
                 <a href="#bt_store_location" class="bt-store-location__link bt-js-open-popup-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z"/>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
                     </svg>
                     <span><?php echo esc_html__('View Store Information', 'woozio'); ?></span>
                 </a>
             </div>
         <?php } ?>
-        
+
         <?php if ($delivery_return || $ask_a_question || $product_share) { ?>
             <div class="bt-policy-share">
                 <?php if ($delivery_return) { ?>
@@ -2430,7 +2460,7 @@ function woozio_woocommerce_single_product_more_information()
                         </div>
                         <a href="#bt_delivery_return" class="bt-delivery-return__link bt-js-open-popup-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
                             </svg>
                             <?php echo esc_html__('Delivery & Return', 'woozio'); ?>
                         </a>
@@ -2444,7 +2474,7 @@ function woozio_woocommerce_single_product_more_information()
                         </div>
                         <a href="#bt_ask_a_question" class="bt-ask-a-question__link bt-js-open-popup-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.529 9.988a2.502 2.502 0 1 1 5 .191A2.441 2.441 0 0 1 12 12.582V14m-.01 3.008H12M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.529 9.988a2.502 2.502 0 1 1 5 .191A2.441 2.441 0 0 1 12 12.582V14m-.01 3.008H12M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                             <?php echo esc_html__('Ask A Question', 'woozio'); ?>
                         </a>
@@ -2660,7 +2690,7 @@ function woozio_get_variation_gallery_slider($variation_image_id, $gallery_image
             $html .= wp_get_attachment_image($gallery_image_id, 'shop_single', false, $attributes);
             $html .= '</div>';
             $html .= '</div>';
-            
+
             echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
         }
     }
@@ -2681,7 +2711,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
                 'data-large_image_width'  => $full_size_image[1] ?? '',
                 'data-large_image_height' => $full_size_image[2] ?? '',
             );
-            
+
             $html = '<div class="swiper-slide">';
             $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
             $html .= wp_get_attachment_image($variation_image_id, 'shop_thumbnail', false, $attributes);
@@ -2690,7 +2720,7 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
 
             echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id);
         }
-        
+
         foreach ($gallery_images as $gallery_image_id) {
             $full_size_image = wp_get_attachment_image_src($gallery_image_id, 'full');
             $thumbnail       = wp_get_attachment_image_src($gallery_image_id, 'shop_thumbnail');
@@ -2702,13 +2732,13 @@ function woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_im
                 'data-large_image_width'  => $full_size_image[1] ?? '',
                 'data-large_image_height' => $full_size_image[2] ?? '',
             );
-            
+
             $html = '<div class="swiper-slide">';
             $html .= '<div data-thumb="' . esc_url($thumbnail[0] ?? wc_placeholder_img_src()) . '" class="woocommerce-product-gallery__image">';
             $html .= wp_get_attachment_image($gallery_image_id, 'shop_thumbnail', false, $attributes);
             $html .= '</div>';
             $html .= '</div>';
-            
+
             echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
         }
     }
@@ -2752,7 +2782,7 @@ function woozio_get_variation_gallery_grid($variation_image_id, $gallery_images)
             $html .= wp_get_attachment_image($gallery_image_id, 'shop_single', false, $attributes);
             $html .= '</div>';
             $html .= '</div>';
-            
+
             echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $gallery_image_id);
         }
     }
@@ -2772,13 +2802,13 @@ function woozio_load_product_gallery()
     $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
     $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
 
-    if($gallery_layout == 'gallery-slider') {
+    if ($gallery_layout == 'gallery-slider') {
         ob_start();
         echo '<div class="bt-gallery-slider-product bt-gallery-lightbox bt-gallery-zoomable">';
-            echo '<div class="swiper-wrapper">';
-                woozio_get_variation_gallery_slider($variation_image_id, $gallery_images);
-            echo '</div>';
-            echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        echo '<div class="swiper-wrapper">';
+        woozio_get_variation_gallery_slider($variation_image_id, $gallery_images);
+        echo '</div>';
+        echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.4995 10.0003C17.4995 10.1661 17.4337 10.3251 17.3165 10.4423C17.1992 10.5595 17.0403 10.6253 16.8745 10.6253H4.63311L9.1917 15.1832C9.24977 15.2412 9.29583 15.3102 9.32726 15.386C9.35869 15.4619 9.37486 15.5432 9.37486 15.6253C9.37486 15.7075 9.35869 15.7888 9.32726 15.8647C9.29583 15.9405 9.24977 16.0095 9.1917 16.0675C9.13363 16.1256 9.0647 16.1717 8.98882 16.2031C8.91295 16.2345 8.83164 16.2507 8.74951 16.2507C8.66739 16.2507 8.58607 16.2345 8.5102 16.2031C8.43433 16.1717 8.3654 16.1256 8.30733 16.0675L2.68233 10.4425C2.62422 10.3845 2.57812 10.3156 2.54667 10.2397C2.51521 10.1638 2.49902 10.0825 2.49902 10.0003C2.49902 9.91821 2.51521 9.83688 2.54667 9.76101C2.57812 9.68514 2.62422 9.61621 2.68233 9.55816L8.30733 3.93316C8.4246 3.81588 8.58366 3.75 8.74951 3.75C8.91537 3.75 9.07443 3.81588 9.1917 3.93316C9.30898 4.05044 9.37486 4.2095 9.37486 4.37535C9.37486 4.5412 9.30898 4.70026 9.1917 4.81753L4.63311 9.37535H16.8745C17.0403 9.37535 17.1992 9.4412 17.3165 9.55841C17.4337 9.67562 17.4995 9.83459 17.4995 10.0003Z"/>
                 </svg></div>
                 <div class="swiper-button-next"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -2787,7 +2817,7 @@ function woozio_load_product_gallery()
         echo '</div>';
 
         $output['gallery-slider'] = ob_get_clean();
-    } else if($gallery_layout == 'gallery-grid') {
+    } else if ($gallery_layout == 'gallery-grid') {
         ob_start();
         woozio_get_variation_gallery_grid($variation_image_id, $gallery_images);
         $itemgallery = count($gallery_images) + 1;
@@ -2796,10 +2826,10 @@ function woozio_load_product_gallery()
     } else {
         ob_start();
         echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox bt-gallery-zoomable">';
-            echo '<div class="swiper-wrapper">';
-                woozio_get_variation_gallery_slider($variation_image_id, $gallery_images);
-            echo '</div>';
-            echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        echo '<div class="swiper-wrapper">';
+        woozio_get_variation_gallery_slider($variation_image_id, $gallery_images);
+        echo '</div>';
+        echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.4995 10.0003C17.4995 10.1661 17.4337 10.3251 17.3165 10.4423C17.1992 10.5595 17.0403 10.6253 16.8745 10.6253H4.63311L9.1917 15.1832C9.24977 15.2412 9.29583 15.3102 9.32726 15.386C9.35869 15.4619 9.37486 15.5432 9.37486 15.6253C9.37486 15.7075 9.35869 15.7888 9.32726 15.8647C9.29583 15.9405 9.24977 16.0095 9.1917 16.0675C9.13363 16.1256 9.0647 16.1717 8.98882 16.2031C8.91295 16.2345 8.83164 16.2507 8.74951 16.2507C8.66739 16.2507 8.58607 16.2345 8.5102 16.2031C8.43433 16.1717 8.3654 16.1256 8.30733 16.0675L2.68233 10.4425C2.62422 10.3845 2.57812 10.3156 2.54667 10.2397C2.51521 10.1638 2.49902 10.0825 2.49902 10.0003C2.49902 9.91821 2.51521 9.83688 2.54667 9.76101C2.57812 9.68514 2.62422 9.61621 2.68233 9.55816L8.30733 3.93316C8.4246 3.81588 8.58366 3.75 8.74951 3.75C8.91537 3.75 9.07443 3.81588 9.1917 3.93316C9.30898 4.05044 9.37486 4.2095 9.37486 4.37535C9.37486 4.5412 9.30898 4.70026 9.1917 4.81753L4.63311 9.37535H16.8745C17.0403 9.37535 17.1992 9.4412 17.3165 9.55841C17.4337 9.67562 17.4995 9.83459 17.4995 10.0003Z"/>
                 </svg></div>
                 <div class="swiper-button-next"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -2808,9 +2838,9 @@ function woozio_load_product_gallery()
         echo '</div>';
 
         echo '<div class="woocommerce-product-gallery__slider-thumbs">';
-            echo '<div class="swiper-wrapper">';
-                woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_images);
-            echo '</div>';
+        echo '<div class="swiper-wrapper">';
+        woozio_get_variation_gallery_thumbnail($variation_image_id, $gallery_images);
+        echo '</div>';
         echo '</div>';
         $itemgallery = count($gallery_images) + 1;
         $output['slider-thumb'] = ob_get_clean();
@@ -2968,7 +2998,7 @@ function woozio_load_product_toast()
             ?>
         </div>
     </div>
-<?php
+    <?php
     $output = array(
         'toast' => ob_get_clean()
     );
@@ -2985,14 +3015,14 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
         // Get all available variations
         $available_variations = $product->get_available_variations();
         $color_variations_data = array();
-        
+
         foreach ($available_variations as $variation_data) {
             $variation_id = $variation_data['variation_id'];
             $variation = wc_get_product($variation_id);
-            
+
             // Get variation attributes
             $attributes = $variation->get_attributes();
-            
+
             // Check if this variation has color attribute
             $color_value = '';
             if (isset($attributes['pa_color'])) {
@@ -3000,7 +3030,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
             } elseif (isset($attributes['color'])) {
                 $color_value = $attributes['color'];
             }
-            
+
             // Only process if color is found and not already processed
             if (!empty($color_value) && !isset($color_variations_data[$color_value])) {
                 // Get main variation image
@@ -3009,21 +3039,21 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                 if ($main_image_id) {
                     $main_image_url = wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail');
                 }
-                
+
                 // Get variation gallery images
                 $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
                 $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
-                
+
                 // Get first gallery image
                 $first_gallery_image_url = '';
                 if (!empty($gallery_images) && isset($gallery_images[0])) {
                     $first_gallery_image_url = wp_get_attachment_image_url($gallery_images[0], 'woocommerce_thumbnail');
                 }
-                
+
                 // Get color term info for display
                 $color_term = get_term_by('slug', $color_value, 'pa_color');
                 $color_name = $color_term ? $color_term->name : $color_value;
-                
+
                 // Get color hex value from ACF if available
                 $color_hex = '';
                 if ($color_term) {
@@ -3032,7 +3062,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                 if (empty($color_hex)) {
                     $color_hex = $color_value; // fallback to slug
                 }
-                
+
                 // Store color variation data
                 $color_variations_data[$color_value] = array(
                     'variation_id' => $variation_id,
@@ -3044,13 +3074,23 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                 );
             }
         }
-        
+
         // Convert color variations data to JSON for JavaScript
         $color_variations_json = !empty($color_variations_data) ? json_encode($color_variations_data) : '{}';
-        
+
         echo '<div class="bt-product-add-to-cart-variable" data-color-variations="' . esc_attr($color_variations_json) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
-        
+
         do_action('woozio_woocommerce_template_single_add_to_cart');
+    ?>
+        <?php
+        $variation_attributes = $variation->get_attributes();
+        ?>
+        <a href="#"
+            class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
+            data-product-quantity="1"
+            data-product-id="<?php echo esc_attr($product->get_id()); ?>"
+            data-variation="<?php echo esc_attr($variation_id); ?>"> <?php echo esc_html__('Add To Cart', 'woozio'); ?></a>
+<?php
         echo '</div>';
     }
 }
