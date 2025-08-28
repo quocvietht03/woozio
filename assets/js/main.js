@@ -153,7 +153,7 @@
 
 		var gallerySlider = new Swiper('.bt-gallery-slider-product', {
 			spaceBetween: 15,
-			loop: true,
+			loop: false,
 			loopedSlides: 5,
 			navigation: {
 				nextEl: '.swiper-button-next',
