@@ -27,24 +27,15 @@ global $post, $product;
 $attachment_ids = $product->get_gallery_image_ids();
 
 if ( $attachment_ids && has_post_thumbnail() ) {
-	foreach ( $attachment_ids as $attachment_id ) {
-		$full_size_image = wp_get_attachment_image_src( $attachment_id, 'full' );
-		$thumbnail       = wp_get_attachment_image_src( $attachment_id, 'shop_thumbnail' );
-		$attributes      = array(
-			'title'                   => get_post_field( 'post_title', $attachment_id ),
-			'data-caption'            => get_post_field( 'post_excerpt', $attachment_id ),
-			'data-src'                => $full_size_image[0] ?? '',
-			'data-large_image'        => $full_size_image[0] ?? '',
-			'data-large_image_width'  => $full_size_image[1] ?? '',
-			'data-large_image_height' => $full_size_image[2] ?? '',
-		);
-
-		$html = '<div class="swiper-slide">';
-		$html .= '<div data-thumb="' . esc_url( $thumbnail[0] ?? wc_placeholder_img_src() ) . '" class="woocommerce-product-gallery__image">';
-		$html .= wp_get_attachment_image( $attachment_id, 'shop_thumbnail', false, $attributes );
-		$html .= '</div>';
-		$html .= '</div>';
-
-		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $attachment_id );
+	foreach ( $attachment_ids as $key => $attachment_id ) {
+		/**
+		 * Filter product image thumbnail HTML string.
+		 *
+		 * @since 1.6.4
+		 *
+		 * @param string $html          Product image thumbnail HTML string.
+		 * @param int    $attachment_id Attachment ID.
+		 */
+		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', woozio_get_gallery_image_html( $attachment_id, false, true, $key ), $attachment_id ); // PHPCS:Ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

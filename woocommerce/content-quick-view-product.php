@@ -48,6 +48,7 @@ global $product;
 				<?php
 				do_action('woozio_woocommerce_template_single_excerpt');
 				do_action('woozio_woocommerce_template_single_add_to_cart');
+				do_action('woozio_woocommerce_template_single_meta');
 				?>
 			</div>
 		</div>

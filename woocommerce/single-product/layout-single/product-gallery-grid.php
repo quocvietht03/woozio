@@ -31,7 +31,16 @@ global $product;
         <div class="images bt-gallery-grid-products" data-items="<?php echo esc_attr($itemgallery); ?>" data-shown="<?php echo esc_attr($show_number); ?>">
             
             <div class="bt-gallery-grid-product bt-gallery-lightbox bt-gallery-zoomable">
-                <?php woozio_get_variation_gallery_grid($featured_image_id, $attachment_ids); ?>
+                <?php 
+                    $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html( $featured_image_id, true, false ) . '</div>';
+
+                    if(!empty($attachment_ids)) {
+                        foreach ( $attachment_ids as $key => $attachment_id ) {
+                            $html .= '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html( $attachment_id, true, false ) . '</div>';
+                        }
+                    }
+                    echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $featured_image_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                ?>
             </div>
             <?php
             echo '<button class="bt-show-more">' . esc_html__('Show More', 'woozio') . '</button>';
