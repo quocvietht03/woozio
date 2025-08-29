@@ -2149,7 +2149,62 @@ function woozio_add_multiple_to_cart()
 
 add_action('wp_ajax_woozio_add_multiple_to_cart', 'woozio_add_multiple_to_cart');
 add_action('wp_ajax_nopriv_woozio_add_multiple_to_cart', 'woozio_add_multiple_to_cart');
+/* add multiple to cart variable widget hotspot normal */
+function woozio_add_multiple_to_cart_variable()
+{
+    if (!isset($_POST['product_ids']) || empty($_POST['product_ids'])) {
+        wp_send_json_error(__('No products selected', 'woozio'));
+        return;
+    }
 
+    $product_ids = $_POST['product_ids'];
+    $added_count = 0;
+    $cart_count = 0;
+
+    if (!is_array($product_ids)) {
+        wp_send_json_error(__('Invalid product data', 'woozio'));
+        return;
+    }
+
+    foreach ($product_ids as $item) {
+        // Support both array and object format, and fallback to scalar for backward compatibility
+        if (is_array($item)) {
+            $product_id = isset($item['product_id']) ? absint($item['product_id']) : 0;
+            $variation_id = isset($item['variation_id']) ? absint($item['variation_id']) : 0;
+        } elseif (is_object($item)) {
+            $product_id = isset($item->product_id) ? absint($item->product_id) : 0;
+            $variation_id = isset($item->variation_id) ? absint($item->variation_id) : 0;
+        } else {
+            $product_id = absint($item);
+            $variation_id = 0;
+        }
+
+        if ($product_id > 0) {
+            if ($variation_id && $variation_id > 0) {
+                // Add variable product to cart
+                $added = WC()->cart->add_to_cart($product_id, 1, $variation_id);
+            } else {
+                // Add simple product to cart
+                $added = WC()->cart->add_to_cart($product_id);
+            }
+            if ($added) {
+                $added_count++;
+            }
+        }
+    }
+
+    if ($added_count > 0) {
+        $cart_count = WC()->cart->get_cart_contents_count();
+        wp_send_json_success(array(
+            'message' => sprintf(__('%d products added to cart', 'woozio'), $added_count),
+            'cart_count' => $cart_count
+        ));
+    } else {
+        wp_send_json_error(__('Failed to add products to cart', 'woozio'));
+    }
+}
+add_action('wp_ajax_woozio_add_multiple_to_cart_variable', 'woozio_add_multiple_to_cart_variable');
+add_action('wp_ajax_nopriv_woozio_add_multiple_to_cart_variable', 'woozio_add_multiple_to_cart_variable');
 // AJAX handler for loading recently viewed products
 function woozio_load_recently_viewed_products()
 {
@@ -2664,62 +2719,63 @@ function woozio_save_variation_gallery($variation_id, $loop)
  * @return string
  */
 
-function woozio_get_gallery_image_html( $attachment_id, $main_image = false, $swiper_slide = false, $image_index = -1 ) {
-	global $product;
+function woozio_get_gallery_image_html($attachment_id, $main_image = false, $swiper_slide = false, $image_index = -1)
+{
+    global $product;
 
-	$flexslider        = (bool) apply_filters( 'woocommerce_single_product_flexslider_enabled', get_theme_support( 'wc-product-gallery-slider' ) );
-	$gallery_thumbnail = wc_get_image_size( 'woocommerce_thumbnail' );
-	$thumbnail_size    = apply_filters( 'woocommerce_gallery_thumbnail_size', array( (int)$gallery_thumbnail['width'], (int)$gallery_thumbnail['height'] ) );
-	$image_size        = apply_filters( 'woocommerce_gallery_image_size', $flexslider || $main_image ? 'woocommerce_single' : $thumbnail_size );
-	$full_size         = apply_filters( 'woocommerce_gallery_full_size', apply_filters( 'woocommerce_product_thumbnails_large_size', 'full' ) );
-	$thumbnail_src     = wp_get_attachment_image_src( $attachment_id, $thumbnail_size );
-	$thumbnail_srcset  = wp_get_attachment_image_srcset( $attachment_id, $thumbnail_size );
-	$thumbnail_sizes   = wp_get_attachment_image_sizes( $attachment_id, $thumbnail_size );
-	$full_src          = wp_get_attachment_image_src( $attachment_id, $full_size );
-	$alt_text          = trim( wp_strip_all_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
-	$alt_text          = ( empty( $alt_text ) && ( $product instanceof WC_Product ) ) ? woocommerce_get_alt_from_product_title_and_position( $product->get_title(), $main_image, $image_index ) : $alt_text;
+    $flexslider        = (bool) apply_filters('woocommerce_single_product_flexslider_enabled', get_theme_support('wc-product-gallery-slider'));
+    $gallery_thumbnail = wc_get_image_size('woocommerce_thumbnail');
+    $thumbnail_size    = apply_filters('woocommerce_gallery_thumbnail_size', array((int)$gallery_thumbnail['width'], (int)$gallery_thumbnail['height']));
+    $image_size        = apply_filters('woocommerce_gallery_image_size', $flexslider || $main_image ? 'woocommerce_single' : $thumbnail_size);
+    $full_size         = apply_filters('woocommerce_gallery_full_size', apply_filters('woocommerce_product_thumbnails_large_size', 'full'));
+    $thumbnail_src     = wp_get_attachment_image_src($attachment_id, $thumbnail_size);
+    $thumbnail_srcset  = wp_get_attachment_image_srcset($attachment_id, $thumbnail_size);
+    $thumbnail_sizes   = wp_get_attachment_image_sizes($attachment_id, $thumbnail_size);
+    $full_src          = wp_get_attachment_image_src($attachment_id, $full_size);
+    $alt_text          = trim(wp_strip_all_tags(get_post_meta($attachment_id, '_wp_attachment_image_alt', true)));
+    $alt_text          = (empty($alt_text) && ($product instanceof WC_Product)) ? woocommerce_get_alt_from_product_title_and_position($product->get_title(), $main_image, $image_index) : $alt_text;
 
-	/**
-	 * Filters the attributes for the image markup.
-	 *
-	 * @since 3.3.2
-	 *
-	 * @param array $image_attributes Attributes for the image markup.
-	*/
-	$image_params = apply_filters(
-		'woocommerce_gallery_image_html_attachment_image_params',
-		array(
-			'title'                   => _wp_specialchars( get_post_field( 'post_title', $attachment_id ), ENT_QUOTES, 'UTF-8', true ),
-			'data-caption'            => _wp_specialchars( get_post_field( 'post_excerpt', $attachment_id ), ENT_QUOTES, 'UTF-8', true ),
-			'data-src'                => isset( $full_src[0] ) ? esc_url( $full_src[0] ) : '',
-			'data-large_image'        => isset( $full_src[0] ) ? esc_url( $full_src[0] ) : '',
-			'data-large_image_width'  => isset( $full_src[1] ) ? esc_attr( $full_src[1] ) : '',
-			'data-large_image_height' => isset( $full_src[2] ) ? esc_attr( $full_src[2] ) : '',
-			'class'                   => esc_attr( $main_image ? 'wp-post-image' : '' ),
-			'alt'                     => esc_attr( $alt_text ),
-		),
-		$attachment_id,
-		$image_size,
-		$main_image
-	);
+    /**
+     * Filters the attributes for the image markup.
+     *
+     * @since 3.3.2
+     *
+     * @param array $image_attributes Attributes for the image markup.
+     */
+    $image_params = apply_filters(
+        'woocommerce_gallery_image_html_attachment_image_params',
+        array(
+            'title'                   => _wp_specialchars(get_post_field('post_title', $attachment_id), ENT_QUOTES, 'UTF-8', true),
+            'data-caption'            => _wp_specialchars(get_post_field('post_excerpt', $attachment_id), ENT_QUOTES, 'UTF-8', true),
+            'data-src'                => isset($full_src[0]) ? esc_url($full_src[0]) : '',
+            'data-large_image'        => isset($full_src[0]) ? esc_url($full_src[0]) : '',
+            'data-large_image_width'  => isset($full_src[1]) ? esc_attr($full_src[1]) : '',
+            'data-large_image_height' => isset($full_src[2]) ? esc_attr($full_src[2]) : '',
+            'class'                   => esc_attr($main_image ? 'wp-post-image' : ''),
+            'alt'                     => esc_attr($alt_text),
+        ),
+        $attachment_id,
+        $image_size,
+        $main_image
+    );
 
-	if ( isset( $image_params['title'] ) ) {
-		unset( $image_params['title'] );
-	}
+    if (isset($image_params['title'])) {
+        unset($image_params['title']);
+    }
 
-	$image = wp_get_attachment_image(
-		$attachment_id,
-		$image_size,
-		'false',
-		$image_params
-	);
+    $image = wp_get_attachment_image(
+        $attachment_id,
+        $image_size,
+        'false',
+        $image_params
+    );
 
-    if($swiper_slide) {
+    if ($swiper_slide) {
         return '<div class="swiper-slide">
-                <div data-thumb="' . esc_url( isset( $thumbnail_src[0] ) ? $thumbnail_src[0] : '' ) . '" data-thumb-alt="' . esc_attr( $alt_text ) . '" data-thumb-srcset="' . esc_attr( isset( $thumbnail_srcset ) ? $thumbnail_srcset : '' ) . '"  data-thumb-sizes="' . esc_attr( isset( $thumbnail_sizes ) ? $thumbnail_sizes : '' ) . '" class="woocommerce-product-gallery__image zoomable">' . $image . '</div>
+                <div data-thumb="' . esc_url(isset($thumbnail_src[0]) ? $thumbnail_src[0] : '') . '" data-thumb-alt="' . esc_attr($alt_text) . '" data-thumb-srcset="' . esc_attr(isset($thumbnail_srcset) ? $thumbnail_srcset : '') . '"  data-thumb-sizes="' . esc_attr(isset($thumbnail_sizes) ? $thumbnail_sizes : '') . '" class="woocommerce-product-gallery__image zoomable">' . $image . '</div>
             </div>';
     } else {
-        return '<div data-thumb="' . esc_url( isset( $thumbnail_src[0] ) ? $thumbnail_src[0] : '' ) . '" data-thumb-alt="' . esc_attr( $alt_text ) . '" data-thumb-srcset="' . esc_attr( isset( $thumbnail_srcset ) ? $thumbnail_srcset : '' ) . '"  data-thumb-sizes="' . esc_attr( isset( $thumbnail_sizes ) ? $thumbnail_sizes : '' ) . '" class="woocommerce-product-gallery__image zoomable">' . $image . '</div>';
+        return '<div data-thumb="' . esc_url(isset($thumbnail_src[0]) ? $thumbnail_src[0] : '') . '" data-thumb-alt="' . esc_attr($alt_text) . '" data-thumb-srcset="' . esc_attr(isset($thumbnail_srcset) ? $thumbnail_srcset : '') . '"  data-thumb-sizes="' . esc_attr(isset($thumbnail_sizes) ? $thumbnail_sizes : '') . '" class="woocommerce-product-gallery__image zoomable">' . $image . '</div>';
     }
 }
 
@@ -2740,19 +2796,19 @@ function woozio_load_product_gallery()
     if ($gallery_layout == 'gallery-slider') {
         ob_start();
         echo '<div class="bt-gallery-slider-product bt-gallery-lightbox bt-gallery-zoomable">';
-            echo '<div class="swiper-wrapper">';
-                if ( $variation_image_id ) {
-                    $html = woozio_get_gallery_image_html( $variation_image_id, true, true );
+        echo '<div class="swiper-wrapper">';
+        if ($variation_image_id) {
+            $html = woozio_get_gallery_image_html($variation_image_id, true, true);
 
-                    if(!empty($gallery_images)) {
-                        foreach ( $gallery_images as $key => $attachment_id ) {
-                            $html .= woozio_get_gallery_image_html( $attachment_id, true, true );
-                        }
-                    }
-                    echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+            if (!empty($gallery_images)) {
+                foreach ($gallery_images as $key => $attachment_id) {
+                    $html .= woozio_get_gallery_image_html($attachment_id, true, true);
                 }
-            echo '</div>';
-            echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            }
+            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        }
+        echo '</div>';
+        echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.4995 10.0003C17.4995 10.1661 17.4337 10.3251 17.3165 10.4423C17.1992 10.5595 17.0403 10.6253 16.8745 10.6253H4.63311L9.1917 15.1832C9.24977 15.2412 9.29583 15.3102 9.32726 15.386C9.35869 15.4619 9.37486 15.5432 9.37486 15.6253C9.37486 15.7075 9.35869 15.7888 9.32726 15.8647C9.29583 15.9405 9.24977 16.0095 9.1917 16.0675C9.13363 16.1256 9.0647 16.1717 8.98882 16.2031C8.91295 16.2345 8.83164 16.2507 8.74951 16.2507C8.66739 16.2507 8.58607 16.2345 8.5102 16.2031C8.43433 16.1717 8.3654 16.1256 8.30733 16.0675L2.68233 10.4425C2.62422 10.3845 2.57812 10.3156 2.54667 10.2397C2.51521 10.1638 2.49902 10.0825 2.49902 10.0003C2.49902 9.91821 2.51521 9.83688 2.54667 9.76101C2.57812 9.68514 2.62422 9.61621 2.68233 9.55816L8.30733 3.93316C8.4246 3.81588 8.58366 3.75 8.74951 3.75C8.91537 3.75 9.07443 3.81588 9.1917 3.93316C9.30898 4.05044 9.37486 4.2095 9.37486 4.37535C9.37486 4.5412 9.30898 4.70026 9.1917 4.81753L4.63311 9.37535H16.8745C17.0403 9.37535 17.1992 9.4412 17.3165 9.55841C17.4337 9.67562 17.4995 9.83459 17.4995 10.0003Z"/>
                 </svg></div>
                 <div class="swiper-button-next"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -2763,14 +2819,14 @@ function woozio_load_product_gallery()
         $output['gallery-slider'] = ob_get_clean();
     } else if ($gallery_layout == 'gallery-grid') {
         ob_start();
-        $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html( $variation_image_id, true, false ) . '</div>';
+        $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($variation_image_id, true, false) . '</div>';
 
-        if(!empty($gallery_images)) {
-            foreach ( $gallery_images as $key => $attachment_id ) {
-                $html .= '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html( $attachment_id, true, false ) . '</div>';
+        if (!empty($gallery_images)) {
+            foreach ($gallery_images as $key => $attachment_id) {
+                $html .= '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($attachment_id, true, false) . '</div>';
             }
         }
-        echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
 
         $itemgallery = count($gallery_images) + 1;
         $output['gallery-grid'] = ob_get_clean();
@@ -2778,34 +2834,34 @@ function woozio_load_product_gallery()
     } else {
         ob_start();
         echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox bt-gallery-zoomable">';
-            echo '<div class="swiper-wrapper">';
-                if ( $variation_image_id ) {
-                    $html = woozio_get_gallery_image_html( $variation_image_id, true, true );
+        echo '<div class="swiper-wrapper">';
+        if ($variation_image_id) {
+            $html = woozio_get_gallery_image_html($variation_image_id, true, true);
 
-                    if(!empty($gallery_images)) {
-                        foreach ( $gallery_images as $key => $attachment_id ) {
-                            $html .= woozio_get_gallery_image_html( $attachment_id, true, true );
-                        }
-                    }
-                    echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+            if (!empty($gallery_images)) {
+                foreach ($gallery_images as $key => $attachment_id) {
+                    $html .= woozio_get_gallery_image_html($attachment_id, true, true);
                 }
-            echo '</div>';
-            echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            }
+            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        }
+        echo '</div>';
+        echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.4995 10.0003C17.4995 10.1661 17.4337 10.3251 17.3165 10.4423C17.1992 10.5595 17.0403 10.6253 16.8745 10.6253H4.63311L9.1917 15.1832C9.24977 15.2412 9.29583 15.3102 9.32726 15.386C9.35869 15.4619 9.37486 15.5432 9.37486 15.6253C9.37486 15.7075 9.35869 15.7888 9.32726 15.8647C9.29583 15.9405 9.24977 16.0095 9.1917 16.0675C9.13363 16.1256 9.0647 16.1717 8.98882 16.2031C8.91295 16.2345 8.83164 16.2507 8.74951 16.2507C8.66739 16.2507 8.58607 16.2345 8.5102 16.2031C8.43433 16.1717 8.3654 16.1256 8.30733 16.0675L2.68233 10.4425C2.62422 10.3845 2.57812 10.3156 2.54667 10.2397C2.51521 10.1638 2.49902 10.0825 2.49902 10.0003C2.49902 9.91821 2.51521 9.83688 2.54667 9.76101C2.57812 9.68514 2.62422 9.61621 2.68233 9.55816L8.30733 3.93316C8.4246 3.81588 8.58366 3.75 8.74951 3.75C8.91537 3.75 9.07443 3.81588 9.1917 3.93316C9.30898 4.05044 9.37486 4.2095 9.37486 4.37535C9.37486 4.5412 9.30898 4.70026 9.1917 4.81753L4.63311 9.37535H16.8745C17.0403 9.37535 17.1992 9.4412 17.3165 9.55841C17.4337 9.67562 17.4995 9.83459 17.4995 10.0003Z"/>
                 </svg></div>
                 <div class="swiper-button-next"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.3172 10.4425L11.6922 16.0675C11.5749 16.1848 11.4159 16.2507 11.25 16.2507C11.0841 16.2507 10.9251 16.1848 10.8078 16.0675C10.6905 15.9503 10.6247 15.7912 10.6247 15.6253C10.6247 15.4595 10.6905 15.3004 10.8078 15.1832L15.3664 10.6253H3.125C2.95924 10.6253 2.80027 10.5595 2.68306 10.4423C2.56585 10.3251 2.5 10.1661 2.5 10.0003C2.5 9.83459 2.56585 9.67562 2.68306 9.55841C2.80027 9.4412 2.95924 9.37535 3.125 9.37535H15.3664L10.8078 4.81753C10.6905 4.70026 10.6247 4.5412 10.6247 4.37535C10.6247 4.2095 10.6905 4.05044 10.8078 3.93316C10.9251 3.81588 11.0841 3.75 11.25 3.75C11.4159 3.75 11.5749 3.81588 11.6922 3.93316L17.3172 9.55816C17.3753 9.61621 17.4214 9.68514 17.4528 9.76101C17.4843 9.83688 17.5005 9.91821 17.5005 10.0003C17.5005 10.0825 17.4843 10.1638 17.4528 10.2397C17.4214 10.3156 17.3753 10.3845 17.3172 10.4425Z"/>
                 </svg></div>';
         echo '</div>';
-        
+
         echo '<div class="woocommerce-product-gallery__slider-thumbs">';
-            echo '<div class="swiper-wrapper">';
-                $html = woozio_get_gallery_image_html( $variation_image_id, false, true );
-                foreach ( $gallery_images as $key => $attachment_id ) {
-                    $html .= woozio_get_gallery_image_html( $attachment_id, false, true );
-                }
-                echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
-            echo '</div>';
+        echo '<div class="swiper-wrapper">';
+        $html = woozio_get_gallery_image_html($variation_image_id, false, true);
+        foreach ($gallery_images as $key => $attachment_id) {
+            $html .= woozio_get_gallery_image_html($attachment_id, false, true);
+        }
+        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        echo '</div>';
         echo '</div>';
         $itemgallery = count($gallery_images) + 1;
         $output['slider-thumb'] = ob_get_clean();
@@ -2963,7 +3019,7 @@ function woozio_load_product_toast()
             ?>
         </div>
     </div>
-    <?php
+<?php
     $output = array(
         'toast' => ob_get_clean()
     );
@@ -3046,16 +3102,31 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
         echo '<div class="bt-product-add-to-cart-variable" data-color-variations="' . esc_attr($color_variations_json) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
 
         do_action('woozio_woocommerce_template_single_add_to_cart');
-    ?>
-        <?php
-        $variation_attributes = $variation->get_attributes();
-        ?>
-        <a href="#"
-            class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
-            data-product-quantity="1"
-            data-product-id="<?php echo esc_attr($product->get_id()); ?>"
-            data-variation="<?php echo esc_attr($variation_id); ?>"> <?php echo esc_html__('Add To Cart', 'woozio'); ?></a>
-<?php
+
         echo '</div>';
+    }
+}
+// hook button add to cart variable after add to cart
+add_action('woocommerce_after_add_to_cart_button', 'woozio_woocommerce_after_add_to_cart_button', 10);
+function woozio_woocommerce_after_add_to_cart_button()
+{
+    // Do not output anything on single product page
+    if (is_product()) {
+        return;
+    }
+
+    global $product;
+    $variation_id = 0;
+    if (isset($_REQUEST['variation_id'])) {
+        $variation_id = intval($_REQUEST['variation_id']);
+    }
+    if ($product->is_type('variable')) {
+        echo '<a href="#"
+        class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
+        data-product-quantity="1"
+        data-product-id="' . esc_attr( $product->get_id() ) . '"
+        data-variation="' . esc_attr( $variation_id ) . '">'
+        . esc_html__( 'Add To Cart', 'woozio' ) .
+        '</a>';
     }
 }

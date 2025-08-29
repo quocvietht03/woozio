@@ -618,7 +618,6 @@
 						}, productIds.indexOf(productId) * 300); // Add 300ms delay between each toast
 					});
 				}
-				WoozioshowToast
 				if (productIds.length > 0) {
 					$.ajax({
 						type: 'POST',
@@ -1028,42 +1027,42 @@
 
 		}
 	}
-	
+
 	var SwitcherHandler = function ($scope, $) {
 		const $switcher = $scope.find('.js-switcher-dropdown');
 		if ($switcher.length) {
 			const $currentItem = $switcher.find('.bt-current-item .bt-current-item-text');
 			const $dropdownItems = $switcher.find('.bt-item');
 			const $dropdown = $switcher.find('.bt-has-dropdown');
-			
+
 			// Toggle dropdown on click
-			$currentItem.parent().on('click', function(e) {
+			$currentItem.parent().on('click', function (e) {
 				e.preventDefault();
 				$dropdown.toggleClass('active');
 			});
-			
+
 			// Handle dropdown item click
-			$dropdownItems.on('click', function(e) {
+			$dropdownItems.on('click', function (e) {
 				e.preventDefault();
 				const selectedText = $(this).html();
-			
+
 				console.log(selectedText);
-				
+
 				// Remove active class from all items
 				$dropdownItems.removeClass('active');
-				
+
 				// Add active class to clicked item
 				$(this).addClass('active');
-				
+
 				// Update current item text
 				$currentItem.html(selectedText);
-				
+
 				// Close dropdown
 				$dropdown.removeClass('active');
 			});
-			
+
 			// Close dropdown when clicking outside
-			$(document).on('click', function(e) {
+			$(document).on('click', function (e) {
 				if (!$switcher.is(e.target) && $switcher.has(e.target).length === 0) {
 					$dropdown.removeClass('active');
 				}
@@ -1080,19 +1079,19 @@
 			const sliderSpeed = $sliderSettings.speed || 1000;
 			const autoplay = $sliderSettings.autoplay || false;
 			const autoplayDelay = $sliderSettings.autoplay_delay || 3000;
-			
+
 			// Clone first slide and append to end for smooth loop effect
 			const $swiperWrapper = $accordionProducts.find('.swiper-wrapper');
 			const $firstSlide = $swiperWrapper.find('.swiper-slide').first();
-			
+
 			if ($firstSlide.length > 0) {
 				// Clone first two slides and append to end for smooth loop effect
 				const $secondSlide = $swiperWrapper.find('.swiper-slide').eq(1);
-				
+
 				const $clonedFirstSlide = $firstSlide.clone();
 				$clonedFirstSlide.addClass('swiper-slide-duplicate-end'); // Add identifier class
 				$swiperWrapper.append($clonedFirstSlide);
-				
+
 				if ($secondSlide.length > 0) {
 					const $clonedSecondSlide = $secondSlide.clone();
 					$clonedSecondSlide.addClass('swiper-slide-duplicate-end'); // Add identifier class
@@ -1127,13 +1126,13 @@
 			});
 
 			// Handle accordion navigation item click
-			$AccordionWithProductSlider.find('.bt-accordion-nav-item').on('click', function() {
+			$AccordionWithProductSlider.find('.bt-accordion-nav-item').on('click', function () {
 				const clickedIndex = parseInt($(this).data('index'));
-				
+
 				// Update active accordion nav item
 				$AccordionWithProductSlider.find('.bt-accordion-nav-item').removeClass('active');
 				$(this).addClass('active');
-				
+
 				// Slide to corresponding products
 				accordionProductsSwiper.slideTo(clickedIndex);
 			});
@@ -1142,17 +1141,17 @@
 			const totalOriginalSlides = $AccordionWithProductSlider.find('.bt-accordion-nav-item').length;
 
 			// Update accordion nav when slider changes (via navigation arrows or pagination)
-			accordionProductsSwiper.on('slideChange', function() {
+			accordionProductsSwiper.on('slideChange', function () {
 				const activeIndex = this.activeIndex;
-				
+
 				// If we're on the cloned slide (last slide), jump to first slide without stopping autoplay
 				if (activeIndex >= totalOriginalSlides) {
 					// Store autoplay state before reset
 					const wasAutoplayRunning = this.autoplay && this.autoplay.running;
-					
+
 					setTimeout(() => {
 						this.slideTo(0, 0); // Slide to first slide with 0 speed (no animation)
-						
+
 						// Restart autoplay if it was running before reset
 						if (wasAutoplayRunning && autoplay) {
 							setTimeout(() => {
@@ -1161,7 +1160,7 @@
 						}
 					}, sliderSpeed); // Wait for current transition to complete
 				}
-				
+
 				// Update accordion nav (use modulo to handle cloned slide)
 				const navIndex = activeIndex % totalOriginalSlides;
 				$AccordionWithProductSlider.find('.bt-accordion-nav-item').removeClass('active');
@@ -1187,31 +1186,31 @@
 
 	var CollectionBannerHandler = function ($scope, $) {
 		var $collectionBanner = $scope.find('.bt-collection-banner');
-		
+
 		if ($collectionBanner.length) {
 			// Store the index of the default active item on page load
 			var $defaultActiveItem = $collectionBanner.find('.collection-item.active').first();
 			var defaultActiveIndex = $defaultActiveItem.length ? $defaultActiveItem.data('index') : null;
-			
+
 			// Handle hover events
-			$collectionBanner.find('.collection-item').on('mouseenter', function() {
+			$collectionBanner.find('.collection-item').on('mouseenter', function () {
 				var $this = $(this);
 				var $container = $this.closest('.bt-collection-banner');
-				
+
 				// Remove active class from all items
 				$container.find('.collection-item').removeClass('active');
-				
+
 				// Add active class to hovered item
 				$this.addClass('active');
 			});
 
 			// Optional: Reset to default active item when mouse leaves container
-			$collectionBanner.on('mouseleave', function() {
+			$collectionBanner.on('mouseleave', function () {
 				var $container = $(this);
-				
+
 				// Remove active class from all items
 				$container.find('.collection-item').removeClass('active');
-				
+
 				// If we have a default active item, restore it
 				if (defaultActiveIndex !== null) {
 					$container.find('.collection-item[data-index="' + defaultActiveIndex + '"]').addClass('active');
@@ -1222,24 +1221,24 @@
 
 	const ItemHotspotProductHandler = function ($scope) {
 		const $itemHotspotProduct = $scope.find('.bt-elwg-item-hotspot-product--default');
-		
+
 		if ($itemHotspotProduct.length > 0) {
 			const $hotspotPoints = $itemHotspotProduct.find('.bt-hotspot-point');
 			const $productItems = $itemHotspotProduct.find('.bt-product-item-minimal');
-			
+
 			// Handle hotspot point clicks
-			$hotspotPoints.on('click', function(e) {
+			$hotspotPoints.on('click', function (e) {
 				e.preventDefault();
 				const $this = $(this);
 				const productId = $this.data('product-id');
-				
+
 				// Remove active state from all points and products
 				$hotspotPoints.removeClass('active');
 				$productItems.removeClass('active');
-				
+
 				// Add active state to clicked point
 				$this.addClass('active');
-				
+
 				// Show corresponding product
 				$productItems.filter(`[data-product-id="${productId}"]`).addClass('active');
 			});
@@ -1248,7 +1247,7 @@
 
 	const InstagramPostsHandler = function ($scope) {
 		const $instagramPosts = $scope.find('.bt-elwg-instagram-posts');
-		
+
 		if ($instagramPosts.length > 0 && $instagramPosts.hasClass('bt-elwg-instagram-posts--slider')) {
 			const $sliderSettings = $instagramPosts.data('slider-settings');
 			const swiperOptions = {
@@ -1311,22 +1310,137 @@
 			});
 		}
 	};
-		// product showcase
-		const ProductShowcaseHandler = function ($scope) {
-			const $productShowcase = $scope.find('.bt-elwg-product-showcase--default');
-			if ($productShowcase.length > 0) {
-				const $variationForm = $productShowcase.find('.variations_form');
-				if ($variationForm.length > 0) {
-					$variationForm.find('.bt-attributes--item').each(function () {
-						const $firstJsItem = $(this).find('.bt-js-item').first();
-						if ($firstJsItem.length) {
-							$firstJsItem.trigger('click');
+	// product showcase
+	const ProductShowcaseHandler = function ($scope) {
+		const $productShowcase = $scope.find('.bt-elwg-product-showcase--default');
+		if ($productShowcase.length > 0) {
+			const $variationForm = $productShowcase.find('.variations_form');
+			if ($variationForm.length > 0) {
+				$variationForm.find('.bt-attributes--item').each(function () {
+					const $firstJsItem = $(this).find('.bt-js-item').first();
+					if ($firstJsItem.length) {
+						$firstJsItem.trigger('click');
+					}
+				});
+			}
+		}
+	}
+	// hotspot product normal
+	const HotspotProductNormalHandler = function ($scope) {
+		const $hotspotProductNormal = $scope.find('.bt-elwg-hotspot-product-normal--default');
+		if ($hotspotProductNormal.length > 0) {
+			const $variationForm = $hotspotProductNormal.find('.variations_form');
+			if ($variationForm.length > 0) {
+				$variationForm.find('.bt-attributes--item').each(function () {
+					const $firstJsItem = $(this).find('.bt-js-item').first();
+					if ($firstJsItem.length) {
+						$firstJsItem.trigger('click');
+					}
+				});
+			}
+			// Function to update variation_id in data-ids for a given product
+			function updateHotspotProductVariationId($variationForm, $scope) {
+				const $productItem = $variationForm.closest('.bt-hotspot-product-list__item');
+				const productId = $productItem.data('product-id');
+				const variationId = parseInt($variationForm.find('input.variation_id').val(), 10) || 0;
+				const $addSetToCartBtn = $productItem.closest($scope).find('.bt-button-add-set-to-cart');
+				if ($addSetToCartBtn.length) {
+					let idsData = $addSetToCartBtn.attr('data-ids');
+					let idsArr = [];
+					try {
+						idsArr = JSON.parse(idsData);
+					} catch (e) {
+						console.error('Invalid data-ids JSON', e);
+					}
+					let updated = false;
+					idsArr = idsArr.map(item => {
+						if (item.product_id == productId) {
+							if (item.variation_id != variationId) {
+								item.variation_id = variationId;
+								updated = true;
+							}
+						}
+						return item;
+					});
+					if (updated) {
+						$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
+					}
+				}
+			}
+
+			// Initial update on load
+			$variationForm.each(function () {
+				updateHotspotProductVariationId($(this), $scope);
+			});
+
+			// Update on variation change
+			$variationForm.find('select').on('change', function () {
+				const $form = $(this).closest('.variations_form');
+				$form.on('woocommerce_variation_has_changed', function () {
+					updateHotspotProductVariationId($form, $scope);
+				});
+			});
+
+		    /* ajax add to cart */
+			$hotspotProductNormal.find('.bt-button-add-set-to-cart').on('click', function (e) {
+				e.preventDefault();
+				const $this = $(this);
+				if ($this.hasClass('bt-view-cart')) {
+					window.location.href = AJ_Options.cart;
+					return;
+				}
+				let productIds = $this.data('ids');
+				// Ensure productIds is an array of objects (for variable products)
+				if (typeof productIds === 'string') {
+					try {
+						productIds = JSON.parse(productIds);
+					} catch (e) {
+						console.error('Invalid data-ids JSON', e);
+						productIds = [];
+					}
+				}
+				if (!Array.isArray(productIds)) {
+					productIds = [];
+				}
+
+				// Show toast for each product (with delay)
+				productIds.forEach((item, idx) => {
+					const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+					setTimeout(() => {
+						WoozioshowToast(productId, 'cart', 'add');
+					}, idx * 300);
+				});
+
+				if (productIds.length > 0) {
+					$.ajax({
+						type: 'POST',
+						url: AJ_Options.ajax_url,
+						data: {
+							action: 'woozio_add_multiple_to_cart_variable',
+							product_ids: productIds
+						},
+						beforeSend: function () {
+							$this.addClass('loading');
+						},
+						success: function (response) {
+							$this.removeClass('loading');
+							if (response.success) {
+								// Update cart count and trigger cart refresh
+								$(document.body).trigger('updated_wc_div');
+								WoozioFreeShippingMessage();
+								$this.html('View Cart');
+								$this.addClass('bt-view-cart');
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							$this.removeClass('loading');
+							console.log('Error adding products to cart:', textStatus, errorThrown);
 						}
 					});
 				}
-	
-			}
+			});
 		}
+	}
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -1350,6 +1464,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-item-hotspot-product.default', ItemHotspotProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-hotspot-product-normal.default', HotspotProductNormalHandler);
 	});
 
 })(jQuery);

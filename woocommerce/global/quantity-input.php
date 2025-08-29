@@ -22,14 +22,14 @@
 defined('ABSPATH') || exit;
 
 /* translators: %s: Quantity. */
-if($type === 'hidden') {
+if ($type === 'hidden') {
 	return;
 }
 
 $label = ! empty($args['product_name']) ? sprintf(esc_html__('%s quantity', 'woozio'), wp_strip_all_tags($args['product_name'])) : esc_html__('Quantity', 'woozio');
-if (is_product()) {
-	echo '<span class="title-quantity">' . esc_html__('Quantity:', 'woozio') . '</span>';
-}
+
+echo '<span class="title-quantity">' . esc_html__('Quantity:', 'woozio') . '</span>';
+
 ?>
 
 <div class="quantity">

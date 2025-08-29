@@ -67,18 +67,6 @@ class Widget_ProductShowcase extends Widget_Base
 			]
 		);
 		$this->add_control(
-			'layout',
-			[
-				'label' => __('Layout', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'default',
-				'options' => [
-					'default' => __('Default', 'woozio'),
-					'ajax' => __('Ajax', 'woozio'),
-				],
-			]
-		);
-		$this->add_control(
 			'products',
 			[
 				'label' => __('Select Product', 'woozio'),
@@ -115,10 +103,7 @@ class Widget_ProductShowcase extends Widget_Base
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--thumb .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
-				],
-				'condition' => [
-					'layout' => 'default',
+					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
 				],
 			]
 		);
@@ -143,7 +128,7 @@ class Widget_ProductShowcase extends Widget_Base
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => ['px', '%'],
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--thumb .bt-cover-image' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -161,7 +146,7 @@ class Widget_ProductShowcase extends Widget_Base
 			Group_Control_Css_Filter::get_type(),
 			[
 				'name' => 'thumbnail_filters',
-				'selector' => '{{WRAPPER}} .bt-product-item--thumb img',
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-image img',
 			]
 		);
 
@@ -178,7 +163,7 @@ class Widget_ProductShowcase extends Widget_Base
 			Group_Control_Css_Filter::get_type(),
 			[
 				'name' => 'thumbnail_hover_filters',
-				'selector' => '{{WRAPPER}} .bt-product-item--item:hover .bt-product-item--thumb img',
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-image:hover img',
 			]
 		);
 
@@ -197,70 +182,193 @@ class Widget_ProductShowcase extends Widget_Base
 		);
 
 		$this->add_control(
-			'name_cat_style',
+			'product_content_bg_color',
 			[
-				'label' => __('Name Category', 'woozio'),
-				'type' => Controls_Manager::HEADING,
-			]
-		);
-
-		$this->add_control(
-			'name_cat_color',
-			[
-				'label' => __('Color', 'woozio'),
+				'label' => __('Content Background Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'default' => '',
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--name' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-showcase--item-content' => 'background-color: {{VALUE}};',
 				],
 			]
 		);
 
+		// Typography & Color for Product Title
 		$this->add_control(
-			'name_cat_color_hover',
+			'product_title_style_heading',
 			[
-				'label' => __('Color Hover', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--name:hover' => 'color: {{VALUE}};',
-				],
-			]
-		);
-		$this->add_control(
-			'name_cat_background',
-			[
-				'label' => __('Background', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--name' => 'background-color: {{VALUE}};',
-				],
+				'label' => esc_html__('Product Title', 'woozio'),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
 			]
 		);
 
-		$this->add_control(
-			'name_cat_background_hover',
-			[
-				'label' => __('Background Hover', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-item--name:hover' => 'background-color: {{VALUE}};',
-				],
-			]
-		);
 		$this->add_group_control(
-			Group_Control_Typography::get_type(),
+			\Elementor\Group_Control_Typography::get_type(),
 			[
-				'name' => 'name_cat_typography',
-				'label' => __('Typography', 'woozio'),
-				'default' => '',
-				'selector' => '{{WRAPPER}} .bt-product-item--name',
+				'name' => 'product_title_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-product--title',
 			]
 		);
 
+		$this->add_control(
+			'product_title_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--title' => 'color: {{VALUE}};',
+				],
+			]
+		);
 
+		// Typography & Color for Product Price
+		$this->add_control(
+			'product_price_style_heading',
+			[
+				'label' => esc_html__('Product Price', 'woozio'),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'product_price_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-product--price, {{WRAPPER}} .bt-product-showcase--item-content .bt-product--price .amount',
+			]
+		);
+
+		$this->add_control(
+			'product_price_color',
+			[
+				'label' => __('Price Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--price .woocommerce-Price-amount' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--price' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'product_regular_price_color',
+			[
+				'label' => __('Regular Price Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--price del .woocommerce-Price-amount' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		// Typography & Color for Product Category
+		$this->add_control(
+			'product_category_style_heading',
+			[
+				'label' => esc_html__('Product Category', 'woozio'),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'product_category_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-product--category',
+			]
+		);
+
+		$this->add_control(
+			'product_category_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--category' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		// Typography & Color for Product Short Description
+		$this->add_control(
+			'product_desc_style_heading',
+			[
+				'label' => esc_html__('Product Short Description', 'woozio'),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'product_desc_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-product--short-description',
+			]
+		);
+
+		$this->add_control(
+			'product_desc_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--short-description' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		// Typography & Color for Add to Cart Button
+		$this->add_control(
+			'add_to_cart_style_heading',
+			[
+				'label' => esc_html__('Add to Cart Button', 'woozio'),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'add_to_cart_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart, {{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart-variable',
+			]
+		);
+
+		$this->add_control(
+			'add_to_cart_text_color',
+			[
+				'label' => esc_html__('Text Color', 'woozio'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart, {{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart-variable' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'add_to_cart_bg_color',
+			[
+				'label' => esc_html__('Background Color', 'woozio'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart, {{WRAPPER}} .bt-product-showcase--item-content .bt-btn-add-to-cart-variable' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 	protected function register_controls()
@@ -307,6 +415,7 @@ class Widget_ProductShowcase extends Widget_Base
 					// 2. Get first image from product gallery, fallback to thumbnail if gallery is empty
 					$gallery_image_html = '';
 					$gallery_image_ids = $product->get_gallery_image_ids();
+
 					if (!empty($gallery_image_ids)) {
 						$first_gallery_image_id = $gallery_image_ids[0];
 						$gallery_image_html = wp_get_attachment_image($first_gallery_image_id, $thumbnail_size);
@@ -358,10 +467,14 @@ class Widget_ProductShowcase extends Widget_Base
 							</div>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-image">
-							<?php echo $product_thumbnail; ?>
+							<div class="bt-cover-image">
+								<?php echo $product_thumbnail; ?>
+							</div>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-image">
-							<?php echo $gallery_image_html; ?>
+							<div class="bt-cover-image">
+								<?php echo $gallery_image_html; ?>
+							</div>
 						</div>
 					</div>
 			<?php

@@ -130,6 +130,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 		 * Hook: woocommerce_after_single_variation.
 		 */
 		do_action('woocommerce_after_single_variation');
+
 		?>
 	<?php endif; ?>
 

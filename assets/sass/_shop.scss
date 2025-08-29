@@ -2080,7 +2080,7 @@
                 content: "" !important;
                 position: absolute;
                 top: 27% !important;
-                left: 30%;            
+                left: 27%;            
                 width: 16px;
                 height: 16px;
                 z-index: 9999;
@@ -2111,39 +2111,8 @@
             > * {
               display: none;
             }
-            button {
-              background: $color-primary;
-              color: #fff;
-              font-size: 0;
-              position: absolute;
-              bottom: 0;
-              right: 0;
-              width: 36px;
-              height: 36px;
-              max-width: 100%;
-              padding: 0;
-              border-radius: 0;
-              transition:
-                opacity 0.5s ease,
-                transform 0.5s ease;
+            .bt-btn-add-to-cart-variable{
               display: block;
-              display: none;
-              &.disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-              }
-              &::before {
-                content: "";
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 100%;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE4Ljc0MTQgMTcuMjI2OEwxNy42Mjc0IDYuMTg1MTZDMTcuNTkxMiA1Ljg3OTcgMTcuNDQzNyA1LjU5ODI5IDE3LjIxMzEgNS4zOTQ3N0MxNi45ODI1IDUuMTkxMjUgMTYuNjg0OSA1LjA3OTkgMTYuMzc3NCA1LjA4MjAzSDEzLjc1QzEzLjc1IDQuMDg3NDcgMTMuMzU0OSAzLjEzMzY0IDEyLjY1MTcgMi40MzAzOEMxMS45NDg0IDEuNzI3MTIgMTAuOTk0NiAxLjMzMjAzIDEwIDEuMzMyMDNDOS4wMDU0NiAxLjMzMjAzIDguMDUxNjMgMS43MjcxMiA3LjM0ODM3IDIuNDMwMzhDNi42NDUxMSAzLjEzMzY0IDYuMjUwMDIgNC4wODc0NyA2LjI1MDAyIDUuMDgyMDNIMy42MTk1NkMzLjMxMTk4IDUuMDc5OSAzLjAxNDQyIDUuMTkxMjUgMi43ODM4IDUuMzk0NzdDMi41NTMxNyA1LjU5ODI5IDIuNDA1NjkgNS44Nzk3IDIuMzY5NTYgNi4xODUxNkwxLjI1NTQ5IDE3LjIyNjhDMS4yMzUwOCAxNy40MDE4IDEuMjUxODggMTcuNTc5MSAxLjMwNDc5IDE3Ljc0NzFDMS4zNTc3IDE3LjkxNTIgMS40NDU1MyAxOC4wNzAxIDEuNTYyNTIgMTguMjAxOEMxLjY4MDM2IDE4LjMzNDEgMS44MjQ3NiAxOC40NCAxLjk4NjMgMTguNTEyN0MyLjE0Nzg0IDE4LjU4NTQgMi4zMjI4OCAxOC42MjMyIDIuNTAwMDIgMTguNjIzN0gxNy40OTM4QzE3LjY3MiAxOC42MjQxIDE3Ljg0ODIgMTguNTg2NyAxOC4wMTA5IDE4LjUxNEMxOC4xNzM2IDE4LjQ0MTMgMTguMzE5IDE4LjMzNDkgMTguNDM3NSAxOC4yMDE4QzE4LjU1NCAxOC4wNjk5IDE4LjY0MTIgMTcuOTE0OCAxOC42OTM2IDE3Ljc0NjhDMTguNzQ2IDE3LjU3ODggMTguNzYyMyAxNy40MDE2IDE4Ljc0MTQgMTcuMjI2OFpNMTAgMi41ODIwM0MxMC42NjMxIDIuNTgyMDMgMTEuMjk4OSAyLjg0NTQyIDExLjc2NzggMy4zMTQyNkMxMi4yMzY2IDMuNzgzMSAxMi41IDQuNDE4OTkgMTIuNSA1LjA4MjAzSDcuNTAwMDJDNy41MDAwMiA0LjQxODk5IDcuNzYzNDEgMy43ODMxIDguMjMyMjYgMy4zMTQyNkM4LjcwMTEgMi44NDU0MiA5LjMzNjk4IDIuNTgyMDMgMTAgMi41ODIwM1pNMi41MDAwMiAxNy4zNzM3TDMuNjE5NTYgNi4zMzIwM0g2LjI1MDAyVjguMjA3MDNDNi4yNTAwMiA4LjM3Mjc5IDYuMzE1ODcgOC41MzE3NiA2LjQzMzA4IDguNjQ4OTdDNi41NTAyOSA4Ljc2NjE4IDYuNzA5MjYgOC44MzIwMyA2Ljg3NTAyIDguODMyMDNDNy4wNDA3OCA4LjgzMjAzIDcuMTk5NzUgOC43NjYxOCA3LjMxNjk2IDguNjQ4OTdDNy40MzQxOCA4LjUzMTc2IDcuNTAwMDIgOC4zNzI3OSA3LjUwMDAyIDguMjA3MDNWNi4zMzIwM0gxMi41VjguMjA3MDNDMTIuNSA4LjM3Mjc5IDEyLjU2NTkgOC41MzE3NiAxMi42ODMxIDguNjQ4OTdDMTIuODAwMyA4Ljc2NjE4IDEyLjk1OTMgOC44MzIwMyAxMy4xMjUgOC44MzIwM0MxMy4yOTA4IDguODMyMDMgMTMuNDQ5OCA4Ljc2NjE4IDEzLjU2NyA4LjY0ODk3QzEzLjY4NDIgOC41MzE3NiAxMy43NSA4LjM3Mjc5IDEzLjc1IDguMjA3MDNWNi4zMzIwM0gxNi4zODY3TDE3LjQ5MzggMTcuMzczN0gyLjUwMDAyWiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==");
-              }
             }
           }
           .bt-attributes-wrap {
@@ -2193,6 +2162,9 @@
                   &.active {
                     text-decoration: underline;
                     text-underline-offset: 4px;
+                  }
+                  &.disabled {
+                    pointer-events: none;
                   }
                 }
                 &.bt-value-color {
@@ -2254,6 +2226,9 @@
                         border-style: solid;
                         border-color: #333 transparent transparent transparent;
                       }
+                    }
+                    &.disabled {
+                      pointer-events: none;
                     }
                     &:hover {
                       label {

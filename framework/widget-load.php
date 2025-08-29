@@ -77,6 +77,7 @@ class ElementorWidgets
 			'mini-wishlist',
 			'tiktok-shop-slider',
 			'hotspot-product',
+			'hotspot-product-normal',
 			'product-testimonial',
 			'product-testimonial-slider',
 			'testimonial-slider',
@@ -212,6 +213,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MiniWishlist\Widget_MiniWishlist());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TikTokShopSlider\Widget_TikTokShopSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\HotspotProduct\Widget_HotspotProduct());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\HotspotProductNormal\Widget_HotspotProductNormal());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonial\Widget_ProductTestimonial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonialSlider\Widget_ProductTestimonialSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialSlider\Widget_TestimonialSlider());

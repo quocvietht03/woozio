@@ -245,8 +245,14 @@
 
 						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
-							console.log('bt-product-add-to-cart-variable');
-							$(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable').removeClass('disabled').attr('data-variation', variationId);
+							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
+							$addToCartBtn.removeClass('disabled').attr('data-variation', variationId);
+							
+							// Handle quantity controls - remove old handler first
+							$(this).closest('.variations_form').find('.quantity .qty').off('change.updateQuantity').on('change.updateQuantity', function () {
+								var newQuantity = parseInt($(this).val()) || 1;
+								$addToCartBtn.attr('data-product-quantity', newQuantity);
+							});
 						}
 						// Load gallery
 						var param_ajax = {
@@ -373,7 +379,7 @@
 					var valueItem = $(this).data('value');
 					var attributesItem = $(this).closest('.bt-attributes--item');
 					var attributeName = attributesItem.data('attribute-name');
-					var options = $('select#' + attributeName + ' option');
+					var options = $(this).closest('.variations_form').find('select#' + attributeName + ' option');
 					var optionExists = false;
 					options.each(function () {
 						if ($(this).val() == valueItem) {
@@ -2289,14 +2295,22 @@
 	function WoozioAddToCartVariable() {
 		$(document).on('click', '.bt-js-add-to-cart-variable', function (e) {
 			e.preventDefault();
-			if ($(this).hasClass('disabled')) {
+			
+			var $button = $(this);
+			var $form = $button.closest('.variations_form');
+			
+			if ($button.hasClass('disabled')) {
 				alert('Please select some product options before adding this product to your cart.');
 				return;
 			}
-			$(this).addClass('loading');
-			var product_id = $(this).data('product-id').toString();
-			var variation_id = $(this).data('variation');
-			var quantity = $(this).data('product-quantity');
+			
+			$button.addClass('loading');
+			
+			// Get the latest values from the variations form
+			var product_id = $button.data('product-id').toString();
+			var variation_id = $form.find('input.variation_id').val();
+			var quantity = $form.find('.quantity .qty').val() || 1;
+
 			var param_ajax = {
 				action: 'woozio_products_add_to_cart_variable',
 				product_id: product_id,
@@ -2313,11 +2327,16 @@
 				url: AJ_Options.ajax_url,
 				data: param_ajax,
 				beforeSend: function () {
-					
+
 				},
 				success: function (response) {
 					if (response.success) {
 						$('.bt-js-add-to-cart-variable').removeClass('loading');
+						if (variation_id) {
+							WoozioshowToast(variation_id, 'cart', 'add');
+						}else{
+							WoozioshowToast(product_id, 'cart', 'add');
+						}
 						// Update mini cart after successful add to cart
 						$.ajax({
 							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),

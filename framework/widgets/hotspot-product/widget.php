@@ -22,7 +22,7 @@ class Widget_HotspotProduct extends Widget_Base
 
     public function get_title()
     {
-        return __('Hotspot Product', 'woozio');
+        return __('Hotspot Product (slider)', 'woozio');
     }
 
     public function get_icon()
