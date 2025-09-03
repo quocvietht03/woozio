@@ -7,6 +7,7 @@ use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Utils;
 use Elementor\Group_Control_Image_Size;
+use Elementor\Group_Control_Typography;
 
 class Widget_HotspotProductNormal extends Widget_Base
 {
@@ -126,6 +127,29 @@ class Widget_HotspotProductNormal extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'image_position',
+            [
+                'label' => __('Image Position', 'woozio'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'row-reverse' => [
+                        'title' => __('Left', 'woozio'),
+                        'icon' => 'eicon-h-align-left',
+                    ],
+                    'row' => [
+                        'title' => __('Right', 'woozio'),
+                        'icon' => 'eicon-h-align-right',
+                    ],
+                ],
+                'default' => 'row',
+                'toggle' => false,
+                'label_block' => false,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product-normal' => 'flex-direction: {{VALUE}};',
+                ],
+            ]
+        );
 
         $repeater = new Repeater();
         $repeater->add_control(
@@ -227,10 +251,87 @@ class Widget_HotspotProductNormal extends Widget_Base
         );
         $this->end_controls_section();
     }
+    protected function register_style_content_section_controls()
+    {
+        $this->start_controls_section(
+            'section_style',
+            [
+                'label' => __('Style', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        $this->add_control(
+            'content_position',
+            [
+                'label' => __('Content Position', 'woozio'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __('Left', 'woozio'),
+                        'icon' => 'eicon-h-align-left',
+                    ],
+                    'center' => [
+                        'title' => __('Center', 'woozio'),
+                        'icon' => 'eicon-h-align-center',
+                    ],
+                    'right' => [
+                        'title' => __('Right', 'woozio'),
+                        'icon' => 'eicon-h-align-right',
+                    ],
+                ],
+                'default' => 'center',
+                'toggle' => false,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products' => 'text-align: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'sub_heading_color',
+            [
+                'label' => __('Sub Heading Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-sub-heading' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+			[
+				'name'     => 'sub_heading_typography',
+				'label'    => __('Typography', 'woozio'),
+				'default'  => '',
+                'selector' => '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-sub-heading',
+            ]
+        );
+        $this->add_control(
+            'heading_color',
+            [
+                'label' => __('Heading Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-heading' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'heading_typography',
+                'label' => __('Typography', 'woozio'),
+                'default'  => '',
+                'selector' => '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-heading',
+            ]
+        );
+        $this->end_controls_section();
+
+    }
 
     protected function register_controls()
     {
         $this->register_layout_section_controls();
+        $this->register_style_content_section_controls();
     }
 
     protected function render()
