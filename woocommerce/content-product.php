@@ -25,14 +25,11 @@ if (empty($product) || ! $product->is_visible()) {
 ?>
 <div <?php wc_product_class('woocommerce-loop-product', $product); ?>>
 	<div class="woocommerce-loop-product__thumbnail">
-		<div class="wc-cover-image">
-			<?php
+		<?php
 			do_action('woozio_woocommerce_template_loop_product_link_open');
 			do_action('woozio_woocommerce_template_loop_product_thumbnail');
 			do_action('woozio_woocommerce_template_loop_product_link_close');
-			?>
-
-		</div>
+		?>
 		<div class="woocommerce-product-sale-label">
 			<?php
 			do_action('woozio_woocommerce_show_product_loop_sale_flash');

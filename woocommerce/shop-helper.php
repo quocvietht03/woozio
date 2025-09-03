@@ -91,37 +91,39 @@ function woozio_woocommerce_single_product_meta()
 
 
 // custom product loop image
-add_action('woozio_woocommerce_template_loop_product_thumbnail', 'bt_woocommerce_template_loop_product_thumbnail', 10);
+add_action('woozio_woocommerce_template_loop_product_thumbnail', 'woozio_woocommerce_template_loop_product_thumbnail', 10);
 
-function bt_woocommerce_template_loop_product_thumbnail()
+function woozio_woocommerce_template_loop_product_thumbnail()
 {
     global $product;
-    $image_size = apply_filters('single_product_archive_thumbnail_size', 'woocommerce_thumbnail');
-    $image_id = $product->get_image_id();
-    $image_url = wp_get_attachment_image_url($image_id, $image_size);
+    $post_thumbnail_id = $product->get_image_id();
+    echo '<div class="bt-product-images-wrapper">';
+        if ($post_thumbnail_id) {
+            // Always show main image
+            $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
 
-    // Get gallery images
-    $gallery_image_ids = $product->get_gallery_image_ids();
+            // If there are gallery images, show the first one
+            $attachment_ids = $product->get_gallery_image_ids();
 
-    if ($image_url) {
-        echo '<div class="product-images-wrapper">';
+            if (!empty($attachment_ids) && isset($attachment_ids[0])) {
+                $html .= woozio_get_gallery_image_html( $attachment_ids[0], false, false );
+            } else {
+                // If no gallery images, show main image again
+                $html .= woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
+            }
 
-        // Always show main image
-        echo '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="woocommerce-loop-product__image main-image" />';
-
-        // If there are gallery images, show the first one
-        if (!empty($gallery_image_ids)) {
-            $second_image_url = wp_get_attachment_image_url($gallery_image_ids[0], $image_size);
-            echo '<img src="' . esc_url($second_image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="woocommerce-loop-product__image secondary-image" />';
+            echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
         } else {
-            // If no gallery images, show main image again
-            echo '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($product->get_name()) . '" class="woocommerce-loop-product__image secondary-image" />';
-        }
+            $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
+                'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
+                'woocommerce-product-gallery__image--placeholder';
+                $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
+                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+                $html .= '</div>';
 
-        echo '</div>';
-    } else {
-        echo '<img src="' . esc_url(wc_placeholder_img_src()) . '" alt="' . esc_attr__('Placeholder', 'woozio') . '" class="woocommerce-loop-product__image" />';
-    }
+            echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        }
+    echo '</div>';
 }
 
 add_action('woocommerce_cart_updated', 'woozio_redirect_after_add_to_cart');
@@ -3054,21 +3056,34 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
 
             // Only process if color is found and not already processed
             if (!empty($color_value) && !isset($color_variations_data[$color_value])) {
-                // Get main variation image
-                $main_image_id = $variation->get_image_id();
-                $main_image_url = '';
-                if ($main_image_id) {
-                    $main_image_url = wp_get_attachment_image_url($main_image_id, 'woocommerce_thumbnail');
-                }
+                $post_thumbnail_id = $variation->get_image_id();
+                $variable_images = '';
 
-                // Get variation gallery images
-                $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
-                $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
+                if ($post_thumbnail_id) {
+                    // Always show main image
+                    $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
 
-                // Get first gallery image
-                $first_gallery_image_url = '';
-                if (!empty($gallery_images) && isset($gallery_images[0])) {
-                    $first_gallery_image_url = wp_get_attachment_image_url($gallery_images[0], 'woocommerce_thumbnail');
+                    // If there are gallery images, show the first one
+                    $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
+                    $attachment_ids = $variation_gallery ? explode(',', $variation_gallery) : array();
+
+                    if (!empty($attachment_ids)  && isset($attachment_ids[0])) {
+                        $html .= woozio_get_gallery_image_html( $attachment_ids[0], false, false );
+                    } else {
+                        // If no gallery images, show main image again
+                        $html .= woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
+                    }
+
+                    $variable_image_html = apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                } else {
+                    $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
+                        'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
+                        'woocommerce-product-gallery__image--placeholder';
+                        $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
+                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+                        $html .= '</div>';
+
+                    $variable_image_html = apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
                 }
 
                 // Get color term info for display
@@ -3089,9 +3104,8 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                     'variation_id' => $variation_id,
                     'color_name' => $color_name,
                     'color_hex' => $color_hex,
-                    'main_image' => $main_image_url,
-                    'first_gallery_image' => $first_gallery_image_url,
-                    'has_gallery' => !empty($gallery_images)
+                    'variable_image_html' => $variable_image_html,
+                    'has_gallery' => !empty($variable_image_html)
                 );
             }
         }
