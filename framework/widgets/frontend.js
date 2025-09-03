@@ -1329,6 +1329,25 @@
 	const HotspotProductNormalHandler = function ($scope) {
 		const $hotspotProductNormal = $scope.find('.bt-elwg-hotspot-product-normal--default');
 		if ($hotspotProductNormal.length > 0) {
+			// Handle hotspot point clicks
+			const $hotspotPoints = $hotspotProductNormal.find('.bt-hotspot-point');
+			const $productItems = $hotspotProductNormal.find('.bt-hotspot-product-list__item');
+
+			$hotspotPoints.on('click', function (e) {
+				e.preventDefault();
+				const $this = $(this);
+				const productId = $this.data('product-id');
+
+				// Remove active state from all points and products
+				$hotspotPoints.removeClass('active');
+				$productItems.removeClass('active');
+
+				// Add active state to clicked point
+				$this.addClass('active');
+
+				// Show corresponding product
+				$productItems.filter(`[data-product-id="${productId}"]`).addClass('active');
+			});
 			const $variationForm = $hotspotProductNormal.find('.variations_form');
 			if ($variationForm.length > 0) {
 				$variationForm.find('.bt-attributes--item').each(function () {
@@ -1381,7 +1400,7 @@
 				});
 			});
 
-		    /* ajax add to cart */
+			/* ajax add to cart */
 			$hotspotProductNormal.find('.bt-button-add-set-to-cart').on('click', function (e) {
 				e.preventDefault();
 				const $this = $(this);
