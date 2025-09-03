@@ -309,22 +309,24 @@ class Widget_ItemHotspotProduct extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-?>
+
+        if (empty($settings['hotspot_image']['url'])) {
+            return;
+        }
+
+        ?>
         <div class="bt-elwg-item-hotspot-product--default">
             <div class="bt-item-hotspot-product">
                 <div class="bt-hotspot-product--image">
-                    <?php if (!empty($settings['hotspot_image']['url'])) : ?>
-                        <div class="bt-hotspot-image">
-                            <?php
-                            $attachment = wp_get_attachment_image_src($settings['hotspot_image']['id'], $settings['thumbnail_size']);
-                            if ($attachment) {
-                                echo '<img src="' . esc_url($attachment[0]) . '" alt="">';
+                    <div class="bt-hotspot-image">
+                        <?php
+                            if ($settings['hotspot_image']['id']) {
+                                echo wp_get_attachment_image ( $settings['hotspot_image']['id'], $settings['thumbnail_size'] );
                             } else {
-                                echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="">';
+                                echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="' . esc_html__( 'Awaiting product image', 'woozio' ) . '">';
                             }
-                            ?>
-                        </div>
-                    <?php endif; ?>
+                        ?>
+                    </div>
 
                     <?php if (!empty($settings['hotspot_items'])) : ?>
                         <div class="bt-hotspot-points">
@@ -351,11 +353,16 @@ class Widget_ItemHotspotProduct extends Widget_Base
                             $product = wc_get_product($item['id_product']);
                             if ($product) :
                             ?>
-                                <div class="bt-product-item-minimal <?php echo $index === 0 ? 'active' : ''; ?>"
-                                    data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                <div class="bt-product-item-minimal <?php echo $index === 0 ? 'active' : ''; ?>" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                     <div class="bt-product-thumbnail">
                                         <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                            <?php echo get_the_post_thumbnail($item['id_product'], 'medium'); ?>
+                                            <?php 
+                                                if ( has_post_thumbnail($item['id_product']) ) {
+                                                    echo get_the_post_thumbnail($item['id_product'], 'thumbnail'); 
+                                                } else {
+                                                    echo '<img src="'. esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ) . '" alt="'. esc_html__( 'Awaiting product image', 'woozio' ) .'" class="wp-post-image" />';
+                                                }
+                                            ?>
                                         </a>
                                     </div>
                                     <div class="bt-product-content">

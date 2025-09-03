@@ -45,7 +45,7 @@ $attachment_ids = $product->get_gallery_image_ids();
 
                     if(!empty($attachment_ids)) {
                         foreach ( $attachment_ids as $key => $attachment_id ) {
-                            $html .= woozio_get_gallery_image_html( $post_thumbnail_id, true, true );
+                            $html .= woozio_get_gallery_image_html( $attachment_id, true, true );
                         }
                     }
                     echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
@@ -75,7 +75,7 @@ $attachment_ids = $product->get_gallery_image_ids();
 				'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
 				'woocommerce-product-gallery__image--placeholder';
                 $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
                 $html .= '</div>';
 
             echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped

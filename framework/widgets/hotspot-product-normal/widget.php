@@ -337,9 +337,12 @@ class Widget_HotspotProductNormal extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        $attachment = wp_get_attachment_image_src($settings['hotspot_image']['id'], $settings['thumbnail_size']);
-        global $product;
-?>
+        
+        if (empty($settings['hotspot_image']['url'])) {
+            return;
+        }
+        
+        ?>
         <div class="bt-elwg-hotspot-product-normal--default">
             <div class="bt-hotspot-product-normal">
                 <div class="bt-hotspot-product-normal__list-products">
@@ -361,7 +364,13 @@ class Widget_HotspotProductNormal extends Widget_Base
                                             <?php echo $index + 1; ?>
                                         </div>
                                         <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
-                                            <?php echo get_the_post_thumbnail($item['id_product'], 'thumbnail'); ?>
+                                            <?php 
+                                                if ( has_post_thumbnail($item['id_product']) ) {
+                                                    echo get_the_post_thumbnail($item['id_product'], 'thumbnail'); 
+                                                } else {
+                                                    echo '<img src="'. esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ) . '" alt="'. esc_html__( 'Awaiting product image', 'woozio' ) .'" class="wp-post-image" />';
+                                                }
+                                            ?>
                                         </a>
                                         <div class="bt-product-content">
                                             <div class="bt-product-content__inner">
@@ -406,12 +415,11 @@ class Widget_HotspotProductNormal extends Widget_Base
                     <?php if (!empty($settings['hotspot_image']['url'])) : ?>
                         <div class="bt-hotspot-image" style="position: relative;">
                             <?php
-                            $attachment = wp_get_attachment_image_src($settings['hotspot_image']['id'], $settings['thumbnail_size']);
-                            if ($attachment) {
-                                echo '<img src="' . esc_url($attachment[0]) . '" alt="">';
-                            } else {
-                                echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="">';
-                            }
+                                if ($settings['hotspot_image']['id']) {
+                                    echo wp_get_attachment_image ( $settings['hotspot_image']['id'], $settings['thumbnail_size'] );
+                                } else {
+                                    echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="' . esc_html__( 'Awaiting product image', 'woozio' ) . '">';
+                                }
                             ?>
                             <?php if (!empty($settings['hotspot_items'])) : ?>
                                 <div class="bt-hotspot-points">

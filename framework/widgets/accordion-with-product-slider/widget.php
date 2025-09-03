@@ -538,43 +538,55 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                                         if (!empty($accordion_item['accordion_products'])) {
                                             $product_id = $accordion_item['accordion_products'];
                                             $product = wc_get_product($product_id);
-                                            if ($product) :
-                                        ?>
-                                                <div class="bt-product-item">
-
-                                                    <div class="bt-product-image bt-cover-image">
+                                            if ($product) {
+                                                ?>
+                                                    <div class="bt-product-item">
                                                         <?php
-                                                        $attachment = wp_get_attachment_image_src($product->get_image_id(), $settings['product_thumbnail_size']);
-                                                        if ($attachment) {
-                                                            echo '<img src="' . esc_url($attachment[0]) . '" alt="' . esc_attr($product->get_name()) . '">';
-                                                        } else {
-                                                            echo wp_kses_post($product->get_image());
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                    <div class="bt-product-content">
-                                                        <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                        <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
-                                                        <div class="bt-product-add-to-cart">
-                                                            <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                                <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                            <?php else : ?>
-                                                                <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
+                                                            $post_thumbnail_id = $product->get_image_id();
+                                                            
+                                                            if ($post_thumbnail_id) {
+                                                                $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
 
-                                                </div>
-                                        <?php
-                                            endif;
+                                                                echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                                            } else {
+                                                                $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
+                                                                    'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
+                                                                    'woocommerce-product-gallery__image--placeholder';
+                                                                    $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
+                                                                    $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
+                                                                    $html .= '</div>';
+
+                                                                echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                                            }
+                                                        ?>
+                                                        <div class="bt-product-content">
+                                                            <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
+                                                            <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                            <div class="bt-product-add-to-cart">
+                                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                                                <?php else : ?>
+                                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                <?php
+                                            }
                                         }else{
-                                        ?>
-                                        <div class="bt-product-item">
-                                            <div class="bt-product-image bt-cover-image">
-                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder-image.jpg" alt="Product Placeholder">
-                                            </div>
-                                        </div>
-                                        <?php
+                                            ?>
+                                                <div class="bt-product-item">
+                                                    <?php 
+                                                        $wrapper_classname = 'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder';
+                                                        $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
+                                                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
+                                                        $html .= '</div>';
+
+                                                        echo apply_filters( 'woocommerce_placeholder_product_image_thumbnail_html', $html ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                                    ?>
+                                                </div>
+                                            <?php
                                         }
                                         ?>
                                 </div>

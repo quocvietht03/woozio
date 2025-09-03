@@ -118,7 +118,7 @@ function woozio_woocommerce_template_loop_product_thumbnail()
                 'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
                 'woocommerce-product-gallery__image--placeholder';
                 $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
                 $html .= '</div>';
 
             echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
@@ -3080,7 +3080,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                         'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
                         'woocommerce-product-gallery__image--placeholder';
                         $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woocommerce' ) );
+                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
                         $html .= '</div>';
 
                     $variable_image_html = apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
