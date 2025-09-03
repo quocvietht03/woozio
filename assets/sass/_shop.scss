@@ -2073,14 +2073,14 @@
             &.loading {
               color: transparent !important;
               opacity: 0.5;
-              &::before{
+              &::before {
                 opacity: 0;
               }
               &::after {
                 content: "" !important;
                 position: absolute;
                 top: 27% !important;
-                left: 27%;            
+                left: 27%;
                 width: 16px;
                 height: 16px;
                 z-index: 9999;
@@ -2111,7 +2111,7 @@
             > * {
               display: none;
             }
-            .bt-btn-add-to-cart-variable{
+            .bt-btn-add-to-cart-variable {
               display: block;
             }
           }
@@ -5155,7 +5155,8 @@
           flex-wrap: wrap;
           gap: 10px 40px;
         }
-        .col-6, .col-4 {
+        .col-6,
+        .col-4 {
           @media (min-width: $break-md) {
             width: calc(50% - 20px);
           }
@@ -6177,7 +6178,7 @@
         &::after {
           content: "" !important;
           position: absolute;
-          top: 30% !important;
+          top: 34% !important;
           left: 46%;
           width: 16px;
           height: 16px;
@@ -6190,6 +6191,9 @@
           animation-iteration-count: infinite;
           animation-timing-function: linear;
         }
+      }
+      &.added {
+        display: none;
       }
     }
   }
