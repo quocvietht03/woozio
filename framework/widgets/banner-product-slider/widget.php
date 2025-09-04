@@ -6,6 +6,8 @@ use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Image_Size;
+use Elementor\Utils;
+use Elementor\Repeater;
 
 class Widget_BannerProductSlider extends Widget_Base
 {
@@ -44,7 +46,7 @@ class Widget_BannerProductSlider extends Widget_Base
             ]
         );
 
-        $repeater = new \Elementor\Repeater();
+        $repeater = new Repeater();
 
         $repeater->add_control(
             'banner_image',
@@ -52,7 +54,7 @@ class Widget_BannerProductSlider extends Widget_Base
                 'label' => __('Banner Image', 'woozio'),
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
-                    'url' => \Elementor\Utils::get_placeholder_image_src(),
+                    'url' => Utils::get_placeholder_image_src(),
                 ],
             ]
         );
@@ -76,25 +78,25 @@ class Widget_BannerProductSlider extends Widget_Base
                 'default' => [
                     [
                         'banner_image' => [
-                            'url' => \Elementor\Utils::get_placeholder_image_src(),
+                            'url' => Utils::get_placeholder_image_src(),
                         ],
                         'product' => '',
                     ],
                     [
                         'banner_image' => [
-                            'url' => \Elementor\Utils::get_placeholder_image_src(),
+                            'url' => Utils::get_placeholder_image_src(),
                         ],
                         'product' => '',
                     ],
                     [
                         'banner_image' => [
-                            'url' => \Elementor\Utils::get_placeholder_image_src(),
+                            'url' => Utils::get_placeholder_image_src(),
                         ],
                         'product' => '',
                     ],
                     [
                         'banner_image' => [
-                            'url' => \Elementor\Utils::get_placeholder_image_src(),
+                            'url' => Utils::get_placeholder_image_src(),
                         ],
                         'product' => '',
                     ],
@@ -723,12 +725,16 @@ class Widget_BannerProductSlider extends Widget_Base
                             <div class="bt-banner-product-slider--item">
                                 <div class="bt-banner-product-slider--image">
                                     <div class="bt-cover-image">
-                                        <?php if (!empty($item['banner_image']['url'])) :
-                                            $attachment = wp_get_attachment_image_src($item['banner_image']['id'], $settings['thumbnail_size']);
-                                            $image_url = $attachment ? $attachment[0] : $item['banner_image']['url'];
-                                            ?>
-                                            <img src="<?php echo esc_url($image_url); ?>" alt="" />
-                                        <?php endif; ?>
+                                        <?php
+                                        if (!empty($item['banner_image']['id'])) {
+                                            echo wp_get_attachment_image($item['banner_image']['id'], $settings['thumbnail_size']);
+                                        } else {
+                                            if (!empty($item['banner_image']['url'])) {
+                                                echo '<img src="' . esc_url($item['banner_image']['url']) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
+                                            } else {
+                                                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
+                                            }
+                                        } ?>
                                     </div>
                                 </div>
                                 <?php
@@ -740,7 +746,13 @@ class Widget_BannerProductSlider extends Widget_Base
                                                 data-product-id="<?php echo esc_attr($item['product']); ?>">
                                                 <div class="bt-product-thumbnail">
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                        <?php echo get_the_post_thumbnail($item['product'], 'medium'); ?>
+                                                        <?php
+                                                        if (has_post_thumbnail($item['product'])) {
+                                                            echo get_the_post_thumbnail($item['product'], 'thumbnail');
+                                                        } else {
+                                                            echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
+                                                        }
+                                                        ?>
                                                     </a>
                                                 </div>
                                                 <div class="bt-product-content">

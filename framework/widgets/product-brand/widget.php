@@ -9,6 +9,7 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Utils;
 
 class Widget_ProductBrand extends Widget_Base
 {
@@ -308,17 +309,20 @@ class Widget_ProductBrand extends Widget_Base
 					?>
 						<div class="bt-product-brand--item">
 							<a href="<?php echo esc_url($brand_url); ?>" class="bt-product-brand--link">
-								<?php if ($image) : ?>
 									<div class="bt-product-brand--image">
-										<?php if ($is_svg) :
+										<?php if ($is_svg) {
 											// Output SVG content
 											$svg_content = file_get_contents($image);
 											echo '<div class="bt-svg">' . $svg_content . '</div>';
-										else : ?>
-											<img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($brand->name); ?>">
-										<?php endif; ?>
+										} else {
+											if (!empty($image)) {
+												echo wp_get_attachment_image($thumbnail_id, 'medium');
+											} else {
+												echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="'. esc_html__('Awaiting brand image', 'woozio') . '">';
+											}
+										}
+										?>
 									</div>
-								<?php endif; ?>
 							</a>
 						</div>
 					<?php

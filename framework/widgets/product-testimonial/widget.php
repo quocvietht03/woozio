@@ -544,14 +544,19 @@ class Widget_ProductTestimonial extends Widget_Base
                         <?php if (!empty($settings['testimonial_items'])) : ?>
                             <?php foreach ($settings['testimonial_items'] as $item) : ?>
                                 <div class="bt-product-testimonial--product swiper-slide">
-                                    <?php if (!empty($item['testimonial_image']['url'])) :
-                                        $attachment = wp_get_attachment_image_src($item['testimonial_image']['id'], $settings['thumbnail_size']);
-                                        $image_url = $attachment ? $attachment[0] : $item['testimonial_image']['url'];
-                                    ?>
-                                        <div class="bt-image-cover">
-                                            <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($item['testimonial_author']); ?>">
-                                        </div>
-                                    <?php endif; ?>
+                                    <div class="bt-image-cover">
+                                        <?php
+                                        if (!empty($item['testimonial_image']['id'])) {
+                                            echo wp_get_attachment_image($item['testimonial_image']['id'], $settings['thumbnail_size']);
+                                        } else {
+                                            if (!empty($item['testimonial_image']['url'])) {
+                                                echo '<img src="' . esc_url($item['testimonial_image']['url']) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                            } else {
+                                                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
                                     <?php if (!empty($item['id_product'])) :
                                         $product = wc_get_product($item['id_product']);
                                         if ($product) : ?>
@@ -559,7 +564,13 @@ class Widget_ProductTestimonial extends Widget_Base
                                                 data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                                 <div class="bt-product-thumbnail">
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                        <?php echo get_the_post_thumbnail($item['id_product'], 'medium'); ?>
+                                                        <?php
+                                                        if (has_post_thumbnail($item['id_product'])) {
+                                                            echo get_the_post_thumbnail($item['id_product'], 'thumbnail');
+                                                        } else {
+                                                            echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
+                                                        }
+                                                        ?>
                                                     </a>
                                                 </div>
                                                 <div class="bt-product-content">

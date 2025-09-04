@@ -410,7 +410,11 @@ class Widget_ProductShowcase extends Widget_Base
 					$product_link = get_permalink($product_id);
 
 					// 1. Get thumbnail image
-					$product_thumbnail = get_the_post_thumbnail($product_id, $thumbnail_size);
+					if (has_post_thumbnail($product_id)) {
+						$product_thumbnail = get_the_post_thumbnail($product_id, $thumbnail_size);
+					} else {
+						$product_thumbnail = '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
+					}
 
 					// 2. Get first image from product gallery, fallback to thumbnail if gallery is empty
 					$gallery_image_html = '';

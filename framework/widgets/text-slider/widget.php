@@ -183,9 +183,11 @@ class Woozio_TextSlider extends Widget_Base
             <ul class="bt-text-slider swiper-wrapper">
                 <?php foreach ($settings['list'] as $index => $item) { ?>
                     <li class="bt-text--item swiper-slide">
-                        <?php if (!empty($settings['spacing_image'])) { ?>
-                            <img src="<?php echo esc_url($settings['spacing_image']['url']); ?>" alt="" />
-                        <?php } ?>
+                        <?php if (!empty($settings['spacing_image']['id'])) { 
+                            echo wp_get_attachment_image($settings['spacing_image']['id'], 'thumbnail');
+                        } else {
+                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting spacing image', 'woozio') . '">';
+                        } ?>
                         <?php echo '<span>' . $item['text_item'] . '</span>'; ?>
                     </li>
                 <?php } ?>

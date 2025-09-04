@@ -2263,7 +2263,7 @@
 				const productContainer = $(this).closest('.woocommerce-loop-product');
 				const colorVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
 				const colorVariations = colorVariationsContainer.data('color-variations');
-
+				
 				// Check if colorVariations exists and is an object
 				if (colorVariations && typeof colorVariations === 'object') {
 					// Find the matching color variation
@@ -2273,8 +2273,7 @@
 
 					if (matchingColor && colorVariations[matchingColor]) {
 						const colorData = colorVariations[matchingColor];
-						productContainer.find('.product-images-wrapper .main-image').attr('src', colorData.main_image);
-						productContainer.find('.product-images-wrapper .secondary-image').attr('src', colorData.first_gallery_image);
+						productContainer.find('.bt-product-images-wrapper').html(colorData.variable_image_html);
 
 					} else {
 						console.log('No matching color found for:', valueColor);

@@ -4,6 +4,7 @@ namespace WoozioElementorWidgets\Widgets\IconPayment;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
+use Elementor\Utils;
 
 class Widget_IconPayment extends Widget_Base
 {
@@ -122,7 +123,13 @@ class Widget_IconPayment extends Widget_Base
 					}
 					?>
 					<div class="bt-icon-payment--image">
-						<img src="<?php echo esc_url($image['url']); ?>" alt="<?php echo esc_attr($image['alt'] ?? ''); ?>">
+						<?php
+						if (!empty($image['id'])) {
+							echo wp_get_attachment_image($image['id'], 'thumbnail');
+						} else {
+							echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting payment icon', 'woozio') . '">';
+						}
+						?>
 					</div>
 				<?php endforeach; ?>
 			</div>

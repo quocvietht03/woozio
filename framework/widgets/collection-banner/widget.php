@@ -145,11 +145,21 @@ class Widget_CollectionBanner extends Widget_Base
 					],
 				],
 				'title_field' => '{{{ title }}}',
-                'min_items' => 2,
-                'max_items' => 4,
+				'min_items' => 2,
+				'max_items' => 4,
 			]
 		);
 
+		$this->add_group_control(
+			Group_Control_Image_Size::get_type(),
+			[
+				'name' => 'thumbnail',
+				'label' => __('Image Size', 'woozio'),
+				'show_label' => true,
+				'default' => 'medium_large',
+				'exclude' => ['custom'],
+			]
+		);
 		$this->end_controls_section();
 	}
 
@@ -359,18 +369,18 @@ class Widget_CollectionBanner extends Widget_Base
 		if (empty($collection_items)) {
 			return;
 		}
-		
+
 		// Get total number of items
 		$total_items = count($collection_items);
 ?>
 		<div class="bt-elwg-collection-banner--default">
 			<div class="bt-collection-banner bt-items-<?php echo esc_attr($total_items); ?>" data-total-items="<?php echo esc_attr($total_items); ?>">
-				<?php 
+				<?php
 				$has_active_item = false; // Track if we already have an active item
 				foreach ($collection_items as $index => $item) :
 					$target = $item['button_link']['is_external'] ? ' target="_blank"' : '';
 					$nofollow = $item['button_link']['nofollow'] ? ' rel="nofollow"' : '';
-					
+
 					// Only set active if this is the first item with is_default_active = yes
 					$is_active = '';
 					if ($item['is_default_active'] === 'yes' && !$has_active_item) {
@@ -380,9 +390,16 @@ class Widget_CollectionBanner extends Widget_Base
 				?>
 					<div class="collection-item <?php echo esc_attr($is_active); ?>" data-index="<?php echo esc_attr($index); ?>">
 						<div class="collection-image">
-							<?php if (!empty($item['image']['url'])) : ?>
-								<img src="<?php echo esc_url($item['image']['url']); ?>" alt="<?php echo esc_attr($item['title']); ?>">
-							<?php endif; ?>
+							<?php
+							if (!empty($item['image']['id'])) {
+								echo wp_get_attachment_image($item['image']['id'], $settings['thumbnail_size']);
+							} else {
+								if (!empty($item['image']['url'])) {
+									echo '<img src="' . esc_url($item['image']['url']) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
+								} else {
+									echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
+								}
+							} ?>
 						</div>
 						<div class="collection-content">
 							<?php if (!empty($item['title'])) : ?>
@@ -392,7 +409,7 @@ class Widget_CollectionBanner extends Widget_Base
 								<p><?php echo esc_html($item['description']); ?></p>
 							<?php endif; ?>
 							<?php if (!empty($item['button_text']) && !empty($item['button_link']['url'])) : ?>
-								<a href="<?php echo esc_url($item['button_link']['url']); ?>" class="collection-button"<?php echo $target . $nofollow; ?>>
+								<a href="<?php echo esc_url($item['button_link']['url']); ?>" class="collection-button" <?php echo $target . $nofollow; ?>>
 									<?php echo esc_html($item['button_text']); ?>
 								</a>
 							<?php endif; ?>

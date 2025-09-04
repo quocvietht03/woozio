@@ -725,8 +725,10 @@ class Widget_TikTokShopSlider extends Widget_Base
 
             // Product image
             echo '<div class="bt-cover-image">';
-            if ($image_url) {
-                echo '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($product ? $product->get_name() : __('TikTok Shop Product', 'woozio')) . '">';
+            if (!empty($item['tiktok_image']['id'])) {
+                echo wp_get_attachment_image($item['tiktok_image']['id'], $settings['thumbnail_size']);
+            } else {
+                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting TikTok image', 'woozio') . '">';
             }
             echo '</div>';
             if ($has_video) {
