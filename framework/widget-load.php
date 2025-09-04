@@ -52,6 +52,7 @@ class ElementorWidgets
 			'site-copyright',
 			'site-notification',
 			'instagram-posts',
+			'banner-product-slider',
 			'page-breadcrumb',
 			'post-loop-item',
 			'post-loop-item-style-1',
@@ -185,6 +186,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteSocial\Widget_SiteSocial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteCopyright\Widget_SiteCopyright());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItem\Widget_PostLoopItem());

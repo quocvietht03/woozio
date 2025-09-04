@@ -411,20 +411,21 @@ class Widget_OurStore extends Widget_Base
                 <div class="bt-store">
                     <?php foreach ($settings['store_list'] as $store) : ?>
                         <div class="bt-store--item">
-                            <?php if (!empty($store['image']['url'])) : ?>
-                                <div class="bt-store--image">
-                                    <div class="bt-cover-image">
-                                        <?php
-                                        $attachment = wp_get_attachment_image_src($store['image']['id'], $settings['thumbnail_size']);
-                                        if ($attachment) {
-                                            echo '<img src="' . esc_url($attachment[0]) . '" alt="">';
+                            <div class="bt-store--image">
+                                <div class="bt-cover-image">
+                                    <?php
+                                    if (!empty($store['image']['id'])) {
+                                        echo wp_get_attachment_image($store['image']['id'], $settings['thumbnail_size']);
+                                    } else {
+                                        if (!empty($store['image']['url'])) {
+                                            echo '<img src="' . esc_url($store['image']['url']) . '" alt="' . esc_html__('Awaiting store image', 'woozio') . '">';
                                         } else {
-                                            echo '<img src="' . esc_url($store['image']['url']) . '" alt="">';
+                                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting store image', 'woozio') . '">';
                                         }
-                                        ?>
-                                    </div>
+                                    }
+                                    ?>
                                 </div>
-                            <?php endif; ?>
+                            </div>
                             <div class="bt-store--info">
                                 <?php if (!empty($store['name'])) : ?>
                                     <h3 class="bt-store--name"><?php echo esc_html($store['name']); ?></h3>

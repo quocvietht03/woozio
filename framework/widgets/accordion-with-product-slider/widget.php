@@ -167,7 +167,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                 'type' => Controls_Manager::URL,
                 'placeholder' => __('https://your-link.com', 'woozio'),
                 'default' => [
-                    'url' => '',
+                    'url' => '#',
                     'is_external' => true,
                     'nofollow' => true,
                 ],
@@ -231,44 +231,44 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                 'exclude' => ['custom'],
             ]
         );
-	$this->add_control(
-			'slider_offset_sides',
-			[
-				'label' => __('Offset Sides', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'none',
-				'options' => [
-					'none' => __('None', 'woozio'),
-					'right' => __('Right', 'woozio'),
-				],
-			]
-		);
+        $this->add_control(
+            'slider_offset_sides',
+            [
+                'label' => __('Offset Sides', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'none',
+                'options' => [
+                    'none' => __('None', 'woozio'),
+                    'right' => __('Right', 'woozio'),
+                ],
+            ]
+        );
 
-		$this->add_responsive_control(
-			'slider_offset_width',
-			[
-				'label' => __('Offset Width', 'woozio'),
-				'type' => Controls_Manager::SLIDER,
-				'size_units' => [ 'px' ],
-				'default' => [
-					'size' => 80,
-					'unit' => 'px',
-				],
-				'range' => [
-					'px' => [
-						'min' => 0,
-						'max' => 100,
-					],
-				],
-				'selectors' => [
-					'{{WRAPPER}} .bt-elwg-accordion-with-product-slider--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
-				],
-				'render_type' => 'ui',
-				'condition' => [
-					'slider_offset_sides!' => 'none',
-				],
-			]
-		);
+        $this->add_responsive_control(
+            'slider_offset_width',
+            [
+                'label' => __('Offset Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'default' => [
+                    'size' => 80,
+                    'unit' => 'px',
+                ],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-elwg-accordion-with-product-slider--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+                ],
+                'render_type' => 'ui',
+                'condition' => [
+                    'slider_offset_sides!' => 'none',
+                ],
+            ]
+        );
         $this->end_controls_section();
     }
 
@@ -287,7 +287,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             [
                 'label' => __('Sub Title', 'woozio'),
                 'type' => Controls_Manager::HEADING,
-              
+
             ]
         );
 
@@ -392,49 +392,20 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                 'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-description',
             ]
         );
-
-      
-
-        $this->end_controls_section();
-
-        // Product Slider Style Section
-        $this->start_controls_section(
-            'section_product_slider_style',
-            [
-                'label' => __('Product Slider Style', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
         $this->add_control(
-            'product_title_heading',
+            'line_active_heading',
             [
-                'label' => __('Product Title', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-            ]
-        );
-
-        $this->add_control(
-            'product_title_color',
-            [
-                'label' => __('Title Color', 'woozio'),
+                'label' => __('Line Active', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-nav-item.active:before' => 'background: {{VALUE}};',
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-accordion-left .bt-accordion-nav .bt-accordion-nav-item ' => 'border-color: {{VALUE}}1A;',
                 ],
             ]
         );
 
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'product_title_typography',
-                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title',
-            ]
-        );
 
         $this->end_controls_section();
-
         // Button Style Section
         $this->start_controls_section(
             'section_button_style',
@@ -480,6 +451,43 @@ class Widget_AccordionWithProductSlider extends Widget_Base
         );
 
         $this->end_controls_section();
+        // Product Slider Style Section
+        $this->start_controls_section(
+            'section_product_slider_style',
+            [
+                'label' => __('Product Slider Style', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'product_title_heading',
+            [
+                'label' => __('Product Title', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+            ]
+        );
+
+        $this->add_control(
+            'product_title_color',
+            [
+                'label' => __('Title Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'product_title_typography',
+                'selector' => '{{WRAPPER}} .bt-accordion-with-product-slider .bt-product-slider-right .bt-product-item .bt-product-content .bt-product-title',
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     protected function register_controls()
@@ -505,12 +513,12 @@ class Widget_AccordionWithProductSlider extends Widget_Base
             <div class="bt-accordion-with-product-slider">
                 <div class="bt-accordion-left">
                     <?php if (!empty($settings['heading'])) : ?>
-                    <div class="bt-accordion-heading">  
-                        <?php if (!empty($settings['sub_heading'])) : ?>
-                        <p class="bt-accordion-sub-title"><?php echo esc_html($settings['sub_heading']); ?></p>
-                        <?php endif; ?>
-                        <h2 class="bt-accordion-title"><?php echo esc_html($settings['heading']); ?></h2>
-                    </div>
+                        <div class="bt-accordion-heading">
+                            <?php if (!empty($settings['sub_heading'])) : ?>
+                                <p class="bt-accordion-sub-title"><?php echo esc_html($settings['sub_heading']); ?></p>
+                            <?php endif; ?>
+                            <h2 class="bt-accordion-title"><?php echo esc_html($settings['heading']); ?></h2>
+                        </div>
                     <?php endif; ?>
                     <div class="bt-accordion-nav">
                         <?php foreach ($settings['accordion_items'] as $index => $item) : ?>
@@ -523,9 +531,9 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                         <?php endforeach; ?>
                     </div>
                     <?php if (!empty($settings['button_text']) && !empty($settings['button_link']['url'])) : ?>
-                    <div class="bt-accordion-button">
-                        <a href="<?php echo esc_url($settings['button_link']['url']); ?>" class="bt-button"><?php echo esc_html($settings['button_text']); ?></a>
-                    </div>
+                        <div class="bt-accordion-button">
+                            <a href="<?php echo esc_url($settings['button_link']['url']); ?>" class="bt-button"><?php echo esc_html($settings['button_text']); ?></a>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -534,61 +542,61 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                         <div class="swiper-wrapper">
                             <?php foreach ($settings['accordion_items'] as $accordion_index => $accordion_item) : ?>
                                 <div class="swiper-slide">
-                                        <?php
-                                        if (!empty($accordion_item['accordion_products'])) {
-                                            $product_id = $accordion_item['accordion_products'];
-                                            $product = wc_get_product($product_id);
-                                            if ($product) {
-                                                ?>
-                                                    <div class="bt-product-item">
-                                                        <?php
-                                                            $post_thumbnail_id = $product->get_image_id();
-                                                            
-                                                            if ($post_thumbnail_id) {
-                                                                $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
-
-                                                                echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
-                                                            } else {
-                                                                $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
-                                                                    'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
-                                                                    'woocommerce-product-gallery__image--placeholder';
-                                                                    $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                                                                    $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
-                                                                    $html .= '</div>';
-
-                                                                echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
-                                                            }
-                                                        ?>
-                                                        <div class="bt-product-content">
-                                                            <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                            <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
-                                                            <div class="bt-product-add-to-cart">
-                                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                                <?php else : ?>
-                                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
+                                    <?php
+                                    if (!empty($accordion_item['accordion_products'])) {
+                                        $product_id = $accordion_item['accordion_products'];
+                                        $product = wc_get_product($product_id);
+                                        if ($product) {
+                                    ?>
+                                            <div class="bt-product-item">
                                                 <?php
-                                            }
-                                        }else{
-                                            ?>
-                                                <div class="bt-product-item">
-                                                    <?php 
-                                                        $wrapper_classname = 'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder';
-                                                        $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                                                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
-                                                        $html .= '</div>';
+                                                $post_thumbnail_id = $product->get_image_id();
 
-                                                        echo apply_filters( 'woocommerce_placeholder_product_image_thumbnail_html', $html ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
-                                                    ?>
+                                                if ($post_thumbnail_id) {
+                                                    $html = woozio_get_gallery_image_html($post_thumbnail_id, false, false);
+
+                                                    echo apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                                } else {
+                                                    $wrapper_classname = $product->is_type('variable') && ! empty($product->get_available_variations('image')) ?
+                                                        'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
+                                                        'woocommerce-product-gallery__image--placeholder';
+                                                    $html = sprintf('<div class="%s">', esc_attr($wrapper_classname));
+                                                    $html .= sprintf('<img src="%s" alt="%s" class="wp-post-image" />', esc_url(wc_placeholder_img_src('woocommerce_thumbnail')), esc_html__('Awaiting product image', 'woozio'));
+                                                    $html .= '</div>';
+
+                                                    echo apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                                }
+                                                ?>
+                                                <div class="bt-product-content">
+                                                    <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
+                                                    <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                    <div class="bt-product-add-to-cart">
+                                                        <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                            <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                                        <?php else : ?>
+                                                            <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </div>
-                                            <?php
+
+                                            </div>
+                                        <?php
                                         }
+                                    } else {
                                         ?>
+                                        <div class="bt-product-item">
+                                            <?php
+                                            $wrapper_classname = 'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder';
+                                            $html = sprintf('<div class="%s">', esc_attr($wrapper_classname));
+                                            $html .= sprintf('<img src="%s" alt="%s" class="wp-post-image" />', esc_url(wc_placeholder_img_src('woocommerce_single')), esc_html__('Awaiting product image', 'woozio'));
+                                            $html .= '</div>';
+
+                                            echo apply_filters('woocommerce_placeholder_product_image_thumbnail_html', $html); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                                            ?>
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>

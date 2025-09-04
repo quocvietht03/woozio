@@ -1287,6 +1287,49 @@
 			}
 		}
 	};
+
+	const BannerProductSliderHandler = function ($scope) {
+		const $bannerProductSlider = $scope.find('.bt-elwg-banner-product-slider');
+
+		if ($bannerProductSlider.length > 0) {
+			const $sliderSettings = $bannerProductSlider.data('slider-settings');
+			const swiperOptions = {
+				slidesPerView: $sliderSettings.slidesPerView,
+				loop: $sliderSettings.loop,
+				spaceBetween: $sliderSettings.spaceBetween,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: $sliderSettings.autoplay_delay,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $bannerProductSlider.find('.bt-button-next')[0],
+					prevEl: $bannerProductSlider.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $bannerProductSlider.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints
+			};
+
+			const swiper = new Swiper($bannerProductSlider.find('.swiper')[0], swiperOptions);
+
+			if ($sliderSettings.autoplay) {
+				$bannerProductSlider.find('.swiper')[0].addEventListener('mouseenter', () => {
+					swiper.autoplay.stop();
+				});
+
+				$bannerProductSlider.find('.swiper')[0].addEventListener('mouseleave', () => {
+					swiper.autoplay.start();
+				});
+			}
+		}
+	};
 	var TextSliderHandler = function ($scope, $) {
 		var $textslider = $scope.find('.bt-elwg-text-slider--default');
 		if ($textslider.length > 0) {
@@ -1467,6 +1510,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product.default', SearchProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-heading-animation.default', headingAnimationHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-banner-product-slider.default', BannerProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-tiktok-shop-slider.default', TiktokShopSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-hotspot-product.default', HotspotProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);

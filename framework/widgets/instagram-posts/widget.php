@@ -5,6 +5,9 @@ namespace WoozioElementorWidgets\Widgets\InstagramPosts;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
+use Elementor\Group_Control_Image_Size;
+use Elementor\Utils;
+use Elementor\Plugin;
 
 class Widget_InstagramPosts extends Widget_Base
 {
@@ -53,6 +56,16 @@ class Widget_InstagramPosts extends Widget_Base
 				'default' => [],
 			]
 		);
+		$this->add_group_control(
+            Group_Control_Image_Size::get_type(),
+            [
+                'name' => 'thumbnail',
+                'label' => __('Image Size', 'woozio'),
+                'show_label' => true,
+                'default' => 'medium_large',
+                'exclude' => ['custom'],
+            ]
+        );
 		$this->add_control(
 			'open_type',
 			[
@@ -82,6 +95,7 @@ class Widget_InstagramPosts extends Widget_Base
 				],
 			]
 		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -682,7 +696,7 @@ class Widget_InstagramPosts extends Widget_Base
 			];
 
 			// Add responsive breakpoints
-			$breakpoints = \Elementor\Plugin::$instance->breakpoints->get_active_breakpoints();
+			$breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
 			foreach ($breakpoints as $key => $breakpoint) {
 				// Get the next higher breakpoint key
 				$next_key = $key;
@@ -737,7 +751,11 @@ class Widget_InstagramPosts extends Widget_Base
 							<div class="swiper-slide">
 								<div class="bt-ins-posts--image">
 									<div class="bt-cover-image">
-										<?php echo wp_get_attachment_image ( $item['id'], 'medium' ); ?>
+										<?php if (!empty($item['id'])) {
+											echo wp_get_attachment_image($item['id'], $settings['thumbnail_size']);
+										} else {
+											echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
+										} ?>
 									</div>
 									<a href="<?php echo $settings['open_type'] === 'popup' ? esc_url($item['url']) : esc_url($settings['link']['url']); ?>" <?php echo $settings['open_type'] === 'popup' ? 'class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins"' : 'class="bt-icon-view" target="_blank"'; ?>>
 										<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -773,7 +791,11 @@ class Widget_InstagramPosts extends Widget_Base
 					<?php foreach ($settings['gallery'] as $item) : ?>
 						<div class="bt-ins-posts--image">
 							<div class="bt-cover-image">
-								<?php echo wp_get_attachment_image ( $item['id'], 'medium' ); ?>
+								<?php if (!empty($item['id'])) {
+									echo wp_get_attachment_image($item['id'], $settings['thumbnail_size']);
+								} else {
+									echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
+								} ?>
 							</div>
 							<a href="<?php echo $settings['open_type'] === 'popup' ? esc_url($item['url']) : esc_url($settings['link']['url']); ?>" <?php echo $settings['open_type'] === 'popup' ? 'class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins"' : 'class="bt-icon-view" target="_blank"'; ?>>
 								<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">

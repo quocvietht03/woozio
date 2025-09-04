@@ -298,10 +298,10 @@ class Widget_HotspotProductNormal extends Widget_Base
         );
         $this->add_group_control(
             Group_Control_Typography::get_type(),
-			[
-				'name'     => 'sub_heading_typography',
-				'label'    => __('Typography', 'woozio'),
-				'default'  => '',
+            [
+                'name'     => 'sub_heading_typography',
+                'label'    => __('Typography', 'woozio'),
+                'default'  => '',
                 'selector' => '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-sub-heading',
             ]
         );
@@ -325,7 +325,6 @@ class Widget_HotspotProductNormal extends Widget_Base
             ]
         );
         $this->end_controls_section();
-
     }
 
     protected function register_controls()
@@ -337,12 +336,12 @@ class Widget_HotspotProductNormal extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        
+
         if (empty($settings['hotspot_image']['url'])) {
             return;
         }
-        
-        ?>
+
+?>
         <div class="bt-elwg-hotspot-product-normal--default">
             <div class="bt-hotspot-product-normal">
                 <div class="bt-hotspot-product-normal__list-products">
@@ -364,12 +363,12 @@ class Widget_HotspotProductNormal extends Widget_Base
                                             <?php echo $index + 1; ?>
                                         </div>
                                         <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
-                                            <?php 
-                                                if ( has_post_thumbnail($item['id_product']) ) {
-                                                    echo get_the_post_thumbnail($item['id_product'], 'thumbnail'); 
-                                                } else {
-                                                    echo '<img src="'. esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ) . '" alt="'. esc_html__( 'Awaiting product image', 'woozio' ) .'" class="wp-post-image" />';
-                                                }
+                                            <?php
+                                            if (has_post_thumbnail($item['id_product'])) {
+                                                echo get_the_post_thumbnail($item['id_product'], 'thumbnail');
+                                            } else {
+                                                echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
+                                            }
                                             ?>
                                         </a>
                                         <div class="bt-product-content">
@@ -412,33 +411,31 @@ class Widget_HotspotProductNormal extends Widget_Base
                     </div>
                 </div>
                 <div class="bt-hotspot-product-normal__image">
-                    <?php if (!empty($settings['hotspot_image']['url'])) : ?>
-                        <div class="bt-hotspot-image" style="position: relative;">
-                            <?php
-                                if ($settings['hotspot_image']['id']) {
-                                    echo wp_get_attachment_image ( $settings['hotspot_image']['id'], $settings['thumbnail_size'] );
-                                } else {
-                                    echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="' . esc_html__( 'Awaiting product image', 'woozio' ) . '">';
-                                }
-                            ?>
-                            <?php if (!empty($settings['hotspot_items'])) : ?>
-                                <div class="bt-hotspot-points">
-                                    <?php foreach ($settings['hotspot_items'] as $index => $item) :
-                                        $product = wc_get_product($item['id_product']);
-                                        if ($product) :
+                    <div class="bt-hotspot-image" style="position: relative;">
+                        <?php
+                        if ($settings['hotspot_image']['id']) {
+                            echo wp_get_attachment_image($settings['hotspot_image']['id'], $settings['thumbnail_size']);
+                        } else {
+                            echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
+                        }
+                        ?>
+                        <?php if (!empty($settings['hotspot_items'])) : ?>
+                            <div class="bt-hotspot-points">
+                                <?php foreach ($settings['hotspot_items'] as $index => $item) :
+                                    $product = wc_get_product($item['id_product']);
+                                    if ($product) :
 
-                                    ?>
-                                            <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
-                                                data-product-id="<?php echo esc_attr($item['id_product']); ?>">
-                                                <div class="bt-hotspot-marker"> <?php echo $index + 1; ?>
-                                                </div>
+                                ?>
+                                        <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
+                                            data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                            <div class="bt-hotspot-marker"> <?php echo $index + 1; ?>
                                             </div>
-                                    <?php endif;
-                                    endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+                                        </div>
+                                <?php endif;
+                                endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>

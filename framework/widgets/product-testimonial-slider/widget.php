@@ -751,12 +751,16 @@ class Widget_ProductTestimonialSlider extends Widget_Base
                                         <div class="bt-product-testimonial--images">
                                             <div class="bt-cover-image">
                                                 <?php
-                                                if (!empty($item['testimonial_image']['url'])) :
-                                                    $attachment = wp_get_attachment_image_src($item['testimonial_image']['id'], 'large');
-                                                    $image_url = $attachment ? $attachment[0] : $item['testimonial_image']['url'];
+                                                if (!empty($item['testimonial_image']['id'])) {
+                                                    echo wp_get_attachment_image($item['testimonial_image']['id'], 'medium');
+                                                } else {
+                                                    if (!empty($item['testimonial_image']['url'])) {
+                                                        echo '<img src="' . esc_url($item['testimonial_image']['url']) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                                    } else {
+                                                        echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                                    }
+                                                }
                                                 ?>
-                                                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($item['testimonial_author']); ?>">
-                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>

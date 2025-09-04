@@ -589,23 +589,22 @@ class Widget_HotspotProduct extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        $attachment = wp_get_attachment_image_src($settings['hotspot_image']['id'], $settings['thumbnail_size']);
+        if (empty($settings['hotspot_image']['url'])) {
+            return;
+        }
 ?>
         <div class="bt-elwg-hotspot-product--default <?php echo esc_attr(($settings['show_slider'] !== 'yes') ? 'bt-no-slider' : ''); ?>">
             <div class="bt-hotspot-product bt-tooltip-<?php echo esc_attr($settings['tooltip_layout']); ?>">
                 <div class="bt-hotspot-product--image">
-                    <?php if (!empty($settings['hotspot_image']['url'])) : ?>
-                        <div class="bt-hotspot-image">
-                            <?php
-                            $attachment = wp_get_attachment_image_src($settings['hotspot_image']['id'], $settings['thumbnail_size']);
-                            if ($attachment) {
-                                echo '<img src="' . esc_url($attachment[0]) . '" alt="">';
-                            } else {
-                                echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="">';
-                            }
-                            ?>
-                        </div>
-                    <?php endif; ?>
+                    <div class="bt-hotspot-image">
+                        <?php
+                        if (!empty($settings['hotspot_image']['id'])) {
+                            echo wp_get_attachment_image($settings['hotspot_image']['id'], $settings['thumbnail_size']);
+                        } else {
+                            echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="">';
+                        }
+                        ?>
+                    </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
                         <div class="bt-hotspot-points">
                             <?php foreach ($settings['hotspot_items'] as $item) : ?>
@@ -617,7 +616,15 @@ class Widget_HotspotProduct extends Widget_Base
                                         data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                         <div class="bt-hotspot-marker"></div>
                                         <div class="bt-hotspot-product-info">
-                                            <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo get_the_post_thumbnail($item['id_product'], 'thumbnail'); ?></a>
+                                            <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
+                                                <?php
+                                                if (has_post_thumbnail($item['id_product'])) {
+                                                    echo get_the_post_thumbnail($item['id_product'], 'thumbnail');
+                                                } else {
+                                                    echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
+                                                }
+                                                ?>
+                                            </a>
                                             <div class="bt-product-content">
                                                 <h4><a href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo esc_html($product->get_name()); ?></a></h4>
                                                 <?php echo '<p class="bt-price">' . $product->get_price_html() . '</p>'; ?>

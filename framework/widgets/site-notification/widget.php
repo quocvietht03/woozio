@@ -194,9 +194,12 @@ class Widget_SiteNotification extends Widget_Base
                             <?php foreach ($site_infor['site_notification'] as $item) : ?>
                                 <div class="swiper-slide">
                                     <div class="bt-site-notification--item">
-                                        <?php if (!empty($item['icon'])) : ?>
-                                            <img src="<?php echo $item['icon']['url']; ?>" alt="<?php echo $item['icon']['alt']; ?>" class="bt-site-notification--icon">
-                                        <?php endif; ?>
+                                        <?php if (!empty($item['icon']['id'])) {
+                                            echo wp_get_attachment_image($item['icon']['id'], 'thumbnail');
+                                        } else {
+                                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting icon', 'woozio') . '">';
+                                        }
+                                        ?>
                                         <?php if (!empty($item['text_notification'])) :
                                             echo  '<div class="bt-site-notification--text">' . $item['text_notification'] . '</div>';
                                         endif; ?>

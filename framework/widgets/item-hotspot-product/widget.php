@@ -335,7 +335,7 @@ class Widget_ItemHotspotProduct extends Widget_Base
                                 $product = wc_get_product($item['id_product']);
                                 if ($product) :
                                 ?>
-                                    <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?> <?php echo $index === 0 ? 'active' : ''; ?>"
+                                    <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?> "
                                         data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                         <div class="bt-hotspot-marker">
                                         </div>
@@ -353,7 +353,7 @@ class Widget_ItemHotspotProduct extends Widget_Base
                             $product = wc_get_product($item['id_product']);
                             if ($product) :
                             ?>
-                                <div class="bt-product-item-minimal <?php echo $index === 0 ? 'active' : ''; ?>" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                <div class="bt-product-item-minimal" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                     <div class="bt-product-thumbnail">
                                         <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                             <?php 
