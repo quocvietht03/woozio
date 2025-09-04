@@ -30,11 +30,16 @@ if (post_password_required()) {
     echo get_the_password_form();  // WPCS: XSS ok.
     return;
 }
+
+global $layout;
+
 $layout = get_post_meta($product->get_id(), '_layout_product', true);
 
 if(isset($_GET['layout']) && !empty($_GET['layout'])) {
     $layout = sanitize_text_field($_GET['layout']);
 }
+
+
 
 if(in_array($layout, ['bottom-thumbnail', 'left-thumbnail', 'right-thumbnail'])) {
     get_template_part('woocommerce/single-product/layout-single/product', 'slider-thumbnail', array('layout' => $layout));

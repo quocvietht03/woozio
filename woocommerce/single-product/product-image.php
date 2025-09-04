@@ -11,6 +11,8 @@
 
 defined('ABSPATH') || exit;
 
+use Automattic\WooCommerce\Enums\ProductType;
+
 if (!function_exists('wc_get_gallery_image_html')) {
     return;
 }
