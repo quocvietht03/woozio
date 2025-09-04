@@ -8,6 +8,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Image_Size;
 use Elementor\Utils;
 use Elementor\Repeater;
+use Elementor\Plugin;
 
 class Widget_BannerProductSlider extends Widget_Base
 {
@@ -671,7 +672,7 @@ class Widget_BannerProductSlider extends Widget_Base
         ];
 
         // Add responsive breakpoints
-        $breakpoints = \Elementor\Plugin::$instance->breakpoints->get_active_breakpoints();
+        $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
         foreach ($breakpoints as $key => $breakpoint) {
             // Get the next higher breakpoint key
             $next_key = $key;
