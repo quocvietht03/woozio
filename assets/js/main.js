@@ -90,8 +90,16 @@
 			},
 			gallery: {
 				enabled: true,
-				navigateByImgClick: true
+				navigateByImgClick: true,
 			},
+			zoom: {
+				enabled: true,
+				duration: 300,
+				easing: 'ease-in-out',
+				opener: function(openerElement) {
+					return openerElement.is('img') ? openerElement : openerElement.find('img');
+				}
+			}
 		});
 	}
 
@@ -134,7 +142,7 @@
 		});
 		var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
 			spaceBetween: 20,
-			loop: true,
+			loop: false,
 			loopedSlides: 5,
 			navigation: {
 				nextEl: '.swiper-button-next',

@@ -2973,42 +2973,12 @@
     }
   }
 }
-body {
-  .mfp-container {
-    padding: 15px;
-    .mfp-content {
-      position: initial;
-    }
-  }
-  &.admin-bar {
-    .mfp-wrap {
-      height: calc(100% - 32px);
-      margin-top: 32px;
-    }
-  }
-}
+
 .bt-video-popup {
   max-width: 400px;
   margin: 0 auto;
   &.bt-video-type-iframe {
     max-width: 346px;
-  }
-  .mfp-close {
-    display: flex;
-    width: 21px;
-    height: 21px;
-    font-size: 0;
-    right: 15px;
-    top: 12px;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNOS42NDA1MiA5LjEwOTY1QzkuNjc1MzYgOS4xNDQ0OSA5LjcwMyA5LjE4NTg2IDkuNzIxODYgOS4yMzEzOEM5Ljc0MDcxIDkuMjc2OSA5Ljc1MDQyIDkuMzI1NjkgOS43NTA0MiA5LjM3NDk2QzkuNzUwNDIgOS40MjQyNCA5Ljc0MDcxIDkuNDczMDMgOS43MjE4NiA5LjUxODU1QzkuNzAzIDkuNTY0MDcgOS42NzUzNiA5LjYwNTQ0IDkuNjQwNTIgOS42NDAyOEM5LjYwNTY4IDkuNjc1MTIgOS41NjQzMiA5LjcwMjc2IDkuNTE4NzkgOS43MjE2MUM5LjQ3MzI3IDkuNzQwNDcgOS40MjQ0OCA5Ljc1MDE3IDkuMzc1MjEgOS43NTAxN0M5LjMyNTk0IDkuNzUwMTcgOS4yNzcxNCA5Ljc0MDQ3IDkuMjMxNjIgOS43MjE2MUM5LjE4NjEgOS43MDI3NiA5LjE0NDc0IDkuNjc1MTIgOS4xMDk5IDkuNjQwMjhMNi4wMDAyMSA2LjUzMDEyTDIuODkwNTIgOS42NDAyOEMyLjgyMDE2IDkuNzEwNjQgMi43MjQ3MiA5Ljc1MDE3IDIuNjI1MjEgOS43NTAxN0MyLjUyNTcgOS43NTAxNyAyLjQzMDI2IDkuNzEwNjQgMi4zNTk5IDkuNjQwMjhDMi4yODk1MyA5LjU2OTkxIDIuMjUgOS40NzQ0OCAyLjI1IDkuMzc0OTZDMi4yNSA5LjI3NTQ1IDIuMjg5NTMgOS4xODAwMiAyLjM1OTkgOS4xMDk2NUw1LjQ3MDA1IDUuOTk5OTZMMi4zNTk5IDIuODkwMjhDMi4yODk1MyAyLjgxOTkxIDIuMjUgMi43MjQ0OCAyLjI1IDIuNjI0OTZDMi4yNSAyLjUyNTQ1IDIuMjg5NTMgMi40MzAwMiAyLjM1OTkgMi4zNTk2NUMyLjQzMDI2IDIuMjg5MjkgMi41MjU3IDIuMjQ5NzYgMi42MjUyMSAyLjI0OTc2QzIuNzI0NzIgMi4yNDk3NiAyLjgyMDE2IDIuMjg5MjkgMi44OTA1MiAyLjM1OTY1TDYuMDAwMjEgNS40Njk4MUw5LjEwOTkgMi4zNTk2NUM5LjE4MDI2IDIuMjg5MjkgOS4yNzU3IDIuMjQ5NzYgOS4zNzUyMSAyLjI0OTc2QzkuNDc0NzIgMi4yNDk3NiA5LjU3MDE2IDIuMjg5MjkgOS42NDA1MiAyLjM1OTY1QzkuNzEwODkgMi40MzAwMiA5Ljc1MDQyIDIuNTI1NDUgOS43NTA0MiAyLjYyNDk2QzkuNzUwNDIgMi43MjQ0OCA5LjcxMDg5IDIuODE5OTEgOS42NDA1MiAyLjkwMjhMNi41MzAzNiA1Ljk5OTk2TDkuNjQwNTIgOS4xMDk2NVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg==");
-    background-size: cover;
-    background-repeat: no-repeat;
-    padding: 0;
-    opacity: 1;
-    background-color: transparent !important;
-    &:hover {
-      transform: rotate(180deg);
-    }
   }
   .bt-video-wrap {
     position: relative;
