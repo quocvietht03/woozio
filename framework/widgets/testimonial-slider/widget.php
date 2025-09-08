@@ -175,7 +175,7 @@ class Widget_TestimonialSlider extends Widget_Base
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
-                'default' => 'yes',
+                'default' => 'no',
             ]
         );
 
@@ -665,57 +665,8 @@ class Widget_TestimonialSlider extends Widget_Base
             $classes[] = 'bt-only-dot-mobile';
         }
 
-        $slider_settings = [
-            'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',
-            'autoplay_delay' => isset($settings['slider_autoplay_delay']) ? (int)$settings['slider_autoplay_delay'] : 3000,
-            'loop' => isset($settings['slider_loop']) && $settings['slider_loop'] === 'yes',
-            'speed' => isset($settings['slider_speed']) ? (int)$settings['slider_speed'] : 1000,
-            'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
-            'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : (!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] : (!empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20)),
-            'breakpoints' => []
-        ];
-
         $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
-        foreach ($breakpoints as $key => $breakpoint) {
-            $next_key = $key;
-            $breakpoint_keys = array_keys($breakpoints);
-            $current_index = array_search($key, $breakpoint_keys);
-
-            if ($current_index !== false) {
-                $preferred_next = match ($key) {
-                    'mobile' => 'mobile_extra',
-                    'mobile_extra' => 'tablet',
-                    'tablet' => 'tablet_extra',
-                    'tablet_extra' => 'laptop',
-                    'laptop' => 'desktop',
-                    default => $key
-                };
-
-                if (isset($breakpoints[$preferred_next])) {
-                    $next_key = $preferred_next;
-                } else {
-                    $found_next = false;
-                    for ($i = $current_index + 1; $i < count($breakpoint_keys); $i++) {
-                        if (isset($breakpoints[$breakpoint_keys[$i]]) && $breakpoint_keys[$i] !== 'widescreen') {
-                            $next_key = $breakpoint_keys[$i];
-                            $found_next = true;
-                            break;
-                        }
-                    }
-                    if (!$found_next) {
-                        $next_key = 'desktop';
-                    }
-                }
-            }
-
-            $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-                'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 1,
-                'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
-            ] : [
-                'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
-                'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : (int)$settings['slider_spacebetween']
-            ];
-        }
+        $slider_settings = bt_elwg_get_slider_settings($settings, $breakpoints);
         ?>
         <div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings='<?php echo esc_attr(json_encode($slider_settings)); ?>'>
             <div class="bt-testimonial js-testimonial-slider swiper">
