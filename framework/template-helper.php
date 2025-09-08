@@ -555,21 +555,35 @@ add_action('elementor/element/nested-carousel/section_navigation_settings/before
 	);
 });
 
-// Slider Setting
+// Slider Swiper Setting
 function bt_elwg_get_slider_settings($settings, $breakpoints) {
+   // Helper: get the first non-empty value from a list of keys
+    $get_first_nonempty = function($keys, $default = 20) use ($settings) {
+        foreach ($keys as $key) {
+            if (!empty($settings[$key])) {
+                return (int) $settings[$key];
+            }
+        }
+        return $default;
+    };
+
     $slider_settings = [
         'autoplay' => $settings['slider_autoplay'] === 'yes',
-        'loop' => $settings['slider_loop'] === 'yes', 
-        'speed' => (int)$settings['slider_speed'],
+        'loop' => $settings['slider_loop'] === 'yes',
+        'speed' => (int) $settings['slider_speed'],
         'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
-        'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 
-            (!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] : 
-            (!empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20)),
+        'spaceBetween' => $get_first_nonempty([
+            'slider_spacebetween_mobile',
+            'slider_spacebetween_mobile_extra',
+            'slider_spacebetween_tablet',
+            'slider_spacebetween_tablet_extra',
+            'slider_spacebetween_laptop',
+            'slider_spacebetween'
+        ], 20),
         'breakpoints' => []
     ];
 
     foreach ($breakpoints as $key => $breakpoint) {
-        // Get the next higher breakpoint key
         $next_key = $key;
         $breakpoint_keys = array_keys($breakpoints);
         $current_index = array_search($key, $breakpoint_keys);
@@ -584,12 +598,9 @@ function bt_elwg_get_slider_settings($settings, $breakpoints) {
                 default => $key
             };
 
-            // If preferred next breakpoint exists, use it
             if (isset($breakpoints[$preferred_next])) {
                 $next_key = $preferred_next;
-            }
-            // Otherwise find next available breakpoint
-            else {
+            } else {
                 $found_next = false;
                 for ($i = $current_index + 1; $i < count($breakpoint_keys); $i++) {
                     if (isset($breakpoints[$breakpoint_keys[$i]]) && $breakpoint_keys[$i] !== 'widescreen') {
@@ -609,24 +620,15 @@ function bt_elwg_get_slider_settings($settings, $breakpoints) {
             'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
         ] : [
             'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
-            'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : 
-                match($next_key) {
+            'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) 
+                ? (int)$settings["slider_spacebetween_{$next_key}"]
+                : match($next_key) {
                     'desktop' => (int)$settings['slider_spacebetween'],
-                    'laptop' => !empty($settings['slider_spacebetween_desktop']) ? (int)$settings['slider_spacebetween_desktop'] : (int)$settings['slider_spacebetween'],
-                    'tablet_extra' => !empty($settings['slider_spacebetween_laptop']) ? (int)$settings['slider_spacebetween_laptop'] : 
-                        (!empty($settings['slider_spacebetween_desktop']) ? (int)$settings['slider_spacebetween_desktop'] : (int)$settings['slider_spacebetween']),
-                    'tablet' => !empty($settings['slider_spacebetween_tablet_extra']) ? (int)$settings['slider_spacebetween_tablet_extra'] : 
-                        (!empty($settings['slider_spacebetween_laptop']) ? (int)$settings['slider_spacebetween_laptop'] : 
-                        (!empty($settings['slider_spacebetween_desktop']) ? (int)$settings['slider_spacebetween_desktop'] : (int)$settings['slider_spacebetween'])),
-                    'mobile_extra' => !empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] :
-                        (!empty($settings['slider_spacebetween_tablet_extra']) ? (int)$settings['slider_spacebetween_tablet_extra'] :
-                        (!empty($settings['slider_spacebetween_laptop']) ? (int)$settings['slider_spacebetween_laptop'] :
-                        (!empty($settings['slider_spacebetween_desktop']) ? (int)$settings['slider_spacebetween_desktop'] : (int)$settings['slider_spacebetween']))),
-                    default => !empty($settings['slider_spacebetween_mobile_extra']) ? (int)$settings['slider_spacebetween_mobile_extra'] :
-                        (!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] :
-                        (!empty($settings['slider_spacebetween_tablet_extra']) ? (int)$settings['slider_spacebetween_tablet_extra'] :
-                        (!empty($settings['slider_spacebetween_laptop']) ? (int)$settings['slider_spacebetween_laptop'] :
-                        (!empty($settings['slider_spacebetween_desktop']) ? (int)$settings['slider_spacebetween_desktop'] : (int)$settings['slider_spacebetween']))))
+                    'laptop' => $get_first_nonempty(['slider_spacebetween_desktop', 'slider_spacebetween'], 20),
+                    'tablet_extra' => $get_first_nonempty(['slider_spacebetween_laptop', 'slider_spacebetween_desktop', 'slider_spacebetween'], 20),
+                    'tablet' => $get_first_nonempty(['slider_spacebetween_tablet_extra','slider_spacebetween_laptop','slider_spacebetween_desktop','slider_spacebetween'], 20),
+                    'mobile_extra' => $get_first_nonempty(['slider_spacebetween_tablet','slider_spacebetween_tablet_extra','slider_spacebetween_laptop','slider_spacebetween_desktop','slider_spacebetween'], 20),
+                    default => $get_first_nonempty(['slider_spacebetween_mobile_extra','slider_spacebetween_tablet','slider_spacebetween_tablet_extra','slider_spacebetween_laptop','slider_spacebetween_desktop','slider_spacebetween'], 20)
                 }
         ];
     }

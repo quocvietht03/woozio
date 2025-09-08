@@ -80,6 +80,27 @@ class Widget_CurrencySwitcher extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'current_item_background_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-current-item' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'current_item_padding',
+            [
+                'label' => __('Padding Item', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-current-item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
 
         $this->end_controls_section();
     }

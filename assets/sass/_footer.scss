@@ -25,27 +25,37 @@
   }
 }
 .elementor-element {
-  &.bt-site-footer-main {
-    > .e-con-inner {
-      > .elementor-element {
-        .bt-google-maps {
-          a {
-            text-decoration-line: underline;
-            text-decoration-style: solid;
-            text-decoration-skip-ink: none;
-            text-decoration-thickness: auto;
-            text-underline-offset: auto;
-            text-underline-position: from-font;
-            display: flex;
+  &.bt-footer-wellness {
+    .bt-elwg-switcher {
+      .bt-dropdown {
+        .bt-has-dropdown {
+          ul.sub-dropdown {
+            max-width: 100%;
+            width: 100%;
+            li {
+              a {
+                padding: 11px 12px;
+              }
+            }
           }
         }
-        .bt-elwg-site-social {
-          gap: 8px;
-          a {
-            border: 1px solid #a2a3ab;
-            &:hover {
-              border-color: $color-secondary;
-            }
+      }
+    }
+    .bt-form-newsletter_wrapper{
+      .bt-form-newsletter{
+        .gform-body{
+          input[type=email]{
+            border-color: rgba(255, 255, 255, 0.10);
+            background: transparent;
+          }
+        }
+        .gform_footer{
+          &::after {
+            border: 2px #fff solid;
+            border-top: 2px transparent solid;
+          }
+          input[type=submit]{
+            color: #fff !important;
           }
         }
       }

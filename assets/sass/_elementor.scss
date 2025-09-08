@@ -6785,5 +6785,48 @@
         margin-bottom: 0;
       }
     }
+    @media (max-width: $break-xs) {
+      &--content {
+        position: relative;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: $color-primary;
+        padding: 15px;
+      }
+      &--title {
+        font-size: 24px;
+        line-height: 30px;
+      }
+      &--address {
+        font-size: 14px;
+        line-height: 22px;
+        opacity: 1;
+        visibility: visible;
+        max-height: 100px;
+        margin: 6px 0 2px 0;
+      }
+      &--phone, &--email {
+        font-size: 14px;
+        line-height: 22px;
+        opacity: 1;
+        visibility: visible;
+        max-height: 100px;
+        margin: 2px 0;
+        a{
+          opacity: 1;
+          visibility: visible;
+          margin: 0;
+        }
+      }
+      &--maps {
+        font-size: 12px;
+        line-height: 20px;
+        opacity: 1;
+        visibility: visible;
+        max-height: 100px;
+        margin: 2px 0;
+      }
+    }
   }
 }
