@@ -238,8 +238,6 @@ class Widget_TestimonialSlider extends Widget_Base
                 'label' => __('Space Between', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 20,
-                'tablet_default' => 15,
-                'mobile_default' => 10,
                 'min' => 0,
                 'max' => 100,
                 'step' => 1,
@@ -352,6 +350,95 @@ class Widget_TestimonialSlider extends Widget_Base
 
     protected function register_style_section_controls()
     {
+        $this->start_controls_section(
+            'section_style_content',
+            [
+                'label' => esc_html__('Content', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'content_background_color',
+            [
+                'label' => __('Content Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--content' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'text_heading',
+            [
+                'label' => __('Testimonial Text', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'text_color',
+            [
+                'label' => __('Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'text_typography',
+                'selector' => '{{WRAPPER}} .bt-testimonial--text',
+            ]
+        );
+        $this->add_control(
+            'author_heading',
+            [
+                'label' => __('Author', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'author_color',
+            [
+                'label' => __('Author Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--author' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'author_typography',
+                'selector' => '{{WRAPPER}} .bt-testimonial--author',
+            ]
+        );
+        $this->add_control(
+            'rating_heading',
+            [
+                'label' => __('Rating', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'rating_color',
+            [
+                'label' => __('Star Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--rating .star.filled svg path' => 'fill: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
         $this->start_controls_section(
             'section_style_arrows',
             [
@@ -568,7 +655,6 @@ class Widget_TestimonialSlider extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-
 ?>
         <?php
         $classes = ['bt-elwg-testimonial--default', 'js-data-testimonial-slider'];
@@ -631,8 +717,8 @@ class Widget_TestimonialSlider extends Widget_Base
             ];
         }
         ?>
-        <div class="<?php echo esc_attr(implode(' ', $classes)); ?>" data-slider-settings='<?php echo esc_attr(json_encode($slider_settings)); ?>'>
-            <div class="bt-testimonial js-testimonial-slider swiper bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>">
+        <div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings='<?php echo esc_attr(json_encode($slider_settings)); ?>'>
+            <div class="bt-testimonial js-testimonial-slider swiper">
                 <div class="swiper-wrapper">
                     <?php if (!empty($settings['testimonial_items'])) : ?>
                         <?php foreach ($settings['testimonial_items'] as $item) : ?>

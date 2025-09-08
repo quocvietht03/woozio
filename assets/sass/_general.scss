@@ -1621,3 +1621,20 @@
     }
   }
 }
+// Offset slider
+.bt-slider-offset-sides-left {
+  .swiper {
+    padding-inline-start: var(--slider-offset-width);
+  }
+}
+.bt-slider-offset-sides-right {
+  .swiper {
+    padding-inline-end: var(--slider-offset-width);
+  }
+}
+.bt-slider-offset-sides-both {
+  .swiper {
+    padding-inline-start: var(--slider-offset-width);
+    padding-inline-end: var(--slider-offset-width);
+  }
+}

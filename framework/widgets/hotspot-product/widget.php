@@ -318,8 +318,6 @@ class Widget_HotspotProduct extends Widget_Base
                 'step' => 1,
                 'devices' => ['desktop', 'tablet', 'mobile'],
                 'desktop_default' => 30,
-                'tablet_default' => 20,
-                'mobile_default' => 20,
                 'condition' => [
                     'show_slider' => 'yes',
                 ],

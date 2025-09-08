@@ -91,7 +91,8 @@ class ElementorWidgets
 			'collection-banner',
 			'item-hotspot-product',
 			'site-icon-payment',
-			'text-slider'
+			'text-slider',
+			'store-locations-slider'
 		);
 
 		return $this->widgets;
@@ -230,6 +231,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 	}
 
 	/**

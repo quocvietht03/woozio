@@ -236,8 +236,6 @@ class Widget_ProductTestimonialSlider extends Widget_Base
                 'label' => __('Space Between', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
                 'default' => 30,
-                'tablet_default' => 20,
-                'mobile_default' => 10,
                 'min' => 0,
                 'max' => 100,
                 'step' => 1,

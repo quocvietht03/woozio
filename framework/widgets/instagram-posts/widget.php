@@ -178,8 +178,6 @@ class Widget_InstagramPosts extends Widget_Base
 				'label' => __('Space Between', 'woozio'),
 				'type' => Controls_Manager::NUMBER,
 				'default' => 20,
-				'tablet_default' => 20,
-				'mobile_default' => 10,
 				'min' => 0,
 				'max' => 100,
 				'step' => 1,
