@@ -9,9 +9,12 @@ use Elementor\Group_Control_Image_Size;
 use Elementor\Utils;
 use Elementor\Repeater;
 use Elementor\Plugin;
+use ElementorPro\Base\Base_Carousel_Trait;
+
 
 class Widget_BannerProductSlider extends Widget_Base
 {
+	use Base_Carousel_Trait;
 
     public function get_name()
     {
@@ -183,19 +186,32 @@ class Widget_BannerProductSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
-
-        $this->add_responsive_control(
-            'slider_item',
-            [
-                'label' => __('Slides Per View', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 4,
-                'tablet_default' => 2,
-                'mobile_default' => 1,
-                'min' => 1,
-                'max' => 6,
-            ]
-        );
+        $this->add_carousel_layout_controls( [
+			'css_prefix' => '',
+			'slides_to_show_custom_settings' => [
+				'default' => '4',
+				'tablet_default' => '2',
+				'mobile_default' => '1',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+			],
+			'slides_to_scroll_custom_settings' => [
+				'default' => '0',
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'equal_height_custom_settings' => [
+				'selectors' => [
+					'{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
+				],
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'slides_on_display' => 5,
+		] );
 
         $this->add_responsive_control(
             'slider_spacebetween',
@@ -217,7 +233,7 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Slider Speed', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
-                'default' => 1000,
+                'default' => 3000,
                 'min' => 100,
                 'step' => 100,
             ]
@@ -320,58 +336,6 @@ class Widget_BannerProductSlider extends Widget_Base
     protected function register_style_content_section_controls()
     {
         $this->start_controls_section(
-            'section_style',
-            [
-                'label' => __('Style', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'product_title_typography',
-                'label' => __('Product Title Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-banner-product-slider--title',
-            ]
-        );
-
-        $this->add_control(
-            'product_title_color',
-            [
-                'label' => __('Product Title Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#333333',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-banner-product-slider--title' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'product_price_typography',
-                'label' => __('Product Price Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-banner-product-slider--price',
-            ]
-        );
-
-        $this->add_control(
-            'product_price_color',
-            [
-                'label' => __('Product Price Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#000000',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-banner-product-slider--price' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        $this->start_controls_section(
             'section_style_arrows',
             [
                 'label' => esc_html__('Navigation Arrows', 'woozio'),
@@ -395,7 +359,7 @@ class Widget_BannerProductSlider extends Widget_Base
                     ],
                 ],
                 'default' => [
-                    'size' => 24,
+                    'size' => 20,
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
@@ -417,7 +381,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav svg path' => 'fill: {{VALUE}}',
                 ],
@@ -428,7 +391,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Background Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(0,0,0,0.5)',
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav' => 'background-color: {{VALUE}}',
                 ],
@@ -448,7 +410,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#ffffff',
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav:hover svg path' => 'fill: {{VALUE}}',
                 ],
@@ -459,7 +420,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Background Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => 'rgba(0,0,0,0.7)',
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav:hover' => 'background-color: {{VALUE}}',
                 ],
@@ -514,27 +474,6 @@ class Widget_BannerProductSlider extends Widget_Base
             ]
         );
 
-        $this->add_control(
-            'dots_size',
-            [
-                'label' => __('Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 5,
-                        'max' => 50,
-                    ],
-                ],
-                'default' => [
-                    'size' => 10,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .swiper-pagination-bullet' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
         $this->start_controls_tabs('dots_colors_tabs');
 
         // Normal state
@@ -550,7 +489,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
                 'selectors' => [
                     '{{WRAPPER}} .swiper-pagination-bullet' => 'background-color: {{VALUE}};',
                 ],
@@ -572,7 +510,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#000000',
                 'selectors' => [
                     '{{WRAPPER}} .swiper-pagination-bullet:hover' => 'background-color: {{VALUE}};opacity: 1;',
                 ],
@@ -648,7 +585,6 @@ class Widget_BannerProductSlider extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-
         if (empty($settings['banner_items'])) {
             return;
         }
@@ -660,17 +596,15 @@ class Widget_BannerProductSlider extends Widget_Base
         if ($settings['slider_dots_only_mobile'] === 'yes') {
             $classes[] = 'bt-only-dot-mobile';
         }
-
+        $slider_settings = [];
         $slider_settings = [
             'autoplay' => $settings['slider_autoplay'] === 'yes',
-            'autoplay_delay' => (int)$settings['slider_autoplay_delay'],
             'loop' => $settings['slider_loop'] === 'yes',
             'speed' => (int)$settings['slider_speed'],
-            'slidesPerView' => !empty($settings['slider_item_mobile']) ? (int)$settings['slider_item_mobile'] : 1,
+            'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
             'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : (!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] : (!empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20)),
             'breakpoints' => []
         ];
-
         // Add responsive breakpoints
         $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
         foreach ($breakpoints as $key => $breakpoint) {
@@ -710,10 +644,10 @@ class Widget_BannerProductSlider extends Widget_Base
             }
 
             $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-                'slidesPerView' => !empty($settings['slider_item']) ? (int)$settings['slider_item'] : 4,
+                'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 5,
                 'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
             ] : [
-                'slidesPerView' => !empty($settings["slider_item_{$next_key}"]) ? (int)$settings["slider_item_{$next_key}"] : (int)$settings['slider_item'],
+                'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
                 'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : (int)$settings['slider_spacebetween']
             ];
         }
@@ -779,13 +713,13 @@ class Widget_BannerProductSlider extends Widget_Base
                 <?php if ($settings['slider_arrows'] === 'yes') : ?>
                     <div class="bt-swiper-navigation">
                         <div class="bt-nav bt-button-prev">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M15.5307 18.9698C15.6004 19.0395 15.6557 19.1222 15.6934 19.2132C15.7311 19.3043 15.7505 19.4019 15.7505 19.5004C15.7505 19.599 15.7311 19.6965 15.6934 19.7876C15.6557 19.8786 15.6004 19.9614 15.5307 20.031C15.461 20.1007 15.3783 20.156 15.2873 20.1937C15.1962 20.2314 15.0986 20.2508 15.0001 20.2508C14.9016 20.2508 14.804 20.2314 14.7129 20.1937C14.6219 20.156 14.5392 20.1007 14.4695 20.031L6.96948 12.531C6.89974 12.4614 6.84443 12.3787 6.80668 12.2876C6.76894 12.1966 6.74951 12.099 6.74951 12.0004C6.74951 11.9019 6.76894 11.8043 6.80668 11.7132C6.84443 11.6222 6.89974 11.5394 6.96948 11.4698L14.4695 3.96979C14.6102 3.82906 14.8011 3.75 15.0001 3.75C15.1991 3.75 15.39 3.82906 15.5307 3.96979C15.6715 4.11052 15.7505 4.30139 15.7505 4.50042C15.7505 4.69944 15.6715 4.89031 15.5307 5.03104L8.56041 12.0004L15.5307 18.9698Z" fill="currentColor" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
+                                <path d="M15.4995 7.00035C15.4995 7.16611 15.4337 7.32508 15.3165 7.44229C15.1992 7.5595 15.0403 7.62535 14.8745 7.62535H2.63311L7.1917 12.1832C7.24977 12.2412 7.29583 12.3102 7.32726 12.386C7.35869 12.4619 7.37486 12.5432 7.37486 12.6253C7.37486 12.7075 7.35869 12.7888 7.32726 12.8647C7.29583 12.9405 7.24977 13.0095 7.1917 13.0675C7.13363 13.1256 7.0647 13.1717 6.98882 13.2031C6.91295 13.2345 6.83164 13.2507 6.74951 13.2507C6.66739 13.2507 6.58607 13.2345 6.5102 13.2031C6.43433 13.1717 6.3654 13.1256 6.30733 13.0675L0.682328 7.44254C0.624217 7.38449 0.578118 7.31556 0.546665 7.23969C0.515213 7.16381 0.499023 7.08248 0.499023 7.00035C0.499023 6.91821 0.515213 6.83688 0.546665 6.76101C0.578118 6.68514 0.624217 6.61621 0.682328 6.55816L6.30733 0.93316C6.4246 0.815885 6.58366 0.75 6.74951 0.75C6.91537 0.75 7.07443 0.815885 7.1917 0.93316C7.30898 1.05044 7.37486 1.2095 7.37486 1.37535C7.37486 1.5412 7.30898 1.70026 7.1917 1.81753L2.63311 6.37535H14.8745C15.0403 6.37535 15.1992 6.4412 15.3165 6.55841C15.4337 6.67562 15.4995 6.83459 15.4995 7.00035Z" fill="currentColor" />
                             </svg>
                         </div>
                         <div class="bt-nav bt-button-next">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M17.0306 12.531L9.53055 20.031C9.46087 20.1007 9.37815 20.156 9.2871 20.1937C9.19606 20.2314 9.09847 20.2508 8.99993 20.2508C8.90138 20.2508 8.8038 20.2314 8.71276 20.1937C8.62171 20.156 8.53899 20.1007 8.4693 20.031C8.39962 19.9614 8.34435 19.8786 8.30663 19.7876C8.26892 19.6965 8.24951 19.599 8.24951 19.5004C8.24951 19.4019 8.26892 19.3043 8.30663 19.2132C8.34435 19.1222 8.39962 19.0395 8.4693 18.9698L15.4396 12.0004L8.4693 5.03104C8.32857 4.89031 8.24951 4.69944 8.24951 4.50042C8.24951 4.30139 8.32857 4.11052 8.4693 3.96979C8.61003 3.82906 8.80091 3.75 8.99993 3.75C9.19895 3.75 9.38982 3.82906 9.53055 3.96979L17.0306 11.4698C17.1003 11.5394 17.1556 11.6222 17.1933 11.7132C17.2311 11.8043 17.2505 11.9019 17.2505 12.0004C17.2505 12.099 17.2311 12.1966 17.1933 12.2876C17.1556 12.3787 17.1003 12.4614 17.0306 12.531Z" fill="currentColor" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M17.3172 10.4425L11.6922 16.0675C11.5749 16.1848 11.4159 16.2507 11.25 16.2507C11.0841 16.2507 10.9251 16.1848 10.8078 16.0675C10.6905 15.9503 10.6247 15.7912 10.6247 15.6253C10.6247 15.4595 10.6905 15.3004 10.8078 15.1832L15.3664 10.6253H3.125C2.95924 10.6253 2.80027 10.5595 2.68306 10.4423C2.56585 10.3251 2.5 10.1661 2.5 10.0003C2.5 9.83459 2.56585 9.67562 2.68306 9.55841C2.80027 9.4412 2.95924 9.37535 3.125 9.37535H15.3664L10.8078 4.81753C10.6905 4.70026 10.6247 4.5412 10.6247 4.37535C10.6247 4.2095 10.6905 4.05044 10.8078 3.93316C10.9251 3.81588 11.0841 3.75 11.25 3.75C11.4159 3.75 11.5749 3.81588 11.6922 3.93316L17.3172 9.55816C17.3753 9.61621 17.4214 9.68514 17.4528 9.76101C17.4843 9.83688 17.5005 9.91821 17.5005 10.0003C17.5005 10.0825 17.4843 10.1638 17.4528 10.2397C17.4214 10.3156 17.3753 10.3845 17.3172 10.4425Z" fill="currentColor" />
                             </svg>
                         </div>
                     </div>

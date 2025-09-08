@@ -12,11 +12,12 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Plugin;
+use ElementorPro\Base\Base_Carousel_Trait;
 
 
 class Widget_TikTokShopSlider extends Widget_Base
 {
-
+    use Base_Carousel_Trait;
     public function get_name()
     {
         return 'bt-tiktok-shop-slider';
@@ -217,18 +218,32 @@ class Widget_TikTokShopSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
-        $this->add_responsive_control(
-            'slider_item',
-            [
-                'label' => __('Slider Item', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 5,
-                'tablet_default' => 3,
-                'mobile_default' => 1,
-                'min' => 1,
-                'max' => 10,
-            ]
-        );
+        $this->add_carousel_layout_controls( [
+			'css_prefix' => '',
+			'slides_to_show_custom_settings' => [
+				'default' => '5',
+				'tablet_default' => '3',
+				'mobile_default' => '1',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+			],
+			'slides_to_scroll_custom_settings' => [
+				'default' => '0',
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'equal_height_custom_settings' => [
+				'selectors' => [
+					'{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
+				],
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'slides_on_display' => 5,
+		] );
         $this->add_responsive_control(
             'slider_spacebetween',
             [
@@ -650,7 +665,7 @@ class Widget_TikTokShopSlider extends Widget_Base
             'autoplay' => $settings['slider_autoplay'] === 'yes',
             'loop' => $settings['slider_loop'] === 'yes',
             'speed' => (int)$settings['slider_speed'],
-            'slidesPerView' => !empty($settings['slider_item_mobile']) ? (int)$settings['slider_item_mobile'] : 1,
+            'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
             'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 20,
             'breakpoints' => []
         ];
@@ -694,10 +709,10 @@ class Widget_TikTokShopSlider extends Widget_Base
             }
 
             $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-                'slidesPerView' => !empty($settings['slider_item']) ? (int)$settings['slider_item'] : 5,
+                'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 5,
                 'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
             ] : [
-                'slidesPerView' => !empty($settings["slider_item_{$next_key}"]) ? (int)$settings["slider_item_{$next_key}"] : (int)$settings['slider_item'],
+                'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
                 'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : (int)$settings['slider_spacebetween']
             ];
         }

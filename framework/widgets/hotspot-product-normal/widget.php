@@ -355,41 +355,72 @@ class Widget_HotspotProductNormal extends Widget_Base
                     </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
                         <ul class="bt-hotspot-product-list">
-                            <?php foreach ($settings['hotspot_items'] as $index => $item) :
-                                $product = wc_get_product($item['id_product']);
-                                if ($product) : ?>
-                                    <li class="bt-hotspot-product-list__item" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
-                                        <div class="bt-number-product">
-                                            <?php echo $index + 1; ?>
-                                        </div>
-                                        <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
-                                            <?php
-                                            if (has_post_thumbnail($item['id_product'])) {
-                                                echo get_the_post_thumbnail($item['id_product'], 'thumbnail');
-                                            } else {
-                                                echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
-                                            }
-                                            ?>
-                                        </a>
-                                        <div class="bt-product-content">
-                                            <div class="bt-product-content__inner">
-                                                <h4 class="bt-product-name">
-                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                        <?php echo esc_html($product->get_name()); ?>
-                                                    </a>
-                                                </h4>
+                            <?php
+                            // Collect all product IDs from hotspot_items
+                            $hotspot_product_ids = [];
+                            foreach ($settings['hotspot_items'] as $item) {
+                                if (!empty($item['id_product'])) {
+                                    $hotspot_product_ids[] = $item['id_product'];
+                                }
+                            }
+
+                            // Prepare WP_Query to get products in the same order as hotspot_items
+                            if (!empty($hotspot_product_ids)) {
+                                $args = [
+                                    'post_type'      => 'product',
+                                    'post__in'       => $hotspot_product_ids,
+                                    'posts_per_page' => -1,
+                                    'orderby'        => 'post__in',
+                                ];
+                                $hotspot_query = new \WP_Query($args);
+                                $index = 1;
+                                if ($hotspot_query->have_posts()) :
+                                    while ($hotspot_query->have_posts()) : $hotspot_query->the_post();
+                                        global $product;
+                                        $product_id = get_the_ID();
+                                        if (!$product) {
+                                            $product = wc_get_product($product_id);
+                                        }
+                                        if (!$product) {
+                                            continue;
+                                        }
+                            ?>
+                                        <li class="bt-hotspot-product-list__item" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                            <div class="bt-number-product">
+                                                <?php echo $index; ?>
+                                            </div>
+                                            <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                 <?php
-                                                if ($product->is_type('variable')) {
-                                                    do_action('woozio_woocommerce_template_single_add_to_cart');
+                                                if (has_post_thumbnail($product_id)) {
+                                                    echo get_the_post_thumbnail($product_id, 'thumbnail');
+                                                } else {
+                                                    echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
                                                 }
                                                 ?>
+                                            </a>
+                                            <div class="bt-product-content">
+                                                <div class="bt-product-content__inner">
+                                                    <h4 class="bt-product-name">
+                                                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                                            <?php echo esc_html($product->get_name()); ?>
+                                                        </a>
+                                                    </h4>
+                                                    <?php
+                                                    if ($product->is_type('variable')) {
+                                                        do_action('woozio_woocommerce_template_single_add_to_cart');
+                                                    }
+                                                    ?>
+                                                </div>
+                                                <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
                                             </div>
-
-                                            <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
-                                        </div>
-                                    </li>
-                            <?php endif;
-                            endforeach; ?>
+                                        </li>
+                            <?php
+                                        $index++;
+                                    endwhile;
+                                    wp_reset_postdata();
+                                endif;
+                            }
+                            ?>
                         </ul>
                     <?php endif; ?>
                     <div class="bt-button-wrapper">

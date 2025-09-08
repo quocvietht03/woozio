@@ -12,9 +12,11 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_BBorder;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Plugin;
+use ElementorPro\Base\Base_Carousel_Trait;
 
 class Widget_ProductTestimonialSlider extends Widget_Base
 {
+    use Base_Carousel_Trait;
 
     public function get_name()
     {
@@ -202,20 +204,32 @@ class Widget_ProductTestimonialSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
-        $this->add_responsive_control(
-            'slider_item',
-            [
-                'label' => __('Items Slide', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 2,
-                'tablet_default' => 1,
-                'mobile_default' => 1,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'description' => __('Number of items to show per slide', 'woozio'),
-            ]
-        );
+        $this->add_carousel_layout_controls( [
+			'css_prefix' => '',
+			'slides_to_show_custom_settings' => [
+				'default' => '2',
+				'tablet_default' => '1',
+				'mobile_default' => '1',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+			],
+			'slides_to_scroll_custom_settings' => [
+				'default' => '0',
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'equal_height_custom_settings' => [
+				'selectors' => [
+					'{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
+				],
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'slides_on_display' => 4,
+		] );
         $this->add_responsive_control(
             'slider_spacebetween',
             [
@@ -690,7 +704,7 @@ class Widget_ProductTestimonialSlider extends Widget_Base
             'speed' => isset($settings['slider_speed']) ? $settings['slider_speed'] : 500,
             'autoplay_delay' => isset($settings['slider_autoplay_delay']) ? $settings['slider_autoplay_delay'] : 3000,
             'loop' => isset($settings['slider_loop']) && $settings['slider_loop'] === 'yes',
-            'slidesPerView' => isset($settings['slider_item_mobile']) ? (int)$settings['slider_item_mobile'] : 1,
+            'slidesPerView' => isset($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
             'spaceBetween' => isset($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 10,
         ];
         // Add responsive breakpoints
@@ -732,10 +746,10 @@ class Widget_ProductTestimonialSlider extends Widget_Base
             }
 
             $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-                'slidesPerView' => !empty($settings['slider_item']) ? (int)$settings['slider_item'] : 5,
+                'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 5,
                 'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
             ] : [
-                'slidesPerView' => !empty($settings["slider_item_{$next_key}"]) ? (int)$settings["slider_item_{$next_key}"] : (int)$settings['slider_item'],
+                'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
                 'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : (int)$settings['slider_spacebetween']
             ];
         }

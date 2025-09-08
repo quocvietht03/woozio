@@ -12,10 +12,11 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_BBorder;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Plugin;
+use ElementorPro\Base\Base_Carousel_Trait;
 
 class Widget_TestimonialSlider extends Widget_Base
 {
-
+    use Base_Carousel_Trait;
     public function get_name()
     {
         return 'bt-testimonial-slider';
@@ -50,6 +51,16 @@ class Widget_TestimonialSlider extends Widget_Base
 
 
         $repeater = new Repeater();
+        $repeater->add_control(
+            'testimonial_image',
+            [
+                'label' => __('Testimonial Image', 'woozio'),
+                'type' => Controls_Manager::MEDIA,
+                'default' => [
+                    'url' => Utils::get_placeholder_image_src(),
+                ],
+            ]
+        );
         $repeater->add_control(
             'testimonial_text',
             [
@@ -105,6 +116,50 @@ class Widget_TestimonialSlider extends Widget_Base
                 'title_field' => '{{{ testimonial_text }}}',
             ]
         );
+        $this->add_group_control(
+            Group_Control_Image_Size::get_type(),
+            [
+                'name' => 'thumbnail',
+                'label' => __('Image Size', 'woozio'),
+                'show_label' => true,
+                'default' => 'medium_large',
+                'exclude' => ['custom'],
+            ]
+        );
+        $this->add_responsive_control(
+            'image_ratio',
+            [
+                'label' => __('Image Ratio', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'default' => [
+                    'size' => 0.7,
+                ],
+                'range' => [
+                    'px' => [
+                        'min' => 0.3,
+                        'max' => 2,
+                        'step' => 0.01,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--image.bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+                ],
+            ]
+        );
+        $this->add_control(
+            'testimonial_image_position',
+            [
+                'label' => __('Image Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'top',
+                'options' => [
+                    'top' => __('Top', 'woozio'),
+                    'left' => __('Left', 'woozio'),
+                    'right' => __('Right', 'woozio'),
+                ],
+                'description' => __('Select the position of the testimonial image relative to the content.', 'woozio'),
+            ]
+        );
         $this->end_controls_section();
         $this->start_controls_section(
             'section_slider',
@@ -112,6 +167,7 @@ class Widget_TestimonialSlider extends Widget_Base
                 'label' => __('Slider', 'woozio'),
             ]
         );
+
         $this->add_control(
             'slider_autoplay',
             [
@@ -119,9 +175,10 @@ class Widget_TestimonialSlider extends Widget_Base
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
-                'default' => 'no',
+                'default' => 'yes',
             ]
         );
+
         $this->add_control(
             'slider_autoplay_delay',
             [
@@ -131,12 +188,12 @@ class Widget_TestimonialSlider extends Widget_Base
                 'min' => 1000,
                 'max' => 10000,
                 'step' => 500,
-                'description' => __('Delay between slides in milliseconds', 'woozio'),
                 'condition' => [
                     'slider_autoplay' => 'yes',
                 ],
             ]
         );
+
         $this->add_control(
             'slider_loop',
             [
@@ -148,27 +205,40 @@ class Widget_TestimonialSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
-        $this->add_responsive_control(
-            'slider_item',
-            [
-                'label' => __('Items Slide', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 2,
-                'tablet_default' => 1,
-                'mobile_default' => 1,
-                'min' => 1,
-                'max' => 5,
-                'step' => 1,
-                'description' => __('Number of items to show per slide', 'woozio'),
-            ]
-        );
+        $this->add_carousel_layout_controls( [
+			'css_prefix' => '',
+			'slides_to_show_custom_settings' => [
+				'default' => '3',
+				'tablet_default' => '2',
+				'mobile_default' => '1',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+			],
+			'slides_to_scroll_custom_settings' => [
+				'default' => '0',
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'equal_height_custom_settings' => [
+				'selectors' => [
+					'{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
+				],
+                'condition' => [
+                    'slides_to_show_custom_settings' => 100,
+                ],
+			],
+			'slides_on_display' => 5,
+		] );
+
         $this->add_responsive_control(
             'slider_spacebetween',
             [
                 'label' => __('Space Between', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
-                'default' => 30,
-                'tablet_default' => 20,
+                'default' => 20,
+                'tablet_default' => 15,
                 'mobile_default' => 10,
                 'min' => 0,
                 'max' => 100,
@@ -176,6 +246,7 @@ class Widget_TestimonialSlider extends Widget_Base
                 'description' => __('Space between slides in pixels', 'woozio'),
             ]
         );
+
         $this->add_control(
             'slider_speed',
             [
@@ -183,10 +254,10 @@ class Widget_TestimonialSlider extends Widget_Base
                 'type' => Controls_Manager::NUMBER,
                 'default' => 1000,
                 'min' => 100,
-                'max' => 5000,
                 'step' => 100,
             ]
         );
+
         $this->add_control(
             'slider_arrows',
             [
@@ -195,9 +266,23 @@ class Widget_TestimonialSlider extends Widget_Base
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
                 'default' => 'yes',
-                'description' => __('Display on Desktop Only', 'woozio'),
             ]
         );
+
+        $this->add_control(
+            'slider_arrows_hidden_mobile',
+            [
+                'label' => __('Hidden Arrow Mobile', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+                'condition' => [
+                    'slider_arrows' => 'yes',
+                ],
+            ]
+        );
+
         $this->add_control(
             'slider_dots',
             [
@@ -205,8 +290,61 @@ class Widget_TestimonialSlider extends Widget_Base
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
+                'default' => 'yes',
+            ]
+        );
+
+        $this->add_control(
+            'slider_dots_only_mobile',
+            [
+                'label' => __('Mobile-Only Pagination', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
                 'default' => 'no',
-                'description' => __('Display on Tablet and Mobile Devices', 'woozio'),
+                'condition' => [
+                    'slider_dots' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'slider_offset_sides',
+            [
+                'label' => __('Offset Sides', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'none',
+                'options' => [
+                    'none' => __('None', 'woozio'),
+                    'both' => __('Both', 'woozio'),
+                    'left' => __('Left', 'woozio'),
+                    'right' => __('Right', 'woozio'),
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'slider_offset_width',
+            [
+                'label' => __('Offset Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'default' => [
+                    'size' => 80,
+                    'unit' => 'px',
+                ],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-elwg-testimonial--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+                ],
+                'render_type' => 'ui',
+                'condition' => [
+                    'slider_offset_sides!' => 'none',
+                ],
             ]
         );
         $this->end_controls_section();
@@ -214,147 +352,10 @@ class Widget_TestimonialSlider extends Widget_Base
 
     protected function register_style_section_controls()
     {
-        // Content Style Section
         $this->start_controls_section(
-            'section_content_style',
+            'section_style_arrows',
             [
-                'label' => __('Content Style', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-        $this->add_control(
-            'text_heading',
-            [
-                'label' => __('Testimonial Text', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'text_color',
-            [
-                'label' => __('Text Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--text' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'text_typography',
-                'selector' => '{{WRAPPER}} .bt-testimonial--text',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'text_margin',
-            [
-                'label' => __('Text Margin', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--text' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'author_heading',
-            [
-                'label' => __('Author', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'author_color',
-            [
-                'label' => __('Author Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--author' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'author_typography',
-                'selector' => '{{WRAPPER}} .bt-testimonial--author',
-            ]
-        );
-
-        $this->add_control(
-            'rating_heading',
-            [
-                'label' => __('Rating', 'woozio'),
-                'type' => Controls_Manager::HEADING,
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'rating_color',
-            [
-                'label' => __('Star Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--rating .star.filled svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'rating_empty_color',
-            [
-                'label' => __('Empty Star Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#E9E9E9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--rating .star svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'rating_size',
-            [
-                'label' => __('Star Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 10,
-                        'max' => 50,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 20,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--rating .star svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // Navigation Style Section
-        $this->start_controls_section(
-            'section_navigation_style',
-            [
-                'label' => __('Navigation Style', 'woozio'),
+                'label' => esc_html__('Navigation Arrows', 'woozio'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'condition' => [
                     'slider_arrows' => 'yes',
@@ -363,93 +364,19 @@ class Widget_TestimonialSlider extends Widget_Base
         );
 
         $this->add_control(
-            'arrow_color',
+            'arrows_size',
             [
-                'label' => __('Arrow Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_background_color',
-            [
-                'label' => __('Arrow Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_border_color',
-            [
-                'label' => __('Arrow Border Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_color',
-            [
-                'label' => __('Arrow Hover Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover svg path' => 'fill: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_background_color',
-            [
-                'label' => __('Arrow Hover Background', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'arrow_hover_border_color',
-            [
-                'label' => __('Arrow Hover Border Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#5A86A9',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-nav:hover' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'arrow_size',
-            [
-                'label' => __('Arrow Size', 'woozio'),
+                'label' => __('Size', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
                     'px' => [
-                        'min' => 10,
-                        'max' => 50,
-                        'step' => 1,
+                        'min' => 20,
+                        'max' => 100,
                     ],
                 ],
                 'default' => [
-                    'unit' => 'px',
-                    'size' => 24,
+                    'size' => 20,
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
@@ -457,50 +384,81 @@ class Widget_TestimonialSlider extends Widget_Base
             ]
         );
 
-        $this->add_responsive_control(
-            'arrow_padding',
+        $this->start_controls_tabs('arrows_colors_tabs');
+
+        // Normal state
+        $this->start_controls_tab(
+            'arrows_colors_normal',
             [
-                'label' => __('Arrow Padding', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 30,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 11,
-                ],
+                'label' => __('Normal', 'woozio'),
+            ]
+        );
+        $this->add_control(
+            'arrows_color',
+            [
+                'label' => __('Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-nav' => 'padding: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-nav svg path' => 'fill: {{VALUE}}',
                 ],
             ]
         );
+        $this->add_control(
+            'arrows_bg_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-nav' => 'background-color: {{VALUE}}',
+                ],
+            ]
+        );
+        $this->end_controls_tab();
 
-        $this->add_responsive_control(
-            'arrow_border_radius',
+        // Hover state
+        $this->start_controls_tab(
+            'arrows_colors_hover',
+            [
+                'label' => __('Hover', 'woozio'),
+            ]
+        );
+        $this->add_control(
+            'arrows_color_hover',
+            [
+                'label' => __('Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-nav:hover svg path' => 'fill: {{VALUE}}',
+                ],
+            ]
+        );
+        $this->add_control(
+            'arrows_bg_color_hover',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-nav:hover' => 'background-color: {{VALUE}}',
+                ],
+            ]
+        );
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_control(
+            'arrows_border_radius',
             [
                 'label' => __('Border Radius', 'woozio'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', '%'],
-                'default' => [
-                    'top' => '50',
-                    'right' => '50',
-                    'bottom' => '50',
-                    'left' => '50',
-                    'unit' => '%',
-                    'isLinked' => true,
-                ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-nav' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
-
         $this->end_controls_section();
+
         $this->start_controls_section(
             'section_style_dots',
             [
@@ -511,6 +469,7 @@ class Widget_TestimonialSlider extends Widget_Base
                 ],
             ]
         );
+
         $this->add_control(
             'dots_spacing',
             [
@@ -531,26 +490,6 @@ class Widget_TestimonialSlider extends Widget_Base
                 ],
             ]
         );
-        $this->add_control(
-            'dots_size',
-            [
-                'label' => __('Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 5,
-                        'max' => 50,
-                    ],
-                ],
-                'default' => [
-                    'size' => 10,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .swiper-pagination-bullet' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
 
         $this->start_controls_tabs('dots_colors_tabs');
 
@@ -567,7 +506,6 @@ class Widget_TestimonialSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#0C2C48',
                 'selectors' => [
                     '{{WRAPPER}} .swiper-pagination-bullet' => 'background-color: {{VALUE}};',
                 ],
@@ -589,7 +527,6 @@ class Widget_TestimonialSlider extends Widget_Base
             [
                 'label' => __('Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'default' => '#000000',
                 'selectors' => [
                     '{{WRAPPER}} .swiper-pagination-bullet:hover' => 'background-color: {{VALUE}};opacity: 1;',
                 ],
@@ -599,6 +536,7 @@ class Widget_TestimonialSlider extends Widget_Base
         $this->end_controls_tab();
 
         $this->end_controls_tabs();
+
         $this->add_control(
             'dots_spacing_slider',
             [
@@ -622,7 +560,6 @@ class Widget_TestimonialSlider extends Widget_Base
 
         $this->end_controls_section();
     }
-
     protected function register_controls()
     {
         $this->register_layout_section_controls();
@@ -631,18 +568,29 @@ class Widget_TestimonialSlider extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
+
+?>
+        <?php
+        $classes = ['bt-elwg-testimonial--default', 'js-data-testimonial-slider'];
+        if (!empty($settings['slider_arrows_hidden_mobile']) && $settings['slider_arrows_hidden_mobile'] === 'yes') {
+            $classes[] = 'bt-hidden-arrow-mobile';
+        }
+        if (!empty($settings['slider_dots_only_mobile']) && $settings['slider_dots_only_mobile'] === 'yes') {
+            $classes[] = 'bt-only-dot-mobile';
+        }
+
         $slider_settings = [
             'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',
-            'speed' => isset($settings['slider_speed']) ? $settings['slider_speed'] : 500,
-            'autoplay_delay' => isset($settings['slider_autoplay_delay']) ? $settings['slider_autoplay_delay'] : 3000,
+            'autoplay_delay' => isset($settings['slider_autoplay_delay']) ? (int)$settings['slider_autoplay_delay'] : 3000,
             'loop' => isset($settings['slider_loop']) && $settings['slider_loop'] === 'yes',
-            'slidesPerView' => isset($settings['slider_item_mobile']) ? (int)$settings['slider_item_mobile'] : 1,
-            'spaceBetween' => isset($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : 10,
+            'speed' => isset($settings['slider_speed']) ? (int)$settings['slider_speed'] : 1000,
+            'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
+            'spaceBetween' => !empty($settings['slider_spacebetween_mobile']) ? (int)$settings['slider_spacebetween_mobile'] : (!empty($settings['slider_spacebetween_tablet']) ? (int)$settings['slider_spacebetween_tablet'] : (!empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20)),
+            'breakpoints' => []
         ];
-        // Add responsive breakpoints
+
         $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
         foreach ($breakpoints as $key => $breakpoint) {
-            // Get the next higher breakpoint key
             $next_key = $key;
             $breakpoint_keys = array_keys($breakpoints);
             $current_index = array_search($key, $breakpoint_keys);
@@ -657,12 +605,9 @@ class Widget_TestimonialSlider extends Widget_Base
                     default => $key
                 };
 
-                // If preferred next breakpoint exists, use it
                 if (isset($breakpoints[$preferred_next])) {
                     $next_key = $preferred_next;
-                }
-                // Otherwise find next available breakpoint
-                else {
+                } else {
                     $found_next = false;
                     for ($i = $current_index + 1; $i < count($breakpoint_keys); $i++) {
                         if (isset($breakpoints[$breakpoint_keys[$i]]) && $breakpoint_keys[$i] !== 'widescreen') {
@@ -678,67 +623,87 @@ class Widget_TestimonialSlider extends Widget_Base
             }
 
             $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-                'slidesPerView' => !empty($settings['slider_item']) ? (int)$settings['slider_item'] : 5,
+                'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 1,
                 'spaceBetween' => !empty($settings['slider_spacebetween']) ? (int)$settings['slider_spacebetween'] : 20
             ] : [
-                'slidesPerView' => !empty($settings["slider_item_{$next_key}"]) ? (int)$settings["slider_item_{$next_key}"] : (int)$settings['slider_item'],
+                'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
                 'spaceBetween' => !empty($settings["slider_spacebetween_{$next_key}"]) ? (int)$settings["slider_spacebetween_{$next_key}"] : (int)$settings['slider_spacebetween']
             ];
         }
-?>
-        <div class="bt-elwg-testimonial--default js-data-testimonial-slider" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
-            <div class="bt-testimonial ">
-                <div class="bt-testimonial--content js-testimonial-slider swiper">
-                    <div class="swiper-wrapper">
-                        <?php if (!empty($settings['testimonial_items'])) : ?>
-                            <?php foreach ($settings['testimonial_items'] as $item) : ?>
-                                <div class="swiper-slide">
-                                    <div class="bt-testimonial--item">
-                                        <?php if (!empty($item['testimonial_text'])) : ?>
-                                            <div class="bt-testimonial--text"><?php echo esc_html($item['testimonial_text']); ?></div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($item['testimonial_rating'])) : ?>
-                                            <div class="bt-testimonial--rating">
-                                                <?php for ($i = 1; $i <= 5; $i++) : ?>
-                                                    <?php if ($i <= $item['testimonial_rating']) : ?>
-                                                        <span class="star filled"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M18.3039 8.97177L14.7882 12.0054L15.8593 16.5421C15.9184 16.7884 15.9032 17.0466 15.8156 17.2843C15.728 17.5219 15.5719 17.7282 15.3671 17.8772C15.1623 18.0262 14.9179 18.1111 14.6648 18.1213C14.4118 18.1314 14.1614 18.0664 13.9453 17.9343L9.99995 15.5061L6.0523 17.9343C5.83622 18.0656 5.58613 18.13 5.3335 18.1195C5.08087 18.109 4.837 18.0239 4.63261 17.8751C4.42822 17.7262 4.27243 17.5202 4.18488 17.283C4.09732 17.0458 4.08191 16.788 4.14058 16.5421L5.21558 12.0054L1.69995 8.97177C1.50878 8.80654 1.37052 8.58866 1.30244 8.34532C1.23436 8.10198 1.23947 7.84398 1.31715 7.60354C1.39483 7.3631 1.54162 7.15086 1.73919 6.99335C1.93677 6.83583 2.17637 6.74001 2.42808 6.71786L7.03745 6.34599L8.81558 2.04286C8.91182 1.80834 9.07563 1.60774 9.28618 1.46656C9.49673 1.32538 9.7445 1.25 9.998 1.25C10.2515 1.25 10.4993 1.32538 10.7098 1.46656C10.9204 1.60774 11.0842 1.80834 11.1804 2.04286L12.9578 6.34599L17.5671 6.71786C17.8193 6.73919 18.0596 6.83447 18.2579 6.99177C18.4562 7.14907 18.6037 7.36139 18.6819 7.60212C18.76 7.84286 18.7654 8.10131 18.6973 8.34509C18.6292 8.58887 18.4907 8.80714 18.2992 8.97255L18.3039 8.97177Z" fill="#5A86A9" />
-                                                            </svg></span>
-                                                    <?php else : ?>
-                                                        <span class="star"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M18.3039 8.97177L14.7882 12.0054L15.8593 16.5421C15.9184 16.7884 15.9032 17.0466 15.8156 17.2843C15.728 17.5219 15.5719 17.7282 15.3671 17.8772C15.1623 18.0262 14.9179 18.1111 14.6648 18.1213C14.4118 18.1314 14.1614 18.0664 13.9453 17.9343L9.99995 15.5061L6.0523 17.9343C5.83622 18.0656 5.58613 18.13 5.3335 18.1195C5.08087 18.109 4.837 18.0239 4.63261 17.8751C4.42822 17.7262 4.27243 17.5202 4.18488 17.283C4.09732 17.0458 4.08191 16.788 4.14058 16.5421L5.21558 12.0054L1.69995 8.97177C1.50878 8.80654 1.37052 8.58866 1.30244 8.34532C1.23436 8.10198 1.23947 7.84398 1.31715 7.60354C1.39483 7.3631 1.54162 7.15086 1.73919 6.99335C1.93677 6.83583 2.17637 6.74001 2.42808 6.71786L7.03745 6.34599L8.81558 2.04286C8.91182 1.80834 9.07563 1.60774 9.28618 1.46656C9.49673 1.32538 9.7445 1.25 9.998 1.25C10.2515 1.25 10.4993 1.32538 10.7098 1.46656C10.9204 1.60774 11.0842 1.80834 11.1804 2.04286L12.9578 6.34599L17.5671 6.71786C17.8193 6.73919 18.0596 6.83447 18.2579 6.99177C18.4562 7.14907 18.6037 7.36139 18.6819 7.60212C18.76 7.84286 18.7654 8.10131 18.6973 8.34509C18.6292 8.58887 18.4907 8.80714 18.2992 8.97255L18.3039 8.97177Z" fill="#E9E9E9" />
-                                                            </svg></span>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
-                                            </div>
-                                        <?php endif; ?>
+        ?>
+        <div class="<?php echo esc_attr(implode(' ', $classes)); ?>" data-slider-settings='<?php echo esc_attr(json_encode($slider_settings)); ?>'>
+            <div class="bt-testimonial js-testimonial-slider swiper bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>">
+                <div class="swiper-wrapper">
+                    <?php if (!empty($settings['testimonial_items'])) : ?>
+                        <?php foreach ($settings['testimonial_items'] as $item) : ?>
+                            <div class="swiper-slide">
+                                <div class="bt-testimonial--item bt-image-<?php echo esc_attr($settings['testimonial_image_position']); ?>">
+                                    <div class="bt-testimonial--image bt-cover-image">
+                                        <?php if (!empty($item['testimonial_image']['id'])) {
+                                            echo wp_get_attachment_image($item['testimonial_image']['id'], $settings['thumbnail_size']);
+                                        } else {
+                                            if (!empty($item['testimonial_image']['url'])) {
+                                                echo '<img src="' . esc_url($item['testimonial_image']['url']) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                            } else {
+                                                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting testimonial image', 'woozio') . '">';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="bt-testimonial--content">
+                                        <div class="bt-testimonial--inner">
+                                            <?php if (!empty($item['testimonial_rating'])) : ?>
+                                                <div class="bt-testimonial--rating">
+                                                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                                        <?php if ($i <= $item['testimonial_rating']) : ?>
+                                                            <span class="star filled"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
+                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.39035 13.5438L2.68595 10.4773C1.98677 9.91816 2.29343 8.79375 3.18069 8.667L8.43472 8.43292L10.6784 2.80783C10.8348 2.49606 11.1527 2.2998 11.5013 2.2998C11.8498 2.2998 12.1677 2.49709 12.3241 2.80783L14.5678 8.43292L19.8218 8.667C20.7091 8.79375 21.0158 9.91816 20.3166 10.4773L16.6122 13.5438L17.6231 19.5308C17.7397 20.3475 16.8912 20.9588 16.1543 20.5898L11.5013 17.6326L6.84828 20.5888C6.11027 20.9578 5.26288 20.3465 5.37941 19.5298L6.39035 13.5438Z" fill="#181818" />
+                                                                </svg></span>
+                                                        <?php else : ?>
+                                                            <span class="star"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23" fill="none">
+                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.39035 13.5438L2.68595 10.4773C1.98677 9.91816 2.29343 8.79375 3.18069 8.667L8.43472 8.43292L10.6784 2.80783C10.8348 2.49606 11.1527 2.2998 11.5013 2.2998C11.8498 2.2998 12.1677 2.49709 12.3241 2.80783L14.5678 8.43292L19.8218 8.667C20.7091 8.79375 21.0158 9.91816 20.3166 10.4773L16.6122 13.5438L17.6231 19.5308C17.7397 20.3475 16.8912 20.9588 16.1543 20.5898L11.5013 17.6326L6.84828 20.5888C6.11027 20.9578 5.26288 20.3465 5.37941 19.5298L6.39035 13.5438Z" fill="#A2A4AB" />
+                                                                </svg></span>
+                                                        <?php endif; ?>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($item['testimonial_text'])) : ?>
+                                                <div class="bt-testimonial--text"><?php echo esc_html($item['testimonial_text']); ?></div>
+                                            <?php endif; ?>
+                                        </div>
                                         <?php if (!empty($item['testimonial_author'])) : ?>
                                             <div class="bt-testimonial--author"><?php echo esc_html($item['testimonial_author']); ?></div>
                                         <?php endif; ?>
                                     </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
 
+
+
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
+                </div>
+            </div>
+            <?php if (!empty($settings['slider_arrows']) && $settings['slider_arrows'] === 'yes') : ?>
+                <div class="bt-swiper-navigation">
+                    <div class="bt-nav bt-button-prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
+                            <path d="M15.4995 7.00035C15.4995 7.16611 15.4337 7.32508 15.3165 7.44229C15.1992 7.5595 15.0403 7.62535 14.8745 7.62535H2.63311L7.1917 12.1832C7.24977 12.2412 7.29583 12.3102 7.32726 12.386C7.35869 12.4619 7.37486 12.5432 7.37486 12.6253C7.37486 12.7075 7.35869 12.7888 7.32726 12.8647C7.29583 12.9405 7.24977 13.0095 7.1917 13.0675C7.13363 13.1256 7.0647 13.1717 6.98882 13.2031C6.91295 13.2345 6.83164 13.2507 6.74951 13.2507C6.66739 13.2507 6.58607 13.2345 6.5102 13.2031C6.43433 13.1717 6.3654 13.1256 6.30733 13.0675L0.682328 7.44254C0.624217 7.38449 0.578118 7.31556 0.546665 7.23969C0.515213 7.16381 0.499023 7.08248 0.499023 7.00035C0.499023 6.91821 0.515213 6.83688 0.546665 6.76101C0.578118 6.68514 0.624217 6.61621 0.682328 6.55816L6.30733 0.93316C6.4246 0.815885 6.58366 0.75 6.74951 0.75C6.91537 0.75 7.07443 0.815885 7.1917 0.93316C7.30898 1.05044 7.37486 1.2095 7.37486 1.37535C7.37486 1.5412 7.30898 1.70026 7.1917 1.81753L2.63311 6.37535H14.8745C15.0403 6.37535 15.1992 6.4412 15.3165 6.55841C15.4337 6.67562 15.4995 6.83459 15.4995 7.00035Z" fill="currentColor" />
+                        </svg>
+                    </div>
+                    <div class="bt-nav bt-button-next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.3172 10.4425L11.6922 16.0675C11.5749 16.1848 11.4159 16.2507 11.25 16.2507C11.0841 16.2507 10.9251 16.1848 10.8078 16.0675C10.6905 15.9503 10.6247 15.7912 10.6247 15.6253C10.6247 15.4595 10.6905 15.3004 10.8078 15.1832L15.3664 10.6253H3.125C2.95924 10.6253 2.80027 10.5595 2.68306 10.4423C2.56585 10.3251 2.5 10.1661 2.5 10.0003C2.5 9.83459 2.56585 9.67562 2.68306 9.55841C2.80027 9.4412 2.95924 9.37535 3.125 9.37535H15.3664L10.8078 4.81753C10.6905 4.70026 10.6247 4.5412 10.6247 4.37535C10.6247 4.2095 10.6905 4.05044 10.8078 3.93316C10.9251 3.81588 11.0841 3.75 11.25 3.75C11.4159 3.75 11.5749 3.81588 11.6922 3.93316L17.3172 9.55816C17.3753 9.61621 17.4214 9.68514 17.4528 9.76101C17.4843 9.83688 17.5005 9.91821 17.5005 10.0003C17.5005 10.0825 17.4843 10.1638 17.4528 10.2397C17.4214 10.3156 17.3753 10.3845 17.3172 10.4425Z" fill="currentColor" />
+                        </svg>
                     </div>
                 </div>
-                <?php if ($settings['slider_arrows'] === 'yes') : ?>
-                    <div class="bt-swiper-navigation">
-                        <div class="bt-nav bt-button-prev"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M15.5307 18.9698C15.6004 19.0395 15.6557 19.1222 15.6934 19.2132C15.7311 19.3043 15.7505 19.4019 15.7505 19.5004C15.7505 19.599 15.7311 19.6965 15.6934 19.7876C15.6557 19.8786 15.6004 19.9614 15.5307 20.031C15.461 20.1007 15.3783 20.156 15.2873 20.1937C15.1962 20.2314 15.0986 20.2508 15.0001 20.2508C14.9016 20.2508 14.804 20.2314 14.7129 20.1937C14.6219 20.156 14.5392 20.1007 14.4695 20.031L6.96948 12.531C6.89974 12.4614 6.84443 12.3787 6.80668 12.2876C6.76894 12.1966 6.74951 12.099 6.74951 12.0004C6.74951 11.9019 6.76894 11.8043 6.80668 11.7132C6.84443 11.6222 6.89974 11.5394 6.96948 11.4698L14.4695 3.96979C14.6102 3.82906 14.8011 3.75 15.0001 3.75C15.1991 3.75 15.39 3.82906 15.5307 3.96979C15.6715 4.11052 15.7505 4.30139 15.7505 4.50042C15.7505 4.69944 15.6715 4.89031 15.5307 5.03104L8.56041 12.0004L15.5307 18.9698Z" fill="currentColor" />
-                            </svg></div>
-                        <div class="bt-nav bt-button-next"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M17.0306 12.531L9.53055 20.031C9.46087 20.1007 9.37815 20.156 9.2871 20.1937C9.19606 20.2314 9.09847 20.2508 8.99993 20.2508C8.90138 20.2508 8.8038 20.2314 8.71276 20.1937C8.62171 20.156 8.53899 20.1007 8.4693 20.031C8.39962 19.9614 8.34435 19.8786 8.30663 19.7876C8.26892 19.6965 8.24951 19.599 8.24951 19.5004C8.24951 19.4019 8.26892 19.3043 8.30663 19.2132C8.34435 19.1222 8.39962 19.0395 8.4693 18.9698L15.4396 12.0004L8.4693 5.03104C8.32857 4.89031 8.24951 4.69944 8.24951 4.50042C8.24951 4.30139 8.32857 4.11052 8.4693 3.96979C8.61003 3.82906 8.80091 3.75 8.99993 3.75C9.19895 3.75 9.38982 3.82906 9.53055 3.96979L17.0306 11.4698C17.1003 11.5394 17.1556 11.6222 17.1933 11.7132C17.2311 11.8043 17.2505 11.9019 17.2505 12.0004C17.2505 12.099 17.2311 12.1966 17.1933 12.2876C17.1556 12.3787 17.1003 12.4614 17.0306 12.531Z" fill="currentColor" />
-                            </svg></div>
-                    </div>
-                <?php endif;
-                // pagination
-                if ($settings['slider_dots'] === 'yes') {
-                    echo '<div class="bt-swiper-pagination swiper-pagination"></div>';
-                }
-
-                ?>
-            </div>
+            <?php endif;
+            // pagination
+            if (!empty($settings['slider_dots']) && $settings['slider_dots'] === 'yes') {
+                echo '<div class="bt-swiper-pagination swiper-pagination"></div>';
+            }
+            ?>
         </div>
 <?php
     }

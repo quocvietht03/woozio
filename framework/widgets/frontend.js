@@ -710,11 +710,10 @@
 		}
 	};
 	const TestimonialSliderHandler = function ($scope) {
-		const $ProductTestimonialSlider = $scope.find('.js-data-testimonial-slider');
-		if ($ProductTestimonialSlider.length > 0) {
-			const $sliderSettings = $ProductTestimonialSlider.data('slider-settings') || {};
-			// Initialize the testimonial slider
-			const testimonialSlider = new Swiper($ProductTestimonialSlider.find('.js-testimonial-slider')[0], {
+		const $TestimonialSlider = $scope.find('.js-data-testimonial-slider');
+		if ($TestimonialSlider.length > 0) {
+			const $sliderSettings = $TestimonialSlider.data('slider-settings') || {};
+			const swiper = new Swiper($TestimonialSlider.find('.js-testimonial-slider')[0], {
 				slidesPerView: $sliderSettings.slidesPerView,
 				spaceBetween: $sliderSettings.spaceBetween,
 				loop: $sliderSettings.loop,
@@ -738,14 +737,12 @@
 				breakpoints: $sliderSettings.breakpoints,
 			});
 
-			// Pause autoplay on hover if autoplay is enabled
 			if ($sliderSettings.autoplay) {
-				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseenter', () => {
-					testimonialSlider.autoplay.stop();
+				$TestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseenter', () => {
+					swiper.autoplay.stop();
 				});
-
-				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseleave', () => {
-					testimonialSlider.autoplay.start();
+				$TestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseleave', () => {
+					swiper.autoplay.start();
 				});
 			}
 		}
