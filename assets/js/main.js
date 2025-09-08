@@ -90,8 +90,16 @@
 			},
 			gallery: {
 				enabled: true,
-				navigateByImgClick: true
+				navigateByImgClick: true,
 			},
+			zoom: {
+				enabled: true,
+				duration: 300,
+				easing: 'ease-in-out',
+				opener: function(openerElement) {
+					return openerElement.is('img') ? openerElement : openerElement.find('img');
+				}
+			}
 		});
 	}
 
@@ -134,7 +142,7 @@
 		});
 		var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
 			spaceBetween: 20,
-			loop: true,
+			loop: false,
 			loopedSlides: 5,
 			navigation: {
 				nextEl: '.swiper-button-next',
@@ -152,7 +160,7 @@
 		}
 
 		var gallerySlider = new Swiper('.bt-gallery-slider-product', {
-			spaceBetween: 15,
+			spaceBetween: 20,
 			loop: false,
 			loopedSlides: 5,
 			navigation: {
@@ -239,10 +247,11 @@
 						$(this).closest('.variations_form').wc_variation_form();
 					}
 				}
+				
 				$(this).closest('.variations_form').on('woocommerce_variation_has_changed', function () {
 					var variationId = $(this).find('input.variation_id').val();
+					console.log(variationId);
 					if (variationId && variationId !== '0') {
-
 						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
@@ -260,7 +269,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-
+						
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -269,17 +278,59 @@
 							beforeSend: function () {
 								// Show loading skeleton
 								let skeletonHtml = '';
-								skeletonHtml = `
+								if (gallerylayout == 'gallery-slider') {
+									skeletonHtml = `
 										<div class="bt-skeleton-gallery">
-												<div class="bt-skeleton-main-image"></div>
-												<div class="bt-skeleton-thumbnails">
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+										</div>`;
+								} else if (gallerylayout == 'gallery-grid') {
+									skeletonHtml = `
+										<div class="bt-skeleton-gallery">
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+										</div>`;
+								} else {
+									skeletonHtml = `
+										<div class="bt-skeleton-gallery">
+												<div class="bt-skeleton-main-image">
 													<div class="bt-skeleton-thumb"></div>
 												</div>
+												<div class="bt-skeleton-thumbnails">
+													<div class="bt-skeleton-thumbnails--inner">
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+													</div>
+												</div>
 										</div>`;
+								}
 								// Remove existing gallery
 								$('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').addClass('loading');
 								$('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').prepend(skeletonHtml);
@@ -348,6 +399,7 @@
 								$('.bt-attributes-wrap .bt-js-item').removeClass('disable');
 							}
 						});
+
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',

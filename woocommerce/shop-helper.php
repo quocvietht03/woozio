@@ -3030,6 +3030,7 @@ function woozio_load_product_toast()
 add_action('wp_ajax_woozio_load_product_toast', 'woozio_load_product_toast');
 add_action('wp_ajax_nopriv_woozio_load_product_toast', 'woozio_load_product_toast');
 
+
 add_action('woozio_woocommerce_template_loop_add_to_cart_variable', 'woozio_woocommerce_template_loop_add_to_cart_variable', 10);
 function woozio_woocommerce_template_loop_add_to_cart_variable()
 {
@@ -3038,6 +3039,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
         // Get all available variations
         $available_variations = $product->get_available_variations();
         $color_variations_data = array();
+        
 
         foreach ($available_variations as $variation_data) {
             $variation_id = $variation_data['variation_id'];
@@ -3057,7 +3059,6 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
             // Only process if color is found and not already processed
             if (!empty($color_value) && !isset($color_variations_data[$color_value])) {
                 $post_thumbnail_id = $variation->get_image_id();
-                $variable_images = '';
 
                 if ($post_thumbnail_id) {
                     // Always show main image
