@@ -883,3 +883,27 @@ body.admin-bar .dialog-type-lightbox {
       }
     }
 }
+/* header Kid fashion */
+.bt-topbar-kid-fashion{
+  @media (max-width: 1570px) and (min-width: $break-tl) {
+    > .e-con-inner{
+      > .elementor-element{
+        &:first-child{
+          width: auto;
+        }
+        &:last-child{
+          width: auto;
+        }
+      }
+    }
+  }
+  @media (max-width: 1399px) and (min-width: $break-tl) {
+    > .e-con-inner{
+      > .elementor-element{
+        &:nth-child(2){
+          display: none;
+        }
+      }
+    }
+  }
+}

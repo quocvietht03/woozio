@@ -247,10 +247,9 @@
 						$(this).closest('.variations_form').wc_variation_form();
 					}
 				}
-				
-				$(this).closest('.variations_form').on('woocommerce_variation_has_changed', function () {
-					var variationId = $(this).find('input.variation_id').val();
-					console.log(variationId);
+
+				$(this).closest('.variations_form').on('show_variation', function(event, variation) {
+					var variationId = variation.variation_id;
 					if (variationId && variationId !== '0') {
 						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
@@ -399,26 +398,25 @@
 								$('.bt-attributes-wrap .bt-js-item').removeClass('disable');
 							}
 						});
+						//Get variation price from data-product_variations
+						var $form = $(this).closest('.variations_form');
+						var variations = $form.data('product_variations');
+						if (variations) {
+							// Find matching variation by ID
+							var variation = variations.find(function(v) {
+								return v.variation_id === variationId;
+							});
 
-						$.ajax({
-							type: 'POST',
-							dataType: 'json',
-							url: AJ_Options.ajax_url,
-							data: {
-								action: 'woozio_get_variation_price',
-								variation_id: variationId
-							},
-							success: function (response) {
-								if (response.success && response.data.price) {
-									// Update add to cart button with price
-									var priceAddCart = '<span class="price-add-cart"> - ' + response.data.price + '</span>';
-									$(".single_add_to_cart_button").html("Add to cart" + priceAddCart);
-								}
-							},
-							error: function (xhr, status, error) {
-								console.log('Error getting variation price:', error);
+							if (variation && variation.display_price) {
+								// Format price with currency symbol
+								var formattedPrice = '<span class="bt-price-add-cart"> - ' + 
+									variation.price_html + '</span>';
+									
+								// Update add to cart button text
+								$form.find(".single_add_to_cart_button")
+									.html("Add to cart" + formattedPrice);
 							}
-						});
+						}
 					} else {
 						$('.bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
@@ -506,125 +504,6 @@
 					$('input.qty', parent).val(parseInt($('input.qty', parent).val()) - 1);
 					$('input.qty', parent).trigger('change');
 				}
-			});
-		}
-		if ($('.bt-quickview-product .variations_form').length > 0) {
-			$(".bt-quickview-product form.variations_form").on("change", "input, select", function () {
-				var variation_id = $(".bt-quickview-product input.variation_id").val();
-				if (variation_id) {
-					var param_ajax = {
-						action: 'woozio_get_variation_price',
-						variation_id: variation_id
-					};
-
-					$.ajax({
-						type: 'POST',
-						dataType: 'json',
-						url: AJ_Options.ajax_url,
-						data: param_ajax,
-						success: function (response) {
-							if (response.success) {
-								var price = response.data['price'];
-								var priceAddCart = '<span class="price-add-cart"> - ' + price + '</span>';
-								if (price) {
-									$(".bt-quickview-product .single_add_to_cart_button").html("Add to cart" + priceAddCart);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							console.log('Error getting variation price:', error);
-						}
-					});
-				}
-			});
-			$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').on('click', function () {
-				var valueItem = $(this).data('value');
-				var attributesItem = $(this).closest('.bt-attributes--item');
-				var attributeName = attributesItem.data('attribute-name');
-				attributesItem.find('.bt-js-item').removeClass('active'); // Remove active class only from items in the same attribute group
-				$(this).addClass('active'); // Add active class to clicked item
-				var nameItem = (attributeName == 'pa_color') ? $(this).find('label').text() : $(this).text();
-				attributesItem.find('.bt-result').text(nameItem);
-				$('.bt-quickview-product select#' + attributeName).val(valueItem).trigger('change');
-				/* button buy now */
-				var variationId = $('.bt-quickview-product input.variation_id').val();
-				if (variationId) {
-					$('.bt-quickview-product .bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
-					// Load gallery
-					var param_ajax = {
-						action: 'woozio_load_product_gallery',
-						variation_id: variationId
-					};
-
-					$.ajax({
-						type: 'POST',
-						dataType: 'json',
-						url: AJ_Options.ajax_url,
-						data: param_ajax,
-						beforeSend: function () {
-							// Show loading skeleton
-							let skeletonHtml = '';
-							skeletonHtml = `
-										<div class="bt-skeleton-gallery">
-												<div class="bt-skeleton-main-image"></div>
-												<div class="bt-skeleton-thumbnails">
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-												</div>
-										</div>`;
-
-							// Remove existing gallery
-							$('.bt-quickview-product .woocommerce-product-gallery').addClass('loading');
-							$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html('');
-							$('.bt-quickview-product .woocommerce-product-gallery').prepend(skeletonHtml);
-							$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').addClass('disable');
-						},
-						success: function (response) {
-							if (response.success) {
-								setTimeout(function () {
-									$('.bt-quickview-product .woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
-									WoozioImageZoomable();
-									WoozioGalleryLightbox();
-									WoozioSliderThumbs();
-									// Remove loading class and remove skeleton
-									setTimeout(function () {
-										$('.bt-quickview-product .woocommerce-product-gallery').removeClass('loading');
-										$('.bt-quickview-product .bt-skeleton-gallery').remove();
-									}, 200);
-								}, 300);
-								$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').removeClass('disable');
-							}
-						},
-						error: function (xhr, status, error) {
-							console.log('Error loading gallery:', error);
-							$('.bt-quickview-product .woocommerce-product-gallery').removeClass('loading');
-							$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').removeClass('disable');
-						}
-					});
-				} else {
-					$('.bt-quickview-product .bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
-				}
-				$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').each(function () {
-					var valueItem = $(this).data('value');
-					var attributesItem = $(this).closest('.bt-attributes--item');
-					var attributeName = attributesItem.data('attribute-name');
-					var options = $('.bt-quickview-product select#' + attributeName + ' option');
-					var optionExists = false;
-					options.each(function () {
-						if ($(this).val() == valueItem) {
-							optionExists = true;
-							return false; // break the loop
-						}
-					});
-					if (!optionExists) {
-						$(this).addClass('disabled');
-					} else {
-						$(this).removeClass('disabled');
-					}
-				});
 			});
 		}
 	}

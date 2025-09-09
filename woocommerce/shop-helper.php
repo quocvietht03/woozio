@@ -2903,19 +2903,7 @@ function woozio_load_product_variation()
 }
 add_action('wp_ajax_woozio_load_product_variation', 'woozio_load_product_variation');
 add_action('wp_ajax_nopriv_woozio_load_product_variation', 'woozio_load_product_variation');
-// ajax get price variation
-function woozio_get_variation_price()
-{
-    $variation_id = isset($_POST['variation_id']) ? intval($_POST['variation_id']) : '';
-    if ($variation_id) {
-        $variation = wc_get_product($variation_id);
-        $price_html = $variation->get_price_html();
-        $output['price'] = $price_html;
-        wp_send_json_success($output);
-    }
-}
-add_action('wp_ajax_woozio_get_variation_price', 'woozio_get_variation_price');
-add_action('wp_ajax_nopriv_woozio_get_variation_price', 'woozio_get_variation_price');
+
 
 // ajax load product toast
 function woozio_load_product_toast()
@@ -3137,7 +3125,7 @@ function woozio_woocommerce_after_add_to_cart_button()
     }
     if ($product->is_type('variable')) {
         echo '<a href="#"
-        class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
+        class="bt-btn-add-to-cart-variable single_add_to_cart_button bt-button-hover bt-js-add-to-cart-variable disabled"
         data-product-quantity="1"
         data-product-id="' . esc_attr( $product->get_id() ) . '"
         data-variation="' . esc_attr( $variation_id ) . '">'

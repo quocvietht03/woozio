@@ -1315,7 +1315,7 @@
   .dialog-close-button.dialog-lightbox-close-button {
     width: 21px;
     height: 21px;
-    background-image: url('../images/close-white.svg');
+    background-image: url("../images/close-white.svg");
     background-size: cover;
     background-repeat: no-repeat;
     svg {
@@ -1327,7 +1327,7 @@
   .dialog-close-button.dialog-lightbox-close-button {
     width: 21px;
     height: 21px;
-    background-image: url('../images/close-white.svg');
+    background-image: url("../images/close-white.svg");
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
@@ -1481,7 +1481,7 @@
     width: 24px;
     height: 24px;
     background-color: transparent;
-    background-image: url('../images/close-white.svg');
+    background-image: url("../images/close-white.svg");
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -1496,7 +1496,7 @@
       content: "";
       width: 20px;
       height: 20px;
-      background-image: url('../images/arrow-left.svg');
+      background-image: url("../images/arrow-left.svg");
       background-repeat: no-repeat;
       background-position: center;
       margin-top: 12px;
@@ -1638,3 +1638,4 @@
     padding-inline-end: var(--slider-offset-width);
   }
 }
+

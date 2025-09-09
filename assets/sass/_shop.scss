@@ -891,6 +891,7 @@
     }
   }
 }
+
 /* popup compare */
 .bt-popup-compare {
   position: fixed;
@@ -1536,6 +1537,9 @@
           .bt-button-buy-now {
             margin-bottom: 0;
           }
+          .bt-btn-add-to-cart-variable{
+            display: none;
+          }
           .product_title {
             font-size: 30px;
             line-height: 1.4;
@@ -1800,7 +1804,9 @@
             transform: scale(1.1, 1.1) translateZ(0);
           }
           img {
-            transition: opacity 0.3s, transform 2s cubic-bezier(0, 0, 0.44, 1.18);
+            transition:
+              opacity 0.3s,
+              transform 2s cubic-bezier(0, 0, 0.44, 1.18);
             transform: translateZ(0);
           }
         }
@@ -1812,19 +1818,25 @@
         border-radius: 0;
         box-shadow: 0 0 1px #e9e9e9;
         &--placeholder {
-          transition: opacity 0.3s, transform 2s cubic-bezier(0, 0, 0.44, 1.18);
+          transition:
+            opacity 0.3s,
+            transform 2s cubic-bezier(0, 0, 0.44, 1.18);
         }
         &:nth-child(2) {
           position: absolute;
           left: 0;
           top: 0;
           width: 100%;
-          transition: opacity 0.3s, transform 2s cubic-bezier(0, 0, 0.44, 1.18);
+          transition:
+            opacity 0.3s,
+            transform 2s cubic-bezier(0, 0, 0.44, 1.18);
           opacity: 0;
         }
         img {
           mix-blend-mode: multiply;
-          transition: opacity 0.3s, transform 2s cubic-bezier(0, 0, 0.44, 1.18);
+          transition:
+            opacity 0.3s,
+            transform 2s cubic-bezier(0, 0, 0.44, 1.18);
           transform: translateZ(0);
         }
       }
@@ -3044,7 +3056,35 @@
       text-decoration: none;
     }
   }
-
+  /* price add cart */
+  div.product {
+    .bt-price-add-cart {
+      span.price {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        text-transform: uppercase;
+        color: #fff;
+        display: inline-flex;
+        gap: 4px;
+        flex-direction: row-reverse !important;
+        del {
+          color: #ffffff94;
+          line-height: 24px;
+        }
+        ins {
+          float: none;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 24px;
+          text-transform: uppercase;
+          color: #fff;
+        }
+      }
+    }
+  }
   .quantity {
     position: relative;
     display: inline-block;
@@ -3738,9 +3778,9 @@
     &.bt-bottom-thumbnail {
       .bt-skeleton-thumbnails {
         .bt-skeleton-thumb:last-child {
-            display: none;
+          display: none;
         }
-        @media(min-width: $break-md) and (max-width: $break-lg) {
+        @media (min-width: $break-md) and (max-width: $break-lg) {
           &--inner {
             grid-template-columns: repeat(4, 1fr);
           }
@@ -3748,7 +3788,7 @@
             display: none;
           }
         }
-        @media(max-width: $break-sm) {
+        @media (max-width: $break-sm) {
           &--inner {
             grid-template-columns: repeat(4, 1fr);
           }
@@ -3756,7 +3796,7 @@
             display: none;
           }
         }
-        @media(max-width: 479.98px) {
+        @media (max-width: 479.98px) {
           &--inner {
             grid-template-columns: repeat(3, 1fr);
           }
@@ -3789,7 +3829,7 @@
           flex-direction: column;
         }
       }
-      div.images { 
+      div.images {
         .woocommerce-product-gallery {
           &__wrapper {
             display: flex;
@@ -3827,7 +3867,7 @@
     }
 
     &.bt-gallery-one-column {
-      .bt-skeleton-main-image:nth-child(n+4) {  
+      .bt-skeleton-main-image:nth-child(n + 4) {
         display: none;
       }
     }
@@ -3869,7 +3909,7 @@
       .bt-skeleton-gallery {
         flex-direction: row;
       }
-      @media(max-width: $break-sm) {
+      @media (max-width: $break-sm) {
         .bt-skeleton-main-image:last-child {
           display: none;
         }
@@ -3889,7 +3929,7 @@
       }
       .bt-single-product-info {
         width: calc(42% - 30px);
-        @media(min-width: $break-md) {
+        @media (min-width: $break-md) {
           &__inner {
             position: sticky;
             top: 50px;
@@ -3909,7 +3949,7 @@
         @extend .__bt-swiper-navigation-style;
       }
 
-      @media(max-width: $break-md) {
+      @media (max-width: $break-md) {
         div.summary {
           gap: 0;
         }
