@@ -1394,7 +1394,7 @@
 					const $firstJsItem = $(this).find('.bt-js-item').first();
 					if ($firstJsItem.length) {
 						$firstJsItem.trigger('click');
-						$(this).closest('.variations_form').on('show_variation', function(event, variation) {
+						$(this).closest('.variations_form').on('show_variation', function (event, variation) {
 							var variationId = variation.variation_id;
 							if (variationId && variationId !== '0') {
 								var $ItemProduct = $(this).closest('.bt-hotspot-product-list__item');
@@ -1402,10 +1402,10 @@
 								var variations = $form.data('product_variations');
 								if (variations) {
 									// Find matching variation by ID
-									var variation = variations.find(function(v) {
+									var variation = variations.find(function (v) {
 										return v.variation_id === variationId;
 									});
-		
+
 									if (variation && variation.price_html) {
 										// Update price display
 										$ItemProduct.find(".bt-price").html(variation.price_html);
@@ -1419,7 +1419,8 @@
 			// Function to update variation_id in data-ids for a given product
 			function updateHotspotProductVariationId($variationForm, variationId, $scope) {
 				const $productItem = $variationForm.closest('.bt-hotspot-product-list__item');
-				const productId = $productItem.data('product-id');
+				const $productId = $productItem.data('product-id');
+				const $product_currencySymbol = $variationForm.find('.bt-attributes-wrap').data('product-currency');
 				if (typeof variationId === 'undefined' || !variationId || typeof variationId === 'object') {
 					variationId = parseInt($variationForm.find('input.variation_id').val(), 10) || 0;
 				}
@@ -1434,9 +1435,9 @@
 					}
 					let updated = false;
 					let totalPrice = 0;
-					
+
 					idsArr = idsArr.map(item => {
-						if (item.product_id == productId) {
+						if (item.product_id == $productId) {
 							if (item.variation_id != variationId) {
 								item.variation_id = variationId;
 								updated = true;
@@ -1470,9 +1471,8 @@
 						$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
 					}
 					// update total price
-					totalPrice = totalPrice % 1 === 0 ? totalPrice.toFixed(2) : Number(totalPrice.toFixed(2));
-					const $product_currencySymbol = $productItem.data('product-currency');
-					 $addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
+					totalPrice = totalPrice.toFixed(2);
+					$addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
 				}
 			}
 
@@ -1484,15 +1484,15 @@
 			// Update on variation change
 			$variationForm.find('select').on('change', function () {
 				var $form = $(this).closest('.variations_form');
-				$form.on('show_variation', function(event, variation) {
+				$form.on('show_variation', function (event, variation) {
 					var variationId = variation.variation_id;
 					if (variationId && variationId !== '0') {
 						updateHotspotProductVariationId($form, variationId, $scope);
 						var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');
 						var variations = $form.data('product_variations');
-						
+
 						if (variations) {
-							var variation = variations.find(function(v) {
+							var variation = variations.find(function (v) {
 								return v.variation_id === variationId;
 							});
 							if (variation && variation.price_html) {
@@ -1501,7 +1501,7 @@
 							}
 						}
 					}
-					
+
 				});
 			});
 

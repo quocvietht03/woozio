@@ -384,13 +384,10 @@ class Widget_HotspotProductNormal extends Widget_Base
                                         if (!$product) {
                                             continue;
                                         }
-                                        $order_currency = get_woocommerce_currency();
-                                        $product_currencySymbol = get_woocommerce_currency_symbol($order_currency);
                             ?>
                                         <li class="bt-hotspot-product-list__item"
                                             data-product-single-price="<?php echo esc_attr($product->get_sale_price() ? $product->get_sale_price() : $product->get_regular_price()); ?>"
-                                            data-product-id="<?php echo esc_attr($product_id); ?>"
-                                            data-product-currency="<?php echo esc_attr($product_currencySymbol); ?>">
+                                            data-product-id="<?php echo esc_attr($product_id); ?>">
                                             <div class="bt-number-product">
                                                 <?php echo $index; ?>
                                             </div>

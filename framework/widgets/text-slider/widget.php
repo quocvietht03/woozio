@@ -82,9 +82,9 @@ class Woozio_TextSlider extends Widget_Base
             ]
         );
         $this->add_control(
-            'spacing_image',
+            'spacing_icon',
             [
-                'label' => __('Spacing Image', 'woozio'),
+                'label' => __('Spacing Icon', 'woozio'),
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
                     'url' => '',
@@ -129,9 +129,54 @@ class Woozio_TextSlider extends Widget_Base
 
         $this->end_controls_section();
         $this->start_controls_section(
-            'section_text_style',
+            'section_content_style',
             [
-                'label' => esc_html__('Text Style', 'woozio'),
+                'label' => esc_html__('Content Style', 'woozio'),
+            ]
+        );
+        $this->add_control(
+            'item_spacing',
+            [
+                'label' => __('Item Spacing', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 12,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item' => 'gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'icon_width',
+            [
+                'label' => __('Icon Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 30,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item img' => 'max-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-text--item svg' => 'width: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
         $this->add_control(
@@ -183,10 +228,15 @@ class Woozio_TextSlider extends Widget_Base
             <ul class="bt-text-slider swiper-wrapper">
                 <?php foreach ($settings['list'] as $index => $item) { ?>
                     <li class="bt-text--item swiper-slide">
-                        <?php if (!empty($settings['spacing_image']['id'])) { 
-                            echo wp_get_attachment_image($settings['spacing_image']['id'], 'thumbnail');
+                        <?php if (!empty($settings['spacing_icon']['id'])) { 
+                            $image = wp_get_attachment_url($settings['spacing_icon']['id']);
+                            if ($image && pathinfo($image, PATHINFO_EXTENSION) === 'svg') {
+                                echo file_get_contents($image);
+                            } else {
+                                echo wp_get_attachment_image($settings['spacing_icon']['id'], 'thumbnail'); 
+                            }
                         } else {
-                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting spacing image', 'woozio') . '">';
+                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting spacing icon', 'woozio') . '">';
                         } ?>
                         <?php echo '<span>' . $item['text_item'] . '</span>'; ?>
                     </li>

@@ -96,7 +96,7 @@
 				enabled: true,
 				duration: 300,
 				easing: 'ease-in-out',
-				opener: function(openerElement) {
+				opener: function (openerElement) {
 					return openerElement.is('img') ? openerElement : openerElement.find('img');
 				}
 			}
@@ -248,14 +248,16 @@
 					}
 				}
 
-				$(this).closest('.variations_form').on('show_variation', function(event, variation) {
+				$(this).closest('.variations_form').on('show_variation', function (event, variation) {
+
 					var variationId = variation.variation_id;
+					//alert(variationId);
 					if (variationId && variationId !== '0') {
 						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
 							$addToCartBtn.removeClass('disabled').attr('data-variation', variationId);
-							
+
 							// Handle quantity controls - remove old handler first
 							$(this).closest('.variations_form').find('.quantity .qty').off('change.updateQuantity').on('change.updateQuantity', function () {
 								var newQuantity = parseInt($(this).val()) || 1;
@@ -268,7 +270,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-						
+
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -403,15 +405,14 @@
 						var variations = $form.data('product_variations');
 						if (variations) {
 							// Find matching variation by ID
-							var variation = variations.find(function(v) {
+							var variation = variations.find(function (v) {
 								return v.variation_id === variationId;
 							});
-
-							if (variation && variation.display_price) {
+							console.log(variation);
+							if (variation && variation.price_html) {
 								// Format price with currency symbol
-								var formattedPrice = '<span class="bt-price-add-cart"> - ' + 
+								var formattedPrice = '<span class="bt-price-add-cart"> - ' +
 									variation.price_html + '</span>';
-									
 								// Update add to cart button text
 								$form.find(".single_add_to_cart_button")
 									.html("Add to cart" + formattedPrice);
@@ -2194,7 +2195,7 @@
 				const productContainer = $(this).closest('.woocommerce-loop-product');
 				const colorVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
 				const colorVariations = colorVariationsContainer.data('color-variations');
-				
+
 				// Check if colorVariations exists and is an object
 				if (colorVariations && typeof colorVariations === 'object') {
 					// Find the matching color variation
@@ -2225,17 +2226,17 @@
 	function WoozioAddToCartVariable() {
 		$(document).on('click', '.bt-js-add-to-cart-variable', function (e) {
 			e.preventDefault();
-			
+
 			var $button = $(this);
 			var $form = $button.closest('.variations_form');
-			
+
 			if ($button.hasClass('disabled')) {
 				alert('Please select some product options before adding this product to your cart.');
 				return;
 			}
-			
+
 			$button.addClass('loading');
-			
+
 			// Get the latest values from the variations form
 			var product_id = $button.data('product-id').toString();
 			var variation_id = $form.find('input.variation_id').val();
@@ -2264,7 +2265,7 @@
 						$('.bt-js-add-to-cart-variable').removeClass('loading');
 						if (variation_id) {
 							WoozioshowToast(variation_id, 'cart', 'add');
-						}else{
+						} else {
 							WoozioshowToast(product_id, 'cart', 'add');
 						}
 						// Update mini cart after successful add to cart

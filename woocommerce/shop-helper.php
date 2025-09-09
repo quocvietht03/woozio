@@ -1552,19 +1552,6 @@ function woozio_display_button_wishlist_compare()
 
 add_action('woocommerce_after_add_to_cart_button', 'woozio_display_button_wishlist_compare');
 
-add_filter('woocommerce_product_single_add_to_cart_text', 'woozio_custom_add_to_cart_text', 10, 2);
-
-function woozio_custom_add_to_cart_text($text, $product)
-{
-    if ($product->is_type('simple')) {
-        $price = $product->get_price();
-        $formatted_price = wc_price($price);
-        $formatted_price = strip_tags($formatted_price);
-        $text = sprintf(__('Add to cart - %s', 'woozio'), $formatted_price);
-    }
-    return $text;
-}
-
 // WooCommerce custom field
 add_action('woocommerce_product_options_advanced', 'woozio_woocommerce_custom_field');
 
