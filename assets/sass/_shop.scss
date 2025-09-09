@@ -1557,6 +1557,9 @@
           .bt-product-meta {
             margin-top: 25px;
           }
+          .bt-btn-add-to-cart-variable {
+            display: none;
+          }
         }
         @media (max-width: 1500px) and (min-width: $break-md) {
           div.summary {
@@ -3759,6 +3762,7 @@
       width: 100%;
     }
     .bt-skeleton-thumbnails {
+      display: none;
       position: relative;
       overflow: hidden;
       &--inner {
