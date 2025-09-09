@@ -1781,6 +1781,9 @@
             > span {
               flex-direction: row;
               justify-content: flex-start;
+              del{
+                order: 1;
+              }
             }
           }
           > span {
@@ -2911,6 +2914,9 @@
               &.bt-type-variable {
                 flex-direction: row;
                 justify-content: flex-start;
+                del{
+                  order: 1;
+                }
               }
               del {
                 color: #ffffff96;
@@ -5734,6 +5740,9 @@
       &.bt-product-variable {
         .bt-product--price {
           flex-direction: row;
+          del{
+            order: 1;
+          }
         }
       }
       .bt-col-product {
