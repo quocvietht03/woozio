@@ -384,8 +384,13 @@ class Widget_HotspotProductNormal extends Widget_Base
                                         if (!$product) {
                                             continue;
                                         }
+                                        $order_currency = get_woocommerce_currency();
+                                        $product_currencySymbol = get_woocommerce_currency_symbol($order_currency);
                             ?>
-                                        <li class="bt-hotspot-product-list__item" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                        <li class="bt-hotspot-product-list__item"
+                                            data-product-single-price="<?php echo esc_attr($product->get_sale_price() ? $product->get_sale_price() : $product->get_regular_price()); ?>"
+                                            data-product-id="<?php echo esc_attr($product_id); ?>"
+                                            data-product-currency="<?php echo esc_attr($product_currencySymbol); ?>">
                                             <div class="bt-number-product">
                                                 <?php echo $index; ?>
                                             </div>
@@ -438,6 +443,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                         ?>
                         <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
                             <?php esc_html_e('Add set to cart', 'woozio'); ?>
+                            <span class="bt-btn-price"></span>
                         </a>
                     </div>
                 </div>

@@ -5703,15 +5703,18 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        img{
+          max-width: 30px;
+          object-fit: contain;
+        }
         span {
           display: inline-block;
           color: #111;
           text-align: center;
-          font-size: 56px;
+          font-size: 24px;
           font-style: normal;
-          font-weight: 600;
-          line-height: 68px;
-          text-transform: uppercase;
+          font-weight: 500;
+          line-height: 30px;
           @media (max-width: $break-sm) {
             font-size: 30px;
             line-height: 45px;
@@ -5728,6 +5731,11 @@
       flex-direction: row;
       gap: 0;
       align-items: stretch;
+      &.bt-product-variable {
+        .bt-product--price {
+          flex-direction: row;
+        }
+      }
       .bt-col-product {
         width: 33.33%;
         display: flex;
@@ -6093,6 +6101,33 @@
           font-weight: 500;
           text-transform: uppercase;
           position: relative;
+          .bt-price-add-cart {
+            span.price {
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 500;
+              line-height: 24px;
+              text-transform: uppercase;
+              color: #fff;
+              display: inline-flex;
+              gap: 4px;
+              flex-direction: row-reverse !important;
+              del {
+                color: #ffffff94;
+                line-height: 24px;
+              }
+              ins {
+                float: none;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 24px;
+                text-transform: uppercase;
+                color: #fff;
+                text-decoration: unset;
+              }
+            }
+          }
           &.loading {
             color: transparent !important;
             opacity: 0.5;
@@ -6329,7 +6364,7 @@
                             min-inline-size: 16px;
                             min-block-size: 10px;
                             min-width: -webkit-fill-available;
-                            max-width: 75px;
+                            max-width: 65px;
                             height: auto;
                             font-size: 16px;
                             font-style: normal;
@@ -6359,6 +6394,15 @@
                 align-items: center;
                 color: $color-primary;
                 margin: 0;
+                span.price{
+                  display: flex;
+                  flex-direction: row-reverse;
+                  justify-content: flex-end;
+                  gap: 8px;
+                  align-items: center;
+                  color: $color-primary;
+                  margin: 0;
+                }
                 .woocommerce-Price-amount {
                   font-size: 16px;
                   font-style: normal;

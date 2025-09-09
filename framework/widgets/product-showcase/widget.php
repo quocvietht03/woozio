@@ -428,7 +428,7 @@ class Widget_ProductShowcase extends Widget_Base
 					}
 
 			?>
-					<div class="bt-product-showcase">
+					<div class="bt-product-showcase <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
 						<div class="bt-col-product bt-product-showcase--item-content">
 							<div class="bt-product--category">
 								<?php
