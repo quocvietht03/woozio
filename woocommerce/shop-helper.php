@@ -30,6 +30,7 @@ remove_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display');
 remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15);
 
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
+
 function register_product_taxonomy()
 {
     $labels = array(
@@ -89,7 +90,6 @@ function woozio_woocommerce_single_product_meta()
     echo '</ul>';
 }
 
-
 // custom product loop image
 add_action('woozio_woocommerce_template_loop_product_thumbnail', 'woozio_woocommerce_template_loop_product_thumbnail', 10);
 
@@ -135,21 +135,6 @@ function woozio_redirect_after_add_to_cart()
         wp_redirect(wc_get_cart_url());
         exit();
     }
-}
-
-add_filter('get_terms', 'woozio_exclude_hidden_category', 10, 3);
-
-function woozio_exclude_hidden_category($terms, $taxonomies, $args)
-{
-    if (in_array('product_cat', $taxonomies)) {
-        $exclude = array('uncategorized');
-        foreach ($terms as $key => $term) {
-            if (is_object($term) && isset($term->slug) && in_array($term->slug, $exclude)) {
-                unset($terms[$key]);
-            }
-        }
-    }
-    return $terms;
 }
 
 // WooCommerce percentage flash
@@ -717,7 +702,7 @@ function woozio_product_pagination($current_page, $total_page)
     }
 
     ob_start();
-?>
+    ?>
     <nav class="bt-pagination bt-product-pagination" role="navigation">
         <?php if (1 != $current_page) { ?>
             <a class="prev page-numbers" href="#" data-page="<?php echo esc_attr($current_page - 1); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none">
