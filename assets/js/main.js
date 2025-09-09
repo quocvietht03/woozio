@@ -250,7 +250,7 @@
 				
 				$(this).closest('.variations_form').on('woocommerce_variation_has_changed', function () {
 					var variationId = $(this).find('input.variation_id').val();
-					console.log(variationId);
+					
 					if (variationId && variationId !== '0') {
 						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
@@ -373,17 +373,19 @@
 											}, 200);
 										}, 300);
 									} else {
+										if (response.data['itemgallery'] > 1) {
+											$('.woocommerce-product-gallery__wrapper').addClass('bt-has-slide-thumbs');
+											$('.bt-skeleton-gallery .bt-skeleton-thumbnails').show();
+										} else {
+											$('.woocommerce-product-gallery__wrapper').removeClass('bt-has-slide-thumbs');
+											$('.bt-skeleton-gallery .bt-skeleton-thumbnails').hide();
+										}
 										setTimeout(function () {
-											if (response.data['itemgallery'] > 1) {
-												$('.woocommerce-product-gallery__wrapper').addClass('bt-has-slide-thumbs');
-											} else {
-												$('.woocommerce-product-gallery__wrapper').removeClass('bt-has-slide-thumbs');
-											}
 											$('.woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
 											WoozioImageZoomable();
 											WoozioGalleryLightbox();
 											WoozioSliderThumbs();
-											// Remove loading class and remove skeleton
+											
 											setTimeout(function () {
 												$('.woocommerce-product-gallery').removeClass('loading');
 												$('.bt-skeleton-gallery').remove();
@@ -511,6 +513,7 @@
 		if ($('.bt-quickview-product .variations_form').length > 0) {
 			$(".bt-quickview-product form.variations_form").on("change", "input, select", function () {
 				var variation_id = $(".bt-quickview-product input.variation_id").val();
+
 				if (variation_id) {
 					var param_ajax = {
 						action: 'woozio_get_variation_price',
@@ -537,6 +540,7 @@
 					});
 				}
 			});
+
 			$('.bt-quickview-product .bt-attributes-wrap .bt-js-item').on('click', function () {
 				var valueItem = $(this).data('value');
 				var attributesItem = $(this).closest('.bt-attributes--item');
@@ -548,6 +552,7 @@
 				$('.bt-quickview-product select#' + attributeName).val(valueItem).trigger('change');
 				/* button buy now */
 				var variationId = $('.bt-quickview-product input.variation_id').val();
+
 				if (variationId) {
 					$('.bt-quickview-product .bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 					// Load gallery
@@ -566,13 +571,18 @@
 							let skeletonHtml = '';
 							skeletonHtml = `
 										<div class="bt-skeleton-gallery">
-												<div class="bt-skeleton-main-image"></div>
+												<div class="bt-skeleton-main-image">
+													<div class="bt-skeleton-thumb"></div>
+												</div>
 												<div class="bt-skeleton-thumbnails">
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
-													<div class="bt-skeleton-thumb"></div>
+													<div class="bt-skeleton-thumbnails--inner">
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+														<div class="bt-skeleton-thumb"></div>
+													</div>
 												</div>
 										</div>`;
 
@@ -589,7 +599,7 @@
 									WoozioImageZoomable();
 									WoozioGalleryLightbox();
 									WoozioSliderThumbs();
-									// Remove loading class and remove skeleton
+									
 									setTimeout(function () {
 										$('.bt-quickview-product .woocommerce-product-gallery').removeClass('loading');
 										$('.bt-quickview-product .bt-skeleton-gallery').remove();

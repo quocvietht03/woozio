@@ -3122,11 +3122,11 @@ function woozio_woocommerce_after_add_to_cart_button()
     }
     if ($product->is_type('variable')) {
         echo '<a href="#"
-        class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
-        data-product-quantity="1"
-        data-product-id="' . esc_attr( $product->get_id() ) . '"
-        data-variation="' . esc_attr( $variation_id ) . '">'
-        . esc_html__( 'Add To Cart', 'woozio' ) .
+            class="bt-btn-add-to-cart-variable bt-button-hover bt-js-add-to-cart-variable disabled"
+            data-product-quantity="1"
+            data-product-id="' . esc_attr( $product->get_id() ) . '"
+            data-variation="' . esc_attr( $variation_id ) . '">'
+            . esc_html__( 'Add To Cart', 'woozio' ) .
         '</a>';
     }
 }
