@@ -2077,6 +2077,9 @@
           &.bt-btn-add-to-cart-variable {
             bottom: 0;
             right: 0;
+            .bt-price-add-cart{
+              display: none;
+            }
             &.disabled {
               opacity: 0.5;
               cursor: not-allowed;

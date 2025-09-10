@@ -20,7 +20,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
 
     public function get_title()
     {
-        return __('Product Category Loop Item', 'woozio');
+        return __('Product Cat Item', 'woozio');
     }
 
     public function get_icon()
@@ -57,6 +57,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'options' => [
                     'default' => __('Default', 'woozio'),
                     'style-1' => __('Style 1', 'woozio'),
+                    'style-2' => __('Style 2', 'woozio'),
                 ],
             ]
         );

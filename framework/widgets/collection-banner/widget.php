@@ -47,6 +47,18 @@ class Widget_CollectionBanner extends Widget_Base
 				'label' => __('Content', 'woozio'),
 			]
 		);
+		$this->add_control(
+			'layout_type',
+			[
+				'label' => __('Layout', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'default' => __('Default', 'woozio'),
+					'style-1' => __('Style 1', 'woozio'),
+				],
+				'default' => 'default',
+			]
+		);
 
 		$repeater = new Repeater();
 
@@ -373,7 +385,7 @@ class Widget_CollectionBanner extends Widget_Base
 		// Get total number of items
 		$total_items = count($collection_items);
 ?>
-		<div class="bt-elwg-collection-banner--default">
+		<div class="bt-elwg-collection-banner--<?php echo esc_attr($settings['layout_type']); ?>">
 			<div class="bt-collection-banner bt-items-<?php echo esc_attr($total_items); ?>" data-total-items="<?php echo esc_attr($total_items); ?>">
 				<?php
 				$has_active_item = false; // Track if we already have an active item

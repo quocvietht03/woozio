@@ -241,11 +241,9 @@
 				} else {
 					gallerylayout = 'slider-thumb';
 				}
-				// fix add cart slider elementor
-				if ($(this).closest('.swiper-slide-duplicate').length > 0) {
-					if (typeof $.fn.wc_variation_form !== 'undefined') {
-						$(this).closest('.variations_form').wc_variation_form();
-					}
+				// update js variations_form woo
+				if (typeof $.fn.wc_variation_form !== 'undefined') {
+					$(this).closest('.variations_form').wc_variation_form();
 				}
 
 				$(this).closest('.variations_form').on('show_variation', function (event, variation) {
@@ -386,7 +384,7 @@
 											WoozioImageZoomable();
 											WoozioGalleryLightbox();
 											WoozioSliderThumbs();
-											
+
 											setTimeout(function () {
 												$('.woocommerce-product-gallery').removeClass('loading');
 												$('.bt-skeleton-gallery').remove();
@@ -510,7 +508,7 @@
 			});
 		}
 	}
-	
+
 	/* Validation form comment */
 	function WoozioCommentValidation() {
 		if ($('#bt_comment_form').length) {

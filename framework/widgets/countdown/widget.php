@@ -142,12 +142,21 @@ class Widget_CountDown extends Widget_Base
 				],
 			]
 		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
+		$this->add_responsive_control(
+			'delimiter_spacing',
 			[
-				'name' => 'delimiter_typography',
-				'selector' => '{{WRAPPER}} .bt-delimiter',
+				'label' => __('Delimiter Spacing', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px'],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 50,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-delimiter' => 'margin: 0 {{SIZE}}{{UNIT}};',
+				],
 			]
 		);
 		$this->end_controls_section();

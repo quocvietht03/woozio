@@ -175,7 +175,7 @@ class Woozio_TextSlider extends Widget_Base
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-text--item img' => 'max-width: {{SIZE}}{{UNIT}};',
-                    '{{WRAPPER}} .bt-text--item svg' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-text--item svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
