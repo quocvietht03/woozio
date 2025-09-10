@@ -23,8 +23,7 @@ global $product;
 $attribute_keys  = array_keys($attributes);
 $variations_json = wp_json_encode($available_variations);
 $variations_attr = function_exists('wc_esc_json') ? wc_esc_json($variations_json) : _wp_specialchars($variations_json, ENT_QUOTES, 'UTF-8', true);
-$order_currency = get_woocommerce_currency();
-$product_currencySymbol = get_woocommerce_currency_symbol($order_currency);
+
 
 do_action('woocommerce_before_add_to_cart_form'); ?>
 <form class="variations_form cart" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo esc_attr(absint($product->get_id())); ?>" <?php echo 'data-product_variations="' . $variations_attr . '"'; ?>>
@@ -63,7 +62,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 			</tbody>
 		</table>
 
-		<div class="bt-attributes-wrap" data-product-currency="<?php echo esc_attr($product_currencySymbol); ?>">
+		<div class="bt-attributes-wrap" >
 			<?php
 			foreach ($attributes as $attribute_name => $options) :
 				$data_attribute = strtolower($attribute_name);
