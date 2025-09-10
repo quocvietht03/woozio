@@ -396,7 +396,7 @@
 			},
 		});
 	}
-	const HotspotProductHandler = function ($scope) {
+	const ProductTooltipHotspotHandler = function ($scope) {
 		const $HotspotProduct = $scope.find('.bt-elwg-hotspot-product--default');
 		if ($HotspotProduct.length > 0) {
 			function getPositionPoint($point) {
@@ -1216,12 +1216,12 @@
 		}
 	};
 
-	const ItemHotspotProductHandler = function ($scope) {
-		const $itemHotspotProduct = $scope.find('.bt-elwg-item-hotspot-product--default');
+	const ProductHotspotOverlayHandler = function ($scope) {
+		const $productHotspotOverlay = $scope.find('.bt-elwg-product-overlay-hotspot--default');
 
-		if ($itemHotspotProduct.length > 0) {
-			const $hotspotPoints = $itemHotspotProduct.find('.bt-hotspot-point');
-			const $productItems = $itemHotspotProduct.find('.bt-product-item-minimal');
+		if ($productHotspotOverlay.length > 0) {
+			const $hotspotPoints = $productHotspotOverlay.find('.bt-hotspot-point');
+			const $productItems = $productHotspotOverlay.find('.bt-product-item-minimal');
 
 			// Handle hotspot point clicks
 			$hotspotPoints.on('click', function (e) {
@@ -1366,8 +1366,8 @@
 		}
 	}
 	// hotspot product normal
-	const HotspotProductNormalHandler = function ($scope) {
-		const $hotspotProductNormal = $scope.find('.bt-elwg-hotspot-product-normal--default');
+	const ProductListHotspotHandler = function ($scope) {
+		const $hotspotProductNormal = $scope.find('.bt-elwg-product-list-hotspot--default');
 		if ($hotspotProductNormal.length > 0) {
 			// Handle hotspot point clicks
 			const $hotspotPoints = $hotspotProductNormal.find('.bt-hotspot-point');
@@ -1616,7 +1616,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-banner-product-slider.default', BannerProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-tiktok-shop-slider.default', TiktokShopSliderHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-hotspot-product.default', HotspotProductHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-tooltip-hotspot.default', ProductTooltipHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonial-slider.default', TestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial-slider.default', ProductTestimonialSliderHandler);
@@ -1628,10 +1628,10 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-item-hotspot-product.default', ItemHotspotProductHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot.default', ProductHotspotOverlayHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-hotspot-product-normal.default', HotspotProductNormalHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 	});
 

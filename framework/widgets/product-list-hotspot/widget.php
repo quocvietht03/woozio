@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\HotspotProductNormal;
+namespace WoozioElementorWidgets\Widgets\ProductListHotspot;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -9,17 +9,17 @@ use Elementor\Utils;
 use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Typography;
 
-class Widget_HotspotProductNormal extends Widget_Base
+class Widget_ProductListHotspot extends Widget_Base
 {
 
     public function get_name()
     {
-        return 'bt-hotspot-product-normal';
+        return 'bt-product-list-hotspot';
     }
 
     public function get_title()
     {
-        return __('Hotspot Product (Normal)', 'woozio');
+        return __('Product List Hotspot', 'woozio');
     }
 
     public function get_icon()
@@ -146,7 +146,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'toggle' => false,
                 'label_block' => false,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-normal' => 'flex-direction: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-list-hotspot' => 'flex-direction: {{VALUE}};',
                 ],
             ]
         );
@@ -282,7 +282,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'default' => 'center',
                 'toggle' => false,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-list-hotspot__list-products' => 'text-align: {{VALUE}};',
                 ],
             ]
         );
@@ -292,7 +292,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'label' => __('Sub Heading Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-sub-heading' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-sub-heading' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -302,7 +302,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'name'     => 'sub_heading_typography',
                 'label'    => __('Typography', 'woozio'),
                 'default'  => '',
-                'selector' => '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-sub-heading',
+                'selector' => '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-sub-heading',
             ]
         );
         $this->add_control(
@@ -311,7 +311,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'label' => __('Heading Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-heading' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-heading' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -321,7 +321,7 @@ class Widget_HotspotProductNormal extends Widget_Base
                 'name' => 'heading_typography',
                 'label' => __('Typography', 'woozio'),
                 'default'  => '',
-                'selector' => '{{WRAPPER}} .bt-hotspot-product-normal__list-products .bt-list-header .bt-heading',
+                'selector' => '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-heading',
             ]
         );
         $this->end_controls_section();
@@ -342,9 +342,9 @@ class Widget_HotspotProductNormal extends Widget_Base
         }
 
 ?>
-        <div class="bt-elwg-hotspot-product-normal--default">
-            <div class="bt-hotspot-product-normal">
-                <div class="bt-hotspot-product-normal__list-products">
+        <div class="bt-elwg-product-list-hotspot--default">
+            <div class="bt-product-list-hotspot">
+                <div class="bt-product-list-hotspot__list-products">
                     <div class="bt-list-header">
                         <?php if (!empty($settings['sub_heading'])) : ?>
                             <p class="bt-sub-heading"><?php echo esc_html($settings['sub_heading']); ?></p>
@@ -431,20 +431,26 @@ class Widget_HotspotProductNormal extends Widget_Base
                         $product_ids = [];
                         if (!empty($settings['hotspot_items'])) {
                             foreach ($settings['hotspot_items'] as $item) {
-                                $product_ids[] = [
-                                    'product_id'   => $item['id_product'],
-                                    'variation_id' => 0,
-                                ];
+                                $product = wc_get_product($item['id_product']);
+                                if ($product) {
+                                    $product_ids[] = [
+                                        'product_id'   => $item['id_product'],
+                                        'variation_id' => 0,
+                                    ];
+                                }
                             }
                         }
+
+                        if (!empty($product_ids)) :
                         ?>
                         <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
                             <?php esc_html_e('Add set to cart', 'woozio'); ?>
                             <span class="bt-btn-price"></span>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <div class="bt-hotspot-product-normal__image">
+                <div class="bt-product-list-hotspot__image">
                     <div class="bt-hotspot-image" style="position: relative;">
                         <?php
                         if ($settings['hotspot_image']['id']) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\HotspotProduct;
+namespace WoozioElementorWidgets\Widgets\ProductTooltipHotspot;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -12,17 +12,17 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_BBorder;
 use Elementor\Group_Control_Box_Shadow;
 
-class Widget_HotspotProduct extends Widget_Base
+class Widget_ProductTooltipHotspot extends Widget_Base
 {
 
     public function get_name()
     {
-        return 'bt-hotspot-product';
+        return 'bt-product-tooltip-hotspot';
     }
 
     public function get_title()
     {
-        return __('Hotspot Product (slider)', 'woozio');
+        return __('Product Tooltip Hotspot', 'woozio');
     }
 
     public function get_icon()

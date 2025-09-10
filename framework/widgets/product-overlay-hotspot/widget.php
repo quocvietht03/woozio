@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\ItemHotspotProduct;
+namespace WoozioElementorWidgets\Widgets\ProductOverlayHotspot;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -10,17 +10,17 @@ use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Box_Shadow;
 
-class Widget_ItemHotspotProduct extends Widget_Base
+class Widget_ProductOverlayHotspot extends Widget_Base
 {
 
     public function get_name()
     {
-        return 'bt-item-hotspot-product';
+        return 'bt-product-overlay-hotspot';
     }
 
     public function get_title()
     {
-        return __('Item Hotspot Product', 'woozio');
+        return __('Product Overlay Hotspot', 'woozio');
     }
 
     public function get_icon()
@@ -315,8 +315,8 @@ class Widget_ItemHotspotProduct extends Widget_Base
         }
 
         ?>
-        <div class="bt-elwg-item-hotspot-product--default">
-            <div class="bt-item-hotspot-product">
+        <div class="bt-elwg-product-overlay-hotspot--default">
+            <div class="bt-product-overlay-hotspot">
                 <div class="bt-hotspot-product--image">
                     <div class="bt-hotspot-image">
                         <?php

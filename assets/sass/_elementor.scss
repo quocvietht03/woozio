@@ -5750,9 +5750,9 @@
     transform: translateY(0);
   }
 }
-.bt-elwg-item-hotspot-product--default {
-  position: relative;
-  .bt-item-hotspot-product {
+.bt-elwg-product-overlay-hotspot--default {
+  position: relative; 
+  .bt-product-overlay-hotspot {
     display: flex;
     flex-direction: column;
   }
@@ -6428,9 +6428,9 @@
   }
 }
 
-.bt-elwg-hotspot-product-normal {
+.bt-elwg-product-list-hotspot {
   &--default {
-    .bt-hotspot-product-normal {
+    .bt-product-list-hotspot {
       display: flex;
       gap: 80px;
       align-items: center;
