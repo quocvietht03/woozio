@@ -408,7 +408,6 @@
 							var variation = variations.find(function (v) {
 								return v.variation_id === variationId;
 							});
-							console.log(variation);
 							if (variation && variation.price_html) {
 								// Format price with currency symbol
 								var formattedPrice = '<span class="bt-price-add-cart"> - ' +

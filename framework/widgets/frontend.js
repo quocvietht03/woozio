@@ -1607,6 +1607,260 @@
 			}
 		}
 	};
+	const ProductSliderBottomHotspotHandler = function ($scope) {
+		const $productSliderBottomHotspot = $scope.find('.bt-elwg-product-slider-bottom-hotspot--default');
+		if ($productSliderBottomHotspot.length > 0) {
+			const swiperOptions = {
+				slidesPerView: 1,
+				loop: false,
+				spaceBetween: 30,
+				speed: 1000,
+				autoplay: false,
+				navigation: {
+					nextEl: $productSliderBottomHotspot.find('.bt-button-next')[0],
+					prevEl: $productSliderBottomHotspot.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $productSliderBottomHotspot.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: {
+					1560: {
+						slidesPerView: 4,
+						spaceBetween: 30
+					},
+					1200: {
+						slidesPerView: 3,
+						spaceBetween: 30
+					},
+					800: {
+						slidesPerView: 2,
+						spaceBetween: 30
+					}
+				}
+
+			};
+
+			const swiper = new Swiper($productSliderBottomHotspot.find('.swiper')[0], swiperOptions);
+
+			// Handle hotspot point clicks
+			const $hotspotPoints = $productSliderBottomHotspot.find('.bt-hotspot-point');
+			const $productItems = $productSliderBottomHotspot.find('.bt-hotspot-product-list__item');
+
+			$hotspotPoints.on('click', function (e) {
+				e.preventDefault();
+				const $this = $(this);
+				const productId = $this.data('product-id');
+
+				// Remove active state from all points and products
+				$hotspotPoints.removeClass('active');
+				$productItems.removeClass('active');
+
+				// Add active state to clicked point
+				$this.addClass('active');
+
+				// Show corresponding product
+				const $targetProduct = $productItems.filter(`[data-product-id="${productId}"]`);
+				$targetProduct.addClass('active');
+
+				// Find the slide index containing the target product
+				const $targetSlide = $targetProduct.closest('.swiper-slide');
+				const slideIndex = $targetSlide.index();
+				// Get number of visible items
+				const visibleItemsCount = swiper.params.slidesPerView;
+				// Scroll to the slide if it exists
+				if (slideIndex >= 0) {
+					// Only scroll if target slide is outside visible range
+					const currentIndex = swiper.activeIndex;
+					const lastVisibleIndex = currentIndex + visibleItemsCount - 1;
+					
+					if (slideIndex < currentIndex || slideIndex > lastVisibleIndex) {
+						swiper.slideTo(slideIndex);
+					}
+				}
+			});
+
+			const $variationForm = $productSliderBottomHotspot.find('.variations_form');
+			if ($variationForm.length > 0) {
+				$variationForm.find('.bt-attributes--item').each(function () {
+					const $firstJsItem = $(this).find('.bt-js-item').first();
+					if ($firstJsItem.length) {
+						$firstJsItem.trigger('click');
+						$(this).closest('.variations_form').on('show_variation', function (event, variation) {
+							var variationId = variation.variation_id;
+							if (variationId && variationId !== '0') {
+								var $ItemProduct = $(this).closest('.bt-hotspot-product-list__item');
+								var $form = $(this).closest('.variations_form');
+								var variations = $form.data('product_variations');
+								if (variations) {
+									// Find matching variation by ID
+									var variation = variations.find(function (v) {
+										return v.variation_id === variationId;
+									});
+
+									if (variation && variation.price_html) {
+										// Update price display
+										$ItemProduct.find(".bt-price").html(variation.price_html);
+									}
+								}
+							}
+						});
+					}
+				});
+			}
+			// Function to update variation_id in data-ids for a given product
+			function updateHotspotProductVariationId($variationForm, variationId, $scope) {
+				const $productItem = $variationForm.closest('.bt-hotspot-product-list__item');
+				const $productId = $productItem.data('product-id');
+				const $product_currencySymbol = $variationForm.find('.bt-attributes-wrap').data('product-currency');
+				if (typeof variationId === 'undefined' || !variationId || typeof variationId === 'object') {
+					variationId = parseInt($variationForm.find('input.variation_id').val(), 10) || 0;
+				}
+				const $addSetToCartBtn = $productItem.closest($scope).find('.bt-button-add-set-to-cart');
+				if ($addSetToCartBtn.length) {
+					let idsData = $addSetToCartBtn.attr('data-ids');
+					let idsArr = [];
+					try {
+						idsArr = JSON.parse(idsData);
+					} catch (e) {
+						console.error('Invalid data-ids JSON', e);
+					}
+					let updated = false;
+					let totalPrice = 0;
+
+					idsArr = idsArr.map(item => {
+						if (item.product_id == $productId) {
+							if (item.variation_id != variationId) {
+								item.variation_id = variationId;
+								updated = true;
+							}
+						}
+						// Get price for each variation
+						const $form = $scope.find(`.variations_form[data-product_id="${item.product_id}"]`);
+						if ($form.length) {
+							// Product has variations
+							const variations = $form.data('product_variations');
+							if (variations) {
+								const variation = variations.find(v => v.variation_id === item.variation_id);
+								if (variation && variation.display_price) {
+									totalPrice += parseFloat(variation.display_price);
+								}
+							}
+						} else {
+							// Simple product - get price from data attribute
+							const $productItem = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+							if ($productItem.length) {
+								const singlePrice = $productItem.data('product-single-price');
+								if (singlePrice) {
+									totalPrice += parseFloat(singlePrice);
+								}
+							}
+						}
+						return item;
+					});
+
+					if (updated) {
+						$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
+					}
+					// update total price
+					totalPrice = totalPrice.toFixed(2);
+					$addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
+				}
+			}
+
+			// Initial update on load
+			$variationForm.each(function () {
+				updateHotspotProductVariationId($(this), null, $scope);
+			});
+
+			// Update on variation change
+			$variationForm.find('select').on('change', function () {
+				var $form = $(this).closest('.variations_form');
+				$form.on('show_variation', function (event, variation) {
+					var variationId = variation.variation_id;
+					if (variationId && variationId !== '0') {
+						updateHotspotProductVariationId($form, variationId, $scope);
+						var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');
+						var variations = $form.data('product_variations');
+
+						if (variations) {
+							var variation = variations.find(function (v) {
+								return v.variation_id === variationId;
+							});
+							if (variation && variation.price_html) {
+								// Update price display
+								$ItemProduct.find(".bt-price").html(variation.price_html);
+							}
+						}
+					}
+
+				});
+			});
+
+			/* ajax add to cart */
+			$productSliderBottomHotspot.find('.bt-button-add-set-to-cart').on('click', function (e) {
+				e.preventDefault();
+				const $this = $(this);
+				if ($this.hasClass('bt-view-cart')) {
+					window.location.href = AJ_Options.cart;
+					return;
+				}
+				let productIds = $this.data('ids');
+				// Ensure productIds is an array of objects (for variable products)
+				if (typeof productIds === 'string') {
+					try {
+						productIds = JSON.parse(productIds);
+					} catch (e) {
+						console.error('Invalid data-ids JSON', e);
+						productIds = [];
+					}
+				}
+				if (!Array.isArray(productIds)) {
+					productIds = [];
+				}
+
+				// Show toast for each product (with delay)
+				productIds.forEach((item, idx) => {
+					const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+					setTimeout(() => {
+						WoozioshowToast(productId, 'cart', 'add');
+					}, idx * 300);
+				});
+
+				if (productIds.length > 0) {
+					$.ajax({
+						type: 'POST',
+						url: AJ_Options.ajax_url,
+						data: {
+							action: 'woozio_add_multiple_to_cart_variable',
+							product_ids: productIds
+						},
+						beforeSend: function () {
+							$this.addClass('loading');
+						},
+						success: function (response) {
+							$this.removeClass('loading');
+							if (response.success) {
+								// Update cart count and trigger cart refresh
+								$(document.body).trigger('updated_wc_div');
+								WoozioFreeShippingMessage();
+								$this.html('View Cart');
+								$this.addClass('bt-view-cart');
+							}
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							$this.removeClass('loading');
+							console.log('Error adding products to cart:', textStatus, errorThrown);
+						}
+					});
+				}
+			});
+		}
+	};
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -1633,6 +1887,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);
 	});
 
 })(jQuery);

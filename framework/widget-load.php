@@ -79,6 +79,8 @@ class ElementorWidgets
 			'tiktok-shop-slider',
 			'product-tooltip-hotspot',
 			'product-list-hotspot',
+			'product-overlay-hotspot',
+			'product-slider-bottom-hotspot',
 			'product-testimonial',
 			'product-testimonial-slider',
 			'testimonial-slider',
@@ -89,7 +91,6 @@ class ElementorWidgets
 			'language-switcher',
 			'accordion-with-product-slider',
 			'collection-banner',
-			'product-overlay-hotspot',
 			'site-icon-payment',
 			'text-slider',
 			'store-locations-slider'
@@ -217,6 +218,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TikTokShopSlider\Widget_TikTokShopSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTooltipHotspot\Widget_ProductTooltipHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductListHotspot\Widget_ProductListHotspot());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductSliderBottomHotspot\Widget_ProductSliderBottomHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonial\Widget_ProductTestimonial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonialSlider\Widget_ProductTestimonialSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialSlider\Widget_TestimonialSlider());
