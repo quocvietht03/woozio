@@ -4904,7 +4904,7 @@
       font-weight: 400;
       color: $color-primary;
       text-transform: capitalize;
-      line-height: 44px;
+      line-height: 30px;
       > a {
         display: flex;
         align-items: center;
@@ -4933,7 +4933,7 @@
         overflow: hidden;
         opacity: 0;
         position: absolute;
-        top: 98%;
+        top: 100%;
         left: initial;
         right: 0;
         visibility: hidden;
@@ -4950,7 +4950,7 @@
         padding: 0;
         &.bt-dropdown-position-top {
           top: initial;
-          bottom: 98%;
+          bottom: 100%;
         }
         li {
           a {
