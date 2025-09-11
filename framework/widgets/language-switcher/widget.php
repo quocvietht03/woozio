@@ -57,6 +57,18 @@ class Widget_LanguageSwitcher extends Widget_Base
                 'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
             ]
         );
+        $this->add_control(
+            'dropdown_position',
+            [
+                'label' => __('Dropdown Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'bottom',
+                'options' => [
+                    'top' => __('Top', 'woozio'),
+                    'bottom' => __('Bottom', 'woozio'), 
+                ],
+            ]
+        );
 
         $this->end_controls_section();
     }
@@ -111,6 +123,7 @@ class Widget_LanguageSwitcher extends Widget_Base
     }
     protected function render()
     {
+        $settings = $this->get_settings_for_display();
 ?>
         <div class="bt-elwg-language-switcher--default">
             <div class="language-switcher bt-elwg-switcher js-switcher-dropdown">
@@ -125,7 +138,7 @@ class Widget_LanguageSwitcher extends Widget_Base
                                 <path d="M13.5306 6.52927L8.5306 11.5293C8.46092 11.5992 8.37813 11.6547 8.28696 11.6925C8.1958 11.7304 8.09806 11.7499 7.99935 11.7499C7.90064 11.7499 7.8029 11.7304 7.71173 11.6925C7.62057 11.6547 7.53778 11.5992 7.4681 11.5293L2.4681 6.52927C2.3272 6.38837 2.24805 6.19728 2.24805 5.99802C2.24805 5.79876 2.3272 5.60767 2.4681 5.46677C2.60899 5.32587 2.80009 5.24672 2.99935 5.24672C3.19861 5.24672 3.3897 5.32587 3.5306 5.46677L7.99997 9.93614L12.4693 5.46615C12.6102 5.32525 12.8013 5.24609 13.0006 5.24609C13.1999 5.24609 13.391 5.32525 13.5318 5.46615C13.6727 5.60704 13.7519 5.79814 13.7519 5.9974C13.7519 6.19665 13.6727 6.38775 13.5318 6.52865L13.5306 6.52927Z" fill="currentColor" />
                             </svg>
                         </a>
-                        <ul class="sub-dropdown">
+                        <ul class="sub-dropdown bt-dropdown-position-<?php echo isset($settings['dropdown_position']) ? esc_attr($settings['dropdown_position']) : 'bottom'; ?>">
                             <li><a href="#" class="bt-item active">
                                     <span class="language-flag">🇺🇸</span>
                                     <span>English</span>

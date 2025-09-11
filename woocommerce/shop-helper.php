@@ -83,9 +83,13 @@ function woozio_woocommerce_single_product_meta()
     $availability = $product->is_in_stock() ? 'In stock' : 'Out of stock';
     echo '<li class="availability"><span>Availability:</span> ' . esc_html($availability) . '</li>';
 
-    $categories = wc_get_product_category_list($product->get_id());
-    if ($categories) {
-        echo '<li class="categories"><span>Categories:</span> ' . wp_kses_post($categories) . '</li>';
+    $terms = get_the_terms($product->get_id(), 'product_cat');
+    if ($terms && !is_wp_error($terms)) {
+        $cat_links = array();
+        foreach ($terms as $term) {
+            $cat_links[] = '<a href="' . esc_url(add_query_arg('product_cat', $term->slug, home_url('/shop'))) . '">' . esc_html($term->name) . '</a>';
+        }
+        echo '<li class="categories"><span>Categories:</span> ' . implode(', ', $cat_links) . '</li>';
     }
     echo '</ul>';
 }

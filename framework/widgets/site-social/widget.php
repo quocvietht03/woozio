@@ -107,6 +107,24 @@ class Widget_SiteSocial extends Widget_Base
 				],
 			]
 		);
+		$this->add_responsive_control(
+			'icon_spacing',
+			[
+				'label' => __('Icon Spacing', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px'],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-site-social' => 'gap: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 

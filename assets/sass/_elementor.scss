@@ -4948,6 +4948,10 @@
         list-style: none;
         margin: 0;
         padding: 0;
+        &.bt-dropdown-position-top {
+          top: initial;
+          bottom: 98%;
+        }
         li {
           a {
             color: $color-text;
