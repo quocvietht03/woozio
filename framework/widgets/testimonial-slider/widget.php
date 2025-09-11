@@ -357,7 +357,39 @@ class Widget_TestimonialSlider extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
+        $this->add_responsive_control(
+            'content_width',
+            [
+                'label' => __('Content Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['%','px'],
+                'range' => [
+                    '%' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ]
+                ],
+                'default' => [
+                    'unit' => '%',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--content' => 'width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-testimonial--image' => 'width: calc(100% - {{SIZE}}{{UNIT}});',
+                ],
+            ]
+        );
 
+        $this->add_responsive_control(
+            'content_padding',
+            [
+                'label' => __('Content Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
         $this->add_control(
             'content_background_color',
             [
@@ -687,7 +719,7 @@ class Widget_TestimonialSlider extends Widget_Base
                                         }
                                         ?>
                                     </div>
-                                    <div class="bt-testimonial--content">
+                                    <div class="bt-testimonial--content" data-col-item="<?php echo !empty($settings['slides_to_show']) ? esc_attr($settings['slides_to_show']) : 3; ?>">
                                         <div class="bt-testimonial--inner">
                                             <?php if (!empty($item['testimonial_rating'])) : ?>
                                                 <div class="bt-testimonial--rating">

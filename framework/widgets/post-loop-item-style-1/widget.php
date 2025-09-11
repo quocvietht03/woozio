@@ -63,7 +63,6 @@ class Widget_PostLoopItemStyle1 extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .bt-post--featured .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
-					'{{WRAPPER}} .bt-post--featured' => 'padding-bottom: calc( {{SIZE}} * 100% );',
 				],
 			]
 		);
@@ -134,13 +133,13 @@ class Widget_PostLoopItemStyle1 extends Widget_Base {
 				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
-
-		// Content Box
+		// Post Content
 		$this->add_control(
-			'content_box_heading',
+			'content_heading',
 			[
-				'label' => esc_html__('Box', 'woozio'),
+				'label' => esc_html__('Content', 'woozio'),
 				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
 			]
 		);
 		$this->add_control(
@@ -149,47 +148,8 @@ class Widget_PostLoopItemStyle1 extends Widget_Base {
 				'label' => esc_html__('Background Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-post--inner' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .bt-post--content' => 'background-color: {{VALUE}};',
 				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Border::get_type(),
-			[
-				'name' => 'content_border',
-				'label' => esc_html__('Border', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-post--inner',
-			]
-		);
-
-		$this->add_responsive_control(
-			'content_border_radius',
-			[
-				'label' => esc_html__('Border Radius', 'woozio'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%'],
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--inner' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Box_Shadow::get_type(),
-			[
-				'name' => 'content_box_shadow',
-				'label' => esc_html__('Box Shadow', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-post--inner',
-			]
-		);
-		// Post Content
-		$this->add_control(
-			'content_heading',
-			[
-				'label' => esc_html__('Content', 'woozio'),
-				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
 			]
 		);
 		$this->add_responsive_control(
@@ -232,69 +192,6 @@ class Widget_PostLoopItemStyle1 extends Widget_Base {
 				],
 			]
 		);
-		// Post Category
-		$this->add_control(
-			'post_category_heading',
-			[
-				'label' => esc_html__('Category', 'woozio'),
-				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			[
-				'name' => 'category_typography',
-				'label' => esc_html__('Typography', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-post--category, {{WRAPPER}} .bt-post--category a',
-			]
-		);
-
-		$this->start_controls_tabs('category_color_tabs');
-
-		$this->start_controls_tab(
-			'category_color_normal',
-			[
-				'label' => esc_html__('Normal', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'category_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--category a' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->start_controls_tab(
-			'category_color_hover',
-			[
-				'label' => esc_html__('Hover', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'category_hover_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--category a:hover' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->end_controls_tabs();
-
 		// Post Title
 		$this->add_control(
 			'post_title_heading',
@@ -368,69 +265,6 @@ class Widget_PostLoopItemStyle1 extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .bt-post--title a:hover' => 'text-decoration: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->end_controls_tabs();
-
-		// Read More Button
-		$this->add_control(
-			'read_more_heading',
-			[
-				'label' => esc_html__('Read More Button', 'woozio'),
-				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			[
-				'name' => 'read_more_typography',
-				'label' => esc_html__('Typography', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-post--button',
-			]
-		);
-
-		$this->start_controls_tabs('read_more_color_tabs');
-
-		$this->start_controls_tab(
-			'read_more_color_normal',
-			[
-				'label' => esc_html__('Normal', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'read_more_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--button a' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->start_controls_tab(
-			'read_more_color_hover',
-			[
-				'label' => esc_html__('Hover', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'read_more_hover_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--button a:hover' => 'color: {{VALUE}};',
 				],
 			]
 		);

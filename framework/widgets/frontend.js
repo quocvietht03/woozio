@@ -1458,11 +1458,11 @@
 							}
 						} else {
 							// Simple product - get price from data attribute
-							const $productItem = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
-							if ($productItem.length) {
-								const singlePrice = $productItem.data('product-single-price');
-								if (singlePrice) {
-									totalPrice += parseFloat(singlePrice);
+							const $productItemId = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+							if ($productItemId.length) {
+								const simplePrice = $productItemId.data('product-single-price');
+								if (simplePrice) {
+									totalPrice += parseFloat(simplePrice);
 								}
 							}
 						}
@@ -1480,8 +1480,7 @@
 			}
 
 			// Initial update on load
-			const $productItem = $hotspotProductNormal.find('.bt-hotspot-product-list__item');
-			$productItem.each(function () {
+			$productItems.each(function () {
 				
 				updateHotspotProductVariationId($(this), null, $scope);
 			});
@@ -1755,11 +1754,11 @@
 							}
 						} else {
 							// Simple product - get price from data attribute
-							const $productItem = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
-							if ($productItem.length) {
-								const singlePrice = $productItem.data('product-single-price');
-								if (singlePrice) {
-									totalPrice += parseFloat(singlePrice);
+							const $productItemId = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+							if ($productItemId.length) {
+								const simplePrice = $productItemId.data('product-single-price');
+								if (simplePrice) {
+									totalPrice += parseFloat(simplePrice);
 								}
 							}
 						}
@@ -1777,8 +1776,7 @@
 			}
 
 			// Initial update on load
-			const $productItem = $productSliderBottomHotspot.find('.bt-hotspot-product-list__item');
-			$productItem.each(function () {
+			$productItems.each(function () {
 				updateHotspotProductVariationId($(this), null, $scope);
 			});
 			// Update on variation change
