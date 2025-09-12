@@ -907,3 +907,29 @@ body.admin-bar .dialog-type-lightbox {
     }
   }
 }
+/* header outdoor living */
+.bt-topbar-outdoor-living{
+   @media (max-width: $break-xs) {
+    > .e-con-inner{
+      > .elementor-element{
+        &:nth-child(1){
+          display: none;
+        }
+        &:nth-child(2){
+          width: 100%;
+        }
+      }
+    }
+   }
+}
+.bt-header-outdoor-living{
+  .bt-elwg-search-product {
+    &.layout-02 {
+      .bt-search--form {
+        input {
+          padding: 8px 0;
+        }
+      }
+    }
+  }
+}

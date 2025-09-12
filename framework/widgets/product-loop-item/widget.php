@@ -55,6 +55,23 @@ class Widget_ProductLoopItem extends Widget_Base
 				],
 			]
 		);
+		$this->add_control(
+			'image_ratio',
+			[
+				'label' => __('Image Ratio', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0.3,
+						'max' => 2,
+						'step' => 0.01,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .woocommerce-product-gallery__image' => 'padding-bottom: calc( {{SIZE}} * 100% ) !important;',
+				],
+			]
+		);
 
 		$this->end_controls_section();
 	}

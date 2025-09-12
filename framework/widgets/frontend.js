@@ -397,7 +397,7 @@
 		});
 	}
 	const ProductTooltipHotspotHandler = function ($scope) {
-		const $HotspotProduct = $scope.find('.bt-elwg-hotspot-product--default');
+		const $HotspotProduct = $scope.find('.bt-elwg-product-tooltip-hotspot--default');
 		if ($HotspotProduct.length > 0) {
 			function getPositionPoint($point) {
 				const pointLeft = $point.position().left;
@@ -550,7 +550,7 @@
 			const $Hotspotwrap = $Hotspotslider.find('.bt-hotspot-slider--inner');
 			const $swiper = new Swiper($Hotspotwrap[0], {
 				slidesPerView: 1,
-				loop: $sliderSettings.loop || false,
+				loop: false,
 				spaceBetween: $sliderSettings.spaceBetween.mobile,
 				speed: $sliderSettings.speed,
 				pagination: {
@@ -564,12 +564,7 @@
 				autoplay: $sliderSettings.autoplay ? {
 					delay: 3000,
 					disableOnInteraction: false
-				} : false,
-				navigation: {
-					nextEl: $Hotspotslider.find('.bt-button-next')[0],
-					prevEl: $Hotspotslider.find('.bt-button-prev')[0],
-				},
-
+				} : false,		
 				breakpoints: {
 					1560: {
 						slidesPerView: 3,
@@ -599,54 +594,184 @@
 				});
 			}
 		}
-		// Add set to cart ajax 
-		const $buttonAddToCart = $HotspotProduct.find('.bt-add-to-cart-wrapper');
-		if ($buttonAddToCart.length > 0) {
-			$buttonAddToCart.on('click', '.bt-add-to-cart-btn', function (e) {
-				e.preventDefault();
-				const $this = $(this);
-				if ($this.hasClass('bt-view-cart')) {
-					window.location.href = AJ_Options.cart;
-					return;
-				}
-				const productIds = $this.find('.bt-btn-price').data('ids');
-				// Loop through each product ID and show toast notification
-				if (Array.isArray(productIds)) {
-					productIds.forEach(productId => {
-						setTimeout(() => {
-							WoozioshowToast(productId, 'cart', 'add');
-						}, productIds.indexOf(productId) * 300); // Add 300ms delay between each toast
-					});
-				}
-				if (productIds.length > 0) {
-					$.ajax({
-						type: 'POST',
-						url: AJ_Options.ajax_url,
-						data: {
-							action: 'woozio_add_multiple_to_cart',
-							product_ids: productIds
-						},
-						beforeSend: function () {
-							$this.addClass('loading');
-						},
-						success: function (response) {
-							$this.removeClass('loading');
-							if (response.success) {
-								// Update cart count and trigger cart refresh
-								$(document.body).trigger('updated_wc_div');
-								WoozioFreeShippingMessage();
-								$this.html('View Cart');
-								$this.addClass('bt-view-cart');
+		const $productItems = $HotspotProduct.find('.bt-hotspot-product-list__item');
+		// Check and activate first variation option for each product
+		const $variationForm = $HotspotProduct.find('.variations_form');
+		if ($variationForm.length > 0) {
+			$variationForm.find('.bt-attributes--item').each(function () {
+				const $firstJsItem = $(this).find('.bt-js-item').first();
+				if ($firstJsItem.length) {
+					$firstJsItem.trigger('click');
+					$(this).closest('.variations_form').on('show_variation', function (event, variation) {
+						var variationId = variation.variation_id;
+						if (variationId && variationId !== '0') {
+							var $ItemProduct = $(this).closest('.bt-hotspot-product-list__item');
+							var $form = $(this).closest('.variations_form');
+							var variations = $form.data('product_variations');
+							if (variations) {
+								// Find matching variation by ID
+								var variation = variations.find(function (v) {
+									return v.variation_id === variationId;
+								});
+
+								if (variation && variation.price_html) {
+									// Update price display
+									$ItemProduct.find(".woocommerce-loop-product__infor .price").html(variation.price_html);
+								}
 							}
-						},
-						error: function (jqXHR, textStatus, errorThrown) {
-							$this.removeClass('loading');
-							console.log('Error adding products to cart:', textStatus, errorThrown);
 						}
 					});
 				}
 			});
 		}
+		// Function to update variation_id in data-ids for a given product
+		function updateHotspotProductVariationId(productItem, variationId, $scope) {
+			const $productItem = productItem;
+			const $productId = $productItem.data('product-id');
+			const $product_currencySymbol = $productItem.data('product-currency');
+			const $variationForm = $productItem.find('.variations_form');
+			if (typeof variationId === 'undefined' || !variationId || typeof variationId === 'object') {
+				variationId = parseInt($variationForm.find('input.variation_id').val(), 10) || 0;
+			}
+			const $addSetToCartBtn = $HotspotProduct.find('.bt-button-add-set-to-cart');
+			if ($addSetToCartBtn.length) {
+				let idsData = $addSetToCartBtn.attr('data-ids');
+				let idsArr = [];
+				try {
+					idsArr = JSON.parse(idsData);
+				} catch (e) {
+					console.error('Invalid data-ids JSON', e);
+				}
+				let updated = false;
+				let totalPrice = 0;
+
+				idsArr = idsArr.map(item => {
+					if (item.product_id == $productId) {
+						if (item.variation_id != variationId) {
+							item.variation_id = variationId;
+							updated = true;
+						}
+					}
+					// Get price for each variation
+					const $form = $scope.find(`.variations_form[data-product_id="${item.product_id}"]`);
+					if ($form.length) {
+						// Product has variations
+						const variations = $form.data('product_variations');
+						if (variations) {
+							const variation = variations.find(v => v.variation_id === item.variation_id);
+							if (variation && variation.display_price) {
+								totalPrice += parseFloat(variation.display_price);
+							}
+						}
+					} else {
+						// Simple product - get price from data attribute
+						const $productItemId = $scope.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+						if ($productItemId.length) {
+							const simplePrice = $productItemId.data('product-single-price');
+							if (simplePrice) {
+								totalPrice += parseFloat(simplePrice);
+							}
+						}
+					}
+					return item;
+				});
+
+				if (updated) {
+					$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
+				}
+
+				// update total price
+				totalPrice = totalPrice.toFixed(2);
+				$addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
+			}
+		}
+
+		// Initial update on load
+		$productItems.each(function () {
+			updateHotspotProductVariationId($(this), null, $scope);
+		});
+		// Update on variation change
+		$variationForm.find('select').on('change', function () {
+			var $form = $(this).closest('.variations_form')
+			$form.on('show_variation', function (event, variation) {
+				var variationId = variation.variation_id;
+				if (variationId && variationId !== '0') {
+					var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');
+					updateHotspotProductVariationId($ItemProduct, variationId, $scope);
+					var variations = $form.data('product_variations');
+					if (variations) {
+						var variation = variations.find(function (v) {
+							return v.variation_id === variationId;
+						});
+						if (variation && variation.price_html) {
+							// Update price display
+							$ItemProduct.find(".woocommerce-loop-product__infor .price").html(variation.price_html);
+						}
+					}
+				}
+
+			});
+		});
+
+		/* ajax add to cart */
+		$HotspotProduct.find('.bt-button-add-set-to-cart').on('click', function (e) {
+			e.preventDefault();
+			const $this = $(this);
+			if ($this.hasClass('bt-view-cart')) {
+				window.location.href = AJ_Options.cart;
+				return;
+			}
+			let productIds = $this.data('ids');
+			// Ensure productIds is an array of objects (for variable products)
+			if (typeof productIds === 'string') {
+				try {
+					productIds = JSON.parse(productIds);
+				} catch (e) {
+					console.error('Invalid data-ids JSON', e);
+					productIds = [];
+				}
+			}
+			if (!Array.isArray(productIds)) {
+				productIds = [];
+			}
+
+			// Show toast for each product (with delay)
+			productIds.forEach((item, idx) => {
+				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+				setTimeout(() => {
+					WoozioshowToast(productId, 'cart', 'add');
+				}, idx * 300);
+			});
+
+			if (productIds.length > 0) {
+				$.ajax({
+					type: 'POST',
+					url: AJ_Options.ajax_url,
+					data: {
+						action: 'woozio_add_multiple_to_cart_variable',
+						product_ids: productIds
+					},
+					beforeSend: function () {
+						$this.addClass('loading');
+					},
+					success: function (response) {
+						$this.removeClass('loading');
+						if (response.success) {
+							// Update cart count and trigger cart refresh
+							$(document.body).trigger('updated_wc_div');
+							WoozioFreeShippingMessage();
+							$this.html('View Cart');
+							$this.addClass('bt-view-cart');
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						$this.removeClass('loading');
+						console.log('Error adding products to cart:', textStatus, errorThrown);
+					}
+				});
+			}
+		});
+		
 	};
 	const ProductTestimonialHandler = function ($scope) {
 		const $ProductTestimonial = $scope.find('.bt-elwg-product-testimonial--default');

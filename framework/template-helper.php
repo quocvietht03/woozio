@@ -454,6 +454,105 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 				'{{WRAPPER}} .swiper-pagination-bullet:hover,
 				{{WRAPPER}} .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'padding: 2px 20px;',
 			],
+			'condition' => [
+				'pagination' => 'bullets',
+			],
+		]
+	);
+
+	$element->add_responsive_control(
+		'pagination_progress_width',
+		[
+			'label' => esc_html__('Width', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => 0,
+					'max' => 2000,
+					'step' => 1,
+				],
+				'%' => [
+					'min' => 0,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'width: {{SIZE}}{{UNIT}};',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+	$element->add_control(
+		'pagination_progress_position',
+		[
+			'label' => esc_html__('Progress Bar Position', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SELECT,
+			'default' => 'bottom',
+			'options' => [
+				'top' => esc_html__('Top', 'woozio'),
+				'bottom' => esc_html__('Bottom', 'woozio'), 
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+
+	$element->add_responsive_control(
+		'pagination_progress_top_position',
+		[
+			'label' => esc_html__('Top Position', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => -100,
+					'max' => 100,
+				],
+				'%' => [
+					'min' => -100,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'top: {{SIZE}}{{UNIT}};',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+				'pagination_progress_position' => 'top',
+			],
+		]
+	);
+
+	$element->add_responsive_control(
+		'pagination_progress_bottom_position',
+		[
+			'label' => esc_html__('Bottom Position', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => -100,
+					'max' => 100,
+				],
+				'%' => [
+					'min' => -100,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'top: calc(100% + {{SIZE}}{{UNIT}});',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+				'pagination_progress_position' => 'bottom',
+			],
 		]
 	);
 });

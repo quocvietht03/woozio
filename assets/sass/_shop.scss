@@ -2336,8 +2336,10 @@
       ins {
         text-decoration: none;
         margin-right: 0 !important;
+        line-height: 1;
       }
       del {
+        line-height: 1;
         .woocommerce-Price-amount {
           font-size: 14px;
           font-style: normal;
