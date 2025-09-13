@@ -378,7 +378,52 @@ class Widget_TestimonialSlider extends Widget_Base
                 ],
             ]
         );
-
+        $this->add_responsive_control(
+            'text_spacing',
+            [
+                'label' => __('Text Spacing', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 10,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--content' => 'gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'content_alignment',
+            [
+                'label' => __('Content Alignment', 'woozio'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __('Left', 'woozio'),
+                        'icon' => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => __('Center', 'woozio'), 
+                        'icon' => 'eicon-text-align-center',
+                    ],
+                    'right' => [
+                        'title' => __('Right', 'woozio'),
+                        'icon' => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'left',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--content' => 'text-align: {{VALUE}};',
+                ],
+            ]
+        );
         $this->add_responsive_control(
             'content_padding',
             [

@@ -3729,10 +3729,12 @@
         margin: 0;
       }
       &--rating {
-        display: flex;
-        align-items: center;
+        display: block;
         line-height: 1;
         margin: 0;
+        span{
+          display: inline-block;
+        }
       }
       &--author {
         color: $color-primary;
