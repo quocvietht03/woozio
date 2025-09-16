@@ -233,17 +233,26 @@ class Widget_TestimonialSlider extends Widget_Base
 		] );
 
         $this->add_responsive_control(
-            'slider_spacebetween',
-            [
-                'label' => __('Space Between', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 20,
-                'min' => 0,
-                'max' => 100,
-                'step' => 1,
-                'description' => __('Space between slides in pixels', 'woozio'),
-            ]
-        );
+			'image_spacing_custom',
+			[
+				'label' => esc_html__( 'Gap between slides', 'elementor-pro' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range' => [
+					'px' => [
+						'max' => 400,
+					],
+				],
+				'default' => [
+					'size' => 10,
+				],
+
+				'render_type' => 'template',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
+				],
+			]
+		);
 
         $this->add_control(
             'slider_speed',

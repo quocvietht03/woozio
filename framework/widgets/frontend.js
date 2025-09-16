@@ -1987,6 +1987,64 @@
 			});
 		}
 	};
+	const ProductNavImageHandler = function ($scope) {
+		const $productNavImage = $scope.find('.bt-elwg-product-nav-image--default');
+		if ($productNavImage.length > 0) {
+			const $productNavImageTabs = $productNavImage.find('.bt-product-nav-image--tabs');
+			const $productNavImageThumb = $productNavImage.find('.bt-product-nav-image--thumb');
+			$productNavImageTabs.find('.bt-product-nav-image--tab-item').on('click', function () {
+				const $this = $(this);
+				const index = $this.data('index');
+				$productNavImageTabs.find('.bt-product-nav-image--tab-item').removeClass('active');
+				$this.addClass('active');
+				$productNavImageThumb.find('.bt-product-nav-image--thumb-item').removeClass('active');
+				$productNavImageThumb.find('.bt-product-nav-image--thumb-item').eq(index).addClass('active');
+			});
+		}
+	}
+	const ProductBrandSliderHandler = function ($scope) {
+		const $productBrandSlider = $scope.find('.bt-elwg-product-brand--default');
+
+		if ($productBrandSlider.length > 0 && $productBrandSlider.hasClass('bt-elwg-product-brand--slider')) {
+			const $sliderSettings = $productBrandSlider.data('slider-settings');
+			const swiperOptions = {
+				slidesPerView: $sliderSettings.slidesPerView,
+				loop: $sliderSettings.loop,
+				spaceBetween: $sliderSettings.spaceBetween,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: 3000,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $productBrandSlider.find('.bt-button-next')[0],
+					prevEl: $productBrandSlider.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $productBrandSlider.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints
+			};
+
+			const swiper = new Swiper($productBrandSlider.find('.swiper')[0], swiperOptions);
+
+			if ($sliderSettings.autoplay) {
+				$productBrandSlider.find('.swiper')[0].addEventListener('mouseenter', () => {
+					swiper.autoplay.stop();
+				});
+
+				$productBrandSlider.find('.swiper')[0].addEventListener('mouseleave', () => {
+					swiper.autoplay.start();
+				});
+			}
+		}
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -2014,6 +2072,8 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-nav-image.default', ProductNavImageHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-brand.default', ProductBrandSliderHandler);
 	});
 
 })(jQuery);

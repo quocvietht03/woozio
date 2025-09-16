@@ -171,17 +171,25 @@ class Widget_InstagramPosts extends Widget_Base
 			],
 			'slides_on_display' => 6,
 		] );
-
 		$this->add_responsive_control(
-			'slider_spacebetween',
+			'image_spacing_custom',
 			[
-				'label' => __('Space Between', 'woozio'),
-				'type' => Controls_Manager::NUMBER,
-				'default' => 20,
-				'min' => 0,
-				'max' => 100,
-				'step' => 1,
-				'description' => __('Space between slides in pixels', 'woozio'),
+				'label' => esc_html__( 'Gap between slides', 'elementor-pro' ),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range' => [
+					'px' => [
+						'max' => 400,
+					],
+				],
+				'default' => [
+					'size' => 10,
+				],
+
+				'render_type' => 'template',
+				'selectors' => [
+					'{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
+				],
 				'condition' => [
 					'enable_slider' => 'yes',
 				],
@@ -675,7 +683,6 @@ class Widget_InstagramPosts extends Widget_Base
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
-
 		if (empty($settings['gallery'])) {
 			return;
 		}

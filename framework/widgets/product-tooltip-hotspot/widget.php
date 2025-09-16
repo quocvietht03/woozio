@@ -76,6 +76,31 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'show_mobile_image',
+            [
+                'label' => __('Show Mobile Image', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'), 
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+        $this->add_control(
+            'hotspot_image_mobile',
+            [
+                'label' => __('Mobile Image', 'woozio'),
+                'type' => Controls_Manager::MEDIA,
+                'default' => [
+                    'url' => Utils::get_placeholder_image_src(),
+                ],
+                'description' => __('Choose a different image to display on mobile devices', 'woozio'),
+                'condition' => [
+                    'show_mobile_image' => 'yes',
+                ],
+            ]
+        );
         $this->add_group_control(
             Group_Control_Image_Size::get_type(),
             [
@@ -130,7 +155,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'multiple' => false,
             ]
         );
-        $repeater->add_control(
+        $repeater->add_responsive_control(
             'hotspot_position_x',
             [
                 'label' => __('X Position', 'woozio'),
@@ -147,12 +172,12 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     'size' => 50,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}{{UNIT}}; --hotspot-translate-x: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}%; --hotspot-translate-x: {{SIZE}}%;',
                 ],
             ]
         );
 
-        $repeater->add_control(
+        $repeater->add_responsive_control(
             'hotspot_position_y',
             [
                 'label' => __('Y Position', 'woozio'),
@@ -169,7 +194,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     'size' => 50,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}{{UNIT}}; --hotspot-translate-y: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}%; --hotspot-translate-y: {{SIZE}}%;',
                 ],
             ]
         );
@@ -336,6 +361,9 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
                 'default' => 'no',
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
             ]
         );
         $this->add_control(
@@ -363,6 +391,9 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     'left' => __('Left', 'woozio'),
                     'right' => __('Right', 'woozio'),
                 ],
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
             ]
         );
 
@@ -388,6 +419,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'render_type' => 'ui',
                 'condition' => [
                     'slider_offset_sides!' => 'none',
+                    'show_slider' => 'yes',
                 ],
             ]
         );
@@ -688,13 +720,20 @@ class Widget_ProductTooltipHotspot extends Widget_Base
         <div class="bt-elwg-product-tooltip-hotspot--default <?php echo esc_attr(($settings['show_slider'] === 'yes' && !empty($product_ids)) ? '' : 'bt-no-slider'); ?>">
             <div class="bt-hotspot-product bt-tooltip-<?php echo esc_attr($settings['tooltip_layout']); ?>">
                 <div class="bt-hotspot-product--image">
-                    <div class="bt-hotspot-image">
+                    <div class="bt-hotspot-image <?php echo esc_attr($settings['show_mobile_image'] === 'yes' ? 'bt-mobile-image' : ''); ?>">
                         <?php
                         if (!empty($settings['hotspot_image']['id'])) {
-                            echo wp_get_attachment_image($settings['hotspot_image']['id'], $settings['thumbnail_size']);
+                            echo wp_get_attachment_image($settings['hotspot_image']['id'], $settings['thumbnail_size'], false, ['class' => 'bt-desktop-image']);
                         } else {
-                            echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="">';
+                            echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="" class="bt-desktop-image">';
                         }
+                        if ($settings['show_mobile_image'] === 'yes') {
+                            if (!empty($settings['hotspot_image_mobile']['id'])) {
+                                echo wp_get_attachment_image($settings['hotspot_image_mobile']['id'], $settings['thumbnail_size'], false, ['class' => 'bt-mobile-image']);
+                            } else {
+                                echo '<img src="' . esc_url($settings['hotspot_image_mobile']['url']) . '" alt="" class="bt-mobile-image">';
+                            }
+                        } 
                         ?>
                     </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
