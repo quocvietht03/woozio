@@ -7837,6 +7837,10 @@
       }
       .bt-cover-image {
         height: 100%;
+        background-color: $color-primary;
+        img {
+          opacity: 0.8;
+        }
       }
     }
     &--thumb-item-inner {
