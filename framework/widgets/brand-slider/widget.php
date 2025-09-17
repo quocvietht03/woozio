@@ -63,16 +63,6 @@ class Widget_BrandSlider extends Widget_Base
 				],
 			]
 		);
-		$repeater->add_control(
-			'brand_name',
-			[
-				'label' => __('Brand Name', 'woozio'),
-				'type' => Controls_Manager::TEXT,
-				'default' => __('Brand Name', 'woozio'),
-				'placeholder' => __('Enter brand name', 'woozio'),
-				'label_block' => true,
-			]
-		);
 
 		$repeater->add_control(
 			'brand_link',
@@ -96,19 +86,16 @@ class Widget_BrandSlider extends Widget_Base
 				'fields' => $repeater->get_controls(),
 				'default' => [
 					[
-						'brand_name' => __('Brand 1', 'woozio'),
 						'brand_link' => ['url' => '#'],
 					],
 					[
-						'brand_name' => __('Brand 2', 'woozio'),
 						'brand_link' => ['url' => '#'],
 					],
 					[
-						'brand_name' => __('Brand 3', 'woozio'),
 						'brand_link' => ['url' => '#'],
 					],
 				],
-				'title_field' => '{{{ brand_name }}}',
+				'title_field' => __('Brand Item', 'woozio'),
 			]
 		);
 
@@ -731,7 +718,6 @@ class Widget_BrandSlider extends Widget_Base
 					<?php
 					foreach ($brand_list as $index => $item) {
 						$brand_image = $item['brand_image'];
-						$brand_name = $item['brand_name'];
 						$brand_link = $item['brand_link'];
 						$image_id = $brand_image['id'];
 						$image_url = $brand_image['url'];
@@ -757,10 +743,10 @@ class Widget_BrandSlider extends Widget_Base
 											$svg_content = file_get_contents($image_url);
 											echo '<div class="bt-svg">' . $svg_content . '</div>';
 										} else {
-											if (!empty($image_url)) {
+											if (!empty($image_id)) {
 												echo wp_get_attachment_image($image_id, 'medium');
 											} else {
-												echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_attr($brand_name) . '">';
+												echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_attr__('Brand Image', 'woozio') . '">';
 											}
 										}
 										?>
