@@ -306,24 +306,24 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                             </div>
                         <?php endif; ?>
                     </div>
-                    <div class="bt-button-wrapper">
-                        <?php
-                        // Build $product_ids array with proper structure
-                        $product_ids = [];
-                        if (!empty($settings['hotspot_items'])) {
-                            foreach ($settings['hotspot_items'] as $item) {
-                                $product = wc_get_product($item['id_product']);
-                                if ($product) {
-                                    $product_ids[] = [
-                                        'product_id'   => $item['id_product'],
-                                        'variation_id' => 0,
-                                    ];
-                                }
+                    <?php
+                    // Build $product_ids array with proper structure
+                    $product_ids = [];
+                    if (!empty($settings['hotspot_items'])) {
+                        foreach ($settings['hotspot_items'] as $item) {
+                            $product = wc_get_product($item['id_product']);
+                            if ($product) {
+                                $product_ids[] = [
+                                    'product_id'   => $item['id_product'],
+                                    'variation_id' => 0,
+                                ];
                             }
                         }
+                    }
 
-                        if (!empty($product_ids)) :
-                        ?>
+                    if (!empty($product_ids)) :
+                    ?>
+                        <div class="bt-button-wrapper">
                             <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
                                     <path d="M22.4893 20.6861L21.1525 7.43606C21.1091 7.06951 20.9321 6.73182 20.6554 6.48759C20.3786 6.24337 20.0215 6.10975 19.6525 6.1123H16.4996C16.4996 4.91883 16.0255 3.77424 15.1816 2.93032C14.3377 2.08641 13.1931 1.6123 11.9996 1.6123C10.8062 1.6123 9.66157 2.08641 8.81766 2.93032C7.97374 3.77424 7.49964 4.91883 7.49964 6.1123H4.34308C3.97399 6.10975 3.61691 6.24337 3.34016 6.48759C3.06342 6.73182 2.88644 7.06951 2.84308 7.43606L1.5062 20.6861C1.4817 20.896 1.50186 21.1088 1.56536 21.3104C1.62885 21.5121 1.73425 21.698 1.87464 21.8561C2.01604 22.0148 2.18932 22.1419 2.38317 22.2291C2.57701 22.3163 2.78707 22.3617 2.99964 22.3623H20.9921C21.206 22.3628 21.4175 22.3179 21.6127 22.2307C21.8079 22.1434 21.9824 22.0157 22.1246 21.8561C22.2644 21.6977 22.3691 21.5116 22.4319 21.31C22.4948 21.1084 22.5143 20.8958 22.4893 20.6861ZM11.9996 3.1123C12.7953 3.1123 13.5583 3.42838 14.121 3.99098C14.6836 4.55359 14.9996 5.31666 14.9996 6.1123H8.99964C8.99964 5.31666 9.31571 4.55359 9.87832 3.99098C10.4409 3.42838 11.204 3.1123 11.9996 3.1123ZM2.99964 20.8623L4.34308 7.6123H7.49964V9.8623C7.49964 10.0612 7.57866 10.252 7.71931 10.3926C7.85996 10.5333 8.05073 10.6123 8.24964 10.6123C8.44855 10.6123 8.63932 10.5333 8.77997 10.3926C8.92062 10.252 8.99964 10.0612 8.99964 9.8623V7.6123H14.9996V9.8623C14.9996 10.0612 15.0787 10.252 15.2193 10.3926C15.36 10.5333 15.5507 10.6123 15.7496 10.6123C15.9486 10.6123 16.1393 10.5333 16.28 10.3926C16.4206 10.252 16.4996 10.0612 16.4996 9.8623V7.6123H19.6637L20.9921 20.8623H2.99964Z" fill="currentColor" />
@@ -331,8 +331,9 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                 <?php esc_html_e('Add set to cart', 'woozio'); ?>
                                 <span class="bt-btn-price"></span>
                             </a>
-                        <?php endif; ?>
-                    </div>
+
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="bt-product-slider-bottom-hotspot__list-products">
                     <?php if (!empty($settings['hotspot_items'])) : ?>

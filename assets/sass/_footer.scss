@@ -95,4 +95,18 @@
       }
     }
   }
+  &.bt-footer-outdoor-living{
+    .bt-form-newsletter_wrapper{
+      .bt-form-newsletter{
+        .gform-body{
+          input[type=email]{
+            min-width: 400px;
+            @media (max-width: 1450px) {
+              min-width: auto;
+            }
+          }
+        }
+      }
+    }
+  }
 }

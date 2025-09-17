@@ -168,29 +168,74 @@ class Widget_CountDown extends Widget_Base
 		$this->register_style_content_section_controls();
 	}
 
+	/**
+	 * Get the option name with widget ID to make it unique per widget instance
+	 *
+	 * @param string $base_name Base option name
+	 * @return string
+	 */
+	protected function get_widget_option_name($base_name) {
+		return sprintf('woozio_countdown_%s_%s', $this->get_id(), $base_name);
+	}
+
+	/**
+	 * Calculate and get the infinity countdown date
+	 *
+	 * @param array $settings Widget settings
+	 * @return string Formatted date string
+	 */
+	protected function get_infinity_countdown_date($settings) {
+		// Validate infinity date input
+		$infinity_days = absint($settings['infinity_date']);
+		if ($infinity_days < 1 || $infinity_days > 365) {
+			$infinity_days = 12; // Default to 12 days if invalid
+		}
+
+		// Get current date in site's timezone
+		$timezone = new DateTimeZone(wp_timezone_string());
+		$current_date = new DateTime('now', $timezone);
+		
+		// Get option names for this widget instance
+		$countdown_option = $this->get_widget_option_name('date');
+		$days_option = $this->get_widget_option_name('days');
+		
+		// Get saved values
+		$last_countdown = get_option($countdown_option);
+		$last_days = absint(get_option($days_option));
+
+		// Check if we need to update the countdown
+		$needs_update = false;
+		if (!$last_countdown || $infinity_days !== $last_days) {
+			$needs_update = true;
+		} else {
+			$saved_date = DateTime::createFromFormat('Y-m-d H:i:s', $last_countdown, $timezone);
+			if ($saved_date && $saved_date <= $current_date) {
+				$needs_update = true;
+			}
+		}
+
+		if ($needs_update) {
+			// Calculate new date by adding days
+			$current_date->modify(sprintf('+%d days', $infinity_days));
+			$new_countdown = $current_date->format('Y-m-d H:i:s');
+			
+			// Save with autoload=no since this is widget-specific data
+			update_option($countdown_option, $new_countdown, 'no');
+			update_option($days_option, $infinity_days, 'no');
+			
+			return $new_countdown;
+		}
+
+		return $last_countdown;
+	}
+
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
-		 $date_countdown = $settings['countdown_date'];
+		$date_countdown = $settings['countdown_date'];
+		
 		if ($settings['show_infinity_date'] === 'yes') {
-			$current_date = new DateTime('now', new DateTimeZone(wp_timezone_string()));
-			$current_timestamp = strtotime($current_date->format('Y-m-d H:i:s'));
-			// Get the last saved countdown date from options
-			$last_countdown = get_option('woozio_countdown_date');
-			// Get the last saved infinity_date from options
-			$last_infinity_date = get_option('woozio_infinity_date');
-			// If infinity_date changed or there's no saved date or the saved date has passed
-			if ((int)$settings['infinity_date'] !== (int)$last_infinity_date || !$last_countdown || strtotime($last_countdown) <= $current_timestamp) {
-				// Create new countdown date by adding infinity days
-				$current_date->modify('+' . ((int)$settings['infinity_date'] * 24) . ' hours');
-				$date_countdown = $current_date->format('Y-m-d H:i:s');
-				// Save the new countdown date and infinity_date
-				update_option('woozio_countdown_date', $date_countdown);
-				update_option('woozio_infinity_date', $settings['infinity_date']);
-			} else {
-				// Use the saved countdown date
-				$date_countdown = $last_countdown;
-			}
+			$date_countdown = $this->get_infinity_countdown_date($settings);
 		}
 ?>
 		<div class="bt-elwg-countdown--default">

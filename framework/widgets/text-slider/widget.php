@@ -50,7 +50,16 @@ class Woozio_TextSlider extends Widget_Base
         );
 
         $repeater = new Repeater();
-
+        $repeater->add_control(
+            'image_item',
+            [
+                'label' => __('Image Item', 'woozio'),
+                'type' => Controls_Manager::MEDIA,
+                'default' => [
+                    'url' => Utils::get_placeholder_image_src(),
+                ],
+            ]
+        );
         $repeater->add_control(
             'text_item',
             [
@@ -82,14 +91,29 @@ class Woozio_TextSlider extends Widget_Base
             ]
         );
         $this->add_control(
-            'spacing_icon',
+            'enable_one_icon_image',
             [
-                'label' => __('Spacing Icon', 'woozio'),
+                'label' => __('Enable One Icon & Image', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'yes',
+            ]
+        );
+
+
+        $this->add_control(
+            'spacing_icon_image',
+            [
+                'label' => __('Spacing Icon & Image', 'woozio'),
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
                     'url' => '',
                 ],
                 'description' => __('Select image to display between text items', 'woozio'),
+                'condition' => [
+                    'enable_one_icon_image' => 'yes'
+                ]
             ]
         );
         $this->end_controls_section();
@@ -134,7 +158,7 @@ class Woozio_TextSlider extends Widget_Base
                 'label' => esc_html__('Content Style', 'woozio'),
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'item_spacing',
             [
                 'label' => __('Item Spacing', 'woozio'),
@@ -156,10 +180,10 @@ class Woozio_TextSlider extends Widget_Base
                 ],
             ]
         );
-        $this->add_control(
+        $this->add_responsive_control(
             'icon_width',
             [
-                'label' => __('Icon Width', 'woozio'),
+                'label' => __('Icon & Image Width', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
@@ -176,6 +200,42 @@ class Woozio_TextSlider extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .bt-text--item img' => 'max-width: {{SIZE}}{{UNIT}};',
                     '{{WRAPPER}} .bt-text--item svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'icon_height',
+            [
+                'label' => __('Icon & Image Height', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item img' => 'max-height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-text--item svg' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'image_fit',
+            [
+                'label' => __('Image Fit', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'contain',
+                'options' => [
+                    'contain' => __('Contain', 'woozio'),
+                    'cover' => __('Cover', 'woozio'),
+                    'fill' => __('Fill', 'woozio'),
+                    'none' => __('None', 'woozio'),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item img' => 'object-fit: {{VALUE}};',
                 ],
             ]
         );
@@ -226,22 +286,31 @@ class Woozio_TextSlider extends Widget_Base
 ?>
         <div class="bt-elwg-text-slider--default swiper" data-direction="<?php echo esc_attr($slider_direction) ?>" data-speed="<?php echo esc_attr($slider_speed) ?>" data-spacebetween="<?php echo esc_attr($slider_space_between) ?>">
             <ul class="bt-text-slider swiper-wrapper">
-                <?php foreach ($settings['list'] as $index => $item) { ?>
+                <?php foreach ($settings['list'] as $index => $item): ?>
                     <li class="bt-text--item swiper-slide">
-                        <?php if (!empty($settings['spacing_icon']['id'])) { 
-                            $image = wp_get_attachment_url($settings['spacing_icon']['id']);
-                            if ($image && pathinfo($image, PATHINFO_EXTENSION) === 'svg') {
-                                echo file_get_contents($image);
+                        <?php
+                        // Get image source based on settings
+                        $image_id = $settings['enable_one_icon_image'] === 'yes'
+                            ? $settings['spacing_icon_image']['id']
+                            : $item['image_item']['id'];
+
+                        if (!empty($image_id)) {
+                            $image_url = wp_get_attachment_url($image_id);
+
+                            // Handle SVG files differently
+                            if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
+                                echo file_get_contents($image_url);
                             } else {
-                                echo wp_get_attachment_image($settings['spacing_icon']['id'], 'thumbnail'); 
+                                echo wp_get_attachment_image($image_id, 'thumbnail');
                             }
                         } else {
-                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting spacing icon', 'woozio') . '">';
-                        } ?>
-                        <?php echo '<span>' . $item['text_item'] . '</span>'; ?>
+                            // Show placeholder if no image                         
+                            echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
+                        }
+                        ?>
+                        <span><?php echo $item['text_item']; ?></span>
                     </li>
-                <?php } ?>
-
+                <?php endforeach; ?>
             </ul>
         </div>
 <?php
