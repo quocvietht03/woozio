@@ -55,19 +55,24 @@ defined('ABSPATH') || exit;
       $field_name = __('Product Categories', 'woozio');
       $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
       woozio_product_field_radio_html('product_cat', $field_name, $field_value);
+
       $field_name = __('Material', 'woozio');
       $field_value = (isset($_GET['product_material'])) ? $_GET['product_material'] : '';
       woozio_product_field_multiple_html('product_material', $field_name, $field_value);
+  
       $field_name = __('Brand', 'woozio');
       $field_value = (isset($_GET['product_brand'])) ? $_GET['product_brand'] : '';
       woozio_product_field_multiple_html('product_brand', $field_name, $field_value);
+
       $field_title = __('Price', 'woozio');
       $field_min_value = (isset($_GET['min_price'])) ? $_GET['min_price'] : '';
       $field_max_value = (isset($_GET['max_price'])) ? $_GET['max_price'] : '';
       woozio_product_field_price_slider($field_title, $field_min_value, $field_max_value);
+
       $field_name = __('Colors', 'woozio');
       $field_value = (isset($_GET['pa_color'])) ? $_GET['pa_color'] : '';
       woozio_product_field_multiple_color_html('pa_color', $field_name, $field_value);
+
       $field_name = __('Customer Rating', 'woozio');
       $field_value = (isset($_GET['product_rating'])) ? $_GET['product_rating'] : '';
       woozio_product_field_rating('product_rating', $field_name, $field_value);
