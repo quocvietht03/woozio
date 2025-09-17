@@ -7837,9 +7837,17 @@
       }
       .bt-cover-image {
         height: 100%;
-        background-color: $color-primary;
-        img {
-          opacity: 0.8;
+        &:before {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          background: $color-primary;
+          opacity: 0.2;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 2;
         }
       }
     }
