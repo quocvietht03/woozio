@@ -10,6 +10,8 @@ $category_url = $shop_page_url . '?product_cat=' . $args['category']->slug;
                 $thumbnail_id = get_term_meta($args['category']->term_id, 'thumbnail_id', true);
                 if ($thumbnail_id) {
                     echo wp_get_attachment_image($thumbnail_id, $args['image-size'], false);
+                }else{
+                    echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
                 }
                 ?>
             </div>

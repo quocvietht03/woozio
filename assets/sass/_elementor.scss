@@ -3118,8 +3118,8 @@
     }
     .bt-hotspot-product {
       display: flex;
-      align-items: center;
       flex-wrap: wrap;
+      align-items: center;
       &.bt-tooltip-style1 {
         .bt-hotspot-points {
           .bt-hotspot-point {
@@ -3178,7 +3178,7 @@
         }
       }
       &--image {
-        width: calc(100% - var(--width-slider, 50%));
+        width: calc(100% - var(--width-content, 50%));
         position: relative;
         .bt-hotspot-image {
           overflow: hidden;
@@ -3475,11 +3475,14 @@
         }
       }
       &--slider {
-        width: var(--width-slider, 50%);
+        width: var(--width-content, 50%);
         position: relative;
         overflow: hidden;
         margin: 0;
         padding: 20px 15px 20px 75px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         .bt-hotspot-slider {
           overflow: hidden;
           &--heading {
@@ -3532,6 +3535,20 @@
                   -webkit-box-orient: vertical;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                }
+                .bt-product-rating {
+                  display: none;
+                }
+              }
+            }
+            &.bt-slider-style-1 {
+              .bt-slider-item {
+                .woocommerce-loop-product {
+                  background: #fff;
+                  padding: 12px;
+                  &__title {
+                    -webkit-line-clamp: 1;
+                  }
                 }
               }
             }
@@ -4272,20 +4289,28 @@
   }
 }
 
-.bt-elwg-product-brand {
+.bt-elwg-brand-slider {
   &--default {
-    .bt-product-brand {
+    .bt-brand-slider {
       overflow: hidden;
+      > .swiper-wrapper {
+        padding: 0;
+        list-style: none;
+        margin: 0;
+        transition-timing-function: linear !important;
+        overflow: visible !important;
+      }
       &--item {
-        height: 120px;
+        width: auto;
+        min-height: 120px;
         display: flex;
         align-items: center;
         border-radius: 0;
         background: transparent;
         justify-content: center;
-        padding: 10px 20px;
+        padding: 10px 80px;
         @media (max-width: $break-sm) {
-          height: 80px;
+          min-height: 80px;
         }
         img {
           display: block;

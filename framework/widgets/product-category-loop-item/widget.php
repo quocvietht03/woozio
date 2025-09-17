@@ -132,6 +132,25 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 ],
             ]
         );
+        $this->add_group_control(
+            Group_Control_Border::get_type(),
+            [
+                'name' => 'image_border',
+                'selector' => '{{WRAPPER}} .bt-product-category--thumb .bt-cover-image',
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'image_background',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--thumb .bt-cover-image' => 'background: {{VALUE}};',
+                ],
+            ]
+        );
 
         $this->start_controls_tabs('thumbnail_effects_tabs');
 
@@ -198,6 +217,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--name' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--name-text' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -210,6 +230,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name-text' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -223,6 +244,9 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--name' => 'background-color: {{VALUE}};',
                 ],
+                'condition' => [
+                    'layout_style' => ['default', 'style-1'],
+                ],
             ]
         );
 
@@ -235,6 +259,9 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name' => 'background-color: {{VALUE}};',
                 ],
+                'condition' => [
+                    'layout_style' => ['default', 'style-1'],
+                ],
             ]
         );
 
@@ -244,7 +271,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'name' => 'name_cat_typography',
                 'label' => __('Typography', 'woozio'),
                 'default' => '',
-                'selector' => '{{WRAPPER}} .bt-product-category--name',
+                'selector' => '{{WRAPPER}} .bt-product-category--name-text, {{WRAPPER}} .bt-product-category--name'
             ]
         );
 

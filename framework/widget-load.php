@@ -71,7 +71,7 @@ class ElementorWidgets
 			'search-product',
 			'product-category',
 			'product-category-style-1',
-			'product-brand',
+			'brand-slider',
 			'product-item',
 			'product-showcase',
 			'heading-animation',
@@ -207,7 +207,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SearchProduct\Widget_SearchProduct());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCategory\Widget_ProductCategory());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCategoryStyle1\Widget_ProductCategoryStyle1());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductBrand\Widget_ProductBrand());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BrandSlider\Widget_BrandSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductItem\Widget_ProductItem());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\HighlightedHeading\Widget_HighlightedHeading());
