@@ -14,7 +14,7 @@ use ElementorPro\Base\Base_Carousel_Trait;
 
 class Widget_BannerProductSlider extends Widget_Base
 {
-	use Base_Carousel_Trait;
+    use Base_Carousel_Trait;
 
     public function get_name()
     {
@@ -59,6 +59,60 @@ class Widget_BannerProductSlider extends Widget_Base
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
                     'url' => Utils::get_placeholder_image_src(),
+                ],
+            ]
+        );
+        $repeater->add_control(
+            'enable_video_hover',
+            [
+                'label' => __('Enable Video on Hover', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+        $repeater->add_control(
+            'video_type',
+            [
+                'label' => __('Video Type', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'url',
+                'options' => [
+                    'url' => __('URL (Mp4)', 'woozio'),
+                    'file' => __('Media File', 'woozio'),
+                ],
+                'condition' => [
+                    'enable_video_hover' => 'yes',
+                ],
+            ]
+        );
+
+        $repeater->add_control(
+            'video_url',
+            [
+                'label' => __('Video URL', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'placeholder' => __('Enter video URL', 'woozio'),
+                'description' => __('Enter video URL (YouTube or Vimeo)', 'woozio'),
+                'condition' => [
+                    'video_type' => ['url'],
+                    'enable_video_hover' => 'yes',
+                ],
+                'label_block' => true,
+            ]
+        );
+
+        $repeater->add_control(
+            'video_file',
+            [
+                'label' => __('Choose Video File', 'woozio'),
+                'type' => Controls_Manager::MEDIA,
+                'media_type' => 'video',
+                'condition' => [
+                    'video_type' => 'file',
+                    'enable_video_hover' => 'yes',
                 ],
             ]
         );
@@ -186,54 +240,54 @@ class Widget_BannerProductSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
-        $this->add_carousel_layout_controls( [
-			'css_prefix' => '',
-			'slides_to_show_custom_settings' => [
-				'default' => '4',
-				'tablet_default' => '2',
-				'mobile_default' => '1',
-				'selectors' => [
-					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
-				],
-			],
-			'slides_to_scroll_custom_settings' => [
-				'default' => '0',
+        $this->add_carousel_layout_controls([
+            'css_prefix' => '',
+            'slides_to_show_custom_settings' => [
+                'default' => '4',
+                'tablet_default' => '2',
+                'mobile_default' => '1',
+                'selectors' => [
+                    '{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+                ],
+            ],
+            'slides_to_scroll_custom_settings' => [
+                'default' => '0',
                 'condition' => [
                     'slides_to_show_custom_settings' => 100,
                 ],
-			],
-			'equal_height_custom_settings' => [
-				'selectors' => [
-					'{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
-				],
+            ],
+            'equal_height_custom_settings' => [
+                'selectors' => [
+                    '{{WRAPPER}} .swiper-slide > .elementor-element' => 'height: 100%',
+                ],
                 'condition' => [
                     'slides_to_show_custom_settings' => 100,
                 ],
-			],
-			'slides_on_display' => 5,
-		] );
+            ],
+            'slides_on_display' => 5,
+        ]);
 
-       	$this->add_responsive_control(
-			'image_spacing_custom',
-			[
-				'label' => esc_html__( 'Gap between slides', 'elementor-pro' ),
-				'type' => Controls_Manager::SLIDER,
-				'size_units' => [ 'px' ],
-				'range' => [
-					'px' => [
-						'max' => 400,
-					],
-				],
-				'default' => [
-					'size' => 10,
-				],
+        $this->add_responsive_control(
+            'image_spacing_custom',
+            [
+                'label' => esc_html__('Gap between slides', 'elementor-pro'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'max' => 400,
+                    ],
+                ],
+                'default' => [
+                    'size' => 10,
+                ],
 
-				'render_type' => 'template',
-				'selectors' => [
-					'{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
-				],
-			]
-		);
+                'render_type' => 'template',
+                'selectors' => [
+                    '{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
+                ],
+            ]
+        );
 
         $this->add_control(
             'slider_speed',
@@ -611,8 +665,8 @@ class Widget_BannerProductSlider extends Widget_Base
                 <div class="swiper-wrapper">
                     <?php foreach ($settings['banner_items'] as $item) : ?>
                         <div class="swiper-slide">
-                            <div class="bt-banner-product-slider--item">
-                                <div class="bt-banner-product-slider--image">
+                            <div class="bt-banner-product-slider--item <?php echo esc_attr($item['enable_video_hover'] === 'yes' ? 'bt-video-hover-enable' : ''); ?>">
+                                <div class="bt-banner-product-slider--image ">
                                     <div class="bt-cover-image">
                                         <?php
                                         if (!empty($item['banner_image']['id'])) {
@@ -624,6 +678,19 @@ class Widget_BannerProductSlider extends Widget_Base
                                                 echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
                                             }
                                         } ?>
+                                        <?php if ($item['enable_video_hover'] === 'yes') :
+                                            if ($item['video_type'] === 'url') {
+                                                $video_url = $item['video_url'];
+                                            } else {
+                                                $video_url = $item['video_file']['url'];
+                                            }
+                                        ?>
+                                            <div class="bt-video-wrap">
+                                                <video class="bt-hover-video" playsinline muted loop>
+                                                    <source src="<?php echo esc_url($video_url); ?>" type="video/mp4">
+                                                </video>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <?php

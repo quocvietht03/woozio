@@ -1144,7 +1144,7 @@
 			params.delete('search_keyword');
 			// Clean up URL params by removing empty values
 			for (const [key, value] of params.entries()) {
-			//	console.log(key, value);
+				//	console.log(key, value);
 				if (!value) {
 					params.delete(key);
 				}

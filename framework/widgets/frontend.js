@@ -3,7 +3,26 @@
 	   * @param $scope The Widget wrapper element as a jQuery element
 	 * @param $ The jQuery alias
 	**/
+	// Check Background Light or Dark
+	function WoozioCheckBgLightDark() {
+		if ($('.js-check-bg-color').length > 0) {
+			$(".js-check-bg-color").each(function() {
+				let $el = $(this);
+				let bg = $el.css("background-color");
+				let rgb = bg.match(/\d+/g);
+				if (!rgb) return;
 
+				let r = parseInt(rgb[0]),
+					g = parseInt(rgb[1]), 
+					b = parseInt(rgb[2]);
+
+				let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+				$el.removeClass("bt-bg-light bt-bg-dark")
+					.addClass(yiq >= 128 ? "bt-bg-light" : "bt-bg-dark");
+			});
+		}
+	}
 	/* location list toggle */
 	var LocationListHandler = function ($scope, $) {
 		var buttonMore = $scope.find('.bt-more-info');
@@ -1450,6 +1469,32 @@
 					swiper.autoplay.start();
 				});
 			}
+			// video hover
+			$bannerProductSlider.find('.bt-banner-product-slider--item').each(function() {
+				const $item = $(this);
+				const $video = $item.find('.bt-hover-video');
+				const $coverImage = $item.find('.bt-cover-image img');
+
+				if ($item.hasClass('bt-video-hover-enable') && $video.length) {
+					$item.on('mouseenter', function() {
+						$coverImage.css('opacity', '0');
+						$video[0].play();
+					});
+
+					$item.on('mouseleave', function() {
+						$coverImage.css('opacity', '1'); 
+						$video[0].pause();
+					});
+					
+					$item.on('click', function() {
+						if ($video[0].paused) {
+							$video[0].play();
+						} else {
+							$video[0].pause();
+						}
+					});
+				}
+			});
 		}
 	};
 	var TextSliderHandler = function ($scope, $) {
@@ -1475,9 +1520,10 @@
 			});
 		}
 	};
+	
 	// product showcase
 	const ProductShowcaseHandler = function ($scope) {
-		const $productShowcase = $scope.find('.bt-elwg-product-showcase--default');
+		const $productShowcase = $scope.find('.js-product-showcase');
 		if ($productShowcase.length > 0) {
 			const $variationForm = $productShowcase.find('.variations_form');
 			if ($variationForm.length > 0) {
@@ -1488,6 +1534,7 @@
 					}
 				});
 			}
+			WoozioCheckBgLightDark();
 		}
 	}
 	// hotspot product normal
@@ -2064,7 +2111,7 @@
 			}
 		}
 	};
-
+	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -2089,6 +2136,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot.default', ProductHotspotOverlayHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-1.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);

@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\ProductShowcase;
+namespace WoozioElementorWidgets\Widgets\ProductShowcaseStyle1;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -10,17 +10,17 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 
-class Widget_ProductShowcase extends Widget_Base
+class Widget_ProductShowcaseStyle1 extends Widget_Base
 {
 
 	public function get_name()
 	{
-		return 'bt-product-showcase';
+		return 'bt-product-showcase-style-1';
 	}
 
 	public function get_title()
 	{
-		return __('Product Showcase', 'woozio');
+		return __('Product Showcase Style 1', 'woozio');
 	}
 
 	public function get_icon()
@@ -76,6 +76,17 @@ class Widget_ProductShowcase extends Widget_Base
 				'multiple' => false,
 			]
 		);
+		$this->add_control(
+			'image_custom',
+			[
+				'label' => __('Image Custom', 'woozio'),
+				'type' => Controls_Manager::MEDIA,
+				'default' => [
+					'url' => '',
+				],
+			]
+		);
+
 		$this->add_group_control(
 			Group_Control_Image_Size::get_type(),
 			[
@@ -84,6 +95,23 @@ class Widget_ProductShowcase extends Widget_Base
 				'show_label' => true,
 				'default' => 'medium_large',
 				'exclude' => ['custom'],
+			]
+		);
+		$this->add_control(
+			'image_fit',
+			[
+				'label' => __('Image Fit', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'cover',
+				'options' => [
+					'cover' => __('Cover', 'woozio'),
+					'contain' => __('Contain', 'woozio'),
+					'fill' => __('Fill', 'woozio'),
+					'none' => __('None', 'woozio'),
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image img' => 'object-fit: {{VALUE}};',
+				],
 			]
 		);
 
@@ -129,6 +157,16 @@ class Widget_ProductShowcase extends Widget_Base
 				'size_units' => ['px', '%'],
 				'selectors' => [
 					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+		$this->add_control(
+			'image_background_color',
+			[
+				'label' => esc_html__('Background Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image' => 'background: {{VALUE}};',
 				],
 			]
 		);
@@ -190,6 +228,17 @@ class Widget_ProductShowcase extends Widget_Base
 				'render_type' => 'template',
 				'selectors' => [
 					'{{WRAPPER}} .bt-product-showcase--item-content' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+		$this->add_responsive_control(
+			'product_content_padding',
+			[
+				'label' => __('Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -395,7 +444,7 @@ class Widget_ProductShowcase extends Widget_Base
 			'orderby' => 'post__in',
 		)
 ?>
-		<div class="bt-elwg-product-showcase--default js-product-showcase">
+		<div class="bt-elwg-product-showcase--style-1 js-product-showcase">
 			<?php
 			$query = new \WP_Query($args);
 			if ($query->have_posts()) :
@@ -416,20 +465,17 @@ class Widget_ProductShowcase extends Widget_Base
 					} else {
 						$product_thumbnail = '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
 					}
-
-					// 2. Get first image from product gallery, fallback to thumbnail if gallery is empty
-					$gallery_image_html = '';
-					$gallery_image_ids = $product->get_gallery_image_ids();
-
-					if (!empty($gallery_image_ids)) {
-						$first_gallery_image_id = $gallery_image_ids[0];
-						$gallery_image_html = wp_get_attachment_image($first_gallery_image_id, $thumbnail_size);
-					} else {
-						$gallery_image_html = $product_thumbnail;
-					}
-
 			?>
 					<div class="bt-product-showcase <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+						<div class="bt-col-product bt-product-showcase--item-image">
+							<div class="bt-cover-image">
+								<?php if ($settings['image_custom']['id']) : ?>
+									<?php echo wp_get_attachment_image($settings['image_custom']['id'], $thumbnail_size); ?>
+								<?php else : ?>
+									<?php echo $product_thumbnail; ?>
+								<?php endif; ?>
+							</div>
+						</div>
 						<div class="bt-col-product bt-product-showcase--item-content js-check-bg-color">
 							<div class="bt-product--category">
 								<?php
@@ -460,6 +506,7 @@ class Widget_ProductShowcase extends Widget_Base
 										<?php echo wp_kses_post($short_description); ?>
 									</div>
 								<?php endif; ?>
+								<?php do_action('woozio_woocommerce_template_single_countdown');  ?>
 								<div class="bt-product--add-to-cart">
 									<?php
 									if (!$product->is_type('variable')) {
@@ -469,16 +516,6 @@ class Widget_ProductShowcase extends Widget_Base
 									}
 									?>
 								</div>
-							</div>
-						</div>
-						<div class="bt-col-product bt-product-showcase--item-image">
-							<div class="bt-cover-image">
-								<?php echo $product_thumbnail; ?>
-							</div>
-						</div>
-						<div class="bt-col-product bt-product-showcase--item-image">
-							<div class="bt-cover-image">
-								<?php echo $gallery_image_html; ?>
 							</div>
 						</div>
 					</div>

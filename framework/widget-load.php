@@ -74,6 +74,7 @@ class ElementorWidgets
 			'brand-slider',
 			'product-item',
 			'product-showcase',
+			'product-showcase-style-1',
 			'heading-animation',
 			'mini-wishlist',
 			'tiktok-shop-slider',
@@ -234,6 +235,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle1\Widget_ProductShowcaseStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
 	}
