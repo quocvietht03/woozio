@@ -735,6 +735,14 @@
 .bt-elwg-post-loop-item {
   &--default {
     @extend .__bt-post-style-loop-default;
+    &.bt-post--no-excerpt {
+      .bt-post-title{
+        margin-bottom: 0;
+      }
+      .bt-post--excerpt {
+        display: none;
+      }
+    }
   }
   &--style1 {
     @extend .__bt-post-style-1;

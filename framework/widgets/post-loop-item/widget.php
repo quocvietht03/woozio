@@ -42,7 +42,7 @@ class Widget_PostLoopItem extends Widget_Base {
 				'name' => 'thumbnail',
 				'label' => __( 'Image Size', 'woozio' ),
 				'show_label' => true,
-				'default' => 'medium',
+				'default' => 'medium_large',
 				'exclude' => [ 'custom' ],
 			]
 		);
@@ -254,6 +254,17 @@ class Widget_PostLoopItem extends Widget_Base {
 				'separator' => 'before',
 			]
 		);
+		$this->add_control(
+			'show_excerpt',
+			[
+				'label' => esc_html__('Show Excerpt', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Show', 'woozio'),
+				'label_off' => esc_html__('Hide', 'woozio'),
+				'default' => 'yes',
+				'separator' => 'before',
+			]
+		);
 		
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
@@ -287,7 +298,7 @@ class Widget_PostLoopItem extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		?>
-			<div class="bt-elwg-post-loop-item--default">
+			<div class="bt-elwg-post-loop-item--default <?php echo $settings['show_excerpt'] === 'yes' ? '' : 'bt-post--no-excerpt'; ?>">
 				<?php get_template_part( 'framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'])); ?>
 	    	</div>
 		<?php
