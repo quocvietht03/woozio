@@ -6,14 +6,14 @@
 	// Check Background Light or Dark
 	function WoozioCheckBgLightDark() {
 		if ($('.js-check-bg-color').length > 0) {
-			$(".js-check-bg-color").each(function() {
+			$(".js-check-bg-color").each(function () {
 				let $el = $(this);
 				let bg = $el.css("background-color");
 				let rgb = bg.match(/\d+/g);
 				if (!rgb) return;
 
 				let r = parseInt(rgb[0]),
-					g = parseInt(rgb[1]), 
+					g = parseInt(rgb[1]),
 					b = parseInt(rgb[2]);
 
 				let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
@@ -1005,12 +1005,12 @@
 	// mini cart
 	const MiniCartHandler = function ($scope) {
 		const $miniCart = $scope.find('.bt-elwg-mini-cart--default');
-		const $sidebar = $miniCart.find('.bt-mini-cart-sidebar');
+		const $sidebar = $('.bt-mini-cart-sidebar');
 
 		// Toggle mini cart
 		$miniCart.find('.js-cart-sidebar').on('click', function (e) {
 			e.preventDefault();
-			$sidebar.addClass('active');
+			$sidebar.addClass('active'); // Add active class to sidebar
 			const scrollbarWidth = window.innerWidth - $(window).width();
 			$('body').css({
 				'overflow': 'hidden',
@@ -1019,7 +1019,7 @@
 		});
 
 		// Close mini cart when clicking overlay or close button
-		$miniCart.find('.bt-mini-cart-sidebar-overlay, .bt-mini-cart-close').on('click', function () {
+		$sidebar.find('.bt-mini-cart-sidebar-overlay, .bt-mini-cart-close').on('click', function () {
 			closeMiniCart();
 		});
 
@@ -1470,23 +1470,23 @@
 				});
 			}
 			// video hover
-			$bannerProductSlider.find('.bt-banner-product-slider--item').each(function() {
+			$bannerProductSlider.find('.bt-banner-product-slider--item').each(function () {
 				const $item = $(this);
 				const $video = $item.find('.bt-hover-video');
 				const $coverImage = $item.find('.bt-cover-image img');
 
 				if ($item.hasClass('bt-video-hover-enable') && $video.length) {
-					$item.on('mouseenter', function() {
+					$item.on('mouseenter', function () {
 						$coverImage.css('opacity', '0');
 						$video[0].play();
 					});
 
-					$item.on('mouseleave', function() {
-						$coverImage.css('opacity', '1'); 
+					$item.on('mouseleave', function () {
+						$coverImage.css('opacity', '1');
 						$video[0].pause();
 					});
-					
-					$item.on('click', function() {
+
+					$item.on('click', function () {
 						if ($video[0].paused) {
 							$video[0].play();
 						} else {
@@ -1520,7 +1520,7 @@
 			});
 		}
 	};
-	
+
 	// product showcase
 	const ProductShowcaseHandler = function ($scope) {
 		const $productShowcase = $scope.find('.js-product-showcase');
@@ -2111,7 +2111,85 @@
 			}
 		}
 	};
-	
+	const VerticalBannerSliderHandler = function ($scope) {
+		const $verticalBannerSlider = $scope.find('.bt-vertical-banner-slider');
+		if ($verticalBannerSlider.length > 0) {
+			const $backgrounds = $verticalBannerSlider.find('.bt-banner-background');
+			const $headings = $verticalBannerSlider.find('.bt-banner-heading');
+			const $autoplay = $verticalBannerSlider.data('autoplay');
+			const $autoplaySpeed = $verticalBannerSlider.data('autoplay-speed');
+			const $autoplayOnlyMobile = $verticalBannerSlider.data('autoplay-only-mobile');
+			let currentActive = 0;
+
+			function setActiveItem(index) {
+				// Remove active class from all backgrounds and headings
+				$backgrounds.removeClass('active');
+				$headings.removeClass('active');
+
+				// Add active class to target items
+				$backgrounds.eq(index).addClass('active');
+				$headings.eq(index).addClass('active');
+				currentActive = index;
+			}
+
+			// Hover event on headings to change active banner
+			$headings.on('mouseenter', function () {
+				const index = $(this).index();
+				setActiveItem(index);
+			});
+
+			// Set first item as active by default
+			setActiveItem(0);
+			// Auto rotate for mobile screens
+			function autoRotateBanners() {
+				const totalBanners = $backgrounds.length;
+				setActiveItem((currentActive + 1) % totalBanners);
+			}
+
+			// Check screen width and start/stop auto rotation 
+			function handleAutoRotation() {
+				// Clear any existing interval
+				const existingInterval = $verticalBannerSlider.data('autoRotateInterval');
+				if (existingInterval) {
+					clearInterval(existingInterval);
+					$verticalBannerSlider.data('autoRotateInterval', null);
+				}
+
+				// Only run autoplay if enabled
+				if ($autoplay === 'yes') {
+					const isMobile = window.innerWidth <= 767;
+					const shouldAutoplay = $autoplayOnlyMobile === 'yes' ? isMobile : true;
+
+					if (shouldAutoplay) {
+						// Start auto rotation with configured speed
+						const autoRotateInterval = setInterval(autoRotateBanners, $autoplaySpeed);
+						$verticalBannerSlider.data('autoRotateInterval', autoRotateInterval);
+
+						// Stop autoplay on heading hover
+						$headings.off('mouseenter.autoplay').on('mouseenter.autoplay', function() {
+							const currentInterval = $verticalBannerSlider.data('autoRotateInterval');
+							if (currentInterval) {
+								clearInterval(currentInterval);
+								$verticalBannerSlider.data('autoRotateInterval', null);
+							}
+						});
+
+						// Resume autoplay when mouse leaves headings
+						$headings.off('mouseleave.autoplay').on('mouseleave.autoplay', function() {
+							const newInterval = setInterval(autoRotateBanners, $autoplaySpeed);
+							$verticalBannerSlider.data('autoRotateInterval', newInterval);
+						});
+					}
+				}
+			}
+
+			// Initial check
+			handleAutoRotation();
+
+			// Check on resize
+			$(window).off('resize.bannerSlider').on('resize.bannerSlider', handleAutoRotation);
+		}
+	}
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -2142,6 +2220,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-nav-image.default', ProductNavImageHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-brand-slider.default', BrandSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-vertical-banner-slider.default', VerticalBannerSliderHandler);
 	});
 
 })(jQuery);

@@ -376,6 +376,103 @@ class Widget_ProductShowcaseStyle1 extends Widget_Base
 				],
 			]
 		);
+		// Color for Variable
+		$this->add_control(
+			'variable_style_heading',
+			[
+				'label' => esc_html__('Variable Product', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->start_controls_tabs('variable_style_tabs');
+
+		$this->start_controls_tab(
+			'variable_normal_tab',
+			[
+				'label' => esc_html__('Normal', 'woozio'),
+			]
+		);
+
+		$this->add_control(
+			'variable_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'variable_background_color',
+			[
+				'label' => esc_html__('Background Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'variable_border',
+				'label' => esc_html__('Border', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value',
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'variable_active_tab',
+			[
+				'label' => esc_html__('Active', 'woozio'),
+			]
+		);
+
+		$this->add_control(
+			'variable_active_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value.active' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'variable_active_background_color',
+			[
+				'label' => esc_html__('Background Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value.active' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'variable_active_border',
+				'label' => esc_html__('Border', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-attributes-wrap .bt-attributes--item .bt-attributes--value .bt-item-value.active',
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
 
 		// Typography & Color for Add to Cart Button
 		$this->add_control(

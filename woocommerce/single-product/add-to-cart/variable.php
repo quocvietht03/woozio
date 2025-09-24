@@ -66,8 +66,9 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 			<?php
 			foreach ($attributes as $attribute_name => $options) :
 				$data_attribute = strtolower($attribute_name);
+				$data_attribute_slug = sanitize_title($attribute_name);
 				?>
-				<div class="bt-attributes--item" data-attribute-name="<?php echo esc_attr($data_attribute); ?>">
+				<div class="bt-attributes--item" data-attribute-name="<?php echo esc_attr($data_attribute_slug); ?>">
 					<div class="bt-attributes--name">
 						<div class="bt-name"><?php echo wc_attribute_label($attribute_name) . ':'; ?></div>
 						<div class="bt-result"></div>

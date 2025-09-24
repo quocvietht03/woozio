@@ -66,34 +66,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label' => __('Hotspot', 'woozio'),
             ]
         );
-        $this->add_control(
-            'hotspot_align',
-            [
-                'label' => __('Hotspot Alignment', 'woozio'),
-                'type' => Controls_Manager::SELECT,
-                'options' => [
-                    'flex-start' => __('Start', 'woozio'),
-                    'center' => __('Center', 'woozio'),
-                    'flex-end' => __('End', 'woozio'),
-                    'stretch' => __('Stretch', 'woozio'),
-                ],
-                'default' => 'center',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product' => 'align-items: {{VALUE}};',
-                ],
-            ]
-        );
-        $this->add_control(
-            'hotspot_full_width',
-            [
-                'label' => __('Hotspot Full Width', 'woozio'),
-                'type' => Controls_Manager::SWITCHER,
-                'label_on' => __('Yes', 'woozio'),
-                'label_off' => __('No', 'woozio'),
-                'return_value' => 'yes',
-                'default' => 'no',
-            ]
-        );
+   
         $this->add_responsive_control(
             'hotspot_container_width',
             [
@@ -185,13 +158,30 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                         'min' => 100,
                         'max' => 200,
                     ],
+                    'px' => [
+                        'min' => 100,
+                        'max' => 200,
+                    ],
                 ],
+            
                 'default' => [
                     'size' => 100,
                     'unit' => '%',
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-hotspot-image img' => 'width: {{SIZE}}%; margin-left:calc(-1 * ({{SIZE}}% - 100%) / 2);',
+                ],
+            ]
+        );
+        $this->add_control(
+            'hotspot_point_style',
+            [
+                'label' => __('Hotspot Point Style', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'default',
+                'options' => [
+                    'default' => __('Default', 'woozio'),
+                    'number' => __('Number', 'woozio'),
                 ],
             ]
         );
@@ -207,7 +197,17 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 ],
             ]
         );
-
+        $this->add_control(
+            'show_quick_view',
+            [
+                'label' => __('Show Quick View', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Show', 'woozio'),
+                'label_off' => __('Hide', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
         $repeater = new Repeater();
         $repeater->add_control(
             'id_product',
@@ -304,6 +304,36 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     ],
 
                 ],
+            ]
+        );
+        $this->add_control(
+            'hotspot_align',
+            [
+                'label' => __('Hotspot Alignment', 'woozio'),
+                'description' => __('Choose how to align the hotspot elements within the container', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'flex-start' => __('Start', 'woozio'),
+                    'center' => __('Center', 'woozio'),
+                    'flex-end' => __('End', 'woozio'),
+                    'stretch' => __('Stretch', 'woozio'),
+                ],
+                'default' => 'center',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => 'align-items: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'hotspot_full_width',
+            [
+                'label' => __('Hotspot Full Width', 'woozio'),
+                'description' => __('This should only be used in Elementor’s Full Width mode. Enter your site’s container width to ensure the content is aligned correctly with the layout.', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
             ]
         );
         $this->end_controls_section();
@@ -903,15 +933,19 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
                         <div class="bt-hotspot-points">
-                            <?php foreach ($settings['hotspot_items'] as $item) : ?>
+                            <?php foreach ($settings['hotspot_items'] as $index => $item) : ?>
                                 <?php
                                 $product = wc_get_product($item['id_product']);
                                 if ($product) :
                                 ?>
-                                    <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
+                                    <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?> <?php echo esc_attr($settings['hotspot_point_style'] === 'number' ? 'bt-hotspot-point-style-number' : ''); ?>"
                                         data-product-id="<?php echo esc_attr($item['id_product']); ?>">
-                                        <div class="bt-hotspot-marker"></div>
-                                        <div class="bt-hotspot-product-info">
+                                        <div class="bt-hotspot-marker">
+                                            <?php if ($settings['hotspot_point_style'] === 'number') : ?>
+                                                <?php echo esc_html($index + 1); ?>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="bt-hotspot-product-info <?php echo esc_attr($settings['show_quick_view'] === 'yes' ? 'bt-quick-view' : ''); ?>">
                                             <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                 <?php
                                                 if (has_post_thumbnail($item['id_product'])) {

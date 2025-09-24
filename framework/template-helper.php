@@ -653,6 +653,21 @@ add_action('elementor/element/nested-carousel/section_navigation_settings/before
 		]
 	);
 });
+add_action('elementor/element/nested-tabs/section_title_style/before_section_end', function ($element) {
+	$element->add_responsive_control(
+		'heading_padding',
+		[
+			'label' => esc_html__('Padding', 'woozio'),
+			'type' => \Elementor\Controls_Manager::DIMENSIONS,
+			'size_units' => ['px', 'em', '%'],
+			'selectors' => [
+				'{{WRAPPER}} .e-n-tabs-heading' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+			],
+			'separator' => 'before',
+		]
+	);
+});
+
 
 // Slider Swiper Setting
 function bt_elwg_get_slider_settings($settings, $breakpoints) {

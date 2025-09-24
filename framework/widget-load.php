@@ -95,7 +95,8 @@ class ElementorWidgets
 			'site-icon-payment',
 			'text-slider',
 			'store-locations-slider',
-			'product-nav-image'
+			'product-nav-image',
+			'vertical-banner-slider'
 		);
 
 		return $this->widgets;
@@ -238,6 +239,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle1\Widget_ProductShowcaseStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());
 	}
 
 	/**

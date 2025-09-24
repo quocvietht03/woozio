@@ -2347,6 +2347,14 @@
 				if (AJ_Options.cart_toast) {
 					WoozioshowToast(productId, 'cart', 'add');
 				}
+				if ($(window).width() <= 1023) {
+					$('.bt-mini-cart-sidebar').addClass('active');
+					const scrollbarWidth = window.innerWidth - $(window).width();
+					$('body').css({
+						'overflow': 'hidden',
+						'padding-right': scrollbarWidth + 'px' // Prevent layout shift
+					});
+				}
 			}
 		}
 	});

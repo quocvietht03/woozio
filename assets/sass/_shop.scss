@@ -2034,6 +2034,10 @@
         transition:
           opacity 0.5s ease,
           visibility 0.5s ease;
+        @media (max-width: $break-sm) {
+          opacity: 1;
+          visibility: visible;
+        }
         a {
           background: $color-primary;
           color: #fff;

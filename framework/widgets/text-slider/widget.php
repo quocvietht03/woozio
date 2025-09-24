@@ -260,6 +260,18 @@ class Woozio_TextSlider extends Widget_Base
                 'selector' => '{{WRAPPER}} .bt-text--item span',
             ]
         );
+        $this->add_control(
+            'svg_color',
+            [
+                'label' => __('SVG Color', 'woozio'),
+                'description' => __('This option is only for SVG images', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .bt-text--item svg path' => 'fill: {{VALUE}};',
+                ],
+            ]
+        );
         $this->end_controls_section();
     }
 
