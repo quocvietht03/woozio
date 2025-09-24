@@ -67,6 +67,55 @@ class Widget_ProductTooltipHotspot extends Widget_Base
             ]
         );
         $this->add_control(
+            'hotspot_align',
+            [
+                'label' => __('Hotspot Alignment', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'flex-start' => __('Start', 'woozio'),
+                    'center' => __('Center', 'woozio'),
+                    'flex-end' => __('End', 'woozio'),
+                    'stretch' => __('Stretch', 'woozio'),
+                ],
+                'default' => 'center',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => 'align-items: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'hotspot_full_width',
+            [
+                'label' => __('Hotspot Full Width', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+        $this->add_responsive_control(
+            'hotspot_container_width',
+            [
+                'label' => __('Container Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 1,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => '--width-container: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'hotspot_full_width' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
             'hotspot_image',
             [
                 'label' => __('Image', 'woozio'),
@@ -82,7 +131,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label' => __('Show Mobile Image', 'woozio'),
                 'type' => Controls_Manager::SWITCHER,
                 'label_on' => __('Yes', 'woozio'),
-                'label_off' => __('No', 'woozio'), 
+                'label_off' => __('No', 'woozio'),
                 'return_value' => 'yes',
                 'default' => 'no',
             ]
@@ -111,12 +160,26 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'exclude' => ['custom'],
             ]
         );
+        $this->add_control(
+            'image_position',
+            [
+                'label' => __('Image Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'row' => __('Left', 'woozio'),
+                    'row-reverse' => __('Right', 'woozio'),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => 'flex-direction: {{VALUE}};',
+                ],
+            ]
+        );
         $this->add_responsive_control(
             'image_width',
             [
                 'label' => __('Image Width', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['%', 'px'],
+                'size_units' => ['%'],
                 'range' => [
                     '%' => [
                         'min' => 100,
@@ -124,10 +187,11 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                     ],
                 ],
                 'default' => [
+                    'size' => 100,
                     'unit' => '%',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-image img' => 'width: {{SIZE}}{{UNIT}}; margin-left:calc(-1 * ({{SIZE}}{{UNIT}} - 100%) / 2);',
+                    '{{WRAPPER}} .bt-hotspot-image img' => 'width: {{SIZE}}%; margin-left:calc(-1 * ({{SIZE}}% - 100%) / 2);',
                 ],
             ]
         );
@@ -261,24 +325,40 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'separator' => 'before',
             ]
         );
-        $this->add_responsive_control(
-            'slider_width',
+        $this->add_control(
+            'slider_layout',
             [
-                'label' => __('Slider Width', 'woozio'),
+                'label' => __('Layout', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'default',
+                'options' => [
+                    'default' => __('Default', 'woozio'),
+                    'style-1' => __('Style 1', 'woozio'),
+                ],
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'slider_max_width',
+            [
+                'label' => __('Max Width', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['%', 'px'],
+                'size_units' => ['px', '%'],
                 'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 1,
+                    ],
                     '%' => [
                         'min' => 0,
                         'max' => 100,
                     ],
-                    'px' => [
-                        'min' => 0,
-                        'max' => 2000,
-                    ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product' => '--width-slider: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-hotspot-slider--inner' => 'max-width: {{SIZE}}{{UNIT}};margin-left: 0;',
                 ],
                 'condition' => [
                     'show_slider' => 'yes',
@@ -471,6 +551,30 @@ class Widget_ProductTooltipHotspot extends Widget_Base
             ]
         );
         $this->add_responsive_control(
+            'content_width',
+            [
+                'label' => __('Content Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['%', 'px'],
+                'range' => [
+                    '%' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => '--width-content: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
             'slider_content_padding',
             [
                 'label' => __('Padding', 'woozio'),
@@ -529,6 +633,28 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 ],
             ]
         );
+        $this->add_responsive_control(
+            'heading_max_width',
+            [
+                'label' => __('Max Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 1000,
+                        'step' => 1,
+                    ],
+                    '%' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-slider--heading' => 'max-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
 
         $this->add_control(
             'description_style',
@@ -565,6 +691,28 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
                     '{{WRAPPER}} .bt-hotspot-slider--description' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'description_max_width',
+            [
+                'label' => __('Description Max Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 1,
+                    ],
+                    '%' => [
+                        'min' => 0,
+                        'max' => 100,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-slider--description' => 'max-width: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -703,6 +851,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
         if (empty($settings['hotspot_image']['url'])) {
             return;
         }
+
         // Build $product_ids array with proper structure
         $product_ids = [];
         if (!empty($settings['hotspot_items'])) {
@@ -716,7 +865,23 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 }
             }
         }
+        if ($settings['hotspot_full_width'] === 'yes') {
+            $hotspot_container_width = $settings['hotspot_container_width']['size'];
 ?>
+            <style>
+                @media (min-width: <?php echo esc_attr($hotspot_container_width + 30); ?>px) {
+                    <?php if ($settings['image_position'] === 'row-reverse') : ?>.bt-elwg-product-tooltip-hotspot--default .bt-hotspot-product .bt-hotspot-product--slider {
+                        padding-left: calc((100% + 5px - var(--width-container)) / 2) !important;
+                    }
+
+                    <?php else : ?>.bt-elwg-product-tooltip-hotspot--default .bt-hotspot-product .bt-hotspot-product--slider {
+                        padding-right: calc((100% + 5px - var(--width-container)) / 2) !important;
+                    }
+
+                    <?php endif; ?>
+                }
+            </style>
+        <?php } ?>
         <div class="bt-elwg-product-tooltip-hotspot--default <?php echo esc_attr(($settings['show_slider'] === 'yes' && !empty($product_ids)) ? '' : 'bt-no-slider'); ?>">
             <div class="bt-hotspot-product bt-tooltip-<?php echo esc_attr($settings['tooltip_layout']); ?>">
                 <div class="bt-hotspot-product--image">
@@ -733,7 +898,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                             } else {
                                 echo '<img src="' . esc_url($settings['hotspot_image_mobile']['url']) . '" alt="" class="bt-mobile-image">';
                             }
-                        } 
+                        }
                         ?>
                     </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
@@ -794,14 +959,17 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                             'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',
                             'speed' => isset($settings['slider_speed']) ? $settings['slider_speed'] : 500,
                             'spaceBetween' => [
-                                'desktop' => isset($settings['slider_spacebetween']) ? $settings['slider_spacebetween'] : 30,
-                                'tablet' => isset($settings['slider_spacebetween_tablet']) ? $settings['slider_spacebetween_tablet'] : 20,
-                                'mobile' => isset($settings['slider_spacebetween_mobile']) ? $settings['slider_spacebetween_mobile'] : 10
+                                'desktop' => !empty($settings['slider_spacebetween']) ? $settings['slider_spacebetween'] : 30,
+                                'tablet' => !empty($settings['slider_spacebetween_tablet']) ? $settings['slider_spacebetween_tablet'] : 20,
+                                'mobile' => !empty($settings['slider_spacebetween_mobile']) ? $settings['slider_spacebetween_mobile'] : 15,
                             ],
                         ];
                         $classes = ['bt-hotspot-slider--inner', 'swiper'];
                         if ($settings['slider_dots_only_mobile'] === 'yes') {
                             $classes[] = 'bt-only-dot-mobile';
+                        }
+                        if ($settings['slider_layout'] === 'style-1') {
+                            $classes[] = 'bt-slider-style-1';
                         }
                         ?>
                         <div class="bt-hotspot-slider bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>

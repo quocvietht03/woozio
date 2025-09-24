@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\ProductBrand;
+namespace WoozioElementorWidgets\Widgets\BrandSlider;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -11,19 +11,20 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Utils;
 use Elementor\Plugin;
+use Elementor\Repeater;
 use ElementorPro\Base\Base_Carousel_Trait;
 
-class Widget_ProductBrand extends Widget_Base
+class Widget_BrandSlider extends Widget_Base
 {
 	use Base_Carousel_Trait;
 	public function get_name()
 	{
-		return 'bt-product-brand';
+		return 'bt-brand-slider';
 	}
 
 	public function get_title()
 	{
-		return __('Product Brand', 'woozio');
+		return __('Brand Slider', 'woozio');
 	}
 
 	public function get_icon()
@@ -41,23 +42,65 @@ class Widget_ProductBrand extends Widget_Base
 		return ['swiper-slider', 'elementor-widgets'];
 	}
 
-	public function get_supported_taxonomies()
+	protected function register_content_section_controls()
 	{
-		$supported_taxonomies = [];
+		$this->start_controls_section(
+			'section_content',
+			[
+				'label' => __('Brand Items', 'woozio'),
+			]
+		);
 
-		$brands = get_terms(array(
-			'taxonomy' => 'product_brand',
-			'hide_empty' => false,
-		));
-		if (!empty($brands)  && !is_wp_error($brands)) {
-			foreach ($brands as $brand) {
-				$supported_taxonomies[$brand->term_id] = $brand->name;
-			}
-		}
+		$repeater = new Repeater();
 
-		return $supported_taxonomies;
+		$repeater->add_control(
+			'brand_image',
+			[
+				'label' => __('Brand Image', 'woozio'),
+				'type' => Controls_Manager::MEDIA,
+				'default' => [
+					'url' => Utils::get_placeholder_image_src(),
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'brand_link',
+			[
+				'label' => __('Brand Link', 'woozio'),
+				'type' => Controls_Manager::URL,
+				'placeholder' => __('https://your-link.com', 'woozio'),
+				'default' => [
+					'url' => '#',
+					'is_external' => false,
+					'nofollow' => false,
+				],
+			]
+		);
+
+		$this->add_control(
+			'brand_list',
+			[
+				'label' => __('Brand List', 'woozio'),
+				'type' => Controls_Manager::REPEATER,
+				'fields' => $repeater->get_controls(),
+				'default' => [
+					[
+						'brand_link' => ['url' => '#'],
+					],
+					[
+						'brand_link' => ['url' => '#'],
+					],
+					[
+						'brand_link' => ['url' => '#'],
+					],
+				],
+				'title_field' => __('Brand Item', 'woozio'),
+			]
+		);
+
+		$this->end_controls_section();
 	}
-
 	protected function register_layout_section_controls()
 	{
 		$this->start_controls_section(
@@ -67,24 +110,49 @@ class Widget_ProductBrand extends Widget_Base
 			]
 		);
 		$this->add_control(
-			'show_empty_brands',
+			'slider_continuous',
 			[
-				'label' => __('Show Empty Brands', 'woozio'),
+				'label' => __('Continuous Sliding', 'woozio'),
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __('Yes', 'woozio'),
 				'label_off' => __('No', 'woozio'),
 				'default' => 'no',
-				'description' => __('Show brands that have no products.', 'woozio'),
+				'description' => __('Enable continuous sliding animation', 'woozio'),
 			]
 		);
+
 		$this->add_control(
-			'brand_number',
+			'slider_continuous_speed',
 			[
-				'label' => __('Brand Number', 'woozio'),
+				'label' => __('Sliding Speed', 'woozio'),
 				'type' => Controls_Manager::NUMBER,
-				'default' => 10,
+				'min' => 1000,
+				'max' => 10000,
+				'step' => 500,
+				'default' => 3000,
+				'description' => __('Set sliding speed in milliseconds', 'woozio'),
+				'condition' => [
+					'slider_continuous' => 'yes',
+				],
 			]
 		);
+
+		$this->add_control(
+			'slider_continuous_direction',
+			[
+				'label' => __('Sliding Direction', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'ltr',
+				'options' => [
+					'ltr' => __('Left', 'woozio'),
+					'rtl' => __('Right', 'woozio'),
+				],
+				'condition' => [
+					'slider_continuous' => 'yes',
+				],
+			]
+		);
+		// Repeater control will be added in content section
 		$this->add_control(
 			'slider_autoplay',
 			[
@@ -93,6 +161,9 @@ class Widget_ProductBrand extends Widget_Base
 				'label_on' => __('Yes', 'woozio'),
 				'label_off' => __('No', 'woozio'),
 				'default' => 'no',
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 
@@ -105,6 +176,9 @@ class Widget_ProductBrand extends Widget_Base
 				'label_off' => __('No', 'woozio'),
 				'default' => 'yes',
 				'description' => __('Enable continuous loop mode', 'woozio'),
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 		$this->add_carousel_layout_controls([
@@ -115,6 +189,9 @@ class Widget_ProductBrand extends Widget_Base
 				'mobile_default' => '2',
 				'selectors' => [
 					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+				'condition' => [
+					'slider_continuous!' => 'yes',
 				],
 			],
 			'slides_to_scroll_custom_settings' => [
@@ -152,6 +229,9 @@ class Widget_ProductBrand extends Widget_Base
 				'selectors' => [
 					'{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
 				],
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 
@@ -163,6 +243,9 @@ class Widget_ProductBrand extends Widget_Base
 				'default' => 1000,
 				'min' => 100,
 				'step' => 100,
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 
@@ -173,6 +256,9 @@ class Widget_ProductBrand extends Widget_Base
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __('Yes', 'woozio'),
 				'label_off' => __('No', 'woozio'),
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 
@@ -186,6 +272,7 @@ class Widget_ProductBrand extends Widget_Base
 				'default' => 'no',
 				'condition' => [
 					'slider_arrows' => 'yes',
+					'slider_continuous!' => 'yes',
 				],
 			]
 		);
@@ -198,6 +285,9 @@ class Widget_ProductBrand extends Widget_Base
 				'label_on' => __('Yes', 'woozio'),
 				'label_off' => __('No', 'woozio'),
 				'default' => 'no',
+				'condition' => [
+					'slider_continuous!' => 'yes',
+				],
 			]
 		);
 
@@ -211,6 +301,7 @@ class Widget_ProductBrand extends Widget_Base
 				'default' => 'no',
 				'condition' => [
 					'slider_dots' => 'yes',
+					'slider_continuous!' => 'yes',
 				],
 			]
 		);
@@ -225,6 +316,9 @@ class Widget_ProductBrand extends Widget_Base
 					'both' => __('Both', 'woozio'),
 					'left' => __('Left', 'woozio'),
 					'right' => __('Right', 'woozio'),
+				],
+				'condition' => [
+					'slider_continuous!' => 'yes',
 				],
 			]
 		);
@@ -246,74 +340,18 @@ class Widget_ProductBrand extends Widget_Base
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .bt-elwg-product-brand--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .bt-elwg-brand-slider--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
 				],
 				'render_type' => 'ui',
 				'condition' => [
 					'slider_offset_sides!' => 'none',
+					'slider_continuous!' => 'yes',
 				],
 			]
 		);
 
 		$this->end_controls_section();
 	}
-
-	protected function register_query_section_controls()
-	{
-		$this->start_controls_section(
-			'section_query',
-			[
-				'label' => __('Query', 'woozio'),
-			]
-		);
-
-		$this->start_controls_tabs('tabs_query');
-
-		$this->start_controls_tab(
-			'tab_query_include',
-			[
-				'label' => __('Include', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'brand',
-			[
-				'label' => __('Brands', 'woozio'),
-				'type' => Controls_Manager::SELECT2,
-				'options' => $this->get_supported_taxonomies(),
-				'label_block' => true,
-				'multiple' => true,
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->start_controls_tab(
-			'tab_query_exclude',
-			[
-				'label' => __('Exclude', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'brand_exclude',
-			[
-				'label' => __('Brands', 'woozio'),
-				'type' => Controls_Manager::SELECT2,
-				'options' => $this->get_supported_taxonomies(),
-				'label_block' => true,
-				'multiple' => true,
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->end_controls_tabs();
-
-		$this->end_controls_section();
-	}
-
 	protected function register_style_section_controls()
 	{
 		$this->start_controls_section(
@@ -329,10 +367,10 @@ class Widget_ProductBrand extends Widget_Base
 			[
 				'label' => __('SVG Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-brand--item svg' => 'fill: {{VALUE}}; color: {{VALUE}};',
-					'{{WRAPPER}} .bt-product-brand--item svg path' => 'fill: {{VALUE}};',
-				],
+			'selectors' => [
+				'{{WRAPPER}} .bt-brand-slider--item svg' => 'fill: {{VALUE}}; color: {{VALUE}};',
+				'{{WRAPPER}} .bt-brand-slider--item svg path' => 'fill: {{VALUE}};',
+			],
 				'description' => __('Set color for SVG icons', 'woozio'),
 			]
 		);
@@ -342,10 +380,10 @@ class Widget_ProductBrand extends Widget_Base
 			[
 				'label' => __('SVG Hover Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-brand--item:hover svg' => 'fill: {{VALUE}}; color: {{VALUE}};',
-					'{{WRAPPER}} .bt-product-brand--item:hover svg path' => 'fill: {{VALUE}};',
-				],
+			'selectors' => [
+				'{{WRAPPER}} .bt-brand-slider--item:hover svg' => 'fill: {{VALUE}}; color: {{VALUE}};',
+				'{{WRAPPER}} .bt-brand-slider--item:hover svg path' => 'fill: {{VALUE}};',
+			],
 			]
 		);
 
@@ -355,9 +393,9 @@ class Widget_ProductBrand extends Widget_Base
 				'label' => __('Item Background', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'default' => '#f6f6f6',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-brand--item' => 'background: {{VALUE}};',
-				],
+			'selectors' => [
+				'{{WRAPPER}} .bt-brand-slider--item' => 'background: {{VALUE}};',
+			],
 			]
 		);
 		$this->add_control(
@@ -365,8 +403,19 @@ class Widget_ProductBrand extends Widget_Base
 			[
 				'label' => __('Hover Background', 'woozio'),
 				'type' => Controls_Manager::COLOR,
+			'selectors' => [
+				'{{WRAPPER}} .bt-brand-slider--item:hover' => 'background: {{VALUE}};',
+			],
+			]
+		);
+		$this->add_responsive_control(
+			'item_padding',
+			[
+				'label' => __('Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-brand--item:hover' => 'background: {{VALUE}};',
+					'{{WRAPPER}} .bt-brand-slider--item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -376,9 +425,9 @@ class Widget_ProductBrand extends Widget_Base
 				'label' => __('Border Radius', 'woozio'),
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => ['px', '%'],
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-brand--item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
+			'selectors' => [
+				'{{WRAPPER}} .bt-brand-slider--item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+			],
 			]
 		);
 		$this->add_group_control(
@@ -386,7 +435,7 @@ class Widget_ProductBrand extends Widget_Base
 			[
 				'name' => 'item_border',
 				'label' => __('Border', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-product-brand--item',
+				'selector' => '{{WRAPPER}} .bt-brand-slider--item',
 			]
 		);
 
@@ -394,7 +443,7 @@ class Widget_ProductBrand extends Widget_Base
 			Group_Control_Box_Shadow::get_type(),
 			[
 				'name' => 'item_box_shadow',
-				'selector' => '{{WRAPPER}} .bt-product-brand--item',
+				'selector' => '{{WRAPPER}} .bt-brand-slider--item',
 			]
 		);
 		$this->end_controls_section();
@@ -636,24 +685,17 @@ class Widget_ProductBrand extends Widget_Base
 	}
 	protected function register_controls()
 	{
+		$this->register_content_section_controls();
 		$this->register_layout_section_controls();
-		$this->register_query_section_controls();
 		$this->register_style_section_controls();
 	}
 
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
-		$args = array(
-			'taxonomy' => 'product_brand',
-			'hide_empty' => $settings['show_empty_brands'] !== 'yes',
-			'number' => $settings['brand_number'],
-			'exclude' => !empty($settings['brand_exclude']) ? $settings['brand_exclude'] : array(),
-			'include' => !empty($settings['brand']) ? $settings['brand'] : array()
-		);
-
-		$brands = get_terms($args);
-		$classes = ['bt-elwg-product-brand--default bt-elwg-product-brand--slider'];
+		$brand_list = $settings['brand_list'];
+		
+		$classes = ['bt-elwg-brand-slider--default bt-elwg-brand-slider--slider'];
 		if ($settings['slider_arrows_hidden_mobile'] === 'yes') {
 			$classes[] = 'bt-hidden-arrow-mobile';
 		}
@@ -663,42 +705,57 @@ class Widget_ProductBrand extends Widget_Base
 		$slider_settings = [];
 		$breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
 		$slider_settings = bt_elwg_get_slider_settings($settings, $breakpoints);
-
-		if (!empty($brands) && !is_wp_error($brands)) {
+	 if($settings['slider_continuous'] === 'yes') {
+		$slider_continuous = [];
+		$slider_continuous['speed'] = $settings['slider_continuous_speed'];
+		$slider_continuous['direction'] = $settings['slider_continuous_direction'];
+	}
+		if (!empty($brand_list)) {
 ?>
-			<div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
-				<div class="bt-product-brand swiper">
-					<div class="swiper-wrapper ">
+			<div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" <?php if($settings['slider_continuous'] === 'yes') { ?> data-slider-continuous='<?php echo json_encode($slider_continuous); ?>' <?php } ?> data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
+				<div class="bt-brand-slider swiper">
+					<div class="swiper-wrapper">
 					<?php
-					foreach ($brands as $brand) {
-						$thumbnail_id = get_term_meta($brand->term_id, 'thumbnail_id', true);
-						$image = wp_get_attachment_url($thumbnail_id);
-						$shop_page_url = get_permalink(wc_get_page_id('shop'));
-						$brand_url = $shop_page_url . '?product_brand=' . $brand->slug;
+					foreach ($brand_list as $index => $item) {
+						$brand_image = $item['brand_image'];
+						$brand_link = $item['brand_link'];
+						$image_id = $brand_image['id'];
+						$image_url = $brand_image['url'];
 						$is_svg = false;
 
 						// Check if the image is SVG
-						if ($image && pathinfo($image, PATHINFO_EXTENSION) === 'svg') {
+						if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
 							$is_svg = true;
 						}
+						
+						$link_key = 'link_' . $index;
+						$this->add_link_attributes($link_key, $brand_link);
 					?>
-						<div class="bt-product-brand--item swiper-slide">
-							<a href="<?php echo esc_url($brand_url); ?>" class="bt-product-brand--link">
-								<div class="bt-product-brand--image">
-									<?php if ($is_svg) {
-										// Output SVG content
-										$svg_content = file_get_contents($image);
-										echo '<div class="bt-svg">' . $svg_content . '</div>';
-									} else {
-										if (!empty($image)) {
-											echo wp_get_attachment_image($thumbnail_id, 'medium');
+						<div class="bt-brand-slider--item swiper-slide">
+							<?php if (!empty($brand_link['url'])) : ?>
+								<a <?php $this->print_render_attribute_string($link_key); ?> class="bt-brand-slider--link">
+							<?php else : ?>
+								<div class="bt-brand-slider--link">
+							<?php endif; ?>
+									<div class="bt-brand-slider--image">
+										<?php if ($is_svg && !empty($image_url)) {
+											// Output SVG content
+											$svg_content = file_get_contents($image_url);
+											echo '<div class="bt-svg">' . $svg_content . '</div>';
 										} else {
-											echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting brand image', 'woozio') . '">';
+											if (!empty($image_id)) {
+												echo wp_get_attachment_image($image_id, 'medium');
+											} else {
+												echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_attr__('Brand Image', 'woozio') . '">';
+											}
 										}
-									}
-									?>
+										?>
+									</div>
+							<?php if (!empty($brand_link['url'])) : ?>
+								</a>
+							<?php else : ?>
 								</div>
-							</a>
+							<?php endif; ?>
 						</div>
 					<?php
 					}
@@ -727,7 +784,7 @@ class Widget_ProductBrand extends Widget_Base
 
 <?php
 		} else {
-			get_template_part('framework/templates/post', 'none');
+			echo '<div class="bt-brand-slider--empty">' . esc_html__('No brands found. Please add some brands in the widget settings.', 'woozio') . '</div>';
 		}
 	}
 

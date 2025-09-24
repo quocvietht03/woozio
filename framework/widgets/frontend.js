@@ -3,7 +3,26 @@
 	   * @param $scope The Widget wrapper element as a jQuery element
 	 * @param $ The jQuery alias
 	**/
+	// Check Background Light or Dark
+	function WoozioCheckBgLightDark() {
+		if ($('.js-check-bg-color').length > 0) {
+			$(".js-check-bg-color").each(function() {
+				let $el = $(this);
+				let bg = $el.css("background-color");
+				let rgb = bg.match(/\d+/g);
+				if (!rgb) return;
 
+				let r = parseInt(rgb[0]),
+					g = parseInt(rgb[1]), 
+					b = parseInt(rgb[2]);
+
+				let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+				$el.removeClass("bt-bg-light bt-bg-dark")
+					.addClass(yiq >= 128 ? "bt-bg-light" : "bt-bg-dark");
+			});
+		}
+	}
 	/* location list toggle */
 	var LocationListHandler = function ($scope, $) {
 		var buttonMore = $scope.find('.bt-more-info');
@@ -564,7 +583,7 @@
 				autoplay: $sliderSettings.autoplay ? {
 					delay: 3000,
 					disableOnInteraction: false
-				} : false,		
+				} : false,
 				breakpoints: {
 					1560: {
 						slidesPerView: 3,
@@ -771,7 +790,7 @@
 				});
 			}
 		});
-		
+
 	};
 	const ProductTestimonialHandler = function ($scope) {
 		const $ProductTestimonial = $scope.find('.bt-elwg-product-testimonial--default');
@@ -1450,6 +1469,32 @@
 					swiper.autoplay.start();
 				});
 			}
+			// video hover
+			$bannerProductSlider.find('.bt-banner-product-slider--item').each(function() {
+				const $item = $(this);
+				const $video = $item.find('.bt-hover-video');
+				const $coverImage = $item.find('.bt-cover-image img');
+
+				if ($item.hasClass('bt-video-hover-enable') && $video.length) {
+					$item.on('mouseenter', function() {
+						$coverImage.css('opacity', '0');
+						$video[0].play();
+					});
+
+					$item.on('mouseleave', function() {
+						$coverImage.css('opacity', '1'); 
+						$video[0].pause();
+					});
+					
+					$item.on('click', function() {
+						if ($video[0].paused) {
+							$video[0].play();
+						} else {
+							$video[0].pause();
+						}
+					});
+				}
+			});
 		}
 	};
 	var TextSliderHandler = function ($scope, $) {
@@ -1475,9 +1520,10 @@
 			});
 		}
 	};
+	
 	// product showcase
 	const ProductShowcaseHandler = function ($scope) {
-		const $productShowcase = $scope.find('.bt-elwg-product-showcase--default');
+		const $productShowcase = $scope.find('.js-product-showcase');
 		if ($productShowcase.length > 0) {
 			const $variationForm = $productShowcase.find('.variations_form');
 			if ($variationForm.length > 0) {
@@ -1488,6 +1534,7 @@
 					}
 				});
 			}
+			WoozioCheckBgLightDark();
 		}
 	}
 	// hotspot product normal
@@ -1543,7 +1590,7 @@
 			}
 			// Function to update variation_id in data-ids for a given product
 			function updateHotspotProductVariationId(productItem, variationId, $scope) {
-				
+
 				const $productItem = productItem;
 				const $productId = $productItem.data('product-id');
 				const $product_currencySymbol = $productItem.data('product-currency');
@@ -1606,7 +1653,7 @@
 
 			// Initial update on load
 			$productItems.each(function () {
-				
+
 				updateHotspotProductVariationId($(this), null, $scope);
 			});
 			// Update on variation change
@@ -2002,49 +2049,69 @@
 			});
 		}
 	}
-	const ProductBrandSliderHandler = function ($scope) {
-		const $productBrandSlider = $scope.find('.bt-elwg-product-brand--default');
+	const BrandSliderHandler = function ($scope) {
+		const $brandSlider = $scope.find('.bt-elwg-brand-slider--default');
 
-		if ($productBrandSlider.length > 0 && $productBrandSlider.hasClass('bt-elwg-product-brand--slider')) {
-			const $sliderSettings = $productBrandSlider.data('slider-settings');
-			const swiperOptions = {
-				slidesPerView: $sliderSettings.slidesPerView,
-				loop: $sliderSettings.loop,
-				spaceBetween: $sliderSettings.spaceBetween,
-				speed: $sliderSettings.speed,
-				autoplay: $sliderSettings.autoplay ? {
-					delay: 3000,
-					disableOnInteraction: false
-				} : false,
-				navigation: {
-					nextEl: $productBrandSlider.find('.bt-button-next')[0],
-					prevEl: $productBrandSlider.find('.bt-button-prev')[0],
-				},
-				pagination: {
-					el: $productBrandSlider.find('.bt-swiper-pagination')[0],
-					clickable: true,
-					type: 'bullets',
-					renderBullet: function (index, className) {
-						return '<span class="' + className + '"></span>';
+		if ($brandSlider.length > 0 && $brandSlider.hasClass('bt-elwg-brand-slider--slider')) {
+			const $sliderSettings = $brandSlider.data('slider-settings');
+			const $sliderContinuous = $brandSlider.data('slider-continuous');
+			if ($sliderContinuous) {
+				$sliderSettings.speed = $sliderContinuous.speed;
+				$sliderSettings.direction = $sliderContinuous.direction;
+				var $swiper = new Swiper($brandSlider.find('.swiper')[0], {
+					slidesPerView: 'auto',
+					loop: true,
+					spaceBetween: 0,
+					speed: $sliderContinuous.speed,
+					freeMode: true,
+					allowTouchMove: true,
+					autoplay:
+					{
+						delay: 0,
+						reverseDirection: $sliderContinuous.direction == 'rtl' ? true : false,
+						disableOnInteraction: false,
+					}
+				});
+			} else {
+				const swiperOptions = {
+					slidesPerView: $sliderSettings.slidesPerView,
+					loop: $sliderSettings.loop,
+					spaceBetween: $sliderSettings.spaceBetween,
+					speed: $sliderSettings.speed,
+					autoplay: $sliderSettings.autoplay ? {
+						delay: 3000,
+						disableOnInteraction: false
+					} : false,
+					navigation: {
+						nextEl: $brandSlider.find('.bt-button-next')[0],
+						prevEl: $brandSlider.find('.bt-button-prev')[0],
 					},
-				},
-				breakpoints: $sliderSettings.breakpoints
-			};
+					pagination: {
+						el: $brandSlider.find('.bt-swiper-pagination')[0],
+						clickable: true,
+						type: 'bullets',
+						renderBullet: function (index, className) {
+							return '<span class="' + className + '"></span>';
+						},
+					},
+					breakpoints: $sliderSettings.breakpoints
+				};
 
-			const swiper = new Swiper($productBrandSlider.find('.swiper')[0], swiperOptions);
+				const swiper = new Swiper($brandSlider.find('.swiper')[0], swiperOptions);
 
-			if ($sliderSettings.autoplay) {
-				$productBrandSlider.find('.swiper')[0].addEventListener('mouseenter', () => {
-					swiper.autoplay.stop();
-				});
+				if ($sliderSettings.autoplay) {
+					$brandSlider.find('.swiper')[0].addEventListener('mouseenter', () => {
+						swiper.autoplay.stop();
+					});
 
-				$productBrandSlider.find('.swiper')[0].addEventListener('mouseleave', () => {
-					swiper.autoplay.start();
-				});
+					$brandSlider.find('.swiper')[0].addEventListener('mouseleave', () => {
+						swiper.autoplay.start();
+					});
+				}
 			}
 		}
 	};
-
+	
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -2069,11 +2136,12 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot.default', ProductHotspotOverlayHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-1.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-nav-image.default', ProductNavImageHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-brand.default', ProductBrandSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-brand-slider.default', BrandSliderHandler);
 	});
 
 })(jQuery);
