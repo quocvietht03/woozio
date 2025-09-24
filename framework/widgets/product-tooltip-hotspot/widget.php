@@ -67,27 +67,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
             ]
         );
    
-        $this->add_responsive_control(
-            'hotspot_container_width',
-            [
-                'label' => __('Container Width', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 2000,
-                        'step' => 1,
-                    ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product' => '--width-container: {{SIZE}}{{UNIT}};',
-                ],
-                'condition' => [
-                    'hotspot_full_width' => 'yes',
-                ],
-            ]
-        );
+      
         $this->add_control(
             'hotspot_image',
             [
@@ -334,6 +314,27 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label_off' => __('No', 'woozio'),
                 'return_value' => 'yes',
                 'default' => 'no',
+            ]
+        );
+        $this->add_responsive_control(
+            'hotspot_container_width',
+            [
+                'label' => __('Container Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 1,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-hotspot-product' => '--width-container: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'hotspot_full_width' => 'yes',
+                ],
             ]
         );
         $this->end_controls_section();

@@ -41,32 +41,32 @@
         }
       }
     }
-    .bt-form-newsletter_wrapper{
-      .bt-form-newsletter{
-        .gform-body{
-          input[type=email]{
-            border-color: rgba(255, 255, 255, 0.10);
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
+            border-color: rgba(255, 255, 255, 0.1);
             background: transparent;
           }
         }
-        .gform_footer{
+        .gform_footer {
           &::after {
             border: 2px #fff solid;
             border-top: 2px transparent solid;
           }
-          input[type=submit]{
+          input[type="submit"] {
             color: #fff !important;
           }
         }
       }
     }
   }
-  &.bt-footer-kid-fashion{
-    .bt-form-newsletter_wrapper{
-      .bt-form-newsletter{
-        .gform-body{
-          input[type=email]{
-            border-color: rgba(255, 255, 255, 0.10);
+  &.bt-footer-kid-fashion {
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
+            border-color: rgba(255, 255, 255, 0.1);
             background: transparent;
             min-width: 400px;
             @media (max-width: 1450px) {
@@ -74,19 +74,19 @@
             }
           }
         }
-        .gform_footer{
+        .gform_footer {
           &::after {
             border: 2px #fff solid;
             border-top: 2px transparent solid;
           }
-          input[type=submit]{
+          input[type="submit"] {
             color: #fff !important;
           }
         }
       }
     }
   }
-  &.bt-footer-bottom-kid-fashion{
+  &.bt-footer-bottom-kid-fashion {
     .bt-elwg-switcher {
       .bt-dropdown {
         .bt-has-dropdown {
@@ -95,15 +95,48 @@
       }
     }
   }
-  &.bt-footer-outdoor-living{
-    .bt-form-newsletter_wrapper{
-      .bt-form-newsletter{
-        .gform-body{
-          input[type=email]{
+  &.bt-footer-outdoor-living {
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
             min-width: 400px;
             @media (max-width: 1450px) {
               min-width: auto;
             }
+          }
+        }
+      }
+    }
+  }
+  &.bt-footer-food-drink {
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: transparent;
+          }
+        }
+        .gform_footer {
+          &::after {
+            border: 2px #fff solid;
+            border-top: 2px transparent solid;
+          }
+          input[type="submit"] {
+            color: #fff !important;
+          }
+        }
+      }
+    }
+  }
+  &.bt-footer-slogan-food {
+    @media (max-width: 1500px) and (min-width: 1367px) {
+      .elementor-widget-bt-heading-animation {
+        --container-widget-width: 900px !important;
+        .bt-elwg-heading-animation {
+          h3 {
+            font-size: 100px !important;
           }
         }
       }
