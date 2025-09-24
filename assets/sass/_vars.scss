@@ -1,10 +1,10 @@
 /*
  * Fonts
  */
-$text-font: var(--e-global-typography-text-font-family, "Outfit");
-$primary-font: var(--e-global-typography-primary-font-family, "Outfit");
-$secondary-font: var(--e-global-typography-secondary-font-family, "Outfit");
-$accent-font: var(--e-global-typography-accent-font-family, "Outfit");
+$text-font: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
+$primary-font: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
+$secondary-font: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
+$accent-font: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
 /*
  * colors
  */

@@ -19,7 +19,7 @@ dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
 body,
 html :where(.editor-styles-wrapper) {
   max-width: 100%;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 176%;
@@ -50,7 +50,7 @@ a:hover, a:focus {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-weight: 500;
   line-height: 130%;
   color: var(--e-global-color-primary, #181818);
@@ -99,7 +99,7 @@ input:not([type=checkbox], [type=radio]), select, textarea {
   padding: 9px 16px;
   border-radius: 0;
   border: 1px solid #E9E9E9;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 
 select {
@@ -516,7 +516,7 @@ img.alignright {
   align-items: center;
   width: 36px;
   height: 42px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 150%;
@@ -985,7 +985,7 @@ img.alignright {
   padding: 16px 36px;
   border: none;
   border-radius: 0;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   height: auto;
   min-height: auto;
 }
@@ -1070,7 +1070,7 @@ img.alignright {
 }
 
 .__bt-format-post-content, .woocommerce div.product .woocommerce-tabs #tab-additional_information, .woocommerce div.product .woocommerce-tabs #tab-description, .bt-main-post .bt-post--content {
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 176%;
@@ -1379,7 +1379,7 @@ img.alignright {
   align-items: center;
   width: 40px;
   height: 40px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -1441,7 +1441,7 @@ img.alignright {
 .__bt-socials-style span, .bt-elwg-site-social span,
 .bt-elwg-site-social-style-2 span {
   display: inline-block;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 150%;
@@ -1457,7 +1457,7 @@ img.alignright {
 }
 
 .__instagram-posts-style .bt-ins-posts--head, .bt-block-instagram-posts .bt-ins-posts--head {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 26px;
   font-weight: 500;
   line-height: 150%;
@@ -1465,7 +1465,7 @@ img.alignright {
   margin: 0 0 20px;
 }
 .__instagram-posts-style .bt-ins-posts--head span, .bt-block-instagram-posts .bt-ins-posts--head span {
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-123123, #DF4242);
 }
 .__instagram-posts-style .bt-ins-posts--gallery, .bt-block-instagram-posts .bt-ins-posts--gallery {
@@ -1490,7 +1490,7 @@ img.alignright {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 150%;
@@ -1539,7 +1539,7 @@ img.alignright {
   font-weight: 400;
   line-height: 26px;
   color: rgba(255, 255, 255, 0.3);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
 }
 .__bt-newsletter-form-style form input.tnp-surname, .elementor-widget-shortcode .tnp-subscription form input.tnp-surname,
 .__bt-newsletter-form-style form input.tnp-email,
@@ -1556,7 +1556,7 @@ img.alignright {
 .__bt-newsletter-form-style form input.tnp-submit, .elementor-widget-shortcode .tnp-subscription form input.tnp-submit {
   max-width: 100%;
   width: auto;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   padding: 9px 42px 9px 16px;
   border-radius: 4px;
   color: #fff;
@@ -1587,7 +1587,7 @@ img.alignright {
   color: #fff;
   border-radius: 4px;
   background-color: var(--e-global-color-123123, #DF4242);
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -1947,7 +1947,7 @@ img.alignright {
   display: none;
 }
 .bt-newsletter-popup-info form.tnp-subscription input {
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-text, #616365);
   height: 45px;
   padding-left: 16px;
@@ -2408,7 +2408,7 @@ nav .elementor-nav-menu .sub-arrow {
 .bt-site-header .bt-primary-menu .bt-page-menu-wrap ul a,
 .bt-site-header .bt-primary-menu .bt-primary-menu-container ul a {
   display: inline-block;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-primary, #181818);
   font-size: 16px;
   font-weight: 500;
@@ -2800,7 +2800,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .bt-menu-mobile-popup .elementor-nav-menu ul.elementor-nav-menu--dropdown a.elementor-sub-item {
   position: relative;
   padding-left: 40px;
-  font-family: var(--e-global-typography-text-font-family, "Outfit") !important;
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif !important;
   font-size: 16px !important;
   font-weight: 500 !important;
   color: var(--e-global-color-primary, #181818);
@@ -3321,7 +3321,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -3378,7 +3378,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   left: 0;
 }
 .widget .wp-block-latest-comments__comment-meta a {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-latest-comments__comment-meta a:hover {
@@ -3404,7 +3404,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .widget .wp-block-latest-posts__post-title {
   width: 100%;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-latest-posts__post-title:hover {
@@ -3425,7 +3425,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .widget .wp-block-rss__item-title {
   width: 100%;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .widget .wp-block-rss__item-title a {
   color: var(--e-global-color-primary, #181818);
@@ -3443,7 +3443,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   margin-bottom: 0;
 }
 .widget.widget_rss ul li a {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-primary, #181818);
 }
 .widget.widget_rss ul li a:hover {
@@ -3455,7 +3455,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-size: 0.8125em;
 }
 .widget .wp-block-loginout a {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-loginout a:hover {
@@ -3463,7 +3463,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .widget .wp-block-search__label {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -3481,7 +3481,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .widget .wp-block-search__input {
   width: 100%;
   padding: 15px 24px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   border-radius: 10px;
 }
 .widget .wp-block-search.wp-block-search__searchfield-hidden .wp-block-search__input {
@@ -3665,7 +3665,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   word-break: break-word;
   margin: 4px 0 0 0;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -3698,7 +3698,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 
 .gform_wrapper {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit") !important;
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif !important;
 }
 .gform_wrapper .select2-container {
   display: block;
@@ -3887,7 +3887,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   color: #fff !important;
   border-radius: 0 !important;
   background-color: var(--e-global-color-123123, #DF4242) !important;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit") !important;
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif !important;
   font-weight: 600 !important;
   white-space: nowrap !important;
   border: none !important;
@@ -3954,7 +3954,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   background-color: transparent;
   box-shadow: none;
   color: var(--e-global-color-text, #616365);
-  font-family: var(--e-global-typography-primary-font-family, "Outfit") !important;
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif !important;
 }
 .bt-form-newsletter_wrapper .bt-form-newsletter .gform-body input[type=email]:focus {
   outline: none;
@@ -3987,7 +3987,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   line-height: 1 !important;
   padding: 0 !important;
   height: 52px !important;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit") !important;
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif !important;
 }
 
 .bt-form-newsletter .gform_confirmation_message {
@@ -4061,7 +4061,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .bt-comment-wrapper .bt-heading-comment {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -4132,7 +4132,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .bt-comment-wrapper .bt-author .bt-name {
   margin: 0;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
@@ -4167,7 +4167,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   margin-bottom: 0;
 }
 .bt-comment-wrapper .bt-content .comment-reply-link {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -4195,7 +4195,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .bt-comment-wrapper .comment-respond .comment-reply-title {
   position: relative;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -4291,7 +4291,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   min-height: unset;
   box-sizing: border-box;
   border-width: 1px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -4305,14 +4305,14 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-style: normal;
   font-weight: 400;
   line-height: 26px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .bt-comment-wrapper .comment-respond .comment-form textarea {
   width: 100%;
   min-height: unset;
   box-sizing: border-box;
   border-width: 1px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -4328,7 +4328,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-style: normal;
   font-weight: 400;
   line-height: 26px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .bt-comment-wrapper .comment-respond .comment-form div.error {
   color: #ff0000;
@@ -4337,7 +4337,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   margin-top: 5px;
 }
 .bt-comment-wrapper .comment-respond .comment-form input[type=submit] {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   border-radius: 4px;
   padding: 11px 32px;
   font-size: 16px;
@@ -5601,7 +5601,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   border-radius: 4px;
   background: #f6f6f6;
   padding: 5px 16px;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-text, #616365);
   text-transform: capitalize;
 }
@@ -5684,7 +5684,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .bt-form-search .bt-form-head {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 45px;
   font-weight: 500;
   margin: 0 0 30px 0;
@@ -5913,7 +5913,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
 }
 .error404 .bt-main-content-ss .bt-404-error h2 {
   margin: 0;
@@ -6138,7 +6138,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-weight: 400;
   width: 100%;
   color: var(--e-global-color-text, #616365);
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .__bt-product-filter-form .bt-form-field.bt-field-type-search input::placeholder, .bt-main-products-ss.bt-template-nosidebar-dropdown .bt-products-dropdown .bt-product-sidebar .bt-form-field.bt-field-type-search input::placeholder, .bt-main-products-ss.bt-template-nosidebar-popup .bt-products-sidebar .bt-product-sidebar .bt-form-field.bt-field-type-search input::placeholder, .bt-main-products-ss.bt-template-sidebar .bt-main-product-row .bt-products-sidebar .bt-product-sidebar .bt-form-field.bt-field-type-search input::placeholder {
   color: #a0a0a0;
@@ -8188,7 +8188,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   position: relative;
   top: 1px;
 }
@@ -9169,7 +9169,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce .bt-product-layout[data-view=list] .woocommerce-loop-products .woocommerce-loop-product__infor .bt-product-icon-btn .bt-add-to-cart a {
   color: #fff;
   text-align: center;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -9633,7 +9633,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product div.summary .product_title {
   margin: 0 0 20px 0;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 40px;
   font-style: normal;
   font-weight: 500;
@@ -10681,7 +10681,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product .woocommerce-tabs ul.tabs li a {
   padding: 0;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -10853,7 +10853,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments-title {
   margin: 32px 0;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 32px;
   font-style: normal;
   font-weight: 500;
@@ -10878,7 +10878,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .bt-summary-rating .bt-left-summary .bt-product-total {
   color: var(--e-global-color-primary, #181818);
   text-align: center;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 80px;
   font-style: normal;
   font-weight: 500;
@@ -10897,7 +10897,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .bt-summary-rating .bt-left-summary .bt-product-rating--count {
   color: var(--e-global-color-primary, #181818);
   text-align: center;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -10931,7 +10931,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .bt-summary-rating .bt-center-summary .bt-bar .bt-num {
   color: var(--e-global-color-primary, #181818);
   text-align: center;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -10961,7 +10961,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .bt-summary-rating .bt-center-summary .bt-bar .bt-num-percent {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -10979,7 +10979,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   background: var(--e-global-color-123123, #DF4242);
   color: #fff;
   text-align: center;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -11068,7 +11068,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .commentlist li .comment_container .comment-text .woocommerce-review__author {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
@@ -11091,7 +11091,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .commentlist li .comment_container .comment-text time {
   color: var(--e-global-color-text, #616365);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -11114,7 +11114,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #comments .commentlist li .comment_container .description p {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -11163,7 +11163,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product .woocommerce-tabs #tab-reviews .woocommerce-Reviews #review_form_wrapper .comment-form-rating label {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -11257,7 +11257,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   border: 1px solid #e9e9e9;
   border-radius: 0;
   padding: 11px 16px;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -11602,7 +11602,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   }
   .woocommerce div.product .woocommerce-tabs.bt-product-toggle .bt-item-content#tab-reviews .woocommerce-Reviews #comments .bt-summary-rating .bt-center-summary .bt-bar .bt-num-percent {
     color: var(--e-global-color-primary, #181818);
-    font-family: var(--e-global-typography-text-font-family, "Outfit");
+    font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -11803,7 +11803,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce-cart th,
 .woocommerce-cart .amount {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .woocommerce-cart .bt-main-content-ss {
   padding: 0 0 80px;
@@ -12127,7 +12127,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .product-price,
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .product-subtotal {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .product-price .amount,
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .product-subtotal .amount {
@@ -12161,7 +12161,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-weight: 400;
   line-height: 26px;
   color: var(--e-global-color-text, #616365);
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .actions .coupon input::placeholder {
   color: #a0a0a0;
@@ -12210,7 +12210,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce-cart .woocommerce-cart-form .shop_table tbody tr .actions .button {
   display: none;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
@@ -12247,7 +12247,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
     justify-content: flex-end;
   }
   .woocommerce-cart .woocommerce-cart-form .shop_table.shop_table_responsive tr td:before {
-    font-family: var(--e-global-typography-primary-font-family, "Outfit");
+    font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
     font-size: 14px;
     font-weight: 500;
     min-width: 80px;
@@ -12291,7 +12291,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   margin-bottom: 0;
 }
 .woocommerce-cart .cart-collaterals .cart_totals .shop_table th {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -12373,7 +12373,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce-cart .cart-collaterals .cart_totals .shop_table th .shipping-calculator-button,
 .woocommerce-cart .cart-collaterals .cart_totals .shop_table td .shipping-calculator-button {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
@@ -12770,7 +12770,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   padding: 11px 16px;
   border-radius: 4px;
   border: 1px solid #e9e9e9;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   font-weight: 400;
   color: var(--e-global-color-text, #616365);
 }
@@ -12778,7 +12778,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .woocommerce-checkout .woocommerce form .form-row textarea::placeholder {
   letter-spacing: 0;
   font-size: 16px;
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   color: #a0a0a0;
 }
 .woocommerce-checkout .woocommerce form .form-row textarea {
@@ -13078,7 +13078,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   transition: all 0.3s;
 }
 .woocommerce-checkout .woocommerce-checkout-review-order th {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
 }
 .woocommerce-checkout .woocommerce-checkout-review-order .shop_table {
   background: #fff;
@@ -13103,7 +13103,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   border-right: 0;
 }
 .woocommerce-checkout .woocommerce-checkout-review-order .shop_table thead {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-transform: uppercase;
@@ -13111,12 +13111,12 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   background: var(--e-global-color-123123, #DF4242);
 }
 .woocommerce-checkout .woocommerce-checkout-review-order .shop_table tbody td {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-weight: 500;
   font-size: 16px;
 }
 .woocommerce-checkout .woocommerce-checkout-review-order .shop_table tbody td dl {
-  font-family: var(--e-global-typography-text-font-family, "Outfit");
+  font-family: var(--e-global-typography-text-font-family, "Outfit"), sans-serif;
   color: var(--e-global-color-text, #616365);
   margin: 0;
   padding: 0;
@@ -13125,7 +13125,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   float: right;
 }
 .woocommerce-checkout .woocommerce-checkout-review-order .shop_table tfoot th {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-weight: 500;
   font-size: 14px;
   text-transform: uppercase;
@@ -13620,7 +13620,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce-account .woocommerce-MyAccount-navigation ul li a {
   display: block;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -13766,7 +13766,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   }
 }
 .woocommerce-account .woocommerce-MyAccount-content button.button {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
@@ -14036,7 +14036,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   width: 100%;
 }
 .bt-elwg-site-infor--item {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: var(--e-global-color-primary, #181818);
@@ -14156,7 +14156,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 
 .bt-elwg-site-copyright {
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   line-height: 150%;
   color: var(--e-global-color-primary, #181818);
@@ -14562,7 +14562,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .bt-elwg-mini-cart--default .bt-mini-cart a span {
   color: #fff;
   text-align: center;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 11px;
   font-style: normal;
   font-weight: 500;
@@ -14942,7 +14942,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .bt-elwg-mini-wishlist--default .bt-mini-wishlist a span {
   color: #fff;
   text-align: center;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 11px;
   font-style: normal;
   font-weight: 500;
@@ -15025,7 +15025,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .bt-elwg-location-list--default .bt-location-list--heading-infor .bt-location-title-wrap h2 {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 28px;
   font-style: normal;
   font-weight: 500;
@@ -15106,7 +15106,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .bt-elwg-location-list--default .bt-location-list--oppening-hours .bt-location-time h3 {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 30px;
   font-style: normal;
   font-weight: 500;
@@ -15137,7 +15137,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   font-style: normal;
   font-weight: 500;
   line-height: 30px;
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
 }
 .bt-elwg-location-list--default .bt-location-list--maps {
   width: 50%;
@@ -15200,7 +15200,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .bt-elwg-location-list--default .bt-location-list--meta-item .bt-location-info h4 {
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-secondary-font-family, "Outfit");
+  font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-weight: 500;
   line-height: 33px;
@@ -15751,7 +15751,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   align-items: center;
   gap: 4px;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -15782,7 +15782,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   border: none;
   padding: 8px 16px;
   color: var(--e-global-color-text, #616365);
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
@@ -15803,7 +15803,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   background: var(--e-global-color-123123, #DF4242);
   color: #fff;
   text-align: center;
-  font-family: var(--e-global-typography-primary-font-family, "Outfit");
+  font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -15887,7 +15887,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   padding: 8px 12px;
   width: 120px;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -16283,7 +16283,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   gap: 8px;
   padding: 12px 24px;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -16358,7 +16358,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   gap: 8px;
   padding: 12px 16px;
   color: var(--e-global-color-primary, #181818);
-  font-family: var(--e-global-typography-accent-font-family, "Outfit");
+  font-family: var(--e-global-typography-accent-font-family, "Outfit"), sans-serif;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
