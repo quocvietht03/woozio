@@ -955,6 +955,48 @@
 			}
 		}
 	};
+	
+	const TestimonialsStaggeredSliderHandler = function ($scope) {
+		const $TestimonialsStaggeredSlider = $scope.find('.js-data-testimonials-staggered-slider');
+		if ($TestimonialsStaggeredSlider.length > 0) {
+			const $sliderSettings = $TestimonialsStaggeredSlider.data('slider-settings') || {};
+			// Initialize the testimonials staggered slider
+			const staggeredSlider = new Swiper($TestimonialsStaggeredSlider.find('.js-testimonials-staggered-slider')[0], {
+				slidesPerView: $sliderSettings.slidesPerView,
+				spaceBetween: $sliderSettings.spaceBetween,
+				loop: $sliderSettings.loop,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: $sliderSettings.autoplay_delay,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $scope.find('.bt-button-next')[0],
+					prevEl: $scope.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $scope.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints,
+			});
+
+			// Pause autoplay on hover if autoplay is enabled
+			if ($sliderSettings.autoplay) {
+				$TestimonialsStaggeredSlider.find('.js-testimonials-staggered-slider')[0].addEventListener('mouseenter', () => {
+					staggeredSlider.autoplay.stop();
+				});
+
+				$TestimonialsStaggeredSlider.find('.js-testimonials-staggered-slider')[0].addEventListener('mouseleave', () => {
+					staggeredSlider.autoplay.start();
+				});
+			}
+		}
+	};
 
 	const countDownHandler = function ($scope) {
 		const countDown = $scope.find('.bt-countdown-js');
@@ -2336,6 +2378,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonial-slider.default', TestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial-slider.default', ProductTestimonialSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonials-staggered-slider.default', TestimonialsStaggeredSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-countdown.default', countDownHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-site-notification.default', NotificationSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mini-cart.default', MiniCartHandler);
