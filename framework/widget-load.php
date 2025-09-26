@@ -91,6 +91,7 @@ class ElementorWidgets
 			'currency-switcher',
 			'language-switcher',
 			'accordion-with-product-slider',
+			'title-nav-with-slider',
 			'collection-banner',
 			'site-icon-payment',
 			'text-slider',
@@ -231,6 +232,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CurrencySwitcher\Widget_CurrencySwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\LanguageSwitcher\Widget_LanguageSwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccordionWithProductSlider\Widget_AccordionWithProductSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TitleNavWithSlider\Widget_TitleNavWithSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductOverlayHotspot\Widget_ProductOverlayHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());

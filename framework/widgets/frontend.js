@@ -1325,6 +1325,115 @@
 		}
 	};
 
+	const TitleNavWithSliderHandler = function ($scope) {
+		const $TitleNavWithSlider = $scope.find('.bt-elwg-title-nav-with-slider--default');
+		const $navContent = $TitleNavWithSlider.find('.js-title-nav-content');
+
+		if ($navContent.length > 0) {
+			const $sliderSettings = $TitleNavWithSlider.data('slider-settings');
+			const sliderSpeed = $sliderSettings.speed || 1000;
+			const autoplay = $sliderSettings.autoplay || false;
+			const autoplayDelay = $sliderSettings.autoplay_delay || 3000;
+
+			let titleNavContentSwiper;
+
+			function initSlider() {
+				if (titleNavContentSwiper) {
+					titleNavContentSwiper.destroy();
+				}
+
+				titleNavContentSwiper = new Swiper($navContent[0], {
+					direction: 'horizontal',
+					slidesPerView: 1,
+					spaceBetween: 15,
+					loop: true,
+					speed: sliderSpeed,
+					centeredSlides: false,
+					autoplay: autoplay ? {
+						delay: autoplayDelay,
+						disableOnInteraction: false
+					} : false,
+					allowTouchMove: true,
+					effect: 'slide',
+					mousewheel: {
+						enabled: true,
+						forceToAxis: true,
+					},
+					breakpoints: {
+						768: {
+							spaceBetween: 20,
+							loop: true,
+						},
+						1025: {
+							direction: 'vertical',
+							spaceBetween: 20,
+							loop: false,
+						},
+						1367: {
+							direction: 'vertical', 
+							spaceBetween: 30,
+							loop: false,
+						}
+					}
+				});
+
+				// Handle navigation item click
+				$TitleNavWithSlider.find('.bt-nav-item').on('click', function () {
+					const clickedIndex = parseInt($(this).data('index'));
+
+					// Update active navigation item
+					$TitleNavWithSlider.find('.bt-nav-item').removeClass('active');
+					$(this).addClass('active');
+
+					// Slide to corresponding content
+					titleNavContentSwiper.slideTo(clickedIndex);
+				});
+
+				// Update navigation when slider changes
+				titleNavContentSwiper.on('slideChange', function () {
+					const activeIndex = this.activeIndex;
+
+					// Update navigation
+					$TitleNavWithSlider.find('.bt-nav-item').removeClass('active');
+					$TitleNavWithSlider.find('.bt-nav-item[data-index="' + activeIndex + '"]').addClass('active');
+				});
+
+				// Pause autoplay on hover if autoplay is enabled
+				if (autoplay) {
+					$navContent[0].addEventListener('mouseenter', () => {
+						if (titleNavContentSwiper.autoplay) {
+							titleNavContentSwiper.autoplay.stop();
+						}
+					});
+
+					$navContent[0].addEventListener('mouseleave', () => {
+						if (titleNavContentSwiper.autoplay) {
+							titleNavContentSwiper.autoplay.start();
+						}
+					});
+				}
+				// Trigger click on second nav item programmatically for desktop
+				if (window.innerWidth > 1024) {
+					setTimeout(() => {
+						$TitleNavWithSlider.find('.bt-nav-item').eq(1).trigger('click');
+					}, 100);
+				}
+			}
+
+			// Initialize slider
+			initSlider();
+
+			// Reinitialize on window resize
+			let resizeTimer;
+			window.addEventListener('resize', () => {
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(() => {
+					initSlider();
+				}, 250);
+			});
+		}
+	};
+
 	var CollectionBannerHandler = function ($scope, $) {
 		var $collectionBanner = $scope.find('.bt-collection-banner');
 
@@ -2166,7 +2275,7 @@
 						$verticalBannerSlider.data('autoRotateInterval', autoRotateInterval);
 
 						// Stop autoplay on heading hover
-						$headings.off('mouseenter.autoplay').on('mouseenter.autoplay', function() {
+						$headings.off('mouseenter.autoplay').on('mouseenter.autoplay', function () {
 							const currentInterval = $verticalBannerSlider.data('autoRotateInterval');
 							if (currentInterval) {
 								clearInterval(currentInterval);
@@ -2175,7 +2284,7 @@
 						});
 
 						// Resume autoplay when mouse leaves headings
-						$headings.off('mouseleave.autoplay').on('mouseleave.autoplay', function() {
+						$headings.off('mouseleave.autoplay').on('mouseleave.autoplay', function () {
 							const newInterval = setInterval(autoRotateBanners, $autoplaySpeed);
 							$verticalBannerSlider.data('autoRotateInterval', newInterval);
 						});
@@ -2210,6 +2319,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-currency-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-language-switcher.default', SwitcherHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion-with-product-slider.default', AccordionWithProductSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-title-nav-with-slider.default', TitleNavWithSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot.default', ProductHotspotOverlayHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);

@@ -83,22 +83,38 @@ body {
             }
         }
     }
-    &.bt-tabs-combos{
-        @media(max-width:1750px) and (min-width:1650px){
-            .elementor-widget-button{
+    &.bt-tabs-combos {
+        @media (max-width: 1750px) and (min-width: 1650px) {
+            .elementor-widget-button {
                 bottom: 150px !important;
             }
         }
-        @media(max-width:1650px) and (min-width:1367px){
-            .e-n-tabs{
-                .e-n-tabs-heading{
+        @media (max-width: 1650px) and (min-width: 1367px) {
+            .e-n-tabs {
+                .e-n-tabs-heading {
                     padding-top: 0 !important;
                 }
             }
         }
-        @media(max-width:1580px) and (min-width:1367px){
-            .elementor-widget-button{
+        @media (max-width: 1580px) and (min-width: 1367px) {
+            .elementor-widget-button {
                 bottom: 120px !important;
+            }
+        }
+    }
+    &.bt-product-hotspot-sport {
+        .bt-hotspot-product {
+            .bt-hotspot-image {
+                img {
+                    @media (max-width: 1765px) and (min-width: 1560px) {
+                        width: 120% !important;
+                        margin-left: -10% !important;
+                    }
+                    @media (max-width: 1559px) and (min-width: 1367px) {
+                        width: 142% !important;
+                        margin-left: -21% !important;
+                    }
+                }
             }
         }
     }
