@@ -60,6 +60,29 @@
 			});
 		}
 	};
+	var BtAccordionHandler = function ($scope, $) {
+		const $accordionTitle = $scope.find('.bt-accordion-title');
+		if ($accordionTitle.length > 0) {
+			$accordionTitle.on('click', function (e) {
+				e.preventDefault();
+				const $currentItem = $(this);
+				const $content = $currentItem.parent().find('.bt-accordion-content');
+				
+				if ($currentItem.hasClass('active')) {
+					$content.slideUp();
+					$currentItem.removeClass('active');
+				} else {
+					// Close other accordion items (single accordion behavior)
+					$scope.find('.bt-accordion-title.active').removeClass('active');
+					$scope.find('.bt-accordion-content').slideUp();
+					
+					// Open current item
+					$content.slideDown();
+					$currentItem.addClass('active');
+				}
+			});
+		}
+	};
 	var SearchProductHandler = function ($scope, $) {
 		const $searchProduct = $scope.find('.bt-elwg-search-product');
 		if ($searchProduct.length) {
@@ -2303,6 +2326,7 @@
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-list-faq.default', FaqHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion.default', BtAccordionHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product.default', SearchProductHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-heading-animation.default', headingAnimationHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
