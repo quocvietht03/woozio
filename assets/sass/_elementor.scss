@@ -3500,7 +3500,7 @@
                 padding: 8px;
                 width: 200px;
                 gap: 8px;
-                &.bt-quick-view{
+                &.bt-quick-view {
                   width: 220px;
                 }
                 img {
@@ -3688,7 +3688,7 @@
               }
             }
           }
-          .bt-button-wrapper{
+          .bt-button-wrapper {
             margin-top: 32px;
             .bt-button-add-set-to-cart {
               display: inline-flex;
@@ -9198,6 +9198,16 @@
           display: flex;
           align-items: center;
           flex-shrink: 0;
+
+          &.swiper-slide-active {
+            .bt-content-slide {
+              .bt-content-image {
+                &::before {
+                  opacity: 0;
+                }
+              }
+            }
+          }
         }
       }
 
@@ -9220,6 +9230,19 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+          }
+          @media (min-width: $break-tl) {
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: #fff;
+              opacity: 0.7;
+              z-index: 1;
+            }
           }
         }
 
