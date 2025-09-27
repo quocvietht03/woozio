@@ -335,3 +335,27 @@
     color: $color-primary;
   }
 }
+
+.bt-form-newsletter{
+  &--style1{
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: transparent;
+          }
+        }
+        .gform_footer {
+          &::after {
+            border: 2px #fff solid;
+            border-top: 2px transparent solid;
+          }
+          input[type="submit"] {
+            color: #fff !important;
+          }
+        }
+      }
+    }
+  }
+}
