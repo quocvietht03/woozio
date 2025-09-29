@@ -76,6 +76,7 @@ class ElementorWidgets
 			'product-item',
 			'product-showcase',
 			'product-showcase-style-1',
+			'product-showcase-style-2',
 			'product-showcase-vertical',
 			'heading-animation',
 			'mini-wishlist',
@@ -100,7 +101,8 @@ class ElementorWidgets
 			'text-slider',
 			'store-locations-slider',
 			'product-nav-image',
-			'vertical-banner-slider'
+			'vertical-banner-slider',
+			'offers-slider'
 		);
 
 		return $this->widgets;
@@ -196,6 +198,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteCopyright\Widget_SiteCopyright());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OffersSlider\Widget_OffersSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItem\Widget_PostLoopItem());
@@ -244,6 +247,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle1\Widget_ProductShowcaseStyle1());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle2\Widget_ProductShowcaseStyle2());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseVertical\Widget_ProductShowcaseVertical());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());

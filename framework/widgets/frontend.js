@@ -452,6 +452,7 @@
 				const infoHeight = $info.outerHeight();
 				const halfHeight = infoHeight / 2 - (window.innerWidth <= 600 ? 6 : 10);
 				const maxPoint = Math.max(pointLeft, pointTop, pointRight, pointBottom);
+				$HotspotProduct.toggleClass('bt-hotspot-product-mobile', $point.parent().width() < 600);
 				if (maxPoint === pointRight) {
 					if (infoWidth > pointRight) {
 						const maxHigh = Math.max(pointTop, pointBottom);
@@ -500,7 +501,7 @@
 					} else if (infoWidth < pointLeft) {
 						return 'bottomleft';
 					} else {
-						return 'bottomright';
+						return 'bottomright';		
 					}
 				}
 			}
@@ -1671,6 +1672,50 @@
 			});
 		}
 	};
+
+	const OffersSliderHandler = function ($scope) {
+		const $offersSlider = $scope.find('.bt-elwg-offers-slider');
+
+		if ($offersSlider.length > 0) {
+			const $sliderSettings = $offersSlider.data('slider-settings');
+			const swiperOptions = {
+				slidesPerView: $sliderSettings.slidesPerView,
+				loop: $sliderSettings.loop,
+				spaceBetween: $sliderSettings.spaceBetween,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: $sliderSettings.autoplay_delay,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $offersSlider.find('.bt-button-next')[0],
+					prevEl: $offersSlider.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $offersSlider.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints
+			};
+
+			const swiper = new Swiper($offersSlider.find('.swiper')[0], swiperOptions);
+
+			if ($sliderSettings.autoplay) {
+				$offersSlider.find('.swiper')[0].addEventListener('mouseenter', () => {
+					swiper.autoplay.stop();
+				});
+
+				$offersSlider.find('.swiper')[0].addEventListener('mouseleave', () => {
+					swiper.autoplay.start();
+				});
+			}
+		}
+	};
+
 	var TextSliderHandler = function ($scope, $) {
 		var $textslider = $scope.find('.bt-elwg-text-slider--default');
 		if ($textslider.length > 0) {
@@ -2373,6 +2418,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-heading-animation.default', headingAnimationHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-banner-product-slider.default', BannerProductSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-offers-slider.default', OffersSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-tiktok-shop-slider.default', TiktokShopSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-tooltip-hotspot.default', ProductTooltipHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
@@ -2392,6 +2438,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-1.default', ProductShowcaseHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-2.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);

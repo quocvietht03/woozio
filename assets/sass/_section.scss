@@ -118,4 +118,35 @@ body {
             }
         }
     }
+    &.bt-section-cat-toy-game{
+        @media(max-width:1600px) and (min-width:1367px) {
+            .bt-elwg-product-category-loop {
+                &--style-4{
+                    .bt-product-category {
+                        &--thumb {
+                          .bt-cover-image {
+                            width: 50px;
+                          }
+                        }
+                        &--inner {
+                         padding: 10px;
+                        }
+                        &--name {
+                          width: calc(100% - 50px);
+                          padding-left: 12px;
+                          margin-bottom: 0;
+                        }
+                        &--name-text {
+                          font-size: 16px;
+                          line-height: 1.5;
+                        }
+                        &--count {
+                          font-size: 15px;
+                          line-height: 1.3;
+                        }
+                      }
+                }
+            }
+        }
+    }
 }

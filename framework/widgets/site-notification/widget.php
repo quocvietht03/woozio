@@ -105,6 +105,40 @@ class Widget_SiteNotification extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'text_typography',
+                'label' => __('Typography', 'woozio'),
+                'selector' => '{{WRAPPER}} .bt-site-notification--text',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'text_align',
+            [
+                'label' => __('Alignment', 'woozio'),
+                'type' => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => __('Left', 'woozio'),
+                        'icon' => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => __('Center', 'woozio'),
+                        'icon' => 'eicon-text-align-center',
+                    ],
+                    'right' => [
+                        'title' => __('Right', 'woozio'),
+                        'icon' => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'center',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-site-notification--item' => 'justify-content: {{VALUE}};',
+                ],
+            ]
+        );
         $this->add_control(
             'text_color',
             [
@@ -140,41 +174,38 @@ class Widget_SiteNotification extends Widget_Base
                 ],
             ]
         );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
+        $this->add_control(
+            'nav_color',
             [
-                'name' => 'text_typography',
-                'label' => __('Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-site-notification--text',
-            ]
-        );
-
-        $this->add_responsive_control(
-            'text_align',
-            [
-                'label' => __('Alignment', 'woozio'),
-                'type' => Controls_Manager::CHOOSE,
-                'options' => [
-                    'left' => [
-                        'title' => __('Left', 'woozio'),
-                        'icon' => 'eicon-text-align-left',
-                    ],
-                    'center' => [
-                        'title' => __('Center', 'woozio'),
-                        'icon' => 'eicon-text-align-center',
-                    ],
-                    'right' => [
-                        'title' => __('Right', 'woozio'),
-                        'icon' => 'eicon-text-align-right',
-                    ],
-                ],
-                'default' => 'center',
+                'label' => __('Navigation Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-site-notification--item' => 'justify-content: {{VALUE}};',
+                    '{{WRAPPER}} .bt-site-notification--nav svg' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'slider_navigation' => 'yes',
                 ],
             ]
         );
+
+        $this->add_control(
+            'icon_color',
+            [
+                'label' => __('Icon Color', 'woozio'),
+                'description' => __('Set color for SVG icons', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-site-notification--item svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .bt-site-notification--item svg path' => 'fill: {{VALUE}};',
+                ],
+                'condition' => [
+                    'show_icon' => 'yes',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
     }
 
@@ -206,7 +237,22 @@ class Widget_SiteNotification extends Widget_Base
                                     <div class="bt-site-notification--item">
                                         <?php if ($settings['show_icon'] == 'yes') :
                                             if (!empty($item['icon']['id'])) {
-                                                echo wp_get_attachment_image($item['icon']['id'], 'thumbnail');
+                                                $image_id = $item['icon']['id'];
+                                                $image_url = $item['icon']['url'];
+                                                $is_svg = false;
+
+                                                // Check if the image is SVG
+                                                if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
+                                                    $is_svg = true;
+                                                }
+
+                                                if ($is_svg) {
+                                                    // Output SVG content
+                                                    $svg_content = file_get_contents($image_url);
+                                                    echo '<div class="bt-svg">' . $svg_content . '</div>';
+                                                } else {
+                                                    echo wp_get_attachment_image($image_id, 'thumbnail');
+                                                }
                                             } else {
                                                 echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting icon', 'woozio') . '">';
                                             }

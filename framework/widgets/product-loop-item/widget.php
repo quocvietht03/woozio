@@ -42,19 +42,6 @@ class Widget_ProductLoopItem extends Widget_Base
 				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
-
-		$this->add_control(
-			'layout_style',
-			[
-				'label' => __('Layout Style', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'default',
-				'options' => [
-					'default' => __('Default', 'woozio'),
-					'layout-1' => __('Layout 1', 'woozio'),
-				],
-			]
-		);
 		$this->add_control(
 			'image_ratio',
 			[
