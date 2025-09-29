@@ -80,7 +80,7 @@ class Widget_ProductLoopItem extends Widget_Base
 			return;
 		}
 ?>
-		<div class="bt-elwg-product-loop-item <?php echo esc_attr($settings['layout_style']); ?>">
+		<div class="bt-elwg-product-loop-item ">
 			<?php wc_get_template_part('content', 'product'); ?>
 		</div>
 <?php
