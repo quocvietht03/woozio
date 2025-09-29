@@ -3138,6 +3138,11 @@
         line-height: 28px;
         transition: all 0.3s ease;
         margin: 0 0 4px 0;
+        overflow: hidden;
+        width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
         &:hover {
           color: $color-accent;
         }
@@ -7893,8 +7898,8 @@
       &--item-content {
         width: 36%;
         padding: 0 0 0 40px;
-        @media(max-width:1300px) and (min-width:$break-lg) {
-           padding: 0 0 0 20px;
+        @media (max-width: 1300px) and (min-width: $break-lg) {
+          padding: 0 0 0 20px;
         }
         .bt-product {
           &--category {
@@ -8325,7 +8330,6 @@
               animation-timing-function: linear;
             }
           }
-          
         }
       }
       @media (max-width: $break-lg) {
@@ -8337,7 +8341,7 @@
           padding: 40px 0 0 0;
         }
         &--item-images {
-         width: 100%;
+          width: 100%;
         }
       }
       @media (max-width: $break-sm) {
