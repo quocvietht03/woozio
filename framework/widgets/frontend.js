@@ -1357,9 +1357,9 @@
 							if (variation && variation.price_html) {
 								// Update price display
 								console.log(variation.price_html);
-								if($ItemProduct.find(".bt-price").length > 0) {
+								if ($ItemProduct.find(".bt-price").length > 0) {
 									$ItemProduct.find(".bt-price").html(variation.price_html);
-								}else{
+								} else {
 									$ItemProduct.find(".woocommerce-loop-product__infor .price").html(variation.price_html);
 								}
 							}
@@ -1369,7 +1369,7 @@
 			});
 		}
 		// Function to update variation_id in data-ids for a given product
-		function updateHotspotProductVariationId(productItem, variationId,$container) {
+		function updateHotspotProductVariationId(productItem, variationId, $container) {
 
 			const $productItem = productItem;
 			const $productId = $productItem.data('product-id');
@@ -1390,15 +1390,7 @@
 				}
 				let updated = false;
 				let totalPrice = 0;
-
-				// Check if any variation_id is null
-				const hasNullVariation = idsArr.some(item => item.variation_id === null);
-
-				if (hasNullVariation) {
-					$addSetToCartBtn.addClass('disabled');
-				} else {
-					$addSetToCartBtn.removeClass('disabled');
-				}
+				let hasInvalidVariation = false;
 
 				idsArr = idsArr.map(item => {
 					if (item.product_id == $productId) {
@@ -1407,8 +1399,14 @@
 							updated = true;
 						}
 					}
-					// Get price for each variation
+
+					// Check if this is a variable product that needs a variation selected
 					const $form = $container.find(`.variations_form[data-product_id="${item.product_id}"]`);
+					if ($form.length && (!item.variation_id || item.variation_id === 0 || item.variation_id === null)) {
+						hasInvalidVariation = true;
+					}
+
+					// Get price for each variation
 					if ($form.length) {
 						// Product has variations
 						const variations = $form.data('product_variations');
@@ -1430,6 +1428,13 @@
 					}
 					return item;
 				});
+
+				// Update button state based on variations
+				if (hasInvalidVariation) {
+					$addSetToCartBtn.addClass('disabled');
+				} else {
+					$addSetToCartBtn.removeClass('disabled');
+				}
 
 				if (updated) {
 					$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
@@ -1459,9 +1464,9 @@
 						});
 						if (variation && variation.price_html) {
 							// Update price display
-							if($ItemProduct.find(".bt-price").length > 0) {
+							if ($ItemProduct.find(".bt-price").length > 0) {
 								$ItemProduct.find(".bt-price").html(variation.price_html);
-							}else{
+							} else {
 								$ItemProduct.find(".woocommerce-loop-product__infor .price").html(variation.price_html);
 							}
 						}
@@ -1837,7 +1842,7 @@
 			}
 		}
 		WoozioProductHotspotAddSetCart($HotspotProduct);
-	
+
 	};
 	const ProductHotspotOverlayHandler = function ($scope) {
 		const $productHotspotOverlay = $scope.find('.bt-elwg-product-overlay-hotspot--default');
@@ -1907,7 +1912,7 @@
 			}
 		}
 	};
-	
+
 	const ProductNavImageHandler = function ($scope) {
 		const $productNavImage = $scope.find('.bt-elwg-product-nav-image--default');
 		if ($productNavImage.length > 0) {
