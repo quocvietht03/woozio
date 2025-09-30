@@ -223,6 +223,41 @@
 			});
 		}
 
+
+
+		if ($('.bt-js-open-popup-link').length > 0) {
+			$('.bt-js-open-popup-link').magnificPopup({
+				type: 'inline',
+				midClick: true,
+				mainClass: 'mfp-fade'
+			});
+		}
+
+		$('.bt-copy-btn').on('click', function (e) {
+			e.preventDefault();
+			var $button = $(this),
+				$buttonurl = $(this).closest('form').find('#bt-product-share-url');
+			if (navigator.clipboard) {
+				navigator.clipboard.writeText($buttonurl.val()).then(() => {
+					$buttonurl.select();
+					$button.text($button.data('copied'));
+					setTimeout(function () {
+						$button.text($button.data('copy'))
+					}, 1000);
+				}, () => {
+					return prompt("Copy to clipboard: Ctrl+C, Enter", $buttonurl.value);
+				});
+			} else {
+				$buttonurl.select();
+				document.execCommand('copy');
+				$button.text($button.data('copied'));
+				setTimeout(function () {
+					$button.text($button.data('copy'))
+				}, 1000);
+			}
+		});
+	}
+	function WoozioProductVariationHandler() {
 		if ($('.variations_form').length > 0) {
 			$(document).on('click', '.bt-attributes-wrap .bt-js-item', function () {
 				var valueItem = $(this).data('value');
@@ -279,56 +314,56 @@
 								let skeletonHtml = '';
 								if (gallerylayout == 'gallery-slider') {
 									skeletonHtml = `
-										<div class="bt-skeleton-gallery">
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-										</div>`;
+									<div class="bt-skeleton-gallery">
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+									</div>`;
 								} else if (gallerylayout == 'gallery-grid') {
 									skeletonHtml = `
-										<div class="bt-skeleton-gallery">
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-											<div class="bt-skeleton-main-image">
-												<div class="bt-skeleton-thumb"></div>
-											</div>
-										</div>`;
+									<div class="bt-skeleton-gallery">
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+										<div class="bt-skeleton-main-image">
+											<div class="bt-skeleton-thumb"></div>
+										</div>
+									</div>`;
 								} else {
 									skeletonHtml = `
-										<div class="bt-skeleton-gallery">
-												<div class="bt-skeleton-main-image">
+									<div class="bt-skeleton-gallery">
+											<div class="bt-skeleton-main-image">
+												<div class="bt-skeleton-thumb"></div>
+											</div>
+											<div class="bt-skeleton-thumbnails">
+												<div class="bt-skeleton-thumbnails--inner">
+													<div class="bt-skeleton-thumb"></div>
+													<div class="bt-skeleton-thumb"></div>
+													<div class="bt-skeleton-thumb"></div>
+													<div class="bt-skeleton-thumb"></div>
+													<div class="bt-skeleton-thumb"></div>
 													<div class="bt-skeleton-thumb"></div>
 												</div>
-												<div class="bt-skeleton-thumbnails">
-													<div class="bt-skeleton-thumbnails--inner">
-														<div class="bt-skeleton-thumb"></div>
-														<div class="bt-skeleton-thumb"></div>
-														<div class="bt-skeleton-thumb"></div>
-														<div class="bt-skeleton-thumb"></div>
-														<div class="bt-skeleton-thumb"></div>
-														<div class="bt-skeleton-thumb"></div>
-													</div>
-												</div>
-										</div>`;
+											</div>
+									</div>`;
 								}
 								// Remove existing gallery
 								$('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').addClass('loading');
@@ -445,38 +480,6 @@
 				});
 			});
 		}
-
-		if ($('.bt-js-open-popup-link').length > 0) {
-			$('.bt-js-open-popup-link').magnificPopup({
-				type: 'inline',
-				midClick: true,
-				mainClass: 'mfp-fade'
-			});
-		}
-
-		$('.bt-copy-btn').on('click', function (e) {
-			e.preventDefault();
-			var $button = $(this),
-				$buttonurl = $(this).closest('form').find('#bt-product-share-url');
-			if (navigator.clipboard) {
-				navigator.clipboard.writeText($buttonurl.val()).then(() => {
-					$buttonurl.select();
-					$button.text($button.data('copied'));
-					setTimeout(function () {
-						$button.text($button.data('copy'))
-					}, 1000);
-				}, () => {
-					return prompt("Copy to clipboard: Ctrl+C, Enter", $buttonurl.value);
-				});
-			} else {
-				$buttonurl.select();
-				document.execCommand('copy');
-				$button.text($button.data('copied'));
-				setTimeout(function () {
-					$button.text($button.data('copy'))
-				}, 1000);
-			}
-		});
 	}
 	/* load Shop Quick View */
 	function WoozioLoadShopQuickView() {
@@ -1558,6 +1561,7 @@
 							$('.bt-product-pagination-wrap').html(response.data['pagination']).fadeIn('slow');
 							//	$('.bt-product-layout').removeClass('loading');
 							WoozioProductButtonStatus();
+							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
 						}, 500);
 					} else {
@@ -2318,7 +2322,7 @@
 				});
 
 				var $activeItems = $form.find('.bt-attributes-wrap .bt-js-item.active');
-				if ($activeItems.length > 0 && !$form.find('.bt-attributes--item').filter(function() {
+				if ($activeItems.length > 0 && !$form.find('.bt-attributes--item').filter(function () {
 					return !$(this).find('.bt-js-item.active').length;
 				}).length) {
 					$activeItems.first().trigger('click');
@@ -2332,6 +2336,7 @@
 		WoozioToggleMenuMobile();
 		WoozioToggleSubMenuMobile();
 		WoozioShop();
+		WoozioProductVariationHandler();
 		WoozioCommentValidation();
 		LoadWoozioProductToast();
 		WoozioProductCompare();
