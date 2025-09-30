@@ -1106,6 +1106,7 @@
 							$('.bt-popup-quick-view .bt-quick-view-load').html(response.data['product']).fadeIn('slow');
 							WoozioLoadShopQuickView();
 							WoozioProductButtonStatus();
+							WoozioLoadDefaultActiveVariations();
 							if (typeof $.fn.wc_variation_form !== 'undefined') {
 								$('.bt-quickview-product .variations_form').wc_variation_form();
 							}
@@ -1557,6 +1558,7 @@
 							$('.bt-product-pagination-wrap').html(response.data['pagination']).fadeIn('slow');
 							//	$('.bt-product-layout').removeClass('loading');
 							WoozioProductButtonStatus();
+							WoozioLoadDefaultActiveVariations();
 						}, 500);
 					} else {
 						console.log('error');
@@ -2297,6 +2299,34 @@
 			});
 		});
 	}
+	/* Load data for default active variation items */
+	function WoozioLoadDefaultActiveVariations() {
+		if ($('.variations_form').length > 0) {
+			$('.variations_form').each(function () {
+				var $form = $(this);
+
+				$form.on('show_variation', function (event, variation) {
+					if (!variation) return;
+
+					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
+						var $item = $(this);
+						var $attrItem = $item.closest('.bt-attributes--item');
+						var attrName = $attrItem.data('attribute-name');
+						var name = (attrName == 'pa_color') ? $item.find('label').text() : $item.text();
+						$attrItem.find('.bt-result').text(name);
+					});
+				});
+
+				var $activeItems = $form.find('.bt-attributes-wrap .bt-js-item.active');
+				if ($activeItems.length > 0 && !$form.find('.bt-attributes--item').filter(function() {
+					return !$(this).find('.bt-js-item.active').length;
+				}).length) {
+					$activeItems.first().trigger('click');
+				}
+			});
+		}
+	}
+
 	jQuery(document).ready(function ($) {
 		WoozioSubmenuAuto();
 		WoozioToggleMenuMobile();
@@ -2333,6 +2363,7 @@
 		WoozioProductColorVariationsLoadImage();
 		WoozioUpdateBodyWidthVariable();
 		WoozioAddToCartVariable();
+		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
 	});
 	$(document.body).on('added_to_cart', function (event, fragments, cart_hash, $button) {
 		// Only show toast if not in Elementor editor

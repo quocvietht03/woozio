@@ -311,16 +311,21 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                     $product_ids = [];
                     if (!empty($settings['hotspot_items'])) {
                         foreach ($settings['hotspot_items'] as $item) {
-                            $product = wc_get_product($item['id_product']);
-                            if ($product) {
-                                $product_ids[] = [
-                                    'product_id'   => $item['id_product'],
-                                    'variation_id' => 0,
-                                ];
+                            // Check if product ID exists and is not empty
+                            if (!isset($item['id_product']) || empty($item['id_product'])) {
+                                continue;
                             }
+                            $product = wc_get_product($item['id_product']);
+                            if (!$product) {
+                                continue;
+                            }
+                            $variation_id = get_default_variation_id($product);
+                            $product_ids[] = [
+                                'product_id'   => $item['id_product'],
+                                'variation_id' => $variation_id,
+                            ];
                         }
-                    }
-
+                    }     
                     if (!empty($product_ids)) :
                     ?>
                         <div class="bt-button-wrapper">

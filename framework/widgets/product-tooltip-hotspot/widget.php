@@ -302,6 +302,9 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .bt-hotspot-product' => 'align-items: {{VALUE}};',
                 ],
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
             ]
         );
         $this->add_control(
@@ -314,6 +317,9 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label_off' => __('No', 'woozio'),
                 'return_value' => 'yes',
                 'default' => 'no',
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
             ]
         );
         $this->add_responsive_control(
@@ -334,6 +340,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 ],
                 'condition' => [
                     'hotspot_full_width' => 'yes',
+                    'show_slider' => 'yes',
                 ],
             ]
         );
@@ -345,6 +352,9 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
                 'default' => 'yes',
+                'condition' => [
+                    'show_slider' => 'yes',
+                ],
             ]
         );
         $this->add_control(
@@ -1005,15 +1015,21 @@ class Widget_ProductTooltipHotspot extends Widget_Base
         $product_ids = [];
         if (!empty($settings['hotspot_items'])) {
             foreach ($settings['hotspot_items'] as $item) {
-                $product = wc_get_product($item['id_product']);
-                if ($product) {
-                    $product_ids[] = [
-                        'product_id'   => $item['id_product'],
-                        'variation_id' => 0,
-                    ];
+                // Check if product ID exists and is not empty
+                if (!isset($item['id_product']) || empty($item['id_product'])) {
+                    continue;
                 }
+                $product = wc_get_product($item['id_product']);
+                if (!$product) {
+                    continue;
+                }
+                $variation_id = get_default_variation_id($product);
+                $product_ids[] = [
+                    'product_id'   => $item['id_product'],
+                    'variation_id' => $variation_id,
+                ];
             }
-        }
+        }   
         if ($settings['hotspot_full_width'] === 'yes') {
             $hotspot_container_width = $settings['hotspot_container_width']['size'];
 ?>

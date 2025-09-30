@@ -237,19 +237,6 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 			]
 		);
 
-		$this->add_control(
-			'product_content_bg_color',
-			[
-				'label' => __('Content Background Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'render_type' => 'template',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-showcase--item-content' => 'background-color: {{VALUE}};',
-				],
-			]
-		);
-
 		$this->add_responsive_control(
 			'product_content_padding',
 			[
@@ -261,7 +248,37 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 				],
 			]
 		);
+		// Typography & Color for Product Category
+		$this->add_control(
+			'product_category_style_heading',
+			[
+				'label' => esc_html__('Product Category', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
 
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'product_category_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-product--category',
+			]
+		);
+
+		$this->add_control(
+			'product_category_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--category' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-showcase--item-content .bt-product--category a' => 'color: {{VALUE}};',
+				],
+			]
+		);
 		// Typography & Color for Product Title
 		$this->add_control(
 			'product_title_style_heading',
@@ -559,33 +576,6 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 			]
 		);
 
-		$this->add_control(
-			'view_details_bg_color',
-			[
-				'label' => esc_html__('Background Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-view-details' => 'background-color: {{VALUE}};',
-				],
-				'condition' => [
-					'show_view_details' => 'yes',
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Border::get_type(),
-			[
-				'name' => 'view_details_border',
-				'label' => esc_html__('Border', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-view-details',
-				'condition' => [
-					'show_view_details' => 'yes',
-				],
-			]
-		);
-
 		$this->end_controls_tab();
 
 		$this->start_controls_tab(
@@ -613,35 +603,6 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 			]
 		);
 
-		$this->add_control(
-			'view_details_hover_bg_color',
-			[
-				'label' => esc_html__('Background Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-view-details:hover' => 'background-color: {{VALUE}};',
-				],
-				'condition' => [
-					'show_view_details' => 'yes',
-				],
-			]
-		);
-
-		$this->add_control(
-			'view_details_hover_border_color',
-			[
-				'label' => esc_html__('Border Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'default' => '',
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-showcase--item-content .bt-btn-view-details:hover' => 'border-color: {{VALUE}};',
-				],
-				'condition' => [
-					'show_view_details' => 'yes',
-				],
-			]
-		);
 
 		$this->end_controls_tab();
 
