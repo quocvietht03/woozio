@@ -223,24 +223,6 @@ class Widget_PostLoopItem extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
-			'title_hover_decoration',
-			[
-				'label' => esc_html__('Text Decoration', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'underline',
-				'options' => [
-					'none' => esc_html__('None', 'woozio'),
-					'underline' => esc_html__('Underline', 'woozio'),
-					'overline' => esc_html__('Overline', 'woozio'),
-					'line-through' => esc_html__('Line Through', 'woozio'),
-				],
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--title a:hover' => 'text-decoration: {{VALUE}};',
-				],
-			]
-		);
-
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
@@ -262,7 +244,6 @@ class Widget_PostLoopItem extends Widget_Base {
 				'label_on' => esc_html__('Show', 'woozio'),
 				'label_off' => esc_html__('Hide', 'woozio'),
 				'default' => 'yes',
-				'separator' => 'before',
 			]
 		);
 		

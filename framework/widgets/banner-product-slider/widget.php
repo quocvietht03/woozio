@@ -698,7 +698,7 @@ class Widget_BannerProductSlider extends Widget_Base
                                     $product = wc_get_product($item['product']);
                                     if ($product) : ?>
                                         <div class="bt-banner-product-slider--info">
-                                            <div class="bt-product-item-minimal active"
+                                            <div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
                                                 data-product-id="<?php echo esc_attr($item['product']); ?>">
                                                 <div class="bt-product-thumbnail">
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">

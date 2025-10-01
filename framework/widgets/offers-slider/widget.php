@@ -60,7 +60,7 @@ class Widget_OffersSlider extends Widget_Base
                 'default' => 'image',
                 'options' => [
                     'image' => __('Image', 'woozio'),
-                    'text' => __('Text', 'woozio'),
+                    'sale' => __('Sale', 'woozio'),
                 ],
             ]
         );
@@ -89,7 +89,7 @@ class Widget_OffersSlider extends Widget_Base
                 'default' => __('25%', 'woozio'),
                 'placeholder' => __('25%', 'woozio'),
                 'condition' => [
-                    'content_type' => 'text',
+                    'content_type' => 'sale',
                 ],
             ]
         );
@@ -101,7 +101,7 @@ class Widget_OffersSlider extends Widget_Base
                 'type' => Controls_Manager::TEXT,
                 'default' => __('OFF', 'woozio'),
                 'condition' => [
-                    'content_type' => 'text',
+                    'content_type' => 'sale',
                 ],
             ]
         );
@@ -147,7 +147,7 @@ class Widget_OffersSlider extends Widget_Base
                 'fields' => $repeater->get_controls(),
                 'default' => [
                     [
-                        'content_type' => 'text',
+                        'content_type' => 'sale',
                         'sale_percentage' => 25,
                         'off_text' => __('OFF', 'woozio'),
                         'offer_title' => __('Sale Off', 'woozio'),
@@ -155,7 +155,7 @@ class Widget_OffersSlider extends Widget_Base
                         'offer_link' => ['url' => '#'],
                     ],
                     [
-                        'content_type' => 'text',
+                        'content_type' => 'sale',
                         'sale_percentage' => 15,
                         'off_text' => __('OFF', 'woozio'),
                         'offer_title' => __('Best Seller', 'woozio'),
@@ -406,6 +406,170 @@ class Widget_OffersSlider extends Widget_Base
     protected function register_style_content_section_controls()
     {
         $this->start_controls_section(
+            'section_style_item',
+            [
+                'label' => esc_html__('Item', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'item_border_radius',
+            [
+                'label' => __('Border Radius', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'item_padding',
+            [
+                'label' => __('Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->start_controls_tabs('item_content_tabs');
+
+        // Sale Content Tab
+        $this->start_controls_tab(
+            'item_sale_tab',
+            [
+                'label' => __('Sale', 'woozio'),
+            ]
+        );
+
+        $this->add_control(
+            'sale_percentage_color',
+            [
+                'label' => __('Sale Percentage Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-sale-percentage' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'off_text_color',
+            [
+                'label' => __('Off Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-off-text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'sale_background_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--text-content' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'sale_item_background_color',
+            [
+                'label' => __('Item Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#FFF1EA',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item.bt-type-sale' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        // Image Content Tab
+        $this->start_controls_tab(
+            'item_image_tab',
+            [
+                'label' => __('Image', 'woozio'),
+            ]
+        );
+        $this->add_control(
+            'item_background_color',
+            [
+                'label' => __('item Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item.bt-type-image' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_control(
+            'item_title_style',
+            [
+                'label' => __('Title', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'item_title_color',
+            [
+                'label' => esc_html__('Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'item_title_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--title',
+			]
+		);
+        $this->add_control(
+            'item_subtitle_style',
+            [
+                'label' => __('Subtitle', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'item_subtitle_color',
+            [
+                'label' => esc_html__('Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--subtitle' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'item_subtitle_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--subtitle',
+			]
+		);
+        $this->end_controls_section();
+        $this->start_controls_section(
             'section_style_arrows',
             [
                 'label' => esc_html__('Navigation Arrows', 'woozio'),
@@ -642,7 +806,7 @@ class Widget_OffersSlider extends Widget_Base
                 <div class="swiper-wrapper">
                     <?php foreach ($settings['offers_items'] as $item) : ?>
                         <div class="swiper-slide">
-                            <div class="bt-offers-slider--item">
+                            <div class="bt-offers-slider--item bt-type-<?php echo esc_attr($item['content_type']); ?>">
                                 <?php
                                 $link_url = !empty($item['offer_link']['url']) ? $item['offer_link']['url'] : '#';
                                 $link_target = !empty($item['offer_link']['is_external']) ? ' target="_blank"' : '';

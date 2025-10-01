@@ -416,7 +416,7 @@ class Widget_ProductListHotspot extends Widget_Base
                                                     }
                                                     ?>
                                                 </div>
-                                                <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
+                                                <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
                                             </div>
                                         </li>
                             <?php

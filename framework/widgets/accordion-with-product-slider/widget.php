@@ -548,7 +548,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                                         $product = wc_get_product($product_id);
                                         if ($product) {
                                     ?>
-                                            <div class="bt-product-item">
+                                            <div class="bt-product-item <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
                                                 <?php
                                                 $post_thumbnail_id = $product->get_image_id();
 

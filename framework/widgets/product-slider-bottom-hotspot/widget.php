@@ -404,7 +404,7 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                             do_action('woozio_woocommerce_template_single_add_to_cart');
                                                         }
                                                         ?>
-                                                        <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
+                                                        <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
                                                     </div>
                                                     <div class="bt-product-add-to-cart">
                                                         <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>

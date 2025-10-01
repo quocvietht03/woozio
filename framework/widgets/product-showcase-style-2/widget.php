@@ -132,7 +132,7 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 		$this->add_control(
 			'show_view_details',
 			[
-				'label' => __('Show View Full Details Button', 'woozio'),
+				'label' => __('Show View Details ', 'woozio'),
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __('Show', 'woozio'),
 				'label_off' => __('Hide', 'woozio'),
@@ -144,9 +144,10 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 		$this->add_control(
 			'view_details_text',
 			[
-				'label' => __('View Details Button Text', 'woozio'),
+				'label' => __('View Details Text', 'woozio'),
 				'type' => Controls_Manager::TEXT,
 				'default' => __('VIEW FULL DETAILS', 'woozio'),
+				'label_block' => true,
 				'condition' => [
 					'show_view_details' => 'yes',
 				],

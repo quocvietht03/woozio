@@ -1092,7 +1092,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                                             </a>
                                             <div class="bt-product-content">
                                                 <h4><a href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                <?php echo '<p class="bt-price">' . $product->get_price_html() . '</p>'; ?>
+                                                <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
                                                 <a class="btn bt-product-quick-view-btn" href="#" data-id="<?php echo esc_attr($item['id_product']); ?>">
                                                     <?php esc_html_e('Quick View', 'woozio'); ?>
                                                 </a>

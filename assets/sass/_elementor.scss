@@ -449,6 +449,15 @@
     align-items: stretch;
     animation: slideInUp 0.4s ease forwards;
   }
+  &.bt-product-variable {
+    .bt-product-price{
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      del {
+        order: 1;
+      }
+    }
+  }
 
   .bt-product-thumbnail {
     flex-shrink: 0;
@@ -987,6 +996,7 @@
     padding-top: 20px;
     padding-bottom: 240px;
     height: calc(100% - 63px);
+    box-sizing: border-box;
     .widget_shopping_cart_content {
       height: 100%;
       @extend .__scrollbar_style;
@@ -3639,6 +3649,13 @@
                 align-items: baseline;
                 color: $color-primary;
                 margin: 0;
+                &.bt-product-variable {
+                  flex-direction: row !important;
+                  justify-content: flex-start !important;
+                  del {
+                    order: 1;
+                  }
+                }
                 .woocommerce-Price-amount {
                   font-size: 16px;
                   font-style: normal;
@@ -5744,6 +5761,12 @@
           margin: 0;
           position: relative;
           cursor: pointer;
+          &.bt-product-variable {
+            .bt-product-price {
+              flex-direction: row !important;
+              justify-content: flex-start !important;
+            }
+          }
           .woocommerce-product-gallery__image {
             @extend .bt-cover-image;
             padding-bottom: 132%;
@@ -8749,6 +8772,13 @@
                 align-items: center;
                 color: $color-primary;
                 margin: 0;
+                &.bt-product-variable {
+                  flex-direction: row !important;
+                  justify-content: flex-start !important;
+                  del {
+                    order: 1;
+                  }
+                }
                 span.price {
                   display: flex;
                   flex-direction: row-reverse;
@@ -9508,6 +9538,13 @@
                 align-items: center;
                 color: $color-primary;
                 margin: 0;
+                &.bt-product-variable {
+                  flex-direction: row !important;
+                  justify-content: flex-start !important;
+                  del {
+                    order: 1;
+                  }
+                }
                 span.price {
                   display: flex;
                   flex-direction: row-reverse;
