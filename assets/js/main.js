@@ -568,12 +568,22 @@
 	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
 		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
 			// ajax load product toast
+			var toastTimeshow;
+			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
+				toastTimeshow = AJ_Options.wishlist_toast_time;
+			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
+				toastTimeshow = AJ_Options.compare_toast_time; 
+			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
+				toastTimeshow = AJ_Options.cart_toast_time;
+			} else {
+				toastTimeshow = 3000; // Default fallback time
+			}
 			var param_ajax = {
 				action: 'woozio_load_product_toast',
 				idproduct: idproduct,
 				status: status,
 				tools: tools
-			};
+			};	
 			$.ajax({
 				type: 'POST',
 				dataType: 'json',
@@ -598,7 +608,7 @@
 						function startRemovalTimer($toast) {
 							toastTimeout = setTimeout(() => {
 								removeToast($toast);
-							}, 3000);
+							}, toastTimeshow);
 						}
 
 						// Handle hover events
