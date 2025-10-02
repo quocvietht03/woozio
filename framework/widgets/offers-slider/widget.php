@@ -1,6 +1,6 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\BannerProductSlider;
+namespace WoozioElementorWidgets\Widgets\OffersSlider;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
@@ -12,18 +12,18 @@ use Elementor\Plugin;
 use ElementorPro\Base\Base_Carousel_Trait;
 
 
-class Widget_BannerProductSlider extends Widget_Base
+class Widget_OffersSlider extends Widget_Base
 {
     use Base_Carousel_Trait;
 
     public function get_name()
     {
-        return 'bt-banner-product-slider';
+        return 'bt-offers-slider';
     }
 
     public function get_title()
     {
-        return __('Banner Product Slider', 'woozio');
+        return __('Offers Slider', 'woozio');
     }
 
     public function get_icon()
@@ -53,115 +53,127 @@ class Widget_BannerProductSlider extends Widget_Base
         $repeater = new Repeater();
 
         $repeater->add_control(
-            'banner_image',
+            'content_type',
             [
-                'label' => __('Banner Image', 'woozio'),
+                'label' => __('Content Type', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'image',
+                'options' => [
+                    'image' => __('Image', 'woozio'),
+                    'sale' => __('Sale', 'woozio'),
+                ],
+            ]
+        );
+
+        // Image options
+        $repeater->add_control(
+            'offer_image',
+            [
+                'label' => __('Offer Image', 'woozio'),
                 'type' => Controls_Manager::MEDIA,
                 'default' => [
                     'url' => Utils::get_placeholder_image_src(),
                 ],
-            ]
-        );
-        $repeater->add_control(
-            'enable_video_hover',
-            [
-                'label' => __('Enable Video on Hover', 'woozio'),
-                'type' => Controls_Manager::SWITCHER,
-                'label_on' => __('Yes', 'woozio'),
-                'label_off' => __('No', 'woozio'),
-                'return_value' => 'yes',
-                'default' => 'no',
-            ]
-        );
-        $repeater->add_control(
-            'video_type',
-            [
-                'label' => __('Video Type', 'woozio'),
-                'type' => Controls_Manager::SELECT,
-                'default' => 'url',
-                'options' => [
-                    'url' => __('URL (Mp4)', 'woozio'),
-                    'file' => __('Media File', 'woozio'),
-                ],
                 'condition' => [
-                    'enable_video_hover' => 'yes',
+                    'content_type' => 'image',
                 ],
             ]
         );
 
+        // Text options
         $repeater->add_control(
-            'video_url',
+            'sale_percentage',
             [
-                'label' => __('Video URL', 'woozio'),
+                'label' => __('Sale Percentage', 'woozio'),
                 'type' => Controls_Manager::TEXT,
-                'placeholder' => __('Enter video URL', 'woozio'),
-                'description' => __('Enter video URL (YouTube or Vimeo)', 'woozio'),
+                'default' => __('25%', 'woozio'),
+                'placeholder' => __('25%', 'woozio'),
                 'condition' => [
-                    'video_type' => ['url'],
-                    'enable_video_hover' => 'yes',
-                ],
-                'label_block' => true,
-            ]
-        );
-
-        $repeater->add_control(
-            'video_file',
-            [
-                'label' => __('Choose Video File', 'woozio'),
-                'type' => Controls_Manager::MEDIA,
-                'media_type' => 'video',
-                'condition' => [
-                    'video_type' => 'file',
-                    'enable_video_hover' => 'yes',
+                    'content_type' => 'sale',
                 ],
             ]
         );
 
         $repeater->add_control(
-            'product',
+            'off_text',
             [
-                'label' => __('Select Product', 'woozio'),
-                'type' => Controls_Manager::SELECT2,
-                'options' => $this->get_products_options(),
+                'label' => __('Off Text', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('OFF', 'woozio'),
+                'condition' => [
+                    'content_type' => 'sale',
+                ],
+            ]
+        );
+
+        // Common fields
+        $repeater->add_control(
+            'offer_title',
+            [
+                'label' => __('Title', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('Special Offer', 'woozio'),
                 'label_block' => true,
+            ]
+        );
+
+        $repeater->add_control(
+            'offer_subtitle',
+            [
+                'label' => __('Subtitle', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('Limited Time Only', 'woozio'),
+                'label_block' => true,
+            ]
+        );
+
+        $repeater->add_control(
+            'offer_link',
+            [
+                'label' => __('Link', 'woozio'),
+                'type' => Controls_Manager::URL,
+                'placeholder' => __('https://your-link.com', 'woozio'),
+                'default' => [
+                    'url' => '#',
+                ],
             ]
         );
 
         $this->add_control(
-            'banner_items',
+            'offers_items',
             [
-                'label' => __('Banner Items', 'woozio'),
+                'label' => __('Offers Items', 'woozio'),
                 'type' => Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => [
                     [
-                        'banner_image' => [
-                            'url' => Utils::get_placeholder_image_src(),
-                        ],
-                        'product' => '',
+                        'content_type' => 'sale',
+                        'sale_percentage' => 25,
+                        'off_text' => __('OFF', 'woozio'),
+                        'offer_title' => __('Sale Off', 'woozio'),
+                        'offer_subtitle' => __('52 Items', 'woozio'),
+                        'offer_link' => ['url' => '#'],
                     ],
                     [
-                        'banner_image' => [
-                            'url' => Utils::get_placeholder_image_src(),
-                        ],
-                        'product' => '',
+                        'content_type' => 'sale',
+                        'sale_percentage' => 15,
+                        'off_text' => __('OFF', 'woozio'),
+                        'offer_title' => __('Best Seller', 'woozio'),
+                        'offer_subtitle' => __('52 Items', 'woozio'),
+                        'offer_link' => ['url' => '#'],
                     ],
                     [
-                        'banner_image' => [
-                            'url' => Utils::get_placeholder_image_src(),
-                        ],
-                        'product' => '',
-                    ],
-                    [
-                        'banner_image' => [
-                            'url' => Utils::get_placeholder_image_src(),
-                        ],
-                        'product' => '',
+                        'content_type' => 'image',
+                        'offer_image' => ['url' => Utils::get_placeholder_image_src()],
+                        'offer_title' => __('0-12 Months', 'woozio'),
+                        'offer_subtitle' => __('25 Items', 'woozio'),
+                        'offer_link' => ['url' => '#'],
                     ],
                 ],
-                'title_field' => '{{{ "Banner Item" }}}',
+                'title_field' => '{{{ offer_title }}}',
             ]
         );
+
         $this->add_group_control(
             Group_Control_Image_Size::get_type(),
             [
@@ -178,9 +190,6 @@ class Widget_BannerProductSlider extends Widget_Base
             [
                 'label' => __('Image Ratio', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'default' => [
-                    'size' => 1.3,
-                ],
                 'range' => [
                     'px' => [
                         'min' => 0.3,
@@ -189,7 +198,7 @@ class Widget_BannerProductSlider extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-banner-product-slider--image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+                    '{{WRAPPER}} .bt-offers-slider--image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
                 ],
             ]
         );
@@ -240,12 +249,13 @@ class Widget_BannerProductSlider extends Widget_Base
                 'description' => __('Enable continuous loop mode', 'woozio'),
             ]
         );
+
         $this->add_carousel_layout_controls([
             'css_prefix' => '',
             'slides_to_show_custom_settings' => [
-                'default' => '4',
-                'tablet_default' => '2',
-                'mobile_default' => '1',
+                'default' => '6',
+                'tablet_default' => '4',
+                'mobile_default' => '2',
                 'selectors' => [
                     '{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
                 ],
@@ -264,7 +274,7 @@ class Widget_BannerProductSlider extends Widget_Base
                     'slides_to_show_custom_settings' => 100,
                 ],
             ],
-            'slides_on_display' => 5,
+            'slides_on_display' => 8,
         ]);
 
         $this->add_responsive_control(
@@ -281,7 +291,6 @@ class Widget_BannerProductSlider extends Widget_Base
                 'default' => [
                     'size' => 10,
                 ],
-
                 'render_type' => 'template',
                 'selectors' => [
                     '{{WRAPPER}}' => '--swiper-slides-gap: {{SIZE}}{{UNIT}}',
@@ -382,7 +391,7 @@ class Widget_BannerProductSlider extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-elwg-banner-product-slider' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-elwg-offers-slider' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
                 ],
                 'render_type' => 'ui',
                 'condition' => [
@@ -396,6 +405,170 @@ class Widget_BannerProductSlider extends Widget_Base
 
     protected function register_style_content_section_controls()
     {
+        $this->start_controls_section(
+            'section_style_item',
+            [
+                'label' => esc_html__('Item', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'item_border_radius',
+            [
+                'label' => __('Border Radius', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'item_padding',
+            [
+                'label' => __('Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->start_controls_tabs('item_content_tabs');
+
+        // Sale Content Tab
+        $this->start_controls_tab(
+            'item_sale_tab',
+            [
+                'label' => __('Sale', 'woozio'),
+            ]
+        );
+
+        $this->add_control(
+            'sale_percentage_color',
+            [
+                'label' => __('Sale Percentage Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-sale-percentage' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'off_text_color',
+            [
+                'label' => __('Off Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-off-text' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'sale_background_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--text-content' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'sale_item_background_color',
+            [
+                'label' => __('Item Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#FFF1EA',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item.bt-type-sale' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        // Image Content Tab
+        $this->start_controls_tab(
+            'item_image_tab',
+            [
+                'label' => __('Image', 'woozio'),
+            ]
+        );
+        $this->add_control(
+            'item_background_color',
+            [
+                'label' => __('item Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item.bt-type-image' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
+
+        $this->add_control(
+            'item_title_style',
+            [
+                'label' => __('Title', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'item_title_color',
+            [
+                'label' => esc_html__('Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'item_title_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--title',
+			]
+		);
+        $this->add_control(
+            'item_subtitle_style',
+            [
+                'label' => __('Subtitle', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'item_subtitle_color',
+            [
+                'label' => esc_html__('Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--subtitle' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'item_subtitle_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-offers-slider--item .bt-offers-slider--subtitle',
+			]
+		);
+        $this->end_controls_section();
         $this->start_controls_section(
             'section_style_arrows',
             [
@@ -611,46 +784,14 @@ class Widget_BannerProductSlider extends Widget_Base
         $this->register_style_content_section_controls();
     }
 
-    /**
-     * Get products options for select2
-     */
-    private function get_products_options()
-    {
-        $products = [];
-
-        if (class_exists('WooCommerce')) {
-            $args = [
-                'post_type' => 'product',
-                'post_status' => 'publish',
-                'posts_per_page' => -1,
-                'orderby' => 'title',
-                'order' => 'ASC',
-            ];
-
-            $query = new \WP_Query($args);
-
-            if ($query->have_posts()) {
-                while ($query->have_posts()) {
-                    $query->the_post();
-                    $product_id = get_the_ID();
-                    $product_title = get_the_title();
-                    $products[$product_id] = $product_title;
-                }
-                wp_reset_postdata();
-            }
-        }
-
-        return $products;
-    }
-
     protected function render()
     {
         $settings = $this->get_settings_for_display();
-        if (empty($settings['banner_items'])) {
+        if (empty($settings['offers_items'])) {
             return;
         }
 
-        $classes = ['bt-elwg-banner-product-slider'];
+        $classes = ['bt-elwg-offers-slider'];
         if ($settings['slider_arrows_hidden_mobile'] === 'yes') {
             $classes[] = 'bt-hidden-arrow-mobile';
         }
@@ -663,69 +804,44 @@ class Widget_BannerProductSlider extends Widget_Base
         <div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings="<?php echo esc_attr(json_encode($slider_settings)); ?>">
             <div class="swiper">
                 <div class="swiper-wrapper">
-                    <?php foreach ($settings['banner_items'] as $item) : ?>
+                    <?php foreach ($settings['offers_items'] as $item) : ?>
                         <div class="swiper-slide">
-                            <div class="bt-banner-product-slider--item <?php echo esc_attr($item['enable_video_hover'] === 'yes' ? 'bt-video-hover-enable' : ''); ?>">
-                                <div class="bt-banner-product-slider--image ">
-                                    <div class="bt-cover-image">
-                                        <?php
-                                        if (!empty($item['banner_image']['id'])) {
-                                            echo wp_get_attachment_image($item['banner_image']['id'], $settings['thumbnail_size']);
-                                        } else {
-                                            if (!empty($item['banner_image']['url'])) {
-                                                echo '<img src="' . esc_url($item['banner_image']['url']) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
-                                            } else {
-                                                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
-                                            }
-                                        } ?>
-                                        <?php if ($item['enable_video_hover'] === 'yes') :
-                                            if ($item['video_type'] === 'url') {
-                                                $video_url = $item['video_url'];
-                                            } else {
-                                                $video_url = $item['video_file']['url'];
-                                            }
-                                        ?>
-                                            <div class="bt-video-wrap">
-                                                <video class="bt-hover-video" playsinline muted loop>
-                                                    <source src="<?php echo esc_url($video_url); ?>" type="video/mp4">
-                                                </video>
-                                            </div>
+                            <div class="bt-offers-slider--item bt-type-<?php echo esc_attr($item['content_type']); ?>">
+                                <?php
+                                $link_url = !empty($item['offer_link']['url']) ? $item['offer_link']['url'] : '#';
+                                $link_target = !empty($item['offer_link']['is_external']) ? ' target="_blank"' : '';
+                                $link_nofollow = !empty($item['offer_link']['nofollow']) ? ' rel="nofollow"' : '';
+                                ?>
+                                <a href="<?php echo esc_url($link_url); ?>"<?php echo $link_target . $link_nofollow; ?> class="bt-offers-slider--link">
+                                    <div class="bt-offers-slider--image">
+                                        <div class="bt-cover-image">
+                                            <?php if ($item['content_type'] === 'image') : ?>
+                                                <?php
+                                                if (!empty($item['offer_image']['id'])) {
+                                                    echo wp_get_attachment_image($item['offer_image']['id'], $settings['thumbnail_size']);
+                                                } else {
+                                                    if (!empty($item['offer_image']['url'])) {
+                                                        echo '<img src="' . esc_url($item['offer_image']['url']) . '" alt="' . esc_attr($item['offer_title']) . '">';
+                                                    } else {
+                                                        echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_attr($item['offer_title']) . '">';
+                                                    }
+                                                }
+                                                ?>
+                                            <?php else : ?>
+                                                <div class="bt-offers-slider--text-content">
+                                                    <div class="bt-sale-percentage"><?php echo esc_html($item['sale_percentage']); ?></div>
+                                                    <div class="bt-off-text"><?php echo esc_html($item['off_text']); ?></div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <div class="bt-offers-slider--info">
+                                        <h4 class="bt-offers-slider--title"><?php echo esc_html($item['offer_title']); ?></h4>
+                                        <?php if (!empty($item['offer_subtitle'])) : ?>
+                                            <div class="bt-offers-slider--subtitle"><?php echo esc_html($item['offer_subtitle']); ?></div>
                                         <?php endif; ?>
                                     </div>
-                                </div>
-                                <?php
-                                if (!empty($item['product'])) :
-                                    $product = wc_get_product($item['product']);
-                                    if ($product) : ?>
-                                        <div class="bt-banner-product-slider--info">
-                                            <div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
-                                                data-product-id="<?php echo esc_attr($item['product']); ?>">
-                                                <div class="bt-product-thumbnail">
-                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                        <?php
-                                                        if (has_post_thumbnail($item['product'])) {
-                                                            echo get_the_post_thumbnail($item['product'], 'thumbnail');
-                                                        } else {
-                                                            echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
-                                                        }
-                                                        ?>
-                                                    </a>
-                                                </div>
-                                                <div class="bt-product-content">
-                                                    <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                    <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
-                                                    <div class="bt-product-add-to-cart">
-                                                        <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
-                                                            <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                        <?php else : ?>
-                                                            <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                                </a>
                             </div>
                         </div>
                     <?php endforeach; ?>

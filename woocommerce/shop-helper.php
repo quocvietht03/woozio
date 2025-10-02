@@ -3109,3 +3109,33 @@ function woozio_woocommerce_after_add_to_cart_button()
         '</a>';
     }
 }
+function get_default_variation_id($product) {
+    if (!$product->is_type('variable')) {
+        return 0;
+    }
+ 
+    $default_attributes = $product->get_default_attributes();
+    $variation_id = 0;
+
+    foreach($product->get_available_variations() as $variation_values) {
+        foreach($variation_values['attributes'] as $key => $attribute_value) {
+            $attribute_name = str_replace('attribute_', '', $key);
+            $default_value = $product->get_variation_default_attribute($attribute_name);
+            if($default_value == $attribute_value) {
+                $is_default_variation = true;
+            } else {
+                $is_default_variation = false;
+                break;
+            }
+        }
+        if($is_default_variation) {
+            $variation_id = $variation_values['variation_id'];
+            break;
+        }else{
+            $variation_id = null;
+        }
+        
+    }
+    
+    return $variation_id;
+}

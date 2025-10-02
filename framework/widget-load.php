@@ -68,6 +68,7 @@ class ElementorWidgets
 			'highlighted-heading',
 			'mini-cart',
 			'list-faq',
+			'bt-accordion',
 			'account-login',
 			'search-product',
 			'product-category',
@@ -76,6 +77,8 @@ class ElementorWidgets
 			'product-item',
 			'product-showcase',
 			'product-showcase-style-1',
+			'product-showcase-style-2',
+			'product-showcase-vertical',
 			'heading-animation',
 			'mini-wishlist',
 			'tiktok-shop-slider',
@@ -86,18 +89,21 @@ class ElementorWidgets
 			'product-testimonial',
 			'product-testimonial-slider',
 			'testimonial-slider',
+			'testimonials-staggered-slider',
 			'countdown',
 			'our-teams',
 			'our-store',
 			'currency-switcher',
 			'language-switcher',
 			'accordion-with-product-slider',
+			'title-nav-with-slider',
 			'collection-banner',
 			'site-icon-payment',
 			'text-slider',
 			'store-locations-slider',
 			'product-nav-image',
-			'vertical-banner-slider'
+			'vertical-banner-slider',
+			'offers-slider'
 		);
 
 		return $this->widgets;
@@ -193,6 +199,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteCopyright\Widget_SiteCopyright());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OffersSlider\Widget_OffersSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MobileMenu\Widget_MobileMenu());
 
@@ -218,6 +225,7 @@ class ElementorWidgets
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MiniCart\Widget_MiniCart());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ListFaq\Widget_ListFaq());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BtAccordion\Widget_BtAccordion());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\HeadingAnimation\Widget_HeadingAnimation());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MiniWishlist\Widget_MiniWishlist());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TikTokShopSlider\Widget_TikTokShopSlider());
@@ -227,18 +235,22 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonial\Widget_ProductTestimonial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonialSlider\Widget_ProductTestimonialSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialSlider\Widget_TestimonialSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialsStaggeredSlider\Widget_TestimonialsStaggeredSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountDown\Widget_CountDown());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurTeams\Widget_OurTeams());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurStore\Widget_OurStore());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CurrencySwitcher\Widget_CurrencySwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\LanguageSwitcher\Widget_LanguageSwitcher());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccordionWithProductSlider\Widget_AccordionWithProductSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TitleNavWithSlider\Widget_TitleNavWithSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductOverlayHotspot\Widget_ProductOverlayHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle1\Widget_ProductShowcaseStyle1());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle2\Widget_ProductShowcaseStyle2());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseVertical\Widget_ProductShowcaseVertical());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());

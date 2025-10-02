@@ -42,7 +42,7 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 				'name' => 'thumbnail',
 				'label' => __( 'Image Size', 'woozio' ),
 				'show_label' => true,
-				'default' => 'medium',
+				'default' => 'medium_large',
 				'exclude' => [ 'custom' ],
 			]
 		);
@@ -282,23 +282,6 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
-			'title_hover_decoration',
-			[
-				'label' => esc_html__('Text Decoration', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'underline',
-				'options' => [
-					'none' => esc_html__('None', 'woozio'),
-					'underline' => esc_html__('Underline', 'woozio'),
-					'overline' => esc_html__('Overline', 'woozio'),
-					'line-through' => esc_html__('Line Through', 'woozio'),
-				],
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--title a:hover' => 'text-decoration: {{VALUE}};',
-				],
-			]
-		);
 
 		$this->end_controls_tab();
 
@@ -317,7 +300,7 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 		$settings = $this->get_settings_for_display();
 		?>
 			<div class="bt-elwg-post-loop-item--style2">
-				<?php get_template_part( 'framework/templates/post', 'style1', array('image-size' => $settings['thumbnail_size'])); ?>
+				<?php get_template_part( 'framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'])); ?>
 	    	</div>
 		<?php
 	}

@@ -96,7 +96,19 @@ class Widget_InstagramPosts extends Widget_Base
 				],
 			]
 		);
-
+		$this->add_control(
+			'layout',
+			[
+				'label' => __('Layout', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => [
+					'default' => __('Default', 'woozio'),
+					'tilted' => __('Tilted', 'woozio'),
+				],
+				'description' => __('Choose the layout style for the Instagram posts.', 'woozio'),
+			]
+		);
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -153,6 +165,9 @@ class Widget_InstagramPosts extends Widget_Base
 				'mobile_default' => '2',
 				'selectors' => [
 					'{{WRAPPER}}' => '--swiper-slides-to-display: {{VALUE}}',
+				],
+				'condition' => [
+					'enable_slider' => 'yes',
 				],
 			],
 			'slides_to_scroll_custom_settings' => [
@@ -686,8 +701,11 @@ class Widget_InstagramPosts extends Widget_Base
 		if (empty($settings['gallery'])) {
 			return;
 		}
-
+		
 		$classes = ['bt-elwg-instagram-posts'];
+		if ($settings['layout'] === 'tilted') {
+			$classes[] = 'bt-layout-tilted';
+		}
 		if ($settings['enable_slider'] === 'yes') {
 			$classes[] = 'bt-elwg-instagram-posts--slider';
 			if ($settings['slider_arrows_hidden_mobile'] === 'yes') {

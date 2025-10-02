@@ -33,7 +33,28 @@ class Widget_ProductLoopItemStyle1 extends Widget_Base
 		return ['woozio'];
 	}
 
-	protected function register_layout_section_controls() {}
+	protected function register_layout_section_controls() {
+		$this->start_controls_section(
+			'section_layout',
+			[
+				'label' => __('Layout', 'woozio'),
+				'tab' => Controls_Manager::TAB_CONTENT,
+			]
+		);
+		$this->add_control(
+			'layout',
+			[
+				'label' => __('Layout Style', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => [
+					'default' => __('Default', 'woozio'),
+					'style-1' => __('Style 1', 'woozio'),
+				],
+			]
+		);
+		$this->end_controls_section();
+	}
 
 	protected function register_style_section_controls() {}
 
@@ -51,9 +72,10 @@ class Widget_ProductLoopItemStyle1 extends Widget_Base
 		if (empty($product) || ! $product->is_visible()) {
 			return;
 		}
+		
 ?>
-		<div class="bt-elwg-product-loop-item--style-1">
-			<div class="bt-product-item-minimal active"
+		<div class="bt-elwg-product-loop-item--style-1 layout-<?php echo esc_attr($settings['layout']); ?>">
+			<div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
 				data-product-id="<?php echo esc_attr($product->get_id()); ?>">
 				<div class="bt-product-thumbnail">
 					<a href="<?php echo esc_url($product->get_permalink()); ?>">
@@ -65,6 +87,7 @@ class Widget_ProductLoopItemStyle1 extends Widget_Base
 						}
 						?>
 					</a>
+					<?php do_action('woozio_woocommerce_show_product_loop_sale_flash'); ?>
 				</div>
 				<div class="bt-product-content">
 					<h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>

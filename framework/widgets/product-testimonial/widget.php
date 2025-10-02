@@ -66,95 +66,6 @@ class Widget_ProductTestimonial extends Widget_Base
                 'label' => __('Testimonial', 'woozio'),
             ]
         );
-        $this->add_group_control(
-            Group_Control_Image_Size::get_type(),
-            [
-                'name' => 'thumbnail',
-                'label' => __('Image Size', 'woozio'),
-                'show_label' => true,
-                'default' => 'medium_large',
-                'exclude' => ['custom'],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'image_ratio',
-            [
-                'label' => __('Image Ratio', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'default' => [
-                    'size' => 0.67,
-                ],
-                'range' => [
-                    'px' => [
-                        'min' => 0.3,
-                        'max' => 2,
-                        'step' => 0.01,
-                    ],
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial--images .bt-image-cover' => 'padding-bottom: calc( {{SIZE}} * 100% );',
-                ],
-            ]
-        );
-        $this->add_control(
-            'image_position',
-            [
-                'label' => __('Image Position', 'woozio'),
-                'type' => Controls_Manager::SELECT,
-                'options' => [
-                    'row-reverse' => __('Left', 'woozio'),
-                    'row' => __('Right', 'woozio'),
-                ],
-                'default' => 'row-reverse',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial' => 'flex-direction: {{VALUE}};',
-                ],
-            ]
-        );
-        $this->add_responsive_control(
-            'gap',
-            [
-                'label' => __('Gap', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px', 'em', '%'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 100,
-                        'step' => 1,
-                    ],
-                    'em' => [
-                        'min' => 0,
-                        'max' => 10,
-                        'step' => 0.1,
-                    ],
-                    '%' => [
-                        'min' => 0,
-                        'max' => 50,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 30,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial' => '--column-gap: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-        $this->add_control(
-            'background_color',
-            [
-                'label' => __('Background Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'default' => '#FFFFFF',
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-testimonial' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
 
         $repeater = new Repeater();
         $repeater->add_control(
@@ -232,6 +143,161 @@ class Widget_ProductTestimonial extends Widget_Base
                 'title_field' => '{{{ testimonial_text }}}',
             ]
         );
+        $this->add_group_control(
+            Group_Control_Image_Size::get_type(),
+            [
+                'name' => 'thumbnail',
+                'label' => __('Image Size', 'woozio'),
+                'show_label' => true,
+                'default' => 'medium_large',
+                'exclude' => ['custom'],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'image_ratio',
+            [
+                'label' => __('Image Ratio', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'default' => [
+                    'size' => 0.67,
+                ],
+                'range' => [
+                    'px' => [
+                        'min' => 0.3,
+                        'max' => 2,
+                        'step' => 0.01,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--images .bt-image-cover' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'gap',
+            [
+                'label' => __('Gap', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', 'em', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                    'em' => [
+                        'min' => 0,
+                        'max' => 10,
+                        'step' => 0.1,
+                    ],
+                    '%' => [
+                        'min' => 0,
+                        'max' => 50,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 30,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => '--column-gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'background_color',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#FFFFFF',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'testimonial_full_width',
+            [
+                'label' => __('Testimonial Full Width', 'woozio'),
+                'description' => __('This should only be used in Elementor’s Full Width mode. Enter your site’s container width to ensure the content is aligned correctly with the layout.', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+        $this->add_responsive_control(
+            'testimonial_container_width',
+            [
+                'label' => __('Container Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 2000,
+                        'step' => 1,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => '--width-container: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'testimonial_full_width' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'responsive_overlay_content',
+            [
+                'label' => __('Responsive Overlay Content', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+        $this->add_control(
+            'content_background_overlay',
+            [
+                'label' => __('Background Overlay', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#000',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial.bt-responsive-overlay-content .bt-product-testimonial--content::before' => 'background: {{VALUE}};',
+                ],
+                'condition' => [
+                    'responsive_overlay_content' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'content_background_overlay_opacity',
+            [
+                'label' => __('Overlay Opacity', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'default' => [
+                    'size' => 0.6,
+                ],
+                'range' => [
+                    'px' => [
+                        'max' => 1,
+                        'min' => 0,
+                        'step' => 0.01,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial.bt-responsive-overlay-content .bt-product-testimonial--content::before' => 'opacity: {{SIZE}};',
+                ],
+                'condition' => [
+                    'responsive_overlay_content' => 'yes',
+                ],
+            ]
+        );
         $this->end_controls_section();
         $this->start_controls_section(
             'section_slider',
@@ -290,12 +356,74 @@ class Widget_ProductTestimonial extends Widget_Base
 
     protected function register_style_section_controls()
     {
+        // Image Style Section
+        $this->start_controls_section(
+            'section_image_style',
+            [
+                'label' => __('Image', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        $this->add_control(
+            'image_position',
+            [
+                'label' => __('Image Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'options' => [
+                    'row-reverse' => __('Left', 'woozio'),
+                    'row' => __('Right', 'woozio'),
+                ],
+                'default' => 'row-reverse',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial' => 'flex-direction: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'image_object_fit',
+            [
+                'label' => __('Image Object Fit', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'cover',
+                'options' => [
+                    'cover' => __('Cover', 'woozio'),
+                    'contain' => __('Contain', 'woozio'),
+                    'fill' => __('Fill', 'woozio'),
+                    'none' => __('None', 'woozio'),
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--images .bt-image-cover img' => 'object-fit: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'image_background_color',
+            [
+                'label' => __('Image Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--images .bt-image-cover' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->end_controls_section();
         // Content Style Section
         $this->start_controls_section(
             'section_content_style',
             [
-                'label' => __('Content Style', 'woozio'),
+                'label' => __('Content', 'woozio'),
                 'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+        $this->add_responsive_control(
+            'content_padding',
+            [
+                'label' => __('Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
             ]
         );
         $this->add_control(
@@ -338,11 +466,34 @@ class Widget_ProductTestimonial extends Widget_Base
                 'selector' => '{{WRAPPER}} .bt-product-testimonial--text',
             ]
         );
+        $this->add_responsive_control(
+            'text_max_width',
+            [
+                'label' => __('Max Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 1000,
+                        'step' => 1,
+                    ],
+                    '%' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--text' => 'max-width: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
 
         $this->add_responsive_control(
             'text_margin',
             [
-                'label' => __('Text Margin', 'woozio'),
+                'label' => __('Margin', 'woozio'),
                 'type' => Controls_Manager::DIMENSIONS,
                 'size_units' => ['px', 'em', '%'],
                 'selectors' => [
@@ -441,7 +592,7 @@ class Widget_ProductTestimonial extends Widget_Base
         $this->start_controls_section(
             'section_pagination_style',
             [
-                'label' => __('Pagination Style', 'woozio'),
+                'label' => __('Pagination', 'woozio'),
                 'tab' => Controls_Manager::TAB_STYLE,
                 'condition' => [
                     'slider_pagination' => 'yes',
@@ -449,13 +600,20 @@ class Widget_ProductTestimonial extends Widget_Base
             ]
         );
         $this->add_responsive_control(
-            'pagination_margin_top',
+            'pagination_spacing',
             [
-                'label' => __('Pagination Margin Top', 'woozio'),
-                'type' => Controls_Manager::NUMBER,
+                'label' => __('Pagination Spacing', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 100,
+                        'step' => 1,
+                    ],
+                ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-swiper-pagination' => 'margin-top: {{VALUE}}px;',
+                    '{{WRAPPER}} .bt-swiper-pagination' => 'margin-top: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -490,14 +648,33 @@ class Widget_ProductTestimonial extends Widget_Base
     protected function render()
     {
         $settings = $this->get_settings_for_display();
+        $image_position = isset($settings['image_position']) ? $settings['image_position'] : 'row-reverse';
         $slider_settings = [
             'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',
             'speed' => isset($settings['slider_speed']) ? $settings['slider_speed'] : 500,
             'autoplay_delay' => isset($settings['slider_autoplay_delay']) ? $settings['slider_autoplay_delay'] : 3000,
         ];
+        if ($settings['testimonial_full_width'] === 'yes') {
+            $testimonial_container_width = $settings['testimonial_container_width']['size'];
 ?>
+            <style>
+                @media (min-width: <?php echo esc_attr($testimonial_container_width + 30); ?>px) {
+                    <?php if ($image_position === 'row') { ?>.bt-elwg-product-testimonial--default .bt-product-testimonial {
+                        padding-left: calc((100% + 5px - var(--width-container)) / 2) !important;
+                    }
+
+                    <?php
+                    }
+                    if ($image_position === 'row-reverse') { ?>.bt-elwg-product-testimonial--default .bt-product-testimonial {
+                        padding-right: calc((100% + 5px - var(--width-container)) / 2) !important;
+                    }
+
+                    <?php } ?>
+                }
+            </style>
+        <?php } ?>
         <div class="bt-elwg-product-testimonial--default" data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
-            <div class="bt-product-testimonial">
+            <div class="bt-product-testimonial <?php echo $settings['responsive_overlay_content'] === 'yes' ? 'bt-responsive-overlay-content' : ''; ?>">
                 <div class="bt-product-testimonial--content">
                     <div class="swiper js-testimonial-content">
                         <div class="swiper-wrapper">
@@ -560,7 +737,7 @@ class Widget_ProductTestimonial extends Widget_Base
                                     <?php if (!empty($item['id_product'])) :
                                         $product = wc_get_product($item['id_product']);
                                         if ($product) : ?>
-                                            <div class="bt-product-item-minimal active"
+                                            <div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
                                                 data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                                 <div class="bt-product-thumbnail">
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">

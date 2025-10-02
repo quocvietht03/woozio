@@ -11,6 +11,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Group_Control_Text_Stroke;
 
 class Woozio_TextSlider extends Widget_Base
 {
@@ -257,6 +258,13 @@ class Woozio_TextSlider extends Widget_Base
                 'name' => 'date_typography',
                 'label' => __('Typography', 'woozio'),
                 'default' => '',
+                'selector' => '{{WRAPPER}} .bt-text--item span',
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Text_Stroke::get_type(),
+            [
+                'name' => 'text_stroke',
                 'selector' => '{{WRAPPER}} .bt-text--item span',
             ]
         );

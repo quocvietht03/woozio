@@ -416,7 +416,7 @@ class Widget_ProductListHotspot extends Widget_Base
                                                     }
                                                     ?>
                                                 </div>
-                                                <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
+                                                <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
                                             </div>
                                         </li>
                             <?php
@@ -434,22 +434,27 @@ class Widget_ProductListHotspot extends Widget_Base
                         $product_ids = [];
                         if (!empty($settings['hotspot_items'])) {
                             foreach ($settings['hotspot_items'] as $item) {
-                                $product = wc_get_product($item['id_product']);
-                                if ($product) {
-                                    $product_ids[] = [
-                                        'product_id'   => $item['id_product'],
-                                        'variation_id' => 0,
-                                    ];
+                                // Check if product ID exists and is not empty
+                                if (!isset($item['id_product']) || empty($item['id_product'])) {
+                                    continue;
                                 }
+                                $product = wc_get_product($item['id_product']);
+                                if (!$product) {
+                                    continue;
+                                }
+                                $variation_id = get_default_variation_id($product);
+                                $product_ids[] = [
+                                    'product_id'   => $item['id_product'],
+                                    'variation_id' => $variation_id,
+                                ];
                             }
-                        }
-
+                        }                   
                         if (!empty($product_ids)) :
                         ?>
-                        <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
-                            <?php esc_html_e('Add set to cart', 'woozio'); ?>
-                            <span class="bt-btn-price"></span>
-                        </a>
+                            <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
+                                <?php esc_html_e('Add set to cart', 'woozio'); ?>
+                                <span class="bt-btn-price"></span>
+                            </a>
                         <?php endif; ?>
                     </div>
                 </div>

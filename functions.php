@@ -103,8 +103,11 @@ if (!function_exists('woozio_enqueue_scripts')) {
 
 			if (is_array($archive_shop)) {
 				$wishlist_toast = isset($archive_shop['wishlist_toast']) ? $archive_shop['wishlist_toast'] : '';
+				$wishlist_toast_time = isset($archive_shop['time_show_wishlist']) ? $archive_shop['time_show_wishlist'] : 3000;
 				$compare_toast = isset($archive_shop['compare_toast']) ? $archive_shop['compare_toast'] : '';
+				$compare_toast_time = isset($archive_shop['time_show_compare']) ? $archive_shop['time_show_compare'] : 3000;
 				$cart_toast = isset($archive_shop['cart_toast']) ? $archive_shop['cart_toast'] : '';
+				$cart_toast_time = isset($archive_shop['time_show_cart']) ? $archive_shop['time_show_cart'] : 3000;
 			}
 		}
 		/* Options to script */
@@ -115,6 +118,9 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			'wishlist_toast' => $wishlist_toast,
 			'compare_toast' => $compare_toast,
 			'cart_toast' => $cart_toast,
+			'wishlist_toast_time' => $wishlist_toast_time,
+			'compare_toast_time' => $compare_toast_time,
+			'cart_toast_time' => $cart_toast_time,
 			'user_info' => wp_get_current_user(),
 		);
 

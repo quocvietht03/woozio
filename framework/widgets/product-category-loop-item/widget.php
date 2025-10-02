@@ -59,6 +59,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     'style-1' => __('Style 1', 'woozio'),
                     'style-2' => __('Style 2', 'woozio'),
                     'style-3' => __('Style 3', 'woozio'),
+                    'style-4' => __('Style 4', 'woozio'),
                 ],
             ]
         );

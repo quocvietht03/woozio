@@ -42,19 +42,6 @@ class Widget_ProductLoopItem extends Widget_Base
 				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
-
-		$this->add_control(
-			'layout_style',
-			[
-				'label' => __('Layout Style', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'default',
-				'options' => [
-					'default' => __('Default', 'woozio'),
-					'layout-1' => __('Layout 1', 'woozio'),
-				],
-			]
-		);
 		$this->add_control(
 			'image_ratio',
 			[
@@ -93,7 +80,7 @@ class Widget_ProductLoopItem extends Widget_Base
 			return;
 		}
 ?>
-		<div class="bt-elwg-product-loop-item <?php echo esc_attr($settings['layout_style']); ?>">
+		<div class="bt-elwg-product-loop-item ">
 			<?php wc_get_template_part('content', 'product'); ?>
 		</div>
 <?php

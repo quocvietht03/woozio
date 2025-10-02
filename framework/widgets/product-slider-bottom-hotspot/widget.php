@@ -311,16 +311,21 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                     $product_ids = [];
                     if (!empty($settings['hotspot_items'])) {
                         foreach ($settings['hotspot_items'] as $item) {
-                            $product = wc_get_product($item['id_product']);
-                            if ($product) {
-                                $product_ids[] = [
-                                    'product_id'   => $item['id_product'],
-                                    'variation_id' => 0,
-                                ];
+                            // Check if product ID exists and is not empty
+                            if (!isset($item['id_product']) || empty($item['id_product'])) {
+                                continue;
                             }
+                            $product = wc_get_product($item['id_product']);
+                            if (!$product) {
+                                continue;
+                            }
+                            $variation_id = get_default_variation_id($product);
+                            $product_ids[] = [
+                                'product_id'   => $item['id_product'],
+                                'variation_id' => $variation_id,
+                            ];
                         }
-                    }
-
+                    }     
                     if (!empty($product_ids)) :
                     ?>
                         <div class="bt-button-wrapper">
@@ -399,7 +404,7 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                             do_action('woozio_woocommerce_template_single_add_to_cart');
                                                         }
                                                         ?>
-                                                        <p class="bt-price"><?php echo $product->get_price_html(); ?></p>
+                                                        <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
                                                     </div>
                                                     <div class="bt-product-add-to-cart">
                                                         <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
