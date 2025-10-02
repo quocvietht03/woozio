@@ -54,6 +54,7 @@ class ElementorWidgets
 			'instagram-posts',
 			'banner-product-slider',
 			'page-breadcrumb',
+			'mobile-menu',
 			'post-loop-item',
 			'post-loop-item-style-1',
 			'post-loop-item-style-2',
@@ -193,6 +194,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MobileMenu\Widget_MobileMenu());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItem\Widget_PostLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle1\Widget_PostLoopItemStyle1());
