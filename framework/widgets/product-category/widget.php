@@ -304,7 +304,7 @@ class Widget_ProductCategory extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '',
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-category--name' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-category--content' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -316,7 +316,7 @@ class Widget_ProductCategory extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '',
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-category--name:hover' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-category--content:hover' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -327,7 +327,7 @@ class Widget_ProductCategory extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '',
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-category--name' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-category--content' => 'background-color: {{VALUE}};',
 				],
 			]
 		);
@@ -339,7 +339,7 @@ class Widget_ProductCategory extends Widget_Base
 				'type' => Controls_Manager::COLOR,
 				'default' => '',
 				'selectors' => [
-					'{{WRAPPER}} .bt-product-category--name:hover' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .bt-product-category--content:hover' => 'background-color: {{VALUE}};',
 				],
 			]
 		);
@@ -349,7 +349,7 @@ class Widget_ProductCategory extends Widget_Base
 				'name' => 'name_cat_typography',
 				'label' => __('Typography', 'woozio'),
 				'default' => '',
-				'selector' => '{{WRAPPER}} .bt-product-category--name',
+				'selector' => '{{WRAPPER}} .bt-product-category--content',
 			]
 		);
 

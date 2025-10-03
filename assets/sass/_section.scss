@@ -131,12 +131,12 @@ body {
                         &--inner {
                             padding: 10px;
                         }
-                        &--name {
+                        &--content {
                             width: calc(100% - 50px);
                             padding-left: 12px;
                             margin-bottom: 0;
                         }
-                        &--name-text {
+                        &--name {
                             font-size: 16px;
                             line-height: 1.5;
                         }
@@ -200,4 +200,25 @@ body {
             }
         }
     }
+    &.bt-text-image-slider{
+        @media(max-width:1660px) and (min-width:1367px){
+           .swiper-slide{
+             > .elementor-element{
+                > .e-con-inner{
+                    > .elementor-element{
+                        &:nth-child(2){
+                          padding: 20px;
+                          .elementor-heading-title{
+                            font-size: 33px;
+                          }
+                          .elementor-button{
+                            padding: 12px 20px;
+                          }
+                        }
+                    }
+                }
+             }
+           }
+        }
+    }   
 }

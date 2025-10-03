@@ -2079,6 +2079,274 @@
 			$(window).off('resize.bannerSlider').on('resize.bannerSlider', handleAutoRotation);
 		}
 	}
+	/* Bundle Save Handler */
+	const BundleSaveHandler = function ($scope) {
+		const $bundleSave = $scope.find('.bt-bundle-save');
+		if ($bundleSave.length === 0) return;
+
+		// Update data-ids and subtotal on load
+		updateBundleDataIds($bundleSave);
+
+		// Add More Button - Show modal
+		$bundleSave.find('.bt-bundle-save--add-more-btn').on('click', function (e) {
+			e.preventDefault();
+			showModal($bundleSave);
+		});
+
+		// Modal Close
+		$bundleSave.find('.bt-modal-close, .bt-modal-overlay').on('click', function (e) {
+			e.preventDefault();
+			$bundleSave.find('.bt-bundle-save--modal').fadeOut();
+		});
+
+		// Add product from modal
+		$bundleSave.on('click', '.bt-modal-add-product', function (e) {
+			e.preventDefault();
+			const $button = $(this);
+			const productId = $button.data('product-id');
+			addProductToBundle($bundleSave, productId, $button);
+		});
+
+		// Remove product
+		$bundleSave.on('click', '.bt-product-remove', function (e) {
+			e.preventDefault();
+			const $item = $(this).closest('.bt-bundle-product--item');
+			$item.fadeOut(300, function () {
+				$(this).remove();
+				updateBundleDataIds($bundleSave);
+			});
+		});
+
+		// Add all to cart
+		$bundleSave.find('.bt-bundle-save--add-cart-btn').on('click', function (e) {
+			e.preventDefault();
+			addBundleToCart($bundleSave, $(this));
+		});
+
+		function showModal($widget) {
+			const $modal = $widget.find('.bt-bundle-save--modal');
+			const $modalBody = $modal.find('.bt-modal-body');
+			const $productsContainer = $widget.find('.bt-bundle-save--products');
+
+			const bundleProducts = $productsContainer.data('bundle-products') || [];
+			const currentProducts = [];
+
+			// Collect all current product/variation IDs
+			$widget.find('.bt-bundle-product--item').each(function () {
+				const variationId = parseInt($(this).data('variation-id'));
+				const productId = parseInt($(this).data('product-id'));
+				
+				// If it's a variation, use variation ID, otherwise use product ID
+				const itemId = variationId > 0 ? variationId : productId;
+				currentProducts.push(itemId);
+			});
+
+			// Filter out products that are already in the bundle
+			const availableProducts = bundleProducts.filter(function (id) {
+				return currentProducts.indexOf(parseInt(id)) === -1;
+			});
+
+			if (availableProducts.length === 0) {
+				$modalBody.html('<p class="bt-no-products">All products are already added to the bundle.</p>');
+			} else {
+				loadAvailableProducts($widget, availableProducts, $modalBody);
+			}
+
+			$modal.fadeIn();
+		}
+
+		function loadAvailableProducts($widget, productIds, $container) {
+			$container.html('<p class="bt-loading">Loading products...</p>');
+
+			$.ajax({
+				url: AJ_Options.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'woozio_get_bundle_products',
+					product_ids: productIds
+				},
+				success: function (response) {
+					if (response.success && response.data.html) {
+						$container.html(response.data.html);
+					} else {
+						$container.html('<p class="bt-error">Failed to load products.</p>');
+					}
+				},
+				error: function () {
+					$container.html('<p class="bt-error">Failed to load products.</p>');
+				}
+			});
+		}
+
+		function addProductToBundle($widget, productId, $button) {
+			const $productsContainer = $widget.find('.bt-bundle-save--products');
+			$button.prop('disabled', true).text('Adding...');
+
+			$.ajax({
+				url: AJ_Options.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'woozio_get_bundle_product_item',
+					product_id: productId
+				},
+				success: function (response) {
+					if (response.success && response.data.html) {
+						$productsContainer.append(response.data.html);
+						updateBundleDataIds($widget);
+						
+						// Remove this product item from modal
+						$button.closest('.bt-modal-product--item').fadeOut(300, function() {
+							$(this).remove();
+							
+							// Check if any products left in modal
+							const $modal = $widget.find('.bt-bundle-save--modal');
+							const $modalBody = $modal.find('.bt-modal-body');
+							const remainingProducts = $modalBody.find('.bt-modal-product--item').length;
+							
+							if (remainingProducts === 0) {
+								$modalBody.html('<p class="bt-no-products">All products are already added to the bundle.</p>');
+								setTimeout(function() {
+									$modal.fadeOut();
+								}, 1000);
+							}
+						});
+					} else {
+						$button.prop('disabled', false).text('Add');
+					}
+				},
+				error: function () {
+					$button.prop('disabled', false).text('Add');
+				}
+			});
+		}
+
+		function updateBundleDataIds($widget) {
+			const $productsContainer = $widget.find('.bt-bundle-save--products');
+			const $addCartBtn = $widget.find('.bt-bundle-save--add-cart-btn');
+			const idsArr = [];
+			let subtotal = 0;
+			let regularTotal = 0;
+			let productCount = 0;
+
+			$widget.find('.bt-bundle-product--item').each(function () {
+				const $item = $(this);
+				const productId = parseInt($item.data('product-id'));
+				const variationId = parseInt($item.data('variation-id')) || 0;
+				const price = parseFloat($item.data('price')) || 0;
+				const regularPrice = parseFloat($item.data('regular-price')) || price;
+
+				idsArr.push({
+					product_id: productId,
+					variation_id: variationId
+				});
+
+				subtotal += price;
+				regularTotal += regularPrice;
+				productCount++;
+			});
+
+			// Calculate savings
+			const savings = regularTotal - subtotal;
+			const savingsPercent = regularTotal > 0 ? ((savings / regularTotal) * 100) : 0;
+
+			// Update progress bar
+			const $progressBar = $widget.find('.bt-progress-fill');
+			const $discountText = $widget.find('.bt-discount-text');
+			
+			if ($progressBar.length) {
+				$progressBar.css('width', savingsPercent.toFixed(0) + '%');
+			}
+
+			if ($discountText.length) {
+				let template = $discountText.data('template');
+				if (!template) {
+					return;
+				}
+				let text = template;
+				
+				// Replace placeholders with styled spans
+				text = text.replace(/\{count\}/g, '<span>' + productCount + '</span>');
+				text = text.replace(/\{discount\}/g, '<span>' + savingsPercent.toFixed(0) + '%</span>');
+				
+				$discountText.html(text);
+			}
+
+			// Update button data-ids
+			$addCartBtn.attr('data-ids', JSON.stringify(idsArr));
+			// Check if no products 
+			if(idsArr.length === 0){
+				$addCartBtn.prop('disabled', true);
+			}else{
+				$addCartBtn.prop('disabled', false);
+			}
+
+			// Update subtotal display
+			const currencySymbol = AJ_Options.currency_symbol || '$';
+			const formattedSubtotal = currencySymbol + subtotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+			$widget.find('.bt-subtotal-amount').text(formattedSubtotal);
+		}
+
+		function addBundleToCart($widget, $button) {
+			let productIds = $button.data('ids');
+
+			if (typeof productIds === 'string') {
+				try {
+					productIds = JSON.parse(productIds);
+				} catch (e) {
+					console.error('Invalid data-ids JSON', e);
+					productIds = [];
+				}
+			}
+			if ($button.hasClass('bt-view-cart')) {
+				window.location.href = AJ_Options.cart;
+				return;
+			}
+			if (!Array.isArray(productIds) || productIds.length === 0) {
+				alert('Please add products to the bundle first.');
+				return;
+			}
+
+			const originalText = $button.text();
+			$button.prop('disabled', true).addClass('loading');
+
+			// Show toast for each product
+			
+			productIds.forEach((item, idx) => {
+				
+				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+				setTimeout(() => {
+					WoozioshowToast(productId, 'cart', 'add');
+				}, idx * 300);
+			});
+
+			$.ajax({
+				url: AJ_Options.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'woozio_add_multiple_to_cart_variable',
+					product_ids: productIds
+				},
+				success: function (response) {
+					$button.removeClass('loading');
+					if (response.success) {
+						$(document.body).trigger('updated_wc_div');
+						WoozioFreeShippingMessage();
+						$button.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
+						
+					} else {
+						alert('Failed to add products to cart.');
+						$button.prop('disabled', false).text(originalText);
+					}
+				},
+				error: function () {
+					$button.removeClass('loading');
+					alert('Failed to add products to cart.');
+					$button.prop('disabled', false).text(originalText);
+				}
+			});
+		}
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
@@ -2115,6 +2383,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-nav-image.default', ProductNavImageHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-brand-slider.default', BrandSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-vertical-banner-slider.default', VerticalBannerSliderHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-bundle-save.default', BundleSaveHandler);
 	});
 
 })(jQuery);

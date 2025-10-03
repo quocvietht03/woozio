@@ -102,7 +102,8 @@ class ElementorWidgets
 			'store-locations-slider',
 			'product-nav-image',
 			'vertical-banner-slider',
-			'offers-slider'
+			'offers-slider',
+			'bundle-save'
 		);
 
 		return $this->widgets;
@@ -252,6 +253,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BundleSave\Widget_BundleSave());
 	}
 
 	/**

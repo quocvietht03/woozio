@@ -494,7 +494,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			'default' => 'bottom',
 			'options' => [
 				'top' => esc_html__('Top', 'woozio'),
-				'bottom' => esc_html__('Bottom', 'woozio'), 
+				'bottom' => esc_html__('Bottom', 'woozio'),
 			],
 			'condition' => [
 				'pagination' => 'progressbar',
@@ -603,7 +603,7 @@ add_action('elementor/element/nested-carousel/section_carousel_pagination/before
 			'separator' => 'before',
 		]
 	);
-	
+
 	$element->add_control(
 		'pagination_use_theme_style',
 		[
@@ -617,6 +617,130 @@ add_action('elementor/element/nested-carousel/section_carousel_pagination/before
 				'{{WRAPPER}} .swiper-pagination-bullet' => 'width: auto; height: auto; padding: 2px 10px; border-radius: 0; transition: all 0.3s ease;',
 				'{{WRAPPER}} .swiper-pagination-bullet:hover,
 				{{WRAPPER}} .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'padding: 2px 20px;',
+			],
+		]
+	);
+	$element->add_responsive_control(
+		'pagination_progress_width',
+		[
+			'label' => esc_html__('Width', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => 0,
+					'max' => 2000,
+					'step' => 1,
+				],
+				'%' => [
+					'min' => 0,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'width: 100%; max-width: {{SIZE}}{{UNIT}};',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+	$element->add_control(
+		'pagination_progress_position_horizontal',
+		[
+			'label' => esc_html__('Position Horizontal', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SELECT,
+			'default' => 'center',
+			'options' => [
+				'left' => esc_html__('Left', 'woozio'),
+				'center' => esc_html__('Center', 'woozio'), 
+				'right' => esc_html__('Right', 'woozio'),
+			],
+			'prefix_class' => 'pagination-progress-position-horizontal-',
+			'selectors' => [
+				'{{WRAPPER}}.pagination-progress-position-horizontal-left .swiper-pagination-progressbar' => 'left: 0; margin-right: auto; transform: none;',
+				'{{WRAPPER}}.pagination-progress-position-horizontal-center .swiper-pagination-progressbar' => 'left: 50%; transform: translateX(-50%); margin-left: auto; margin-right: auto;',
+				'{{WRAPPER}}.pagination-progress-position-horizontal-right .swiper-pagination-progressbar' => 'right: 0; margin-left: auto; transform: none;',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+	$element->add_control(
+		'pagination_progress_position_vertical',
+		[
+			'label' => esc_html__('Position Vertical', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SELECT,
+			'default' => 'bottom',
+			'options' => [
+				'top' => esc_html__('Top', 'woozio'),
+				'bottom' => esc_html__('Bottom', 'woozio'),
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+	$element->add_responsive_control(
+		'pagination_progress_top_position',
+		[
+			'label' => esc_html__('Top Position', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => -100,
+					'max' => 100,
+				],
+				'%' => [
+					'min' => -100,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'default' => [
+				'size' => 1,
+				'unit' => 'px',
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'top: {{SIZE}}{{UNIT}};',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+				'pagination_progress_position_vertical' => 'top',
+			],
+		]
+	);
+
+	$element->add_responsive_control(
+		'pagination_progress_bottom_position',
+		[
+			'label' => esc_html__('Bottom Position', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => -100,
+					'max' => 100,
+				],
+				'%' => [
+					'min' => -100,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'default' => [
+				'size' => 1,
+				'unit' => 'px',
+			],
+			'selectors' => [
+				'{{WRAPPER}} .swiper-pagination-progressbar' => 'top: calc(100% + {{SIZE}}{{UNIT}});',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+				'pagination_progress_position_vertical' => 'bottom',
 			],
 		]
 	);
@@ -653,6 +777,7 @@ add_action('elementor/element/nested-carousel/section_navigation_settings/before
 		]
 	);
 });
+/* Hook add Field Nested Tabs Elementor */
 add_action('elementor/element/nested-tabs/section_title_style/before_section_end', function ($element) {
 	$element->add_responsive_control(
 		'heading_padding',
@@ -670,81 +795,82 @@ add_action('elementor/element/nested-tabs/section_title_style/before_section_end
 
 
 // Slider Swiper Setting
-function bt_elwg_get_slider_settings($settings, $breakpoints) {
-   // Helper: get the first non-empty value from a list of keys
-    $get_first_nonempty = function($keys, $default = 20) use ($settings) {
-        foreach ($keys as $key) {
-            if (isset($settings[$key]['size']) && $settings[$key]['size'] !== '') {
-                return $settings[$key]['size'];
-            }
-        }
-        return $default;
-    };
+function bt_elwg_get_slider_settings($settings, $breakpoints)
+{
+	// Helper: get the first non-empty value from a list of keys
+	$get_first_nonempty = function ($keys, $default = 20) use ($settings) {
+		foreach ($keys as $key) {
+			if (isset($settings[$key]['size']) && $settings[$key]['size'] !== '') {
+				return $settings[$key]['size'];
+			}
+		}
+		return $default;
+	};
 
-    $slider_settings = [
-        'autoplay' => $settings['slider_autoplay'] === 'yes',
-        'loop' => $settings['slider_loop'] === 'yes',
-        'speed' => (int) $settings['slider_speed'],
-        'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
-        'spaceBetween' => $get_first_nonempty([
-            'image_spacing_custom_mobile',
-            'image_spacing_custom_mobile_extra',
-            'image_spacing_custom_tablet',
-            'image_spacing_custom_tablet_extra',
-            'image_spacing_custom_laptop',
-            'image_spacing_custom'
-        ], 20),
-        'breakpoints' => []
-    ];
+	$slider_settings = [
+		'autoplay' => $settings['slider_autoplay'] === 'yes',
+		'loop' => $settings['slider_loop'] === 'yes',
+		'speed' => (int) $settings['slider_speed'],
+		'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
+		'spaceBetween' => $get_first_nonempty([
+			'image_spacing_custom_mobile',
+			'image_spacing_custom_mobile_extra',
+			'image_spacing_custom_tablet',
+			'image_spacing_custom_tablet_extra',
+			'image_spacing_custom_laptop',
+			'image_spacing_custom'
+		], 20),
+		'breakpoints' => []
+	];
 
-    foreach ($breakpoints as $key => $breakpoint) {
-        $next_key = $key;
-        $breakpoint_keys = array_keys($breakpoints);
-        $current_index = array_search($key, $breakpoint_keys);
+	foreach ($breakpoints as $key => $breakpoint) {
+		$next_key = $key;
+		$breakpoint_keys = array_keys($breakpoints);
+		$current_index = array_search($key, $breakpoint_keys);
 
-        if ($current_index !== false) {
-            $preferred_next = match ($key) {
-                'mobile' => 'mobile_extra',
-                'mobile_extra' => 'tablet',
-                'tablet' => 'tablet_extra',
-                'tablet_extra' => 'laptop',
-                'laptop' => 'desktop',
-                default => $key
-            };
+		if ($current_index !== false) {
+			$preferred_next = match ($key) {
+				'mobile' => 'mobile_extra',
+				'mobile_extra' => 'tablet',
+				'tablet' => 'tablet_extra',
+				'tablet_extra' => 'laptop',
+				'laptop' => 'desktop',
+				default => $key
+			};
 
-            if (isset($breakpoints[$preferred_next])) {
-                $next_key = $preferred_next;
-            } else {
-                $found_next = false;
-                for ($i = $current_index + 1; $i < count($breakpoint_keys); $i++) {
-                    if (isset($breakpoints[$breakpoint_keys[$i]]) && $breakpoint_keys[$i] !== 'widescreen') {
-                        $next_key = $breakpoint_keys[$i];
-                        $found_next = true;
-                        break;
-                    }
-                }
-                if (!$found_next) {
-                    $next_key = 'desktop';
-                }
-            }
-        }
+			if (isset($breakpoints[$preferred_next])) {
+				$next_key = $preferred_next;
+			} else {
+				$found_next = false;
+				for ($i = $current_index + 1; $i < count($breakpoint_keys); $i++) {
+					if (isset($breakpoints[$breakpoint_keys[$i]]) && $breakpoint_keys[$i] !== 'widescreen') {
+						$next_key = $breakpoint_keys[$i];
+						$found_next = true;
+						break;
+					}
+				}
+				if (!$found_next) {
+					$next_key = 'desktop';
+				}
+			}
+		}
 
-        $slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
-            'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 5,
-            'spaceBetween' => isset($settings['image_spacing_custom']['size']) ? $settings['image_spacing_custom']['size'] : 20
-        ] : [
-            'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
-            'spaceBetween' => isset($settings["image_spacing_custom_{$next_key}"]['size']) && $settings["image_spacing_custom_{$next_key}"]['size'] !== '' 
-                ? $settings["image_spacing_custom_{$next_key}"]['size']
-                : match($next_key) {
-                    'desktop' => $settings['image_spacing_custom']['size'],
-                    'laptop' => $get_first_nonempty(['image_spacing_custom_desktop', 'image_spacing_custom'], 20),
-                    'tablet_extra' => $get_first_nonempty(['image_spacing_custom_laptop', 'image_spacing_custom_desktop', 'image_spacing_custom'], 20),
-                    'tablet' => $get_first_nonempty(['image_spacing_custom_tablet_extra','image_spacing_custom_laptop','image_spacing_custom_desktop','image_spacing_custom'], 20),
-                    'mobile_extra' => $get_first_nonempty(['image_spacing_custom_tablet','image_spacing_custom_tablet_extra','image_spacing_custom_laptop','image_spacing_custom_desktop','image_spacing_custom'], 20),
-                    default => $get_first_nonempty(['image_spacing_custom_mobile_extra','image_spacing_custom_tablet','image_spacing_custom_tablet_extra','image_spacing_custom_laptop','image_spacing_custom_desktop','image_spacing_custom'], 20)
-                }
-        ];
-    }
-    return $slider_settings;
+		$slider_settings['breakpoints'][$breakpoint->get_value()] = ($next_key == 'desktop') ? [
+			'slidesPerView' => !empty($settings['slides_to_show']) ? (int)$settings['slides_to_show'] : 5,
+			'spaceBetween' => isset($settings['image_spacing_custom']['size']) ? $settings['image_spacing_custom']['size'] : 20
+		] : [
+			'slidesPerView' => !empty($settings["slides_to_show_{$next_key}"]) ? (int)$settings["slides_to_show_{$next_key}"] : (int)$settings['slides_to_show'],
+			'spaceBetween' => isset($settings["image_spacing_custom_{$next_key}"]['size']) && $settings["image_spacing_custom_{$next_key}"]['size'] !== ''
+				? $settings["image_spacing_custom_{$next_key}"]['size']
+				: match ($next_key) {
+					'desktop' => $settings['image_spacing_custom']['size'],
+					'laptop' => $get_first_nonempty(['image_spacing_custom_desktop', 'image_spacing_custom'], 20),
+					'tablet_extra' => $get_first_nonempty(['image_spacing_custom_laptop', 'image_spacing_custom_desktop', 'image_spacing_custom'], 20),
+					'tablet' => $get_first_nonempty(['image_spacing_custom_tablet_extra', 'image_spacing_custom_laptop', 'image_spacing_custom_desktop', 'image_spacing_custom'], 20),
+					'mobile_extra' => $get_first_nonempty(['image_spacing_custom_tablet', 'image_spacing_custom_tablet_extra', 'image_spacing_custom_laptop', 'image_spacing_custom_desktop', 'image_spacing_custom'], 20),
+					default => $get_first_nonempty(['image_spacing_custom_mobile_extra', 'image_spacing_custom_tablet', 'image_spacing_custom_tablet_extra', 'image_spacing_custom_laptop', 'image_spacing_custom_desktop', 'image_spacing_custom'], 20)
+				}
+		];
+	}
+	return $slider_settings;
 }

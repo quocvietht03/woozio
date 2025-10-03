@@ -16,8 +16,8 @@ $category_url = $shop_page_url . '?product_cat=' . $args['category']->slug;
                 ?>
             </div>
         </div>
-        <h3 class="bt-product-category--name">
-            <span class="bt-product-category--name-text"><?php echo esc_html($args['category']->name); ?></span>
+        <h3 class="bt-product-category--content">
+            <span class="bt-product-category--name"><?php echo esc_html($args['category']->name); ?></span>
             <?php if (isset($args['show_count']) && $args['show_count'] === 'yes'): ?>
                 <span class="bt-product-category--count"><?php echo sprintf(_n('%s item', '%s items', $args['category']->count, 'woozio'), $args['category']->count); ?></span>
             <?php endif; ?>

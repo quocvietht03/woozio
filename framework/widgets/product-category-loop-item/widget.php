@@ -60,6 +60,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     'style-2' => __('Style 2', 'woozio'),
                     'style-3' => __('Style 3', 'woozio'),
                     'style-4' => __('Style 4', 'woozio'),
+                    'style-5' => __('Style 5', 'woozio'),
                 ],
             ]
         );
@@ -201,6 +202,35 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
+        $this->add_control(
+            'content_background',
+            [
+                'label' => __('Background', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content' => 'background-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+            'content_padding',
+            [
+                'label' => __('Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'right: {{LEFT}}{{UNIT}}; top: calc({{TOP}}{{UNIT}} + 10px);',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
 
         $this->add_control(
             'name_cat_style',
@@ -218,7 +248,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--name' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .bt-product-category--name-text' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -231,7 +261,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'default' => '',
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name-text' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--content' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -243,7 +273,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-category--name' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--content' => 'background-color: {{VALUE}};',
                 ],
                 'condition' => [
                     'layout_style' => ['default', 'style-1'],
@@ -258,7 +288,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--name' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--content' => 'background-color: {{VALUE}};',
                 ],
                 'condition' => [
                     'layout_style' => ['default', 'style-1'],
@@ -272,7 +302,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'name' => 'name_cat_typography',
                 'label' => __('Typography', 'woozio'),
                 'default' => '',
-                'selector' => '{{WRAPPER}} .bt-product-category--name-text, {{WRAPPER}} .bt-product-category--name'
+                'selector' => '{{WRAPPER}} .bt-product-category--content, {{WRAPPER}} .bt-product-category--name'
             ]
         );
 
@@ -315,7 +345,184 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'button_style',
+            [
+                'label' => __('Button', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+        $this->add_control(
+            'button_width',
+            [
+                'label' => __('Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 20,
+                        'max' => 200,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'width: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
 
+        $this->add_control(
+            'button_height',
+            [
+                'label' => __('Height', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 20,
+                        'max' => 200,
+                    ],
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_padding',
+            [
+                'label' => __('Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+        $this->start_controls_tabs('button_style_tabs');
+
+        $this->start_controls_tab(
+            'button_style_normal',
+            [
+                'label' => __('Normal', 'woozio'),
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_color',
+            [
+                'label' => __('Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_background',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'background-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_border_color',
+            [
+                'label' => __('Border Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content svg' => 'border-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->start_controls_tab(
+            'button_style_hover',
+            [
+                'label' => __('Hover', 'woozio'),
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_color',
+            [
+                'label' => __('Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--inner:hover .bt-product-category--content svg' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_background',
+            [
+                'label' => __('Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--inner:hover .bt-product-category--content svg' => 'background-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'button_hover_border_color',
+            [
+                'label' => __('Border Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--inner:hover .bt-product-category--content svg' => 'border-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-5'],
+                ],
+            ]
+        );
+
+        $this->end_controls_tab();
+
+        $this->end_controls_tabs();
         $this->end_controls_section();
     }
 

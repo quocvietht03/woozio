@@ -3139,3 +3139,159 @@ function get_default_variation_id($product) {
     
     return $variation_id;
 }
+
+/* Bundle Save Widget - Get bundle products for modal */
+function woozio_get_bundle_products()
+{
+    if (!isset($_POST['product_ids']) || empty($_POST['product_ids'])) {
+        wp_send_json_error(array('message' => 'No products found'));
+    }
+
+    $product_ids = array_map('intval', $_POST['product_ids']);
+    $html = '';
+
+    foreach ($product_ids as $item_id) {
+        $product = wc_get_product($item_id);
+        if (!$product) {
+            continue;
+        }
+
+        $is_variation = $product->is_type('variation');
+        $product_name = $product->get_name();
+        
+        // Get variation attributes if applicable
+        $variation_text = '';
+        if ($is_variation) {
+            $attributes = $product->get_attributes();
+            $attr_labels = [];
+            foreach ($attributes as $attr_name => $attr_value) {
+                // Get term name if taxonomy
+                if (taxonomy_exists($attr_name)) {
+                    $term = get_term_by('slug', $attr_value, $attr_name);
+                    $attr_value = $term ? $term->name : $attr_value;
+                }
+
+                $attr_labels[] = ucfirst($attr_value);
+            }
+            if (!empty($attr_labels)) {
+                $variation_text = implode('/', $attr_labels);
+            }
+        }
+        
+        $product_image = $product->get_image('thumbnail');
+        $regular_price = $product->get_regular_price();
+        $sale_price = $product->get_sale_price();
+        $price = $product->get_price();
+
+        ob_start();
+?>
+        <div class="bt-modal-product--item">
+            <div class="bt-product-thumb">
+                <?php echo $product_image; ?>
+            </div>
+            <div class="bt-product-info">
+                <h4 class="bt-product-name"><?php echo esc_html($product_name); ?></h4>
+                <div class="bt-product-price">
+                <?php echo $product->get_price_html(); ?>
+                </div>
+                <?php if ($variation_text) : ?>
+                    <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>
+                <?php endif; ?>
+            </div>
+            <button class="bt-modal-add-product" data-product-id="<?php echo esc_attr($item_id); ?>">
+                <?php _e('Add', 'woozio'); ?>
+            </button>
+        </div>
+<?php
+        $html .= ob_get_clean();
+    }
+
+    if (empty($html)) {
+        wp_send_json_error(array('message' => 'No valid products found'));
+    }
+
+    wp_send_json_success(array('html' => $html));
+}
+add_action('wp_ajax_woozio_get_bundle_products', 'woozio_get_bundle_products');
+add_action('wp_ajax_nopriv_woozio_get_bundle_products', 'woozio_get_bundle_products');
+
+/* Bundle Save Widget - Get single product item */
+function woozio_get_bundle_product_item()
+{
+    if (!isset($_POST['product_id'])) {
+        wp_send_json_error(array('message' => 'No product ID provided'));
+    }
+
+    $item_id = intval($_POST['product_id']);
+    $product = wc_get_product($item_id);
+    
+    if (!$product) {
+        wp_send_json_error(array('message' => 'Product not found'));
+    }
+
+    $is_variation = $product->is_type('variation');
+    $parent_id = $is_variation ? $product->get_parent_id() : $item_id;
+    $variation_id = $is_variation ? $item_id : 0;
+    
+    $product_link = get_permalink($parent_id);
+    $product_name = $product->get_name();
+    
+    // Get variation attributes if applicable
+    $variation_text = '';
+    if ($is_variation) {
+        $attributes = $product->get_attributes();
+        $attr_labels = [];
+        foreach ($attributes as $attr_name => $attr_value) {
+            // Get term name if taxonomy
+            if (taxonomy_exists($attr_name)) {
+                $term = get_term_by('slug', $attr_value, $attr_name);
+                $attr_value = $term ? $term->name : $attr_value;
+            }
+
+            $attr_labels[] = ucfirst($attr_value);
+        }
+        if (!empty($attr_labels)) {
+            $variation_text = implode('/', $attr_labels);
+        }
+    }
+    
+    $product_image = $product->get_image('thumbnail');
+    $regular_price = $product->get_regular_price();
+    $sale_price = $product->get_sale_price();
+    $price = $product->get_price();
+
+    ob_start();
+?>
+    <div class="bt-bundle-product--item" 
+        data-product-id="<?php echo esc_attr($parent_id); ?>"
+        data-variation-id="<?php echo esc_attr($variation_id); ?>"
+        data-price="<?php echo esc_attr($price); ?>"
+        data-regular-price="<?php echo esc_attr($regular_price ? $regular_price : $price); ?>">
+        <div class="bt-product-thumb">
+            <a href="<?php echo esc_url($product_link); ?>">
+                <?php echo $product_image; ?>
+            </a>
+        </div>
+        <div class="bt-product-info">
+            <h4 class="bt-product-name">
+                <a href="<?php echo esc_url($product_link); ?>"><?php echo esc_html($product_name); ?></a>
+            </h4>
+            <div class="bt-product-price">
+                <?php echo $product->get_price_html(); ?>
+            </div>
+            <?php if ($variation_text) : ?>
+                <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>
+            <?php endif; ?>
+        </div>
+        <div class="bt-product-actions">
+            <button class="bt-product-remove" data-item-id="<?php echo esc_attr($item_id); ?>">
+                <span class="bt-remove-text"><?php _e('REMOVE', 'woozio'); ?></span>
+            </button>
+        </div>
+    </div>
+<?php
+    $html = ob_get_clean();
+    wp_send_json_success(array('html' => $html));
+}
+add_action('wp_ajax_woozio_get_bundle_product_item', 'woozio_get_bundle_product_item');
+add_action('wp_ajax_nopriv_woozio_get_bundle_product_item', 'woozio_get_bundle_product_item');

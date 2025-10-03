@@ -42,7 +42,7 @@ class Widget_ProductLoopItem extends Widget_Base
 				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
-		$this->add_control(
+		$this->add_responsive_control(
 			'image_ratio',
 			[
 				'label' => __('Image Ratio', 'woozio'),
