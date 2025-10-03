@@ -3,8 +3,53 @@
 	   * @param $scope The Widget wrapper element as a jQuery element
 	 * @param $ The jQuery alias
 	**/
+	/* Check Background Light or Dark */
+	function WoozioCheckBgLightDark() {
+		if ($('.js-check-bg-color').length > 0) {
+			$(".js-check-bg-color").each(function () {
+				let $el = $(this);
+				let bg = $el.css("background-color");
+				let rgb = bg.match(/\d+/g);
+				if (!rgb) return;
 
-	/* location list toggle */
+				let r = parseInt(rgb[0]),
+					g = parseInt(rgb[1]),
+					b = parseInt(rgb[2]);
+
+				let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+				$el.removeClass("bt-bg-light bt-bg-dark")
+					.addClass(yiq >= 128 ? "bt-bg-light" : "bt-bg-dark");
+			});
+		}
+	}
+
+	/* Submenu toggle */
+	const SubmenuToggleHandler = function ($scope, $){
+		var hasChildren = $scope.find('.menu-item-has-children');
+
+		hasChildren.each(function () {
+			var $btnToggle = $('<span class="bt-toggle-icon"></span>');
+
+			$(this).append($btnToggle);
+
+			$btnToggle.on('click', function (e) {
+				e.preventDefault();
+
+				if($(this).parent().hasClass('bt-is-active')){
+					$(this).parent().removeClass('bt-is-active');
+					$(this).parent().children('ul').slideUp();
+				} else {
+					$(this).parent().addClass('bt-is-active');
+					$(this).parent().children('ul').slideDown();
+					$(this).parent().siblings().removeClass('bt-is-active').children('ul').slideUp();
+					$(this).parent().siblings().find('li').removeClass('bt-is-active').children('ul').slideUp();
+				}
+			});
+		});
+	}
+
+	/* Location list toggle */
 	const LocationListHandler = function ($scope, $) {
 		var buttonMore = $scope.find('.bt-more-info');
 		var contentList = $scope.find('.bt-location-list--content');
@@ -2349,6 +2394,7 @@
 
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-list-faq.default', FaqHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion.default', BtAccordionHandler);
