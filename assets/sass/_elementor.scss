@@ -312,7 +312,7 @@
       width: 32px;
       height: 32px;
       z-index: 5;
-      &:before, 
+      &:before,
       &:after {
         content: "";
         width: 12px;
@@ -331,8 +331,7 @@
       }
     }
   }
-  
-} 
+}
 
 .bt-elwg-site-infor {
   display: flex;
@@ -9563,11 +9562,96 @@
 }
 .bt-elwg-product-slider-bottom-hotspot {
   &--default {
+    
+    @media (min-width: 1367px) {
+      &.bt-slider-position-inside {
+        .bt-product-slider-bottom-hotspot__list-products {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 10;
+          padding: 20px;
+          .bt-hotspot-product-list {
+            .bt-hotspot-product-list__item {
+              &.active {
+                border-color: transparent;
+              }
+            }
+          }
+        }
+        .bt-product-slider-bottom-hotspot__image {
+          &::before {
+            content: "";
+            opacity: 0.2;
+            background: linear-gradient(90deg, #181818 0%, rgba(24, 24, 24, 0) 100%);
+            left: 0;
+            height: 100%;
+            width: 40%;
+            display: block;
+            z-index: 1;
+            position: absolute;
+          }
+          .bt-button-wrapper {
+            .bt-button-add-set-to-cart {
+              bottom: auto;
+              top: 20px;
+            }
+          }
+        }
+        .bt-heading {
+          position: absolute;
+          top: 30px;
+          left: 15px;
+          width: 100%;
+          max-width: 512px;
+          z-index: 2;
+          text-align: left;
+          color: #fff;
+          margin: 0;
+        }
+      }
+    }
+    @media (min-width: 1600px) {
+      &.bt-slider-position-inside {
+        .bt-heading {
+          top: 60px;
+          left: 45px;
+        }
+      }
+    }
+    // RTL Direction Support - Keep content LTR
+    &[data-slider-direction="rtl"] {
+      .swiper {
+        direction: rtl;
+      }
+      .bt-hotspot-product-list__item {
+        direction: ltr;
+      }
+    }
+    .bt-heading {
+      font-size: 56px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 68px;
+      color: $color-primary;
+      margin: 0 0 30px 0;
+      text-align: center;
+      font-family: $primary-font;
+      padding: 0 15px;
+      @media (max-width: $break-sm) {
+        margin: 0 0 20px 0;
+      }
+    }
     .bt-product-slider-bottom-hotspot {
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 0;
       &__list-products {
+        padding: 32px 0 0 0;
+        .swiper-wrapper{
+          overflow: initial !important;
+        }
         .bt-hotspot-product-list {
           margin: 0;
           .bt-hotspot-product-list__item {
@@ -9576,6 +9660,7 @@
             border: 1px solid #e9e9e9;
             padding: 20px;
             gap: 20px;
+            background: #fff;
             &.active {
               border: 1px solid $color-primary;
               .bt-number-product {
@@ -9640,7 +9725,8 @@
                     margin: 0;
                     tbody {
                       display: flex;
-                      gap: 10px;
+                      gap: 2px 10px;
+                      flex-wrap: wrap;
                       tr {
                         display: flex;
                         th {
@@ -9949,7 +10035,6 @@
         }
       }
       @media (max-width: $break-sm) {
-        gap: 16px;
         &__image {
           .bt-button-wrapper {
             .bt-button-add-set-to-cart {
@@ -9971,6 +10056,14 @@
           }
         }
         &__list-products {
+          padding: 16px 0 0 0;
+          .bt-list-header {
+            margin-bottom: 20px;
+            .bt-heading {
+              font-size: 28px;
+              line-height: 36px;
+            }
+          }
           .bt-hotspot-product-list {
             .bt-hotspot-product-list__item {
               padding: 10px;
@@ -11223,21 +11316,21 @@
                 width: 70px;
                 height: 70px;
               }
-  
+
               .bt-product-info {
                 flex: 1;
                 min-width: 0;
-  
+
                 .bt-product-name {
                   font-size: 16px;
                   line-height: 20px;
                   margin: 0 0 3px 0;
                 }
-  
+
                 .bt-product-variation {
                   margin: 3px 0 0 0;
                 }
-  
+
                 .bt-product-price {
                   .woocommerce-Price-amount {
                     font-size: 14px;
@@ -11249,7 +11342,7 @@
                   }
                 }
               }
-  
+
               .bt-modal-add-product {
                 padding: 6px 12px;
                 font-size: 13px;

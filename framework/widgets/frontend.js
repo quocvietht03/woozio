@@ -1411,7 +1411,6 @@
 
 							if (variation && variation.price_html) {
 								// Update price display
-								console.log(variation.price_html);
 								if ($ItemProduct.find(".bt-price").length > 0) {
 									$ItemProduct.find(".bt-price").html(variation.price_html);
 								} else {
@@ -1621,42 +1620,48 @@
 	const ProductSliderBottomHotspotHandler = function ($scope) {
 		const $productSliderBottomHotspot = $scope.find('.bt-elwg-product-slider-bottom-hotspot--default');
 		if ($productSliderBottomHotspot.length > 0) {
-			const swiperOptions = {
-				slidesPerView: 1,
-				loop: false,
-				spaceBetween: 30,
-				speed: 1000,
-				autoplay: false,
-				navigation: {
-					nextEl: $productSliderBottomHotspot.find('.bt-button-next')[0],
-					prevEl: $productSliderBottomHotspot.find('.bt-button-prev')[0],
+		// Get width of container
+		const $itemdesktop = $productSliderBottomHotspot.width() < 1560 ? 3 : 4;
+		// Get slider direction from data attribute
+		const sliderDirection = $productSliderBottomHotspot.data('slider-direction') || 'ltr';
+		const isRTL = sliderDirection === 'rtl';
+		
+		const swiperOptions = {
+			slidesPerView: 1,
+			loop: false,
+			spaceBetween: 30,
+			speed: 1000,
+			autoplay: false,
+			rtl: isRTL,
+			navigation: {
+				nextEl: $productSliderBottomHotspot.find('.bt-button-next')[0],
+				prevEl: $productSliderBottomHotspot.find('.bt-button-prev')[0],
+			},
+			pagination: {
+				el: $productSliderBottomHotspot.find('.bt-swiper-pagination')[0],
+				clickable: true,
+				type: 'bullets',
+				renderBullet: function (index, className) {
+					return '<span class="' + className + '"></span>';
 				},
-				pagination: {
-					el: $productSliderBottomHotspot.find('.bt-swiper-pagination')[0],
-					clickable: true,
-					type: 'bullets',
-					renderBullet: function (index, className) {
-						return '<span class="' + className + '"></span>';
-					},
+			},
+			breakpoints: {
+				1560: {
+					slidesPerView: $itemdesktop,
+					spaceBetween: 30
 				},
-				breakpoints: {
-					1560: {
-						slidesPerView: 4,
-						spaceBetween: 30
-					},
-					1200: {
-						slidesPerView: 3,
-						spaceBetween: 30
-					},
-					800: {
-						slidesPerView: 2,
-						spaceBetween: 30
-					}
+				1200: {
+					slidesPerView: 3,
+					spaceBetween: 30
+				},
+				800: {
+					slidesPerView: 2,
+					spaceBetween: 30
 				}
+			}
+		};
 
-			};
-
-			const swiper = new Swiper($productSliderBottomHotspot.find('.swiper')[0], swiperOptions);
+		const swiper = new Swiper($productSliderBottomHotspot.find('.swiper')[0], swiperOptions);
 
 			// Handle hotspot point clicks
 			const $hotspotPoints = $productSliderBottomHotspot.find('.bt-hotspot-point');

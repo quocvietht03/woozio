@@ -68,6 +68,42 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
             ]
         );
         $this->add_control(
+            'show_heading',
+            [
+                'label' => __('Show Heading', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+            ]
+        );
+
+        $this->add_control(
+            'heading',
+            [
+                'label' => __('Heading', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('Complete Your Style', 'woozio'),
+                'placeholder' => __('Enter heading', 'woozio'),
+                'label_block' => true,
+                'condition' => [
+                    'show_heading' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'show_add_set_to_cart',
+            [
+                'label' => __('Show Add Set to Cart', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'yes',
+            ]
+        );
+        $this->add_control(
             'hotspot_image',
             [
                 'label' => __('Image', 'woozio'),
@@ -185,6 +221,31 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'slider_position',
+            [
+                'label' => __('Slider Position', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'outside',
+                'options' => [
+                    'inside' => __('Inside', 'woozio'),
+                    'outside' => __('Outside', 'woozio'),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'slider_direction',
+            [
+                'label' => __('Slider Direction', 'woozio'),
+                'type' => Controls_Manager::SELECT,
+                'default' => 'ltr',
+                'options' => [
+                    'ltr' => __('Left to Right', 'woozio'),
+                    'rtl' => __('Right to Left', 'woozio'),
+                ],
+            ]
+        );
         $this->end_controls_section();
     }
     protected function register_style_content_section_controls()
@@ -196,70 +257,28 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
-        $this->add_control(
-            'content_position',
+
+        $this->add_responsive_control(
+            'slider_padding',
             [
-                'label' => __('Content Position', 'woozio'),
-                'type' => Controls_Manager::CHOOSE,
-                'options' => [
-                    'left' => [
-                        'title' => __('Left', 'woozio'),
-                        'icon' => 'eicon-h-align-left',
-                    ],
-                    'center' => [
-                        'title' => __('Center', 'woozio'),
-                        'icon' => 'eicon-h-align-center',
-                    ],
-                    'right' => [
-                        'title' => __('Right', 'woozio'),
-                        'icon' => 'eicon-h-align-right',
-                    ],
-                ],
-                'default' => 'center',
-                'toggle' => false,
+                'label' => __('Slider Padding', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%', 'em'],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-product-list-hotspot__list-products' => 'text-align: {{VALUE}};',
+                    '{{WRAPPER}} .bt-product-slider-bottom-hotspot__list-products' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
-        $this->add_control(
-            'sub_heading_color',
-            [
-                'label' => __('Sub Heading Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-sub-heading' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name'     => 'sub_heading_typography',
-                'label'    => __('Typography', 'woozio'),
-                'default'  => '',
-                'selector' => '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-sub-heading',
-            ]
-        );
-        $this->add_control(
-            'heading_color',
-            [
-                'label' => __('Heading Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-heading' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
+
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
                 'name' => 'heading_typography',
-                'label' => __('Typography', 'woozio'),
-                'default'  => '',
-                'selector' => '{{WRAPPER}} .bt-product-list-hotspot__list-products .bt-list-header .bt-heading',
+                'label' => __('Heading Typography', 'woozio'),
+                'selector' => '{{WRAPPER}} .bt-heading',
             ]
         );
+
         $this->end_controls_section();
     }
 
@@ -278,7 +297,10 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
         }
 
 ?>
-        <div class="bt-elwg-product-slider-bottom-hotspot--default">
+        <div class="bt-elwg-product-slider-bottom-hotspot--default bt-slider-position-<?php echo esc_attr($settings['slider_position']); ?>" data-slider-direction="<?php echo esc_attr($settings['slider_direction']); ?>">
+            <?php if ($settings['show_heading'] === 'yes' && !empty($settings['heading'])) : ?>
+                <h3 class="bt-heading"><?php echo esc_html($settings['heading']); ?></h3>
+            <?php endif; ?>
             <div class="bt-product-slider-bottom-hotspot">
                 <div class="bt-product-slider-bottom-hotspot__image">
                     <div class="bt-hotspot-image" style="position: relative;">
@@ -289,12 +311,12 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                             echo '<img src="' . esc_url($settings['hotspot_image']['url']) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
                         }
                         ?>
-                        <?php if (!empty($settings['hotspot_items'])) : ?>
+                        <?php if (!empty($settings['hotspot_items'])) :
+                        ?>
                             <div class="bt-hotspot-points">
                                 <?php foreach ($settings['hotspot_items'] as $index => $item) :
                                     $product = wc_get_product($item['id_product']);
                                     if ($product) :
-
                                 ?>
                                         <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
                                             data-product-id="<?php echo esc_attr($item['id_product']); ?>">
@@ -325,8 +347,8 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                 'variation_id' => $variation_id,
                             ];
                         }
-                    }     
-                    if (!empty($product_ids)) :
+                    }
+                    if (!empty($product_ids) && $settings['show_add_set_to_cart'] === 'yes') :
                     ?>
                         <div class="bt-button-wrapper">
                             <a class="bt-button bt-button-add-set-to-cart" data-ids="<?php echo esc_attr(json_encode($product_ids)); ?>" href="#">
@@ -341,6 +363,7 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                     <?php endif; ?>
                 </div>
                 <div class="bt-product-slider-bottom-hotspot__list-products">
+
                     <?php if (!empty($settings['hotspot_items'])) : ?>
                         <ul class="bt-hotspot-product-list swiper swiper-container">
                             <div class="swiper-wrapper">
@@ -355,6 +378,13 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
 
                                 // Prepare WP_Query to get products in the same order as hotspot_items
                                 if (!empty($hotspot_product_ids)) {
+
+                                    // If RTL mode, reverse the product IDs order
+                                    if ($settings['slider_direction'] === 'rtl') {
+                                        $hotspot_product_ids = array_reverse($hotspot_product_ids);
+                                        $total_items = count($hotspot_product_ids);
+                                    }
+
                                     $args = [
                                         'post_type'      => 'product',
                                         'post__in'       => $hotspot_product_ids,
@@ -381,7 +411,13 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                 data-product-single-price="<?php echo esc_attr($product->get_sale_price() ? $product->get_sale_price() : $product->get_regular_price()); ?>"
                                                 data-product-id="<?php echo esc_attr($product_id); ?>">
                                                 <div class="bt-number-product">
-                                                    <?php echo $index; ?>
+                                                    <?php
+                                                    if ($settings['slider_direction'] === 'rtl') {
+                                                        echo $total_items;
+                                                    } else {
+                                                        echo $index;
+                                                    }
+                                                    ?>
                                                 </div>
                                                 <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                     <?php
@@ -416,7 +452,11 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                 </div>
                                             </li>
                                 <?php
-                                            $index++;
+                                            if ($settings['slider_direction'] === 'rtl') {
+                                                $total_items--;
+                                            } else {
+                                                $index++;
+                                            }
                                         endwhile;
                                         wp_reset_postdata();
                                     endif;

@@ -397,4 +397,72 @@
       }
     }
   }
+  &--style3 {
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        .gform-body {
+          input[type="email"] {
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 200px 20px 32px;
+            height: 90px;
+            font-size: 24px !important;
+            font-style: normal !important;
+            font-weight: 500 !important;
+            line-height: 30px !important;
+            color: #fff !important;
+            &::placeholder {
+              color: $color-text !important;
+            }
+          }
+        }
+        .gform_footer {
+          top: 20px;
+          right: 20px;
+          input[type="submit"] {
+            font-size: 16px !important;
+            padding: 0 55px 0 24px !important;
+            background-color: #fff !important;
+            height: 50px !important;
+            background-image: url("../images/arrow-up-right-black.svg") !important;
+            background-position: center right 24px !important;
+            background-repeat: no-repeat !important;
+            background-size: 24px !important;
+          }
+        }
+        &.loading {
+          .gform_footer {
+            input[type="submit"],
+            button[type="submit"] {
+              background: #fff !important;
+              color: transparent !important;
+            }
+          }
+        }
+        @media (max-width: $break-tl) {
+          .gform-body {
+            input[type="email"] {
+              padding: 12px 160px 12px 20px;
+              height: 70px;
+              font-size: 20px !important;
+              line-height: 26px !important;
+              font-size: 18px !important;
+              font-weight: 400 !important;
+            }
+          }
+          .gform_footer {
+            top: 12px;
+            right: 12px;
+            input[type="submit"] {
+              font-size: 14px !important;
+              padding: 0 45px 0 20px !important;
+              height: 46px !important;
+              background-size: 20px !important;
+              background-position: center right 20px !important;
+            }
+          }
+        }
+      }
+    }
+  }
 }
