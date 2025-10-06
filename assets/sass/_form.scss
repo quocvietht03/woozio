@@ -344,6 +344,9 @@
           input[type="email"] {
             border-color: rgba(255, 255, 255, 0.1);
             background: transparent;
+            &::placeholder{
+              color: $color-text;
+            }
           }
         }
         .gform_footer {

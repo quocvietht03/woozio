@@ -200,25 +200,42 @@ body {
             }
         }
     }
-    &.bt-text-image-slider{
-        @media(max-width:1660px) and (min-width:1367px){
-           .swiper-slide{
-             > .elementor-element{
-                > .e-con-inner{
-                    > .elementor-element{
-                        &:nth-child(2){
-                          padding: 20px;
-                          .elementor-heading-title{
-                            font-size: 33px;
-                          }
-                          .elementor-button{
-                            padding: 12px 20px;
-                          }
+    &.bt-text-image-slider {
+        @media (max-width: 1660px) and (min-width: 1367px) {
+            .swiper-slide {
+                > .elementor-element {
+                    > .e-con-inner {
+                        > .elementor-element {
+                            &:nth-child(2) {
+                                padding: 20px;
+                                .elementor-heading-title {
+                                    font-size: 33px;
+                                }
+                                .elementor-button {
+                                    padding: 12px 20px;
+                                }
+                            }
                         }
                     }
                 }
-             }
-           }
+            }
         }
-    }   
+    }
+    &.bt-section-image-product-home-glasses {
+        @media (max-width: 1660px) and (min-width: 1367px) {
+            > .e-con-inner {
+                > .elementor-element {
+                    &:nth-child(2) {
+                        --align-items: center;
+                    }
+                }
+            }
+            .elementor-element {
+                &.elementor-widget-loop-carousel {
+                    --arrow-prev-left-position: -80px;
+                    --arrow-next-right-position: -80px;
+                }
+            }
+        }
+    }
 }
