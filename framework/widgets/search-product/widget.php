@@ -165,10 +165,112 @@ class Widget_SearchProduct extends Widget_Base
 		);
 		$this->end_controls_section();
 	}
+	protected function register_style_section_controls()
+	{
+		$this->start_controls_section(
+			'section_style',
+			[
+				'label' => __('Style', 'woozio'),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+		$this->add_control(
+			'input_color',
+			[
+				'label' => __('Input Text Color', 'woozio'), 
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form input[type="search"]' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'input_placeholder_color',
+			[
+				'label' => __('Placeholder Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form input[type="search"]::placeholder' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		$this->add_control(
+			'search_icon_color',
+			[
+				'label' => __('Search Icon Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form .bt-search-submit svg path' => 'stroke: {{VALUE}};',
+				],
+				'condition' => [
+					'layout_type' => ['layout-02', 'layout-03'],
+				],
+			]
+		);
+
+		$this->add_control(
+			'form_background',
+			[
+				'label' => __('Form Background', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form' => 'background-color: {{VALUE}};',
+				],
+				'condition' => [
+					'layout_type' => 'layout-02',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'form_border',
+				'label' => __('Form Border', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-search--form',
+				'condition' => [
+					'layout_type' => 'layout-02',
+				],
+			]
+		);
+		$this->add_control(
+			'form_border_radius',
+			[
+				'label' => __('Border Radius', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [
+					'layout_type' => 'layout-02',
+				],
+			]
+		);
+
+		$this->add_control(
+			'form_padding',
+			[
+				'label' => __('Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [
+					'layout_type' => 'layout-02',
+				],
+			]
+		);
+       
+		$this->end_controls_section();
+	}
 
 	protected function register_controls()
 	{
 		$this->register_query_section_controls();
+		$this->register_style_section_controls();
 	}
 
 	protected function render()

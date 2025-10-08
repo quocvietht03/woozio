@@ -59,6 +59,7 @@ class ElementorWidgets
 			'post-loop-item-style-1',
 			'post-loop-item-style-2',
 			'post-loop-item-style-3',
+			'post-grid',
 			'product-loop-item',
 			'product-loop-item-style-1',
 			'product-loop-item-style-2',
@@ -208,7 +209,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle1\Widget_PostLoopItemStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle2\Widget_PostLoopItemStyle2());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle3\Widget_PostLoopItemStyle3());
-
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostGrid\Widget_PostGrid());
+		
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItem\Widget_ProductLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle1\Widget_ProductLoopItemStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle2\Widget_ProductLoopItemStyle2());
