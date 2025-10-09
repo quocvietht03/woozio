@@ -2323,8 +2323,7 @@
 		if ($('.variations_form').length > 0) {
 			$('.variations_form').each(function () {
 				var $form = $(this);
-
-				$form.on('show_variation', function (event, variation) {
+				$form.off('show_variation').on('show_variation', function (event, variation) {
 					if (!variation) return;
 
 					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
