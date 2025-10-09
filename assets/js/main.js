@@ -278,16 +278,15 @@
 				}
 				// update js variations_form woo
 				if (typeof $.fn.wc_variation_form !== 'undefined') {
-					$('.variations_form').each(function() {
+					$('.variations_form').each(function () {
 						if (!$(this).data('variation-form-initialized')) {
 							$(this).wc_variation_form();
 							$(this).data('variation-form-initialized', true);
 						}
 					});
-				
+
 				}
-				$(this).closest('.variations_form').off('show_variation').on('show_variation', function (event, variation) {
-					
+				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					var variationId = variation.variation_id;
 					//alert(variationId);
 					if (variationId && variationId !== '0') {
@@ -308,7 +307,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-						
+
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -464,7 +463,7 @@
 						}
 					}
 				});
-				
+
 				$('.bt-attributes-wrap .bt-js-item').each(function () {
 					var valueItem = $(this).data('value');
 					var attributesItem = $(this).closest('.bt-attributes--item');
@@ -577,7 +576,7 @@
 			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
 				toastTimeshow = AJ_Options.wishlist_toast_time;
 			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
-				toastTimeshow = AJ_Options.compare_toast_time; 
+				toastTimeshow = AJ_Options.compare_toast_time;
 			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
 				toastTimeshow = AJ_Options.cart_toast_time;
 			} else {
@@ -588,7 +587,7 @@
 				idproduct: idproduct,
 				status: status,
 				tools: tools
-			};	
+			};
 			$.ajax({
 				type: 'POST',
 				dataType: 'json',
@@ -2323,7 +2322,7 @@
 		if ($('.variations_form').length > 0) {
 			$('.variations_form').each(function () {
 				var $form = $(this);
-				$form.off('show_variation').on('show_variation', function (event, variation) {
+				$form.off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					if (!variation) return;
 
 					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
@@ -2385,8 +2384,8 @@
 		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
 	});
 	// Block WooCommerce from changing images
-	jQuery(function($) {
-		$.fn.wc_variations_image_update = function(variation) {
+	jQuery(function ($) {
+		$.fn.wc_variations_image_update = function (variation) {
 			return this;
 		};
 	});
