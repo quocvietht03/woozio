@@ -57,7 +57,7 @@ class Widget_PostGrid extends Widget_Base
 		$supported_taxonomies = [];
 
 		$categories = get_terms(array(
-			'taxonomy' => 'post_categories',
+			'taxonomy' => 'category',
 			'hide_empty' => false,
 		));
 		if (! empty($categories)  && ! is_wp_error($categories)) {
@@ -610,7 +610,7 @@ class Widget_PostGrid extends Widget_Base
 		if (! empty($settings['category'])) {
 			$args['tax_query'] = array(
 				array(
-					'taxonomy' 		=> 'post_categories',
+					'taxonomy' 		=> 'category',
 					'terms' 		=> $settings['category'],
 					'field' 		=> 'term_id',
 					'operator' 		=> 'IN'
@@ -621,7 +621,7 @@ class Widget_PostGrid extends Widget_Base
 		if (! empty($settings['category_exclude'])) {
 			$args['tax_query'] = array(
 				array(
-					'taxonomy' 		=> 'post_categories',
+					'taxonomy' 		=> 'category',
 					'terms' 		=> $settings['category_exclude'],
 					'field' 		=> 'term_id',
 					'operator' 		=> 'NOT IN'

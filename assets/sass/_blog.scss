@@ -611,6 +611,7 @@
               height: 100%;
               @media (min-width: $break-md) {
                 padding: 0;
+                min-height: 350px;
               }
               &::before {
                 content: "";
