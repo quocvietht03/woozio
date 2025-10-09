@@ -259,7 +259,6 @@
 	}
 	function WoozioProductVariationHandler() {
 		if ($('.variations_form').length > 0) {
-			var test = 1;
 			$(document).on('click', '.bt-attributes-wrap .bt-js-item', function () {
 				var valueItem = $(this).data('value');
 				var attributesItem = $(this).closest('.bt-attributes--item');
@@ -285,6 +284,7 @@
 							$(this).data('variation-form-initialized', true);
 						}
 					});
+				
 				}
 				$(this).closest('.variations_form').off('show_variation').on('show_variation', function (event, variation) {
 					
@@ -308,7 +308,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-						test++;
+						
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -464,7 +464,7 @@
 						}
 					}
 				});
-				console.log(test);
+				
 				$('.bt-attributes-wrap .bt-js-item').each(function () {
 					var valueItem = $(this).data('value');
 					var attributesItem = $(this).closest('.bt-attributes--item');
@@ -2384,6 +2384,13 @@
 		WoozioAddToCartVariable();
 		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
 	});
+	// Block WooCommerce from changing images
+	jQuery(function($) {
+		$.fn.wc_variations_image_update = function(variation) {
+			return this;
+		};
+	});
+
 	$(document.body).on('added_to_cart', function (event, fragments, cart_hash, $button) {
 		// Only show toast if not in Elementor editor
 		WoozioFreeShippingMessage();
