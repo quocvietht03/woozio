@@ -259,6 +259,7 @@
 	}
 	function WoozioProductVariationHandler() {
 		if ($('.variations_form').length > 0) {
+			var test = 1;
 			$(document).on('click', '.bt-attributes-wrap .bt-js-item', function () {
 				var valueItem = $(this).data('value');
 				var attributesItem = $(this).closest('.bt-attributes--item');
@@ -278,11 +279,15 @@
 				}
 				// update js variations_form woo
 				if (typeof $.fn.wc_variation_form !== 'undefined') {
-					$(this).closest('.variations_form').wc_variation_form();
+					$('.variations_form').each(function() {
+						if (!$(this).data('variation-form-initialized')) {
+							$(this).wc_variation_form();
+							$(this).data('variation-form-initialized', true);
+						}
+					});
 				}
-
-				$(this).closest('.variations_form').on('show_variation', function (event, variation) {
-
+				$(this).closest('.variations_form').off('show_variation').on('show_variation', function (event, variation) {
+					
 					var variationId = variation.variation_id;
 					//alert(variationId);
 					if (variationId && variationId !== '0') {
@@ -303,7 +308,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-
+						test++;
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -459,7 +464,7 @@
 						}
 					}
 				});
-
+				console.log(test);
 				$('.bt-attributes-wrap .bt-js-item').each(function () {
 					var valueItem = $(this).data('value');
 					var attributesItem = $(this).closest('.bt-attributes--item');
