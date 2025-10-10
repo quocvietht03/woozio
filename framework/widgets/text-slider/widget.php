@@ -156,7 +156,8 @@ class Woozio_TextSlider extends Widget_Base
         $this->start_controls_section(
             'section_content_style',
             [
-                'label' => esc_html__('Content Style', 'woozio'),
+                'label' => esc_html__('Content', 'woozio'),
+                'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
         $this->add_responsive_control(
@@ -199,7 +200,7 @@ class Woozio_TextSlider extends Widget_Base
                     'size' => 30,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-text--item img' => 'max-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-text--item img' => 'width: {{SIZE}}{{UNIT}};max-width: {{SIZE}}{{UNIT}};',
                     '{{WRAPPER}} .bt-text--item svg' => 'width: {{SIZE}}{{UNIT}};height: {{SIZE}}{{UNIT}};',
                 ],
             ]
@@ -218,7 +219,7 @@ class Woozio_TextSlider extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-text--item img' => 'max-height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-text--item img' => 'height: {{SIZE}}{{UNIT}};',
                     '{{WRAPPER}} .bt-text--item svg' => 'height: {{SIZE}}{{UNIT}};',
                 ],
             ]
@@ -237,6 +238,17 @@ class Woozio_TextSlider extends Widget_Base
                 ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-text--item img' => 'object-fit: {{VALUE}};',
+                ],
+            ]
+        );
+        $this->add_control(
+            'image_border_radius',
+            [
+                'label' => __('Image Border Radius', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-text--item img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
                 ],
             ]
         );
@@ -321,7 +333,7 @@ class Woozio_TextSlider extends Widget_Base
                             if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
                                 echo file_get_contents($image_url);
                             } else {
-                                echo wp_get_attachment_image($image_id, 'thumbnail');
+                                echo wp_get_attachment_image($image_id, 'medium');
                             }
                         } else {
                             // Show placeholder if no image                         

@@ -238,4 +238,34 @@ body {
             }
         }
     }
+    &.bt-list-link-curated {
+        .elementor-icon-list-items {
+            .elementor-icon-list-item {
+                flex-direction: row-reverse;
+                justify-content: space-between;
+                gap: 10px;
+                a {
+                    flex-direction: row-reverse;
+                    justify-content: space-between;
+                    gap: 10px;
+                }
+                .elementor-icon-list-text {
+                    padding: 0;
+                }
+                &:hover {
+                    a {
+                        > * {
+                            color: $color-primary;
+                            svg {
+                                fill: $color-primary;
+                            }
+                        }
+                    }
+                    &:after{
+                        border-color: $color-primary !important;
+                    }
+                }
+            }
+        }
+    }
 }

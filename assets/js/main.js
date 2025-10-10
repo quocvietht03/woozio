@@ -1117,7 +1117,7 @@
 							$('.bt-popup-quick-view .bt-quick-view-load').html(response.data['product']).fadeIn('slow');
 							WoozioLoadShopQuickView();
 							WoozioProductButtonStatus();
-							WoozioLoadDefaultActiveVariations();
+							WoozioLoadDefaultActiveVariations('.bt-popup-quick-view');
 							if (typeof $.fn.wc_variation_form !== 'undefined') {
 								$('.bt-quickview-product .variations_form').wc_variation_form();
 							}
@@ -2312,9 +2312,14 @@
 		});
 	}
 	/* Load data for default active variation items */
-	function WoozioLoadDefaultActiveVariations() {
-		if ($('.variations_form').length > 0) {
-			$('.variations_form').each(function () {
+	function WoozioLoadDefaultActiveVariations(context) {
+		// If context is provided, search within that context, otherwise search globally
+		var $context = context ? $(context) : $(document);
+		var $variationForms = $context.find('.variations_form');
+		
+		if ($variationForms.length > 0) {
+
+			$variationForms.each(function () {
 				var $form = $(this);
 				$form.off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					if (!variation) return;
@@ -2335,6 +2340,7 @@
 					$activeItems.first().trigger('click');
 				}
 			});
+			
 		}
 	}
 
