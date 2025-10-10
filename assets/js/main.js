@@ -1987,6 +1987,8 @@
 				success: function (response) {
 					if (response.success) {
 						$('.recently-viewed-products').html(response.data);
+						WoozioProductColorVariationsLoadImage();
+						WoozioLoadDefaultActiveVariations();
 					}
 				}
 			})
@@ -2225,6 +2227,7 @@
 		if ($('.bt-product-add-to-cart-variable').length > 0) {
 			$(document).on('click', '.bt-product-add-to-cart-variable .bt-value-color .bt-item-color', function (e) {
 				var valueColor = $(this).data('value');
+				
 				const productContainer = $(this).closest('.woocommerce-loop-product');
 				const colorVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
 				const colorVariations = colorVariationsContainer.data('color-variations');
@@ -2239,7 +2242,6 @@
 					if (matchingColor && colorVariations[matchingColor]) {
 						const colorData = colorVariations[matchingColor];
 						productContainer.find('.bt-product-images-wrapper').html(colorData.variable_image_html);
-
 					} else {
 						console.log('No matching color found for:', valueColor);
 					}
