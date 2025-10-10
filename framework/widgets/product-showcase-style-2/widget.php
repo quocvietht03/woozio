@@ -100,6 +100,9 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 				'show_label' => true,
 				'default' => 'medium_large',
 				'exclude' => ['custom'],
+				'condition' => [
+					'layout' => ['default'],
+				],
 			]
 		);
 
@@ -117,6 +120,9 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 				],
 				'selectors' => [
 					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image img' => 'object-fit: {{VALUE}};',
+				],
+				'condition' => [
+					'layout' => ['default'],
 				],
 			]
 		);
@@ -138,6 +144,7 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 				],
 				'selectors' => [
 					'{{WRAPPER}} .bt-product-showcase--item-image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+					'{{WRAPPER}} .bt-layout-layout-01 .bt-product-showcase--item-images .woocommerce-product-gallery__image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
 				],
 			]
 		);
