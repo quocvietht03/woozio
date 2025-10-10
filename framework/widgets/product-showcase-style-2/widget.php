@@ -80,6 +80,17 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 				],
 			]
 		);
+		$this->add_control(
+			'layout_01_note',
+			[
+				'type' => Controls_Manager::RAW_HTML,
+				'raw' => __('Select a layout in product edit page for this layout to work properly. Supported layouts are: bottom-thumbnail, left-thumbnail, right-thumbnail', 'woozio'),
+				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+				'condition' => [
+					'layout' => 'layout-01',
+				],
+			]
+		);
 		
 		$this->add_control(
 			'products',
