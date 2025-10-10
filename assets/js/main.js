@@ -103,17 +103,28 @@
 		});
 	}
 
-	function WoozioSliderThumbs() {
-		if ($('.woocommerce-product-gallery__slider').length == 0) {
+	function WoozioSliderThumbs(container) {
+		// If container is provided, scope within it; otherwise use global
+		var $context = container ? $(container) : $(document);
+
+		if ($context.find('.woocommerce-product-gallery__slider').length == 0) {
 			return
 		}
 
 		var thumbDirection = 'horizontal';
-		if ($('.bt-left-thumbnail').length > 0 || $('.bt-right-thumbnail').length > 0) {
+		if ($context.find('.bt-left-thumbnail').length > 0 || $context.find('.bt-right-thumbnail').length > 0) {
 			thumbDirection = 'vertical';
 		}
 
-		var galleryThumbs = new Swiper('.woocommerce-product-gallery__slider-thumbs', {
+		// Get specific elements within context
+		var thumbsElement = $context.find('.woocommerce-product-gallery__slider-thumbs')[0];
+		var sliderElement = $context.find('.woocommerce-product-gallery__slider')[0];
+
+		if (!thumbsElement || !sliderElement) {
+			return;
+		}
+
+		var galleryThumbs = new Swiper(thumbsElement, {
 			direction: thumbDirection,
 			spaceBetween: 10,
 			autoHeight: true,
@@ -140,13 +151,13 @@
 				}
 			}
 		});
-		var galleryTop = new Swiper('.woocommerce-product-gallery__slider', {
+		var galleryTop = new Swiper(sliderElement, {
 			spaceBetween: 20,
 			loop: false,
 			loopedSlides: 5,
 			navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
+				nextEl: $context.find('.swiper-button-next')[0],
+				prevEl: $context.find('.swiper-button-prev')[0],
 			},
 			thumbs: {
 				swiper: galleryThumbs,
@@ -286,6 +297,7 @@
 					});
 
 				}
+				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					var variationId = variation.variation_id;
 					//alert(variationId);
@@ -369,68 +381,71 @@
 											</div>
 									</div>`;
 								}
-								// Remove existing gallery
-								$('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').addClass('loading');
-								$('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').prepend(skeletonHtml);
+								// Remove existing gallery 
+								$productContainer.find('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').addClass('loading');
+								$productContainer.find('.woocommerce-product-gallery, .bt-gallery-grid-products, .bt-gallery-slider-products').prepend(skeletonHtml);
 
-								$('.bt-attributes-wrap .bt-js-item').addClass('disable');
+								$productContainer.find('.bt-attributes-wrap .bt-js-item').addClass('disable');
 							},
 							success: function (response) {
 								if (response.success) {
-									if (gallerylayout == 'gallery-slider') {
-											$('.bt-gallery-slider-products').html(response.data['gallery-slider']);
+									if ($productContainer.length > 0) {
+										if (gallerylayout == 'gallery-slider') {
+											$productContainer.find('.bt-gallery-slider-products').html(response.data['gallery-slider']);
 											WoozioImageZoomable();
 											WoozioGalleryLightbox();
 											WoozioGallerySlider();
 
 											setTimeout(function () {
-												$('.bt-skeleton-gallery').remove();
-												$('.bt-gallery-slider-products').removeClass('loading');
-										}, 200);
-									} else if (gallerylayout == 'gallery-grid') {
-											$('.bt-gallery-grid-products').data('items', response.data['itemgallery']);
-											$('.bt-gallery-grid-product').html(response.data['gallery-grid']);
+												$productContainer.find('.bt-skeleton-gallery').remove();
+												$productContainer.find('.bt-gallery-slider-products').removeClass('loading');
+											}, 200);
+										} else if (gallerylayout == 'gallery-grid') {
+											$productContainer.find('.bt-gallery-grid-products').data('items', response.data['itemgallery']);
+											$productContainer.find('.bt-gallery-grid-product').html(response.data['gallery-grid']);
 
 											WoozioImageZoomable();
 
-											var items = $('.bt-gallery-grid-products').data('items'),
-												shown = $('.bt-gallery-grid-products').data('shown');
-											$('.bt-gallery-grid-product__item:lt(' + shown + ')').addClass('show');
+											var items = $productContainer.find('.bt-gallery-grid-products').data('items'),
+												shown = $productContainer.find('.bt-gallery-grid-products').data('shown');
+											$productContainer.find('.bt-gallery-grid-product__item:lt(' + shown + ')').addClass('show');
 											if (shown < items) {
-												$('.bt-gallery-grid-products .bt-show-more').show();
+												$productContainer.find('.bt-gallery-grid-products .bt-show-more').show();
 											} else {
-												$('.bt-gallery-grid-products .bt-show-more').hide();
+												$productContainer.find('.bt-gallery-grid-products .bt-show-more').hide();
 											}
 
 											setTimeout(function () {
-												$('.bt-skeleton-gallery').remove();
-												$('.bt-gallery-grid-products').removeClass('loading');
+												$productContainer.find('.bt-skeleton-gallery').remove();
+												$productContainer.find('.bt-gallery-grid-products').removeClass('loading');
 											}, 200);
-									} else {
-										if (response.data['itemgallery'] > 1) {
-											$('.woocommerce-product-gallery__wrapper').addClass('bt-has-slide-thumbs');
-											$('.bt-skeleton-gallery .bt-skeleton-thumbnails').show();
 										} else {
-											$('.woocommerce-product-gallery__wrapper').removeClass('bt-has-slide-thumbs');
-											$('.bt-skeleton-gallery .bt-skeleton-thumbnails').hide();
-										}
-											$('.woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
+											if (response.data['itemgallery'] > 1) {
+												$productContainer.find('.woocommerce-product-gallery__wrapper').addClass('bt-has-slide-thumbs');
+												$productContainer.find('.bt-skeleton-gallery .bt-skeleton-thumbnails').show();
+											} else {
+												$productContainer.find('.woocommerce-product-gallery__wrapper').removeClass('bt-has-slide-thumbs');
+												$productContainer.find('.bt-skeleton-gallery .bt-skeleton-thumbnails').hide();
+											}
+											$productContainer.find('.woocommerce-product-gallery__wrapper').html(response.data['slider-thumb']);
 											WoozioImageZoomable();
 											WoozioGalleryLightbox();
-											WoozioSliderThumbs();
+											WoozioSliderThumbs($productContainer);
 
 											setTimeout(function () {
-												$('.woocommerce-product-gallery').removeClass('loading');
-												$('.bt-skeleton-gallery').remove();
+												$productContainer.find('.woocommerce-product-gallery').removeClass('loading');
+												$productContainer.find('.bt-skeleton-gallery').remove();
 											}, 200);
+										}
 									}
-									$('.bt-attributes-wrap .bt-js-item').removeClass('disable');
+									$productContainer.find('.bt-attributes-wrap .bt-js-item').removeClass('disable');
+
 								}
 							},
 							error: function (xhr, status, error) {
 								console.log('Error loading gallery:', error);
-								$('.woocommerce-product-gallery').removeClass('loading');
-								$('.bt-attributes-wrap .bt-js-item').removeClass('disable');
+								$productContainer.find('.woocommerce-product-gallery').removeClass('loading');
+								$productContainer.find('.bt-attributes-wrap .bt-js-item').removeClass('disable');
 							}
 						});
 						//Get variation price from data-product_variations
@@ -484,7 +499,7 @@
 		if ($('.bt-quickview-product').length > 0) {
 			WoozioImageZoomable();
 			WoozioGalleryLightbox();
-			WoozioSliderThumbs();
+			WoozioSliderThumbs('.bt-quickview-product');
 		}
 		// check button add to cart 
 		if ($('.bt-quickview-product .grouped_form').length > 0) {
@@ -2316,7 +2331,7 @@
 		// If context is provided, search within that context, otherwise search globally
 		var $context = context ? $(context) : $(document);
 		var $variationForms = $context.find('.variations_form');
-		
+
 		if ($variationForms.length > 0) {
 
 			$variationForms.each(function () {
@@ -2340,7 +2355,7 @@
 					$activeItems.first().trigger('click');
 				}
 			});
-			
+
 		}
 	}
 

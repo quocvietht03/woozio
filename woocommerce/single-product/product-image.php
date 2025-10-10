@@ -18,7 +18,7 @@ if (!function_exists('wc_get_gallery_image_html')) {
 }
 
 global $product;
-
+$product_layout = get_post_meta($product->get_id(), '_layout_product', true);
 $columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
 $post_thumbnail_id = $product->get_image_id();
 $wrapper_classes   = apply_filters(
@@ -28,6 +28,7 @@ $wrapper_classes   = apply_filters(
 		'woocommerce-product-gallery--' . ( $post_thumbnail_id ? 'with-images' : 'without-images' ),
 		'woocommerce-product-gallery--columns-' . absint( $columns ),
 		'images',
+		'bt-' . $product_layout
 	)
 );
 

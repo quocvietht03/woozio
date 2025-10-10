@@ -3089,11 +3089,6 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
 add_action('woocommerce_after_add_to_cart_button', 'woozio_woocommerce_after_add_to_cart_button', 10);
 function woozio_woocommerce_after_add_to_cart_button()
 {
-    // Do not output anything on single product page
-    if (is_product()) {
-        return;
-    }
-
     global $product;
     $variation_id = 0;
     if (isset($_REQUEST['variation_id'])) {

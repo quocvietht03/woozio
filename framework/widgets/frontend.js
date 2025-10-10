@@ -25,7 +25,7 @@
 	}
 
 	/* Submenu toggle */
-	const SubmenuToggleHandler = function ($scope, $){
+	const SubmenuToggleHandler = function ($scope, $) {
 		var hasChildren = $scope.find('.menu-item-has-children');
 
 		hasChildren.each(function () {
@@ -36,7 +36,7 @@
 			$btnToggle.on('click', function (e) {
 				e.preventDefault();
 
-				if($(this).parent().hasClass('bt-is-active')){
+				if ($(this).parent().hasClass('bt-is-active')) {
 					$(this).parent().removeClass('bt-is-active');
 					$(this).parent().children('ul').slideUp();
 				} else {
@@ -382,7 +382,7 @@
 			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
 				toastTimeshow = AJ_Options.wishlist_toast_time;
 			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
-				toastTimeshow = AJ_Options.compare_toast_time; 
+				toastTimeshow = AJ_Options.compare_toast_time;
 			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
 				toastTimeshow = AJ_Options.cart_toast_time;
 			} else {
@@ -1392,6 +1392,63 @@
 			});
 		}
 	}
+	const ProductShowcaseStyle2Handler = function ($scope) {
+		// Initialize Gallery Slider for Layout 01
+		const $layoutWidget = $scope.find('.bt-layout-layout-01');
+		if ($layoutWidget.length > 0) {
+			const $gallerySlider = $layoutWidget.find('.woocommerce-product-gallery__slider');
+			if ($gallerySlider.length > 0) {
+				// Determine thumb direction based on layout class
+				var thumbDirection = 'horizontal';
+				if ($layoutWidget.find('.bt-left-thumbnail').length > 0 || $layoutWidget.find('.bt-right-thumbnail').length > 0) {
+					thumbDirection = 'vertical';
+				}
+
+				// Initialize thumbnail slider
+				var galleryThumbs = new Swiper($layoutWidget.find('.woocommerce-product-gallery__slider-thumbs')[0], {
+					direction: thumbDirection,
+					spaceBetween: 10,
+					autoHeight: true,
+					loop: false,
+					freeMode: true,
+					loopedSlides: 5,
+					watchSlidesVisibility: true,
+					watchSlidesProgress: true,
+					breakpoints: {
+						0: {
+							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 3,
+						},
+						480: {
+							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+						},
+						768: {
+							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
+						},
+						992: {
+							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 4,
+						},
+						1200: {
+							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 5,
+						}
+					}
+				});
+
+				// Initialize main gallery slider
+				var galleryTop = new Swiper($gallerySlider[0], {
+					spaceBetween: 20,
+					loop: false,
+					loopedSlides: 5,
+					navigation: {
+						nextEl: $layoutWidget.find('.swiper-button-next')[0],
+						prevEl: $layoutWidget.find('.swiper-button-prev')[0],
+					},
+					thumbs: {
+						swiper: galleryThumbs,
+					},
+				});
+			}
+		}
+	}
 	function WoozioProductHotspotAddSetCart($container) {
 		const $variationForm = $container.find('.variations_form');
 		const $productItems = $container.find('.bt-hotspot-product-list__item');
@@ -1620,48 +1677,48 @@
 	const ProductSliderBottomHotspotHandler = function ($scope) {
 		const $productSliderBottomHotspot = $scope.find('.bt-elwg-product-slider-bottom-hotspot--default');
 		if ($productSliderBottomHotspot.length > 0) {
-		// Get width of container
-		const $itemdesktop = $productSliderBottomHotspot.width() < 1560 ? 3 : 4;
-		// Get slider direction from data attribute
-		const sliderDirection = $productSliderBottomHotspot.data('slider-direction') || 'ltr';
-		const isRTL = sliderDirection === 'rtl';
-		
-		const swiperOptions = {
-			slidesPerView: 1,
-			loop: false,
-			spaceBetween: 30,
-			speed: 1000,
-			autoplay: false,
-			rtl: isRTL,
-			navigation: {
-				nextEl: $productSliderBottomHotspot.find('.bt-button-next')[0],
-				prevEl: $productSliderBottomHotspot.find('.bt-button-prev')[0],
-			},
-			pagination: {
-				el: $productSliderBottomHotspot.find('.bt-swiper-pagination')[0],
-				clickable: true,
-				type: 'bullets',
-				renderBullet: function (index, className) {
-					return '<span class="' + className + '"></span>';
-				},
-			},
-			breakpoints: {
-				1560: {
-					slidesPerView: $itemdesktop,
-					spaceBetween: 30
-				},
-				1200: {
-					slidesPerView: 3,
-					spaceBetween: 30
-				},
-				800: {
-					slidesPerView: 2,
-					spaceBetween: 30
-				}
-			}
-		};
+			// Get width of container
+			const $itemdesktop = $productSliderBottomHotspot.width() < 1560 ? 3 : 4;
+			// Get slider direction from data attribute
+			const sliderDirection = $productSliderBottomHotspot.data('slider-direction') || 'ltr';
+			const isRTL = sliderDirection === 'rtl';
 
-		const swiper = new Swiper($productSliderBottomHotspot.find('.swiper')[0], swiperOptions);
+			const swiperOptions = {
+				slidesPerView: 1,
+				loop: false,
+				spaceBetween: 30,
+				speed: 1000,
+				autoplay: false,
+				rtl: isRTL,
+				navigation: {
+					nextEl: $productSliderBottomHotspot.find('.bt-button-next')[0],
+					prevEl: $productSliderBottomHotspot.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $productSliderBottomHotspot.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: {
+					1560: {
+						slidesPerView: $itemdesktop,
+						spaceBetween: 30
+					},
+					1200: {
+						slidesPerView: 3,
+						spaceBetween: 30
+					},
+					800: {
+						slidesPerView: 2,
+						spaceBetween: 30
+					}
+				}
+			};
+
+			const swiper = new Swiper($productSliderBottomHotspot.find('.swiper')[0], swiperOptions);
 
 			// Handle hotspot point clicks
 			const $hotspotPoints = $productSliderBottomHotspot.find('.bt-hotspot-point');
@@ -2185,7 +2242,7 @@
 			$widget.find('.bt-bundle-product--item').each(function () {
 				const variationId = parseInt($(this).data('variation-id'));
 				const productId = parseInt($(this).data('product-id'));
-				
+
 				// If it's a variation, use variation ID, otherwise use product ID
 				const itemId = variationId > 0 ? variationId : productId;
 				currentProducts.push(itemId);
@@ -2243,19 +2300,19 @@
 					if (response.success && response.data.html) {
 						$productsContainer.append(response.data.html);
 						updateBundleDataIds($widget);
-						
+
 						// Remove this product item from modal
-						$button.closest('.bt-modal-product--item').fadeOut(300, function() {
+						$button.closest('.bt-modal-product--item').fadeOut(300, function () {
 							$(this).remove();
-							
+
 							// Check if any products left in modal
 							const $modal = $widget.find('.bt-bundle-save--modal');
 							const $modalBody = $modal.find('.bt-modal-body');
 							const remainingProducts = $modalBody.find('.bt-modal-product--item').length;
-							
+
 							if (remainingProducts === 0) {
 								$modalBody.html('<p class="bt-no-products">All products are already added to the bundle.</p>');
-								setTimeout(function() {
+								setTimeout(function () {
 									$modal.fadeOut();
 								}, 1000);
 							}
@@ -2302,7 +2359,7 @@
 			// Update progress bar
 			const $progressBar = $widget.find('.bt-progress-fill');
 			const $discountText = $widget.find('.bt-discount-text');
-			
+
 			if ($progressBar.length) {
 				$progressBar.css('width', savingsPercent.toFixed(0) + '%');
 			}
@@ -2313,20 +2370,20 @@
 					return;
 				}
 				let text = template;
-				
+
 				// Replace placeholders with styled spans
 				text = text.replace(/\{count\}/g, '<span>' + productCount + '</span>');
 				text = text.replace(/\{discount\}/g, '<span>' + savingsPercent.toFixed(0) + '%</span>');
-				
+
 				$discountText.html(text);
 			}
 
 			// Update button data-ids
 			$addCartBtn.attr('data-ids', JSON.stringify(idsArr));
 			// Check if no products 
-			if(idsArr.length === 0){
+			if (idsArr.length === 0) {
 				$addCartBtn.prop('disabled', true);
-			}else{
+			} else {
 				$addCartBtn.prop('disabled', false);
 			}
 
@@ -2360,9 +2417,9 @@
 			$button.prop('disabled', true).addClass('loading');
 
 			// Show toast for each product
-			
+
 			productIds.forEach((item, idx) => {
-				
+
 				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
 				setTimeout(() => {
 					WoozioshowToast(productId, 'cart', 'add');
@@ -2382,7 +2439,7 @@
 						$(document.body).trigger('updated_wc_div');
 						WoozioFreeShippingMessage();
 						$button.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-						
+
 					} else {
 						alert('Failed to add products to cart.');
 						$button.prop('disabled', false).text(originalText);
@@ -2428,6 +2485,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-1.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-2.default', ProductShowcaseHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-2.default', ProductShowcaseStyle2Handler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-list-hotspot.default', ProductListHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-store-locations-slider.default', StoreLocationsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-slider-bottom-hotspot.default', ProductSliderBottomHotspotHandler);
