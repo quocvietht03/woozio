@@ -19,6 +19,9 @@ if (!function_exists('wc_get_gallery_image_html')) {
 
 global $product;
 $product_layout = get_post_meta($product->get_id(), '_layout_product', true);
+if(isset($_GET['layout']) && !empty($_GET['layout'])) {
+    $product_layout = sanitize_text_field($_GET['layout']);
+}
 $columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
 $post_thumbnail_id = $product->get_image_id();
 $wrapper_classes   = apply_filters(
