@@ -77,6 +77,18 @@ class Widget_PostGrid extends Widget_Base
 				'label' => __('Layout', 'woozio'),
 			]
 		);
+		$this->add_control(
+			'layout',
+			[
+				'label' => __('Layout', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => [
+					'default' => __('Default', 'woozio'),
+					'layout-01' => __('Layout 01', 'woozio'),
+				],
+			]
+		);
 
 		$this->add_control(
 			'posts_per_page',
@@ -93,7 +105,7 @@ class Widget_PostGrid extends Widget_Base
 				'name' => 'thumbnail',
 				'label' => __('Image Size', 'woozio'),
 				'show_label' => true,
-				'default' => 'medium',
+				'default' => 'medium_large',
 				'exclude' => ['custom'],
 			]
 		);
@@ -115,6 +127,39 @@ class Widget_PostGrid extends Widget_Base
 				],
 				'selectors' => [
 					'{{WRAPPER}} .bt-post--featured .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+				],
+				'condition' => [
+					'layout' => 'default',
+				],
+			]
+		);
+		$this->add_responsive_control(
+			'image_height',
+			[
+				'label' => __('Image Height', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px', 'vh'],
+				'range' => [
+					'px' => [
+						'min' => 100,
+						'max' => 800,
+						'step' => 10,
+					],
+					'vh' => [
+						'min' => 10,
+						'max' => 100,
+						'step' => 1,
+					],
+				],
+				'default' => [
+					'size' => 350,
+					'unit' => 'px',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-post--featured .bt-cover-image' => 'height: {{SIZE}}{{UNIT}}; padding-bottom: 0;',
+				],
+				'condition' => [
+					'layout' => 'layout-01',
 				],
 			]
 		);
@@ -642,14 +687,14 @@ class Widget_PostGrid extends Widget_Base
 		$query = $this->query_posts();
 
 ?>
-		<div class="bt-elwg-post-grid--default">
+		<div class="bt-elwg-post-grid--<?php echo $settings['layout']; ?>">
 			<?php
 			if ($query->have_posts()) {
 			?>
 				<div class="bt-post-grid">
 					<?php
 					while ($query->have_posts()) : $query->the_post();
-						get_template_part('framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'], 'layout' => 'default'));
+						get_template_part('framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size']));
 					endwhile;
 					?>
 				</div>
