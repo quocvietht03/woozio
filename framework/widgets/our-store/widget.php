@@ -155,7 +155,7 @@ class Widget_OurStore extends Widget_Base
                     ],
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-store-image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
+                    '{{WRAPPER}} .bt-store--image .bt-cover-image' => 'padding-bottom: calc( {{SIZE}} * 100% );',
                 ],
             ]
         );

@@ -174,6 +174,7 @@ class Widget_SearchProduct extends Widget_Base
 				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
+		
 		$this->add_control(
 			'input_color',
 			[
@@ -218,7 +219,7 @@ class Widget_SearchProduct extends Widget_Base
 					'{{WRAPPER}} .bt-search--form' => 'background-color: {{VALUE}};',
 				],
 				'condition' => [
-					'layout_type' => 'layout-02',
+					'layout_type' => ['layout-02', 'layout-03'],
 				],
 			]
 		);
@@ -230,7 +231,7 @@ class Widget_SearchProduct extends Widget_Base
 				'label' => __('Form Border', 'woozio'),
 				'selector' => '{{WRAPPER}} .bt-search--form',
 				'condition' => [
-					'layout_type' => 'layout-02',
+					'layout_type' => ['layout-02', 'layout-03'],
 				],
 			]
 		);

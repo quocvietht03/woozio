@@ -202,6 +202,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
+
         $this->add_control(
             'content_background',
             [
@@ -231,7 +232,49 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 ],
             ]
         );
-
+        $this->add_responsive_control(
+            'content_spacing',
+            [
+                'label' => __('Spacing', 'woozio'),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%', 'custom'],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content' => 'left: {{LEFT}}{{UNIT}};right: {{RIGHT}}{{UNIT}};top: {{TOP}}{{UNIT}};bottom: {{BOTTOM}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-1'],
+                ],
+            ]
+        );
+        $this->add_responsive_control(
+			'content_text_align',
+			[
+				'label' => esc_html__('Alignment', 'woozio'),
+				'type'  => Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => esc_html__('Left', 'woozio'),
+						'icon'  => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__('Center', 'woozio'),
+						'icon'  => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__('Right', 'woozio'),
+						'icon'  => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'left',
+				'toggle' => true,
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-category--content' => 'justify-content: {{VALUE}};text-align: {{VALUE}};',
+				],
+				'condition' => [
+					'layout_style' => ['style-1'],
+				],
+			]
+		);
         $this->add_control(
             'name_cat_style',
             [
@@ -239,7 +282,6 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'type' => Controls_Manager::HEADING,
             ]
         );
-
         $this->add_control(
             'name_cat_color',
             [
