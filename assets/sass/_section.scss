@@ -268,4 +268,14 @@ body {
             }
         }
     }
+    &.bt-section-about-studio{
+        @media(max-width:1530px) and (min-width:1367px){
+            > .elementor-element{
+               &:last-child{
+                --padding-left: 40px;
+                --column-gap: 40px;
+               }
+            }
+        }
+    }
 }

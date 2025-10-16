@@ -352,9 +352,6 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'label_on' => __('Yes', 'woozio'),
                 'label_off' => __('No', 'woozio'),
                 'default' => 'yes',
-                'condition' => [
-                    'show_slider' => 'yes',
-                ],
             ]
         );
         $this->add_control(
@@ -366,9 +363,6 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 'options' => [
                     'content' => __('Content', 'woozio'),
                     'image' => __('Image', 'woozio'),
-                ],
-                'condition' => [
-                    'show_slider' => 'yes',
                 ],
             ]
         );
@@ -1121,7 +1115,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
-                <?php if ($settings['show_slider'] === 'yes' && !empty($product_ids)) : ?>
+                <?php if (!empty($product_ids)) : ?>
                     <div class="bt-hotspot-product--slider">
                         <?php
                         $slider_settings = [

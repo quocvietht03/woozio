@@ -66,7 +66,37 @@ class Widget_PostLoopItem extends Widget_Base {
 				],
 			]
 		);
-
+		$this->add_control(
+			'show_excerpt',
+			[
+				'label' => esc_html__('Show Excerpt', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Show', 'woozio'),
+				'label_off' => esc_html__('Hide', 'woozio'),
+				'default' => 'yes',
+			]
+		);
+		$this->add_control(
+			'show_read_more',
+			[
+				'label' => esc_html__('Show Read More', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Show', 'woozio'),
+				'label_off' => esc_html__('Hide', 'woozio'),
+				'default' => 'no',
+			]
+		);
+		$this->add_control(
+			'read_more_text',
+			[
+				'label' => esc_html__('Read More Text', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => esc_html__('Read More', 'woozio'),
+				'condition' => [
+					'show_read_more' => 'yes',
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 
@@ -234,25 +264,21 @@ class Widget_PostLoopItem extends Widget_Base {
 				'label' => esc_html__('Excerpt', 'woozio'),
 				'type' => Controls_Manager::HEADING,
 				'separator' => 'before',
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
 			]
 		);
-		$this->add_control(
-			'show_excerpt',
-			[
-				'label' => esc_html__('Show Excerpt', 'woozio'),
-				'type' => Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'woozio'),
-				'label_off' => esc_html__('Hide', 'woozio'),
-				'default' => 'yes',
-			]
-		);
-		
+	
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			[
 				'name' => 'excerpt_typography',
 				'label' => esc_html__('Typography', 'woozio'),
 				'selector' => '{{WRAPPER}} .bt-post--excerpt',
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
 			]
 		);
 
@@ -264,7 +290,10 @@ class Widget_PostLoopItem extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .bt-post--excerpt' => 'color: {{VALUE}};',
 				],
-			]
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
+			]	
 		);
 
 		$this->end_controls_section();
@@ -279,8 +308,8 @@ class Widget_PostLoopItem extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		?>
-			<div class="bt-elwg-post-loop-item--default <?php echo $settings['show_excerpt'] === 'yes' ? '' : 'bt-post--no-excerpt'; ?>">
-				<?php get_template_part( 'framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'])); ?>
+			<div class="bt-elwg-post-loop-item--default">
+				<?php get_template_part( 'framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'], 'excerpt' => $settings['show_excerpt'], 'read_more' => $settings['show_read_more'], 'read_more_text' => $settings['read_more_text'])); ?>
 	    	</div>
 		<?php
 	}

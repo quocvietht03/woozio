@@ -1324,7 +1324,7 @@
 		const $productItems = $container.find('.bt-hotspot-product-list__item');
 		if ($variationForm.length > 0) {
 			$variationForm.find('.bt-attributes--item').each(function () {
-				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
+				$(this).closest('.variations_form').off('show_variation.woozioloaditem').on('show_variation.woozioloaditem', function (event, variation) {
 					var variationId = variation.variation_id;
 					if (variationId && variationId !== '0') {
 						var $ItemProduct = $(this).closest('.bt-hotspot-product-list__item');
@@ -1433,7 +1433,7 @@
 		// Update on variation change
 		$variationForm.find('select').on('change', function () {
 			var $form = $(this).closest('.variations_form')
-			$form.off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
+			$form.off('show_variation.wooziochangeitem').on('show_variation.wooziochangeitem', function (event, variation) {
 				var variationId = variation.variation_id;
 				if (variationId && variationId !== '0') {
 					var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');

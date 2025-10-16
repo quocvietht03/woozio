@@ -2338,7 +2338,7 @@
 
 			$variationForms.each(function () {
 				var $form = $(this);
-				$form.off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
+				$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
 					if (!variation) return;
 
 					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {

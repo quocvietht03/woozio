@@ -2385,6 +2385,30 @@
 }
 .bt-elwg-product-loop-item {
   @extend .__bt-loop-product-style;
+  &.left{
+    .woocommerce-loop-product__infor{
+      align-items: flex-start;
+    }
+    .woocommerce-loop-product__title{
+      text-align: left;
+    }
+  }
+  &.center{
+    .woocommerce-loop-product__infor{
+      align-items: center;
+    }
+    .woocommerce-loop-product__title{
+      text-align: center;
+    }
+  }
+  &.right{
+    .woocommerce-loop-product__infor{
+      align-items: flex-end;
+    }
+    .woocommerce-loop-product__title{
+      text-align: right;
+    }
+  }
   .woocommerce-loop-product .bt-product-rating .star-rating {
     word-break: normal;
     span {
