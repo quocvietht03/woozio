@@ -462,7 +462,8 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
 
     $terms = get_terms(array(
         'taxonomy' => $slug,
-        'hide_empty' => true
+        'hide_empty' => true,
+        'parent'   => 0
     ));
 
     $field_title_default = !empty($field_title) ? $field_title : 'Choose';
