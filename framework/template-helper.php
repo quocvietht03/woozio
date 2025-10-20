@@ -487,9 +487,31 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 		]
 	);
 	$element->add_control(
-		'pagination_progress_position',
+		'pagination_progress_position_horizontal',
 		[
-			'label' => esc_html__('Progress Bar Position', 'woozio'),
+			'label' => esc_html__('Position Horizontal', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SELECT,
+			'default' => 'center',
+			'options' => [
+				'left' => esc_html__('Left', 'woozio'),
+				'center' => esc_html__('Center', 'woozio'), 
+				'right' => esc_html__('Right', 'woozio'),
+			],
+			'prefix_class' => 'pagination-progress-position-horizontal-',
+			'selectors' => [
+				'{{WRAPPER}}.pagination-progress-position-horizontal-left .swiper-pagination-progressbar' => 'left: 0; margin-right: auto; transform: none;',
+				'{{WRAPPER}}.pagination-progress-position-horizontal-center .swiper-pagination-progressbar' => 'left: 50%; transform: translateX(-50%); margin-left: auto; margin-right: auto;',
+				'{{WRAPPER}}.pagination-progress-position-horizontal-right .swiper-pagination-progressbar' => 'right: 0; margin-left: auto; transform: none;',
+			],
+			'condition' => [
+				'pagination' => 'progressbar',
+			],
+		]
+	);
+	$element->add_control(
+		'pagination_progress_position_vertical',
+		[
+			'label' => esc_html__('Position Vertical', 'woozio'),
 			'type' => \Elementor\Controls_Manager::SELECT,
 			'default' => 'bottom',
 			'options' => [
@@ -501,6 +523,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			],
 		]
 	);
+
 
 	$element->add_responsive_control(
 		'pagination_progress_top_position',
@@ -524,7 +547,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			],
 			'condition' => [
 				'pagination' => 'progressbar',
-				'pagination_progress_position' => 'top',
+				'pagination_progress_position_vertical' => 'top',
 			],
 		]
 	);
@@ -551,7 +574,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			],
 			'condition' => [
 				'pagination' => 'progressbar',
-				'pagination_progress_position' => 'bottom',
+				'pagination_progress_position_vertical' => 'bottom',
 			],
 		]
 	);
@@ -617,6 +640,9 @@ add_action('elementor/element/nested-carousel/section_carousel_pagination/before
 				'{{WRAPPER}} .swiper-pagination-bullet' => 'width: auto; height: auto; padding: 2px 10px; border-radius: 0; transition: all 0.3s ease;',
 				'{{WRAPPER}} .swiper-pagination-bullet:hover,
 				{{WRAPPER}} .swiper-pagination-bullet.swiper-pagination-bullet-active' => 'padding: 2px 20px;',
+			],
+			'condition' => [
+				'pagination' => 'bullets',
 			],
 		]
 	);
@@ -780,6 +806,32 @@ add_action('elementor/element/nested-carousel/section_navigation_settings/before
 /* Hook add Field Nested Tabs Elementor */
 add_action('elementor/element/nested-tabs/section_title_style/before_section_end', function ($element) {
 	$element->add_responsive_control(
+		'heading_max_width',
+		[
+			'label' => esc_html__('Max Width', 'woozio'),
+			'type' => \Elementor\Controls_Manager::SLIDER,
+			'size_units' => ['px', '%', 'custom'],
+			'range' => [
+				'px' => [
+					'min' => 0,
+					'max' => 2000,
+					'step' => 1,
+				],
+				'%' => [
+					'min' => 0,
+					'max' => 100,
+					'step' => 1,
+				],
+			],
+			'selectors' => [
+				'{{WRAPPER}} .e-n-tabs-heading' => 'max-width: {{SIZE}}{{UNIT}};width: 100%;margin: 0 auto;',
+			],
+		]
+	);
+});
+
+add_action('elementor/element/nested-tabs/section_title_style/before_section_end', function ($element) {
+	$element->add_responsive_control(
 		'heading_padding',
 		[
 			'label' => esc_html__('Padding', 'woozio'),
@@ -792,6 +844,7 @@ add_action('elementor/element/nested-tabs/section_title_style/before_section_end
 		]
 	);
 });
+
 
 
 // Slider Swiper Setting

@@ -575,4 +575,66 @@
       }
     }
   }
+  &--style6 {
+    .bt-form-newsletter_wrapper {
+      .bt-form-newsletter {
+        display: flex;
+        gap: 0;
+        .gform-body {
+          width: calc(100% - 137px);
+          input[type="email"] {
+            height: 56px;
+            padding: 10px 20px 10px 20px;
+            border-radius: 0;
+            background: rgba(255, 255, 255, 0.10);
+            border: none;
+            color: #fff;
+            &::placeholder {
+              color: $color-text;
+            }
+          }
+        }
+        .gform_footer {
+          position: relative;
+          top: auto;
+          right: auto;
+          input[type="submit"] {
+              color: $color-primary !important;
+            background-color: #fff !important;
+            padding: 16px 32px !important;
+            height: 56px !important;
+            font-size: 14px !important;
+          }
+        }
+        &.loading {
+          .gform_footer {
+            input[type="submit"],
+            button[type="submit"] {
+              color: transparent !important;
+            }
+            &::after{
+              border: 2px $color-primary solid;
+              border-top: 2px transparent solid;
+              top: 15px;
+            }
+          }
+        }
+        @media (max-width: $break-xs) {
+          gap: 6px;
+          .gform-body {
+            width: calc(100% - 110px);
+            input[type="email"] {
+              height: 50px;
+            }
+          }
+          .gform_footer {
+            input[type="submit"] {
+              height: 50px !important;
+              padding: 14px 15px !important;
+            }
+          }
+        }
+      }
+    }
+  }
 }

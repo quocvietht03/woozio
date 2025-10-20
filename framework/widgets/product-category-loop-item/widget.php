@@ -61,6 +61,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     'style-3' => __('Style 3', 'woozio'),
                     'style-4' => __('Style 4', 'woozio'),
                     'style-5' => __('Style 5', 'woozio'),
+                    'style-6' => __('Style 6', 'woozio'),
                 ],
             ]
         );
@@ -106,6 +107,9 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'label_off' => __('Hide', 'woozio'),
                 'return_value' => 'yes',
                 'default' => 'no',
+                'condition' => [
+                    'layout_style!' => ['style-6'],
+                ],
             ]
         );
 
@@ -247,34 +251,34 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
             ]
         );
         $this->add_responsive_control(
-			'content_text_align',
-			[
-				'label' => esc_html__('Alignment', 'woozio'),
-				'type'  => Controls_Manager::CHOOSE,
-				'options' => [
-					'left' => [
-						'title' => esc_html__('Left', 'woozio'),
-						'icon'  => 'eicon-text-align-left',
-					],
-					'center' => [
-						'title' => esc_html__('Center', 'woozio'),
-						'icon'  => 'eicon-text-align-center',
-					],
-					'right' => [
-						'title' => esc_html__('Right', 'woozio'),
-						'icon'  => 'eicon-text-align-right',
-					],
-				],
-				'default' => 'left',
-				'toggle' => true,
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-category--content' => 'justify-content: {{VALUE}};text-align: {{VALUE}};',
-				],
-				'condition' => [
-					'layout_style' => ['style-1'],
-				],
-			]
-		);
+            'content_text_align',
+            [
+                'label' => esc_html__('Alignment', 'woozio'),
+                'type'  => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left' => [
+                        'title' => esc_html__('Left', 'woozio'),
+                        'icon'  => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => esc_html__('Center', 'woozio'),
+                        'icon'  => 'eicon-text-align-center',
+                    ],
+                    'right' => [
+                        'title' => esc_html__('Right', 'woozio'),
+                        'icon'  => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'left',
+                'toggle' => true,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--content' => 'justify-content: {{VALUE}};text-align: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-1'],
+                ],
+            ]
+        );
         $this->add_control(
             'name_cat_style',
             [
@@ -337,7 +341,6 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 ],
             ]
         );
-
         $this->add_group_control(
             Group_Control_Typography::get_type(),
             [
@@ -347,6 +350,61 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'selector' => '{{WRAPPER}} .bt-product-category--content, {{WRAPPER}} .bt-product-category--name'
             ]
         );
+        $this->add_control(
+            'view_more_style',
+            [
+                'label' => __('View More', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+                'condition' => [
+                    'layout_style' => ['style-6'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'view_more_color',
+            [
+                'label' => __('Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--view-more' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-6'],
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'view_more_color_hover',
+            [
+                'label' => __('Color Hover', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--view-more' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'layout_style' => ['style-6'],
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'view_more_typography',
+                'label' => __('Typography', 'woozio'),
+                'default' => '',
+                'selector' => '{{WRAPPER}} .bt-product-category--view-more',
+                'condition' => [
+                    'layout_style' => ['style-6'],
+                ],
+            ]
+        );
+   
 
         $this->add_control(
             'count_style',
@@ -586,7 +644,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
             <?php
             get_template_part('framework/templates/product-cat', 'style', array(
                 'image-size' => $settings['thumbnail_size'],
-                'layout' => 'default',
+                'layout' => $settings['layout_style'],
                 'show_count' => $settings['show_count'],
                 'category' => $wp_query->loop_term,
             ));

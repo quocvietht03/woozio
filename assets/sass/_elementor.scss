@@ -3314,6 +3314,87 @@
       }
     }
   }
+  &--style-6 {
+    .bt-product-category {
+      &--inner {
+        position: relative;
+        display: block;
+        &:hover {
+          .bt-product-category--content {
+              background: #fff;
+              .bt-product-category--name {
+                color: $color-primary;
+              }
+              .bt-product-category--view-more {
+                color: $color-primary;
+              }
+          }
+        }
+      }
+      &--content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(359deg, rgba(0, 0, 0, 0.08) 0.64%, rgba(0, 0, 0, 0.08) 103.7%);
+        backdrop-filter: blur(10px);
+        border-radius: 0;
+        display: flex;
+        align-items: revert-layer;
+        flex-direction: column;
+        width: 100%;
+        padding: 28px;
+        gap: 12px;
+        svg {
+          display: none;
+        }
+        @media (max-width: $break-lg) {
+          padding: 20px;
+          gap: 6px;
+        }
+        @media (max-width: $break-md) {
+          padding: 16px;
+        }
+        @media (max-width: $break-sm) {
+          padding: 12px;
+          gap: 4px;
+        }
+      }
+      &--name {
+        color: #fff;
+        font-family: Outfit;
+        font-size: 40px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.2;
+        text-transform: capitalize;
+        display: block;
+        @media (max-width: $break-lg) {
+          font-size: 34px;
+        }
+        @media (max-width: $break-md) {
+          font-size: 30px;
+        }
+        @media (max-width: $break-sm) {
+          font-size: 26px;
+        }
+      }
+      &--view-more {
+        color: #fff;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 26px;
+        display: block;
+        text-decoration: underline;
+        text-underline-offset: 6px;
+        text-decoration-thickness: 1px;
+        text-transform: uppercase;
+        @media (max-width: $break-sm) {
+          font-size: 14px;
+        }
+      }
+    }
+  }
 }
 .bt-elwg-tiktok-shop-slider {
   &--default {
@@ -5236,7 +5317,6 @@
     }
   }
 }
-
 
 .bt-elwg-switcher {
   .bt-dropdown {
