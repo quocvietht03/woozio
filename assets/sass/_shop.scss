@@ -66,6 +66,14 @@
     &.bt-field-type-radio {
       display: flex;
       flex-wrap: wrap;
+      .bt-field-list {
+        @extend .__scrollbar_style;
+        display: flex;
+        flex-wrap: wrap;
+        max-height: 400px;
+        margin-right: -8px;
+        padding-right: 8px;
+      }
       .item-radio {
         width: 100%;
         position: relative;
@@ -810,6 +818,11 @@
               width: 100%;
               input {
                 width: auto;
+              }
+            }
+            &.bt-field-type-radio {
+              .bt-field-list {
+                max-height: 230px;
               }
             }
           }
@@ -3392,7 +3405,7 @@
           }
         }
       }
-      @media(max-width:650px){
+      @media (max-width: 650px) {
         display: none;
       }
     }
@@ -3960,8 +3973,8 @@
     }
     .bt-product-skeleton {
       .bt-skeleton-thumbnail {
-        padding-bottom: 100%;
-        border-radius: 8px;
+        padding-bottom: 132%;
+        border-radius: 0;
         @extend .__bt-animation-loading-card;
       }
       .bt-skeleton-title {
@@ -3990,6 +4003,94 @@
     .bt-pagination {
       margin-top: 40px;
       justify-content: flex-start;
+    }
+
+    // Load More Button Styles
+    .bt-load-more-button-wrap {
+      margin-top: 40px;
+      text-align: center;
+
+      .bt-load-more-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px 36px;
+        background-color: $color-primary;
+        color: #ffffff;
+        border: 1px solid $color-primary;
+        border-radius: 0;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 26px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 200px;
+
+        &:hover {
+          background-color: transparent;
+          color: $color-primary;
+        }
+
+        &.loading {
+          opacity: 0.7;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+
+        .bt-btn-loading {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          svg {
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        @media (max-width: $break-sm) {
+          padding: 12px 24px;
+          font-size: 14px;
+          min-width: 160px;
+        }
+      }
+    }
+
+    // Infinite Scroll Styles
+    &[data-pagination-type="infinite-scroll"] {
+      .bt-infinite-scroll-trigger {
+        margin-top: 40px;
+        padding: 20px;
+        text-align: center;
+
+        .bt-loading-spinner {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 26px;
+          color: $color-primary;
+          &:before {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid $color-primary;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        }
+      }
     }
   }
   .bt-main-product-ss {

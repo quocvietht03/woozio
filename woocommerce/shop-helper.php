@@ -102,31 +102,31 @@ function woozio_woocommerce_template_loop_product_thumbnail()
     global $product;
     $post_thumbnail_id = $product->get_image_id();
     echo '<div class="bt-product-images-wrapper">';
-        if ($post_thumbnail_id) {
-            // Always show main image
-            $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
+    if ($post_thumbnail_id) {
+        // Always show main image
+        $html = woozio_get_gallery_image_html($post_thumbnail_id, false, false);
 
-            // If there are gallery images, show the first one
-            $attachment_ids = $product->get_gallery_image_ids();
+        // If there are gallery images, show the first one
+        $attachment_ids = $product->get_gallery_image_ids();
 
-            if (!empty($attachment_ids) && isset($attachment_ids[0])) {
-                $html .= woozio_get_gallery_image_html( $attachment_ids[0], false, false );
-            } else {
-                // If no gallery images, show main image again
-                $html .= woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
-            }
-
-            echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        if (!empty($attachment_ids) && isset($attachment_ids[0])) {
+            $html .= woozio_get_gallery_image_html($attachment_ids[0], false, false);
         } else {
-            $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
-                'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
-                'woocommerce-product-gallery__image--placeholder';
-                $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
-                $html .= '</div>';
-
-            echo apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+            // If no gallery images, show main image again
+            $html .= woozio_get_gallery_image_html($post_thumbnail_id, false, false);
         }
+
+        echo apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+    } else {
+        $wrapper_classname = $product->is_type('variable') && ! empty($product->get_available_variations('image')) ?
+            'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
+            'woocommerce-product-gallery__image--placeholder';
+        $html = sprintf('<div class="%s">', esc_attr($wrapper_classname));
+        $html .= sprintf('<img src="%s" alt="%s" class="wp-post-image" />', esc_url(wc_placeholder_img_src('woocommerce_thumbnail')), esc_html__('Awaiting product image', 'woozio'));
+        $html .= '</div>';
+
+        echo apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+    }
     echo '</div>';
 }
 
@@ -463,7 +463,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
     // Get settings for product_cat from ACF
     $category_mode = 'none'; // default
     $custom_categories = array();
-    
+
     if ($slug === 'product_cat') {
         $custom_filters = get_field('custom_filters', 'option');
         $category_mode = !empty($custom_filters['setting_product_category']) ? $custom_filters['setting_product_category'] : 'none';
@@ -493,59 +493,61 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
     ?>
         <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?> bt-field-mode-<?php echo $category_mode; ?>" data-name="<?php echo esc_attr($slug); ?>">
             <div class="bt-field-title"><?php echo esc_html($field_title_default) ?></div>
-            <?php foreach ($terms as $term) { ?>
-                <?php 
-                $is_checked = ($term->slug == $field_value);
-                $has_children = false;
-                $children = array();
-                
-                // Check for subcategories if mode is 'parent'
-                if ($slug === 'product_cat' && $category_mode === 'parent') {
-                    $children = get_terms(array(
-                        'taxonomy' => $slug,
-                        'hide_empty' => true,
-                        'parent' => $term->term_id
-                    ));
-                    $has_children = !empty($children) && !is_wp_error($children);
-                }
-                ?>
-                
-                <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>">
-                    <?php if ($is_checked) { ?>
-                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
-                    <?php } else { ?>
-                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>">
-                    <?php } ?>
-                    <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"> 
-                        <?php echo esc_html($term->name); ?> 
-                    </label>
-                    <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
-                    
-                    <?php if ($has_children) { ?>
-                        <span class="bt-toggle-children">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </span>
-                        <div class="bt-children-categories">
-                            <?php foreach ($children as $child) { ?>
-                                <?php $child_checked = ($child->slug == $field_value); ?>
-                                <div class="item-radio item-radio-child">
-                                    <?php if ($child_checked) { ?>
-                                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
-                                    <?php } else { ?>
-                                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>">
-                                    <?php } ?>
-                                    <label for="<?php echo esc_attr($child->slug); ?>" data-slug="<?php echo esc_attr($child->slug); ?>"> 
-                                        <?php echo esc_html($child->name); ?> 
-                                    </label>
-                                    <span class="bt-count"><?php echo '(' . $child->count . ')'; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-                </div>
-            <?php } ?>
+            <div class="bt-field-list">
+                <?php foreach ($terms as $term) { ?>
+                    <?php
+                    $is_checked = ($term->slug == $field_value);
+                    $has_children = false;
+                    $children = array();
+
+                    // Check for subcategories if mode is 'parent'
+                    if ($slug === 'product_cat' && $category_mode === 'parent') {
+                        $children = get_terms(array(
+                            'taxonomy' => $slug,
+                            'hide_empty' => true,
+                            'parent' => $term->term_id
+                        ));
+                        $has_children = !empty($children) && !is_wp_error($children);
+                    }
+                    ?>
+
+                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>">
+                        <?php if ($is_checked) { ?>
+                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
+                        <?php } else { ?>
+                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>">
+                        <?php } ?>
+                        <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>">
+                            <?php echo esc_html($term->name); ?>
+                        </label>
+                        <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
+
+                        <?php if ($has_children) { ?>
+                            <span class="bt-toggle-children">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <div class="bt-children-categories">
+                                <?php foreach ($children as $child) { ?>
+                                    <?php $child_checked = ($child->slug == $field_value); ?>
+                                    <div class="item-radio item-radio-child">
+                                        <?php if ($child_checked) { ?>
+                                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
+                                        <?php } else { ?>
+                                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>">
+                                        <?php } ?>
+                                        <label for="<?php echo esc_attr($child->slug); ?>" data-slug="<?php echo esc_attr($child->slug); ?>">
+                                            <?php echo esc_html($child->name); ?>
+                                        </label>
+                                        <span class="bt-count"><?php echo '(' . $child->count . ')'; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
     <?php
     }
@@ -766,7 +768,7 @@ function woozio_product_pagination($current_page, $total_page)
     }
 
     ob_start();
-    ?>
+?>
     <nav class="bt-pagination bt-product-pagination" role="navigation">
         <?php if (1 != $current_page) { ?>
             <a class="prev page-numbers" href="#" data-page="<?php echo esc_attr($current_page - 1); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="8" height="13" viewBox="0 0 8 13" fill="none">
@@ -842,6 +844,32 @@ function woozio_product_pagination($current_page, $total_page)
                 </svg></a>
         <?php } ?>
     </nav>
+<?php
+    return ob_get_clean();
+}
+
+function woozio_product_load_more_button($current_page, $total_page)
+{
+    if (1 >= $total_page || $current_page >= $total_page) {
+        return;
+    }
+
+    ob_start();
+?>
+    <div class="bt-load-more-button-wrap">
+        <button class="bt-load-more-btn" data-page="<?php echo esc_attr($current_page + 1); ?>" data-total="<?php echo esc_attr($total_page); ?>">
+            <span class="bt-btn-text"><?php echo esc_html__('Load More Products', 'woozio'); ?></span>
+            <span class="bt-btn-loading" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" opacity="0.25" />
+                    <path d="M10 2 A8 8 0 0 1 18 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+                        <animateTransform attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" dur="1s" repeatCount="indefinite" />
+                    </path>
+                </svg>
+                <?php echo esc_html__('Loading...', 'woozio'); ?>
+            </span>
+        </button>
+    </div>
     <?php
     return ob_get_clean();
 }
@@ -978,6 +1006,10 @@ function woozio_products_filter()
 
     $total_products = $wp_query->found_posts;
 
+    // Get pagination type from ACF option
+    $archive_shop = get_field('archive_shop', 'option');
+    $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
+
     // Update Results Block
     ob_start();
     if ($total_products > 0) {
@@ -1006,10 +1038,38 @@ function woozio_products_filter()
         }
         $is_ajax_filter_product = false;
         $output['items'] = ob_get_clean();
-        $output['pagination'] = woozio_product_pagination($current_page, $total_page);
+
+        // Generate pagination based on type
+        if ($pagination_type === 'button-load-more') {
+            $output['pagination'] = woozio_product_load_more_button($current_page, $total_page);
+        } elseif ($pagination_type === 'infinite-scrolling') {
+            if ($current_page < $total_page) {
+                $output['pagination'] = '<div class="bt-infinite-scroll-trigger" data-page="' . esc_attr($current_page + 1) . '" data-total="' . esc_attr($total_page) . '">'
+                    . '<span class="bt-loading-spinner" style="display:none;">' . esc_html__('Loading more...', 'woozio') . '</span>'
+                    . '</div>';
+            } else {
+                $output['pagination'] = '';
+            }
+        } else {
+            $output['pagination'] = woozio_product_pagination($current_page, $total_page);
+        }
+
+        // Add metadata for pagination
+        $output['pagination_meta'] = array(
+            'current_page' => $current_page,
+            'total_page' => $total_page,
+            'has_more' => $current_page < $total_page,
+            'pagination_type' => $pagination_type
+        );
     } else {
         $output['items'] = '<h3 class="not-found-post">' . esc_html__('Sorry, No products found', 'woozio') . '</h3>';
         $output['pagination'] = '';
+        $output['pagination_meta'] = array(
+            'current_page' => 1,
+            'total_page' => 0,
+            'has_more' => false,
+            'pagination_type' => $pagination_type
+        );
     }
 
     wp_reset_postdata();
@@ -2950,7 +3010,7 @@ function woozio_load_product_toast()
             ?>
         </div>
     </div>
-<?php
+    <?php
     $output = array(
         'toast' => ob_get_clean()
     );
@@ -2968,7 +3028,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
         // Get all available variations
         $available_variations = $product->get_available_variations();
         $color_variations_data = array();
-        
+
 
         foreach ($available_variations as $variation_data) {
             $variation_id = $variation_data['variation_id'];
@@ -2991,29 +3051,29 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
 
                 if ($post_thumbnail_id) {
                     // Always show main image
-                    $html = woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
+                    $html = woozio_get_gallery_image_html($post_thumbnail_id, false, false);
 
                     // If there are gallery images, show the first one
                     $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
                     $attachment_ids = $variation_gallery ? explode(',', $variation_gallery) : array();
 
                     if (!empty($attachment_ids)  && isset($attachment_ids[0])) {
-                        $html .= woozio_get_gallery_image_html( $attachment_ids[0], false, false );
+                        $html .= woozio_get_gallery_image_html($attachment_ids[0], false, false);
                     } else {
                         // If no gallery images, show main image again
-                        $html .= woozio_get_gallery_image_html( $post_thumbnail_id, false, false );
+                        $html .= woozio_get_gallery_image_html($post_thumbnail_id, false, false);
                     }
 
-                    $variable_image_html = apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                    $variable_image_html = apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
                 } else {
-                    $wrapper_classname = $product->is_type( 'variable' ) && ! empty( $product->get_available_variations( 'image' ) ) ?
+                    $wrapper_classname = $product->is_type('variable') && ! empty($product->get_available_variations('image')) ?
                         'woocommerce-product-gallery__image woocommerce-product-gallery__image--placeholder' :
                         'woocommerce-product-gallery__image--placeholder';
-                        $html = sprintf( '<div class="%s">', esc_attr( $wrapper_classname ) );
-                        $html .= sprintf( '<img src="%s" alt="%s" class="wp-post-image" />', esc_url( wc_placeholder_img_src( 'woocommerce_thumbnail' ) ), esc_html__( 'Awaiting product image', 'woozio' ) );
-                        $html .= '</div>';
+                    $html = sprintf('<div class="%s">', esc_attr($wrapper_classname));
+                    $html .= sprintf('<img src="%s" alt="%s" class="wp-post-image" />', esc_url(wc_placeholder_img_src('woocommerce_thumbnail')), esc_html__('Awaiting product image', 'woozio'));
+                    $html .= '</div>';
 
-                    $variable_image_html = apply_filters( 'woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id ); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+                    $variable_image_html = apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
                 }
 
                 // Get color term info for display
@@ -3063,40 +3123,40 @@ function woozio_woocommerce_after_add_to_cart_button()
         echo '<a href="#"
         class="bt-btn-add-to-cart-variable single_add_to_cart_button bt-button-hover bt-js-add-to-cart-variable disabled"
         data-product-quantity="1"
-        data-product-id="' . esc_attr( $product->get_id() ) . '"
-        data-variation="' . esc_attr( $variation_id ) . '">'
-        . esc_html__( 'Add To Cart', 'woozio' ) .
-        '</a>';
+        data-product-id="' . esc_attr($product->get_id()) . '"
+        data-variation="' . esc_attr($variation_id) . '">'
+            . esc_html__('Add To Cart', 'woozio') .
+            '</a>';
     }
 }
-function get_default_variation_id($product) {
+function get_default_variation_id($product)
+{
     if (!$product->is_type('variable')) {
         return 0;
     }
- 
+
     $default_attributes = $product->get_default_attributes();
     $variation_id = 0;
 
-    foreach($product->get_available_variations() as $variation_values) {
-        foreach($variation_values['attributes'] as $key => $attribute_value) {
+    foreach ($product->get_available_variations() as $variation_values) {
+        foreach ($variation_values['attributes'] as $key => $attribute_value) {
             $attribute_name = str_replace('attribute_', '', $key);
             $default_value = $product->get_variation_default_attribute($attribute_name);
-            if($default_value == $attribute_value) {
+            if ($default_value == $attribute_value) {
                 $is_default_variation = true;
             } else {
                 $is_default_variation = false;
                 break;
             }
         }
-        if($is_default_variation) {
+        if ($is_default_variation) {
             $variation_id = $variation_values['variation_id'];
             break;
-        }else{
+        } else {
             $variation_id = null;
         }
-        
     }
-    
+
     return $variation_id;
 }
 
@@ -3118,7 +3178,7 @@ function woozio_get_bundle_products()
 
         $is_variation = $product->is_type('variation');
         $product_name = $product->get_name();
-        
+
         // Get variation attributes if applicable
         $variation_text = '';
         if ($is_variation) {
@@ -3137,14 +3197,14 @@ function woozio_get_bundle_products()
                 $variation_text = implode('/', $attr_labels);
             }
         }
-        
+
         $product_image = $product->get_image('thumbnail');
         $regular_price = $product->get_regular_price();
         $sale_price = $product->get_sale_price();
         $price = $product->get_price();
 
         ob_start();
-?>
+    ?>
         <div class="bt-modal-product--item">
             <div class="bt-product-thumb">
                 <?php echo $product_image; ?>
@@ -3152,7 +3212,7 @@ function woozio_get_bundle_products()
             <div class="bt-product-info">
                 <h4 class="bt-product-name"><?php echo esc_html($product_name); ?></h4>
                 <div class="bt-product-price">
-                <?php echo $product->get_price_html(); ?>
+                    <?php echo $product->get_price_html(); ?>
                 </div>
                 <?php if ($variation_text) : ?>
                     <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>
@@ -3162,7 +3222,7 @@ function woozio_get_bundle_products()
                 <?php _e('Add', 'woozio'); ?>
             </button>
         </div>
-<?php
+    <?php
         $html .= ob_get_clean();
     }
 
@@ -3184,7 +3244,7 @@ function woozio_get_bundle_product_item()
 
     $item_id = intval($_POST['product_id']);
     $product = wc_get_product($item_id);
-    
+
     if (!$product) {
         wp_send_json_error(array('message' => 'Product not found'));
     }
@@ -3192,10 +3252,10 @@ function woozio_get_bundle_product_item()
     $is_variation = $product->is_type('variation');
     $parent_id = $is_variation ? $product->get_parent_id() : $item_id;
     $variation_id = $is_variation ? $item_id : 0;
-    
+
     $product_link = get_permalink($parent_id);
     $product_name = $product->get_name();
-    
+
     // Get variation attributes if applicable
     $variation_text = '';
     if ($is_variation) {
@@ -3214,15 +3274,15 @@ function woozio_get_bundle_product_item()
             $variation_text = implode('/', $attr_labels);
         }
     }
-    
+
     $product_image = $product->get_image('thumbnail');
     $regular_price = $product->get_regular_price();
     $sale_price = $product->get_sale_price();
     $price = $product->get_price();
 
     ob_start();
-?>
-    <div class="bt-bundle-product--item" 
+    ?>
+    <div class="bt-bundle-product--item"
         data-product-id="<?php echo esc_attr($parent_id); ?>"
         data-variation-id="<?php echo esc_attr($variation_id); ?>"
         data-price="<?php echo esc_attr($price); ?>"

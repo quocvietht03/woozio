@@ -14,7 +14,8 @@ $wp_query = new \WP_Query($query_args);
 $current_page = isset($_GET['current_page']) && $_GET['current_page'] != '' ? absint($_GET['current_page']) : 1;
 $total_page = $wp_query->max_num_pages;
 $total_products = $wp_query->found_posts;
-$column_product = get_field('column_product', get_the_ID());
+$archive_shop = get_field('archive_shop', 'option');
+$pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
 get_header('shop');
 get_template_part('framework/templates/site', 'titlebar');
 
@@ -55,51 +56,51 @@ get_template_part('framework/templates/site', 'titlebar');
 							</div>
 						</div>
 						<div class="bt-product-view-type">
-									<?php
-									$type_active = 'grid-3';
-									if (isset($_GET['view_type'])) {
-										$type_active = $_GET['view_type'];
-									}
-									?>
-									<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
-										<div class="bt-icon">
-											<span class="bt-dot"></span>
-											<span class="bt-dot long"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot long"></span>
-										</div>
-									</a>
-									<a href="#" class="bt-view-type bt-view-grid-2 <?php if ('grid-2' == $type_active) echo 'active'; ?>" data-view="grid-2">
-										<div class="bt-icon">
-										<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-										</div>
-									</a>
-									<a href="#" class="bt-view-type bt-view-grid-3 <?php if ('grid-3' == $type_active) echo 'active'; ?>" data-view="grid-3">
-										<div class="bt-icon">
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-										</div>
-									</a>
-									<a href="#" class="bt-view-type bt-view-grid-4 <?php if ('grid-4' == $type_active) echo 'active'; ?>" data-view="grid-4">
-										<div class="bt-icon">
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>	
-											<span class="bt-dot"></span>
-											<span class="bt-dot"></span>	
-										</div>
-									</a>
+							<?php
+							$type_active = 'grid-3';
+							if (isset($_GET['view_type'])) {
+								$type_active = $_GET['view_type'];
+							}
+							?>
+							<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
+								<div class="bt-icon">
+									<span class="bt-dot"></span>
+									<span class="bt-dot long"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot long"></span>
 								</div>
+							</a>
+							<a href="#" class="bt-view-type bt-view-grid-2 <?php if ('grid-2' == $type_active) echo 'active'; ?>" data-view="grid-2">
+								<div class="bt-icon">
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+								</div>
+							</a>
+							<a href="#" class="bt-view-type bt-view-grid-3 <?php if ('grid-3' == $type_active) echo 'active'; ?>" data-view="grid-3">
+								<div class="bt-icon">
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+								</div>
+							</a>
+							<a href="#" class="bt-view-type bt-view-grid-4 <?php if ('grid-4' == $type_active) echo 'active'; ?>" data-view="grid-4">
+								<div class="bt-icon">
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+									<span class="bt-dot"></span>
+								</div>
+							</a>
+						</div>
 						<div class="bt-product-orderby">
 							<div class="bt-product-sort-block">
 								<span class="bt-sort-title">
@@ -153,7 +154,7 @@ get_template_part('framework/templates/site', 'titlebar');
 							</a>
 						</div>
 					</div>
-					<div class="bt-product-layout <?php echo esc_attr($column_product === 4 ? 'column-4' : ''); ?>" data-view="<?php echo esc_attr(isset($_GET['view_type']) && $_GET['view_type'] !== '' ? $_GET['view_type'] : ''); ?>">
+					<div class="bt-product-layout" data-view="<?php echo esc_attr(isset($_GET['view_type']) && $_GET['view_type'] !== '' ? $_GET['view_type'] : ''); ?>" data-pagination-type="<?php echo esc_attr($pagination_type); ?>">
 						<span class="bt-loading-wave"></span>
 						<?php
 						if ($wp_query->have_posts()) {
@@ -163,9 +164,26 @@ get_template_part('framework/templates/site', 'titlebar');
 								wc_get_template_part('content', 'product');
 							}
 							woocommerce_product_loop_end();
-							echo '<div class="bt-product-pagination-wrap">'
-								. woozio_product_pagination($current_page, $total_page)
-								. '</div>';
+
+							// Render pagination based on option
+							if ($pagination_type === 'button-load-more') {
+								echo '<div class="bt-product-pagination-wrap" data-pagination-type="load-more">'
+									. woozio_product_load_more_button($current_page, $total_page)
+									. '</div>';
+							} elseif ($pagination_type === 'infinite-scrolling') {
+								echo '<div class="bt-product-pagination-wrap" data-pagination-type="infinite-scroll">';
+								if ($current_page < $total_page) {
+									echo '<div class="bt-infinite-scroll-trigger" data-page="' . esc_attr($current_page + 1) . '" data-total="' . esc_attr($total_page) . '">';
+									echo '<span class="bt-loading-spinner" style="display:none;">' . esc_html__('Loading more...', 'woozio') . '</span>';
+									echo '</div>';
+								}
+								echo '</div>';
+							} else {
+								// Default pagination
+								echo '<div class="bt-product-pagination-wrap" data-pagination-type="default">'
+									. woozio_product_pagination($current_page, $total_page)
+									. '</div>';
+							}
 						} else {
 							woocommerce_product_loop_start();
 							echo '<h3 class="not-found-post">'

@@ -1258,6 +1258,25 @@
 			}
 		}
 	}
+	/* Generate Skeleton HTML Helper */
+	function WoozioGenerateSkeletonHTML(count = 12) {
+		let skeletonHtml = '';
+		for (let i = 0; i < count; i++) {
+			skeletonHtml += `
+				<div class="bt-product-skeleton product">
+					<div class="bt-skeleton-thumbnail"></div>
+					<div class="bt-skeleton-content">
+						<div class="bt-skeleton-title"></div>
+						<div class="bt-skeleton-price"></div>
+						<div class="bt-skeleton-rating"></div>
+						<div class="bt-skeleton-description"></div>
+						<div class="bt-skeleton-action"></div>
+					</div>
+				</div>
+			`;
+		}
+		return skeletonHtml;
+	}
 	/* Product Filter */
 	function WoozioProductsFilter() {
 		if (!$('body').hasClass('post-type-archive-product')) {
@@ -1299,8 +1318,17 @@
 				param_out = [],
 				param_in = $('.bt-product-filter-form').serialize().split('&');
 
+			// Get pagination type
+			var paginationType = $('.bt-product-layout').data('pagination-type');
+
 			param_in.forEach(function (param) {
-				var param_val = param.split('=')[1];
+				var param_key = param.split('=')[0],
+					param_val = param.split('=')[1];
+
+				// Skip current_page param for infinite scroll and load more button
+				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+					return;
+				}
 				if ('' !== param_val) {
 					param_out.push(param);
 				}
@@ -1542,9 +1570,17 @@
 				action: 'woozio_products_filter',
 			};
 
+			// Get pagination type
+			var paginationType = $('.bt-product-layout').data('pagination-type');
+
 			param_in.forEach(function (param) {
 				var param_key = param.split('=')[0],
 					param_val = param.split('=')[1];
+
+				// Skip current_page param for infinite scroll and load more button
+				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+					return;
+				}
 
 				if ('' !== param_val) {
 					param_out.push(param);
@@ -1577,23 +1613,8 @@
 						behavior: 'smooth'
 					});
 
-					// Show loading skeleton for 6 product items
-					let skeletonHtml = '';
-					for (let i = 0; i < 12; i++) {
-						skeletonHtml += `
-							<div class="bt-product-skeleton product">
-								<div class="bt-skeleton-thumbnail"></div>
-								<div class="bt-skeleton-content">
-									<div class="bt-skeleton-title"></div>
-									<div class="bt-skeleton-price"></div>
-									<div class="bt-skeleton-rating"></div>
-									<div class="bt-skeleton-description"></div>
-									<div class="bt-skeleton-action"></div>
-								</div>
-							</div>
-						`;
-					}
-					$('.bt-product-layout .woocommerce-loop-products').html(skeletonHtml).fadeIn('fast');
+					// Show loading skeleton
+					$('.bt-product-layout .woocommerce-loop-products').html(WoozioGenerateSkeletonHTML(12)).fadeIn('fast');
 					$('.bt-product-pagination-wrap').fadeOut('fast');
 				},
 				success: function (response) {
@@ -1605,10 +1626,19 @@
 							$('.bt-product-results-btn').html(response.data['button-results']).fadeIn('slow');
 							$('.bt-product-layout .woocommerce-loop-products').html(response.data['items']).fadeIn('slow');
 							$('.bt-product-pagination-wrap').html(response.data['pagination']).fadeIn('slow');
+
+							// Update pagination type data attribute
+							if (response.data.pagination_meta) {
+								$('.bt-product-pagination-wrap').attr('data-pagination-type', response.data.pagination_meta.pagination_type);
+							}
+
 							//	$('.bt-product-layout').removeClass('loading');
 							WoozioProductButtonStatus();
 							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
+
+							// Trigger event for infinite scroll to re-initialize
+							$(document).trigger('filter-products-complete');
 						}, 500);
 					} else {
 						console.log('error');
@@ -1622,6 +1652,230 @@
 			return false;
 		});
 	}
+	/* Load More Button Handler */
+	function WoozioLoadMoreButton() {
+		if (!$('body').hasClass('post-type-archive-product')) {
+			return;
+		}
+
+		$(document).on('click', '.bt-load-more-btn', function (e) {
+			e.preventDefault();
+			const $button = $(this);
+			const nextPage = parseInt($button.data('page'));
+			const totalPages = parseInt($button.data('total'));
+
+			if ($button.hasClass('loading')) {
+				return;
+			}
+
+			// Update current page in filter form
+			$('.bt-product-filter-form .bt-product-current-page').val(nextPage);
+
+			// Get all form parameters
+			var param_ajax = {
+				action: 'woozio_products_filter',
+			};
+
+			var param_in = $('.bt-product-filter-form').serialize().split('&');
+			param_in.forEach(function (param) {
+				var param_key = param.split('=')[0],
+					param_val = param.split('=')[1];
+
+				if ('' !== param_val) {
+					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
+				}
+			});
+
+			// AJAX call
+			$.ajax({
+				type: 'POST',
+				dataType: 'json',
+				url: AJ_Options.ajax_url,
+				data: param_ajax,
+				beforeSend: function () {
+					$button.addClass('loading');
+					$button.find('.bt-btn-text').hide();
+					$button.find('.bt-btn-loading').show();
+
+					// Show loading skeleton
+					$('.bt-product-layout .woocommerce-loop-products').append(WoozioGenerateSkeletonHTML(12));
+				},
+				success: function (response) {
+					if (response.success && response.data) {
+						// Remove skeleton loading
+						$('.bt-product-layout .woocommerce-loop-products .bt-product-skeleton').remove();
+
+						// Append new products
+						const $newProducts = $(response.data['items']);
+						$('.bt-product-layout .woocommerce-loop-products').append($newProducts);
+
+						// Update or remove load more button
+						if (response.data.pagination_meta && response.data.pagination_meta.has_more) {
+							$button.data('page', response.data.pagination_meta.current_page + 1);
+							$button.removeClass('loading');
+							$button.find('.bt-btn-text').show();
+							$button.find('.bt-btn-loading').hide();
+						} else {
+							$('.bt-load-more-button-wrap').fadeOut('slow', function () {
+								$(this).remove();
+							});
+						}
+
+						// Re-initialize product functionality
+						WoozioProductButtonStatus();
+						WoozioProductVariationHandler();
+						WoozioLoadDefaultActiveVariations();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log('Load more error: ' + textStatus, errorThrown);
+					// Remove skeleton loading on error
+					$('.bt-product-layout .woocommerce-loop-products .bt-product-skeleton').remove();
+					$button.removeClass('loading');
+					$button.find('.bt-btn-text').show();
+					$button.find('.bt-btn-loading').hide();
+				}
+			});
+		});
+	}
+
+	/* Infinite Scroll Handler */
+	function WoozioInfiniteScroll() {
+		if (!$('body').hasClass('post-type-archive-product')) {
+			return;
+		}
+
+		let isLoading = false;
+		let observer = null;
+
+		// Create intersection observer
+		function initInfiniteScroll() {
+			const trigger = document.querySelector('.bt-infinite-scroll-trigger');
+
+			if (!trigger) {
+				return;
+			}
+
+			if (observer) {
+				observer.disconnect();
+			}
+
+			observer = new IntersectionObserver(function (entries) {
+				entries.forEach(function (entry) {
+					if (entry.isIntersecting && !isLoading) {
+						loadMoreProducts();
+					}
+				});
+			}, {
+				rootMargin: '200px'
+			});
+
+			observer.observe(trigger);
+		}
+
+		function loadMoreProducts() {
+			const $trigger = $('.bt-infinite-scroll-trigger');
+
+			if (!$trigger.length || isLoading) {
+				return;
+			}
+
+			const nextPage = parseInt($trigger.data('page'));
+			const totalPages = parseInt($trigger.data('total'));
+
+			if (nextPage > totalPages) {
+				return;
+			}
+
+			isLoading = true;
+
+			// Update current page in filter form
+			$('.bt-product-filter-form .bt-product-current-page').val(nextPage);
+
+			// Get all form parameters
+			var param_ajax = {
+				action: 'woozio_products_filter',
+			};
+
+			var param_in = $('.bt-product-filter-form').serialize().split('&');
+			param_in.forEach(function (param) {
+				var param_key = param.split('=')[0],
+					param_val = param.split('=')[1];
+
+				if ('' !== param_val) {
+					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
+				}
+			});
+
+			// AJAX call
+			$.ajax({
+				type: 'POST',
+				dataType: 'json',
+				url: AJ_Options.ajax_url,
+				data: param_ajax,
+				beforeSend: function () {
+					// Show loading indicator
+					$trigger.find('.bt-loading-spinner').fadeIn();
+					// Show loading skeleton
+					$('.bt-product-layout .woocommerce-loop-products').append(WoozioGenerateSkeletonHTML(12));
+				},
+				success: function (response) {
+					if (response.success && response.data) {
+						// Remove skeleton loading
+						$('.bt-product-layout .woocommerce-loop-products .bt-product-skeleton').remove();
+
+						// Append new products
+						const $newProducts = $(response.data['items']);
+						$('.bt-product-layout .woocommerce-loop-products').append($newProducts);
+
+						// Update or remove trigger
+						if (response.data.pagination_meta && response.data.pagination_meta.has_more) {
+							$trigger.data('page', response.data.pagination_meta.current_page + 1);
+							$trigger.find('.bt-loading-spinner').fadeOut();
+							isLoading = false;
+
+							// Re-observe for next load
+							setTimeout(function () {
+								initInfiniteScroll();
+							}, 100);
+						} else {
+							// No more products
+							$trigger.fadeOut('slow', function () {
+								$(this).remove();
+							});
+							if (observer) {
+								observer.disconnect();
+							}
+						}
+
+						// Re-initialize product functionality
+						WoozioProductButtonStatus();
+						WoozioProductVariationHandler();
+						WoozioLoadDefaultActiveVariations();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log('Infinite scroll error: ' + textStatus, errorThrown);
+					// Remove skeleton loading on error
+					$('.bt-product-layout .woocommerce-loop-products .bt-product-skeleton').remove();
+					$trigger.find('.bt-loading-spinner').fadeOut();
+					isLoading = false;
+				}
+			});
+		}
+
+		// Initialize on page load
+		initInfiniteScroll();
+
+		// Re-initialize after filter changes (modify existing filter submit to handle this)
+		$(document).on('filter-products-complete', function () {
+			isLoading = false;
+			setTimeout(function () {
+				initInfiniteScroll();
+			}, 100);
+		});
+	}
+
 	/* Product Button toggle Filter*/
 	function WoozioProductFilterToggle() {
 		if ($('.bt-product-filter-toggle').length > 0) {
@@ -2430,6 +2684,8 @@
 		WoozioProductWishlistLoad();
 		WoozioProductQuickView();
 		WoozioProductsFilter();
+		WoozioLoadMoreButton();
+		WoozioInfiniteScroll();
 		WoozioProductFilterToggle();
 		WoozioAttachTooltips();
 		WoozioUpdateMiniCart();
