@@ -52,29 +52,51 @@ get_template_part('framework/templates/site', 'titlebar');
 							</div>
 						</div>
 						<div class="bt-product-view-type">
-							<?php
-							$type_active = 'grid';
-							if (isset($_GET['view_type']) && 'list' == $_GET['view_type']) {
-								$type_active = 'list';
-							}
-							?>
-							<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
-								<div class="bt-icon">
-									<span class="bt-dot"></span>
-									<span class="bt-dot long"></span>
-									<span class="bt-dot"></span>
-									<span class="bt-dot long"></span>
+									<?php
+									$type_active = 'grid-3';
+									if (isset($_GET['view_type'])) {
+										$type_active = $_GET['view_type'];
+									}
+									?>
+									<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
+										<div class="bt-icon">
+											<span class="bt-dot"></span>
+											<span class="bt-dot long"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot long"></span>
+										</div>
+									</a>
+									<a href="#" class="bt-view-type bt-view-grid-2 <?php if ('grid-2' == $type_active) echo 'active'; ?>" data-view="grid-2">
+										<div class="bt-icon">
+										<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+										</div>
+									</a>
+									<a href="#" class="bt-view-type bt-view-grid-3 <?php if ('grid-3' == $type_active) echo 'active'; ?>" data-view="grid-3">
+										<div class="bt-icon">
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+										</div>
+									</a>
+									<a href="#" class="bt-view-type bt-view-grid-4 <?php if ('grid-4' == $type_active) echo 'active'; ?>" data-view="grid-4">
+										<div class="bt-icon">
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>	
+											<span class="bt-dot"></span>
+											<span class="bt-dot"></span>	
+										</div>
+									</a>
 								</div>
-							</a>
-							<a href="#" class="bt-view-type bt-view-grid <?php if ('grid' == $type_active) echo 'active'; ?>" data-view="grid">
-								<div class="bt-icon">
-									<span class="bt-dot"></span>
-									<span class="bt-dot"></span>
-									<span class="bt-dot"></span>
-									<span class="bt-dot"></span>
-								</div>
-							</a>
-						</div>
 						<div class="bt-product-orderby">
 							<div class="bt-product-sort-block">
 								<span class="bt-sort-title">

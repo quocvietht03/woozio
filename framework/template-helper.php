@@ -491,7 +491,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 		[
 			'label' => esc_html__('Position Horizontal', 'woozio'),
 			'type' => \Elementor\Controls_Manager::SELECT,
-			'default' => 'center',
+			'default' => 'left',
 			'options' => [
 				'left' => esc_html__('Left', 'woozio'),
 				'center' => esc_html__('Center', 'woozio'), 

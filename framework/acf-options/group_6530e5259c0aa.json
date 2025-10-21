@@ -434,7 +434,7 @@
                     "multiple": 0,
                     "allow_null": 0,
                     "allow_in_bindings": 1,
-                    "ui": 1,
+                    "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
                     "create_options": 0,
@@ -471,7 +471,37 @@
                     "multiple": 0,
                     "allow_null": 0,
                     "allow_in_bindings": 1,
-                    "ui": 1,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0
+                },
+                {
+                    "key": "field_68f70804af95b",
+                    "label": "Shop Pagination",
+                    "name": "shop_pagination",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "default": "Default Pagination",
+                        "infinite-scrolling": "Infinite Scrolling",
+                        "button-load-more": "Load More button"
+                    },
+                    "default_value": false,
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 1,
+                    "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
                     "create_options": 0,
@@ -745,12 +775,12 @@
             ]
         },
         {
-            "key": "field_680ee32e75eba",
-            "label": "Top Popular",
-            "name": "top_popular_product",
+            "key": "field_68f5e81dec757",
+            "label": "Custom Filters",
+            "name": "custom_filters",
             "aria-label": "",
-            "type": "post_object",
-            "instructions": "Enter a product to display its top popular variations. If no product is provided, the filter will automatically query and display the best-selling products.",
+            "type": "group",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -758,49 +788,160 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "product"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 1,
-            "allow_null": 0,
-            "allow_in_bindings": 1,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_680eec9540dc4",
-            "label": "Featured Products",
-            "name": "featured_products",
-            "aria-label": "",
-            "type": "post_object",
-            "instructions": "Enter a product to display its featured variations. If no product is provided, the filter will automatically query and display the featured products.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "post_type": [
-                "product"
-            ],
-            "post_status": [
-                "publish"
-            ],
-            "taxonomy": "",
-            "return_format": "id",
-            "multiple": 1,
-            "allow_null": 0,
-            "allow_in_bindings": 1,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_68f5f9edb08dc",
+                    "label": "Setting Product Category",
+                    "name": "setting_product_category",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "none": "Display parent categories only",
+                        "parent": "Display parent and subcategories",
+                        "custom": "Select custom categories"
+                    },
+                    "default_value": "none",
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "allow_in_bindings": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0
+                },
+                {
+                    "key": "field_68f5fc3330fee",
+                    "label": "Select Category Product Custom",
+                    "name": "select_category_product_custom",
+                    "aria-label": "",
+                    "type": "taxonomy",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_68f5f9edb08dc",
+                                "operator": "==",
+                                "value": "custom"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "taxonomy": "product_cat",
+                    "add_term": 1,
+                    "save_terms": 0,
+                    "load_terms": 0,
+                    "return_format": "id",
+                    "field_type": "multi_select",
+                    "allow_null": 0,
+                    "allow_in_bindings": 0,
+                    "bidirectional": 0,
+                    "multiple": 0,
+                    "bidirectional_target": []
+                },
+                {
+                    "key": "field_68f5f7c56daf8",
+                    "label": "Enable Arrange filters",
+                    "name": "enable_arrange_filters",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "",
+                    "default_value": 0,
+                    "allow_in_bindings": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1
+                },
+                {
+                    "key": "field_68f5e8c0ec75e",
+                    "label": "Arrange filters",
+                    "name": "arrange_filters",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_68f5f7c56daf8",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "layout": "table",
+                    "pagination": 0,
+                    "min": 1,
+                    "max": 6,
+                    "collapsed": "field_68f5e9b6ea2f3",
+                    "button_label": "Add Row",
+                    "rows_per_page": 20,
+                    "sub_fields": [
+                        {
+                            "key": "field_68f5e9b6ea2f3",
+                            "label": "Item Filters",
+                            "name": "item_filters",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "search_form": "Search Form",
+                                "categories": "Product Categories",
+                                "brand": "Brand",
+                                "price": "Price",
+                                "colors": "Colors",
+                                "customer_rating": "Customer Rating"
+                            },
+                            "default_value": false,
+                            "return_format": "value",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "allow_in_bindings": 1,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0,
+                            "parent_repeater": "field_68f5e8c0ec75e"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "key": "field_653c781c1e516",
@@ -1782,5 +1923,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1759366899
+    "modified": 1761020057
 }

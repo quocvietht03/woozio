@@ -460,32 +460,91 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
         return;
     }
 
-    $terms = get_terms(array(
+    // Get settings for product_cat from ACF
+    $category_mode = 'none'; // default
+    $custom_categories = array();
+    
+    if ($slug === 'product_cat') {
+        $custom_filters = get_field('custom_filters', 'option');
+        $category_mode = !empty($custom_filters['setting_product_category']) ? $custom_filters['setting_product_category'] : 'none';
+        $custom_categories = !empty($custom_filters['select_category_product_custom']) ? $custom_filters['select_category_product_custom'] : array();
+    }
+
+    // Get terms based on mode
+    $terms_args = array(
         'taxonomy' => $slug,
         'hide_empty' => true,
         'parent'   => 0
-    ));
+    );
 
+    // If custom mode and has custom categories, override
+    if ($slug === 'product_cat' && $category_mode === 'custom' && !empty($custom_categories)) {
+        $terms_args = array(
+            'taxonomy' => $slug,
+            'hide_empty' => true,
+            'include' => $custom_categories
+        );
+    }
+
+    $terms = get_terms($terms_args);
     $field_title_default = !empty($field_title) ? $field_title : 'Choose';
 
     if (!empty($terms) && !is_wp_error($terms)) {
     ?>
-        <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?>" data-name="<?php echo esc_attr($slug); ?>">
+        <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?> bt-field-mode-<?php echo $category_mode; ?>" data-name="<?php echo esc_attr($slug); ?>">
             <div class="bt-field-title"><?php echo esc_html($field_title_default) ?></div>
             <?php foreach ($terms as $term) { ?>
-                <?php if ($term->slug == $field_value) { ?>
-                    <div class="item-radio">
+                <?php 
+                $is_checked = ($term->slug == $field_value);
+                $has_children = false;
+                $children = array();
+                
+                // Check for subcategories if mode is 'parent'
+                if ($slug === 'product_cat' && $category_mode === 'parent') {
+                    $children = get_terms(array(
+                        'taxonomy' => $slug,
+                        'hide_empty' => true,
+                        'parent' => $term->term_id
+                    ));
+                    $has_children = !empty($children) && !is_wp_error($children);
+                }
+                ?>
+                
+                <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>">
+                    <?php if ($is_checked) { ?>
                         <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
-                        <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"> <?php echo esc_html($term->name); ?> </label>
-                        <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
-                    </div>
-                <?php } else { ?>
-                    <div class="item-radio">
+                    <?php } else { ?>
                         <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>">
-                        <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"> <?php echo esc_html($term->name); ?> </label>
-                        <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
+                    <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"> 
+                        <?php echo esc_html($term->name); ?> 
+                    </label>
+                    <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
+                    
+                    <?php if ($has_children) { ?>
+                        <span class="bt-toggle-children">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <div class="bt-children-categories">
+                            <?php foreach ($children as $child) { ?>
+                                <?php $child_checked = ($child->slug == $field_value); ?>
+                                <div class="item-radio item-radio-child">
+                                    <?php if ($child_checked) { ?>
+                                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
+                                    <?php } else { ?>
+                                        <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>">
+                                    <?php } ?>
+                                    <label for="<?php echo esc_attr($child->slug); ?>" data-slug="<?php echo esc_attr($child->slug); ?>"> 
+                                        <?php echo esc_html($child->name); ?> 
+                                    </label>
+                                    <span class="bt-count"><?php echo '(' . $child->count . ')'; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+                </div>
             <?php } ?>
         </div>
     <?php
@@ -1997,101 +2056,6 @@ function woozio_search_live()
 
 add_action('wp_ajax_woozio_search_live', 'woozio_search_live');
 add_action('wp_ajax_nopriv_woozio_search_live', 'woozio_search_live');
-
-/* query id elementor Popular Products */
-function bt_custom_popular_products_query($query)
-{
-    if (!isset($query)) {
-        return;
-    }
-
-    $query->set('post_type', 'product');
-
-    // Get popular products selection from ACF
-    $top_popular_products = get_field('top_popular_product', 'options');
-
-    // Check if specific products are selected
-    if (!empty($top_popular_products) && is_array($top_popular_products)) {
-        // Get IDs of selected products
-        $product_ids = array();
-        foreach ($top_popular_products as $product) {
-            if (is_object($product) && isset($product->ID)) {
-                $product_ids[] = $product->ID;
-            } elseif (is_numeric($product)) {
-                $product_ids[] = $product;
-            }
-        }
-
-        if (!empty($product_ids)) {
-            // Use the selected products with specific ordering
-            $query->set('post__in', $product_ids);
-            $query->set('orderby', 'post__in'); // Maintain the order from ACF
-            // Don't use meta_key sorting when we have specific products
-        } else {
-            // Fall back to popularity sorting if no valid IDs
-            $query->set('meta_key', 'total_sales');
-            $query->set('orderby', 'meta_value_num');
-            $query->set('order', 'desc');
-        }
-    } else {
-        // Default sorting by popularity when no products are selected
-        $query->set('meta_key', 'total_sales');
-        $query->set('orderby', 'meta_value_num');
-        $query->set('order', 'desc');
-    }
-}
-
-add_action('elementor/query/bt_popular_products', 'bt_custom_popular_products_query');
-/* query id elementor Featured Products */
-function bt_custom_featured_products_query($query)
-{
-    if (!isset($query)) {
-        return;
-    }
-
-    $query->set('post_type', 'product');
-
-    // Get popular products selection from ACF
-    $featured_products = get_field('featured_products', 'options');
-
-    // Check if specific products are selected
-    if (!empty($featured_products) && is_array($featured_products)) {
-        // Get IDs of selected products
-        $product_ids = array();
-        foreach ($featured_products as $product) {
-            if (is_object($product) && isset($product->ID)) {
-                $product_ids[] = $product->ID;
-            } elseif (is_numeric($product)) {
-                $product_ids[] = $product;
-            }
-        }
-
-        if (!empty($product_ids)) {
-            // Use the selected products with specific ordering
-            $query->set('post__in', $product_ids);
-            $query->set('orderby', 'post__in'); // Maintain the order from ACF
-            // Don't use meta_key sorting when we have specific products
-        } else {
-            $query->set('tax_query', array(
-                array(
-                    'taxonomy' => 'product_visibility',
-                    'field' => 'name',
-                    'terms' => 'featured',
-                ),
-            ));
-        }
-    } else {
-        $query->set('tax_query', array(
-            array(
-                'taxonomy' => 'product_visibility',
-                'field' => 'name',
-                'terms' => 'featured',
-            ),
-        ));
-    }
-}
-
-add_action('elementor/query/bt_featured_products', 'bt_custom_featured_products_query');
 
 // Add multiple to cart ajax widget hotspot
 function woozio_add_multiple_to_cart()
