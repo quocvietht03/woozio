@@ -1169,6 +1169,8 @@
 			params.delete('sort_order');
 			params.delete('view_type');
 			params.delete('search_keyword');
+			params.delete('content_width');
+			params.delete('sidebar_position');
 			// Clean up URL params by removing empty values
 			for (const [key, value] of params.entries()) {
 				//	console.log(key, value);
@@ -1311,40 +1313,46 @@
 				$('.bt-product-layout').attr('data-view', view_type);
 			}
 
-			$('.bt-view-type').removeClass('active');
-			$(this).addClass('active');
-			//	$('.bt-product-filter-form').submit();
-			var param_str = '',
-				param_out = [],
-				param_in = $('.bt-product-filter-form').serialize().split('&');
+		$('.bt-view-type').removeClass('active');
+		$(this).addClass('active');
+		//	$('.bt-product-filter-form').submit();
+		
+		// Get current URL params
+		var urlParams = new URLSearchParams(window.location.search);
+		
+		// Get pagination type
+		var paginationType = $('.bt-product-layout').data('pagination-type');
+		
+		// Get form params
+		var param_in = $('.bt-product-filter-form').serialize().split('&');
+		
+		param_in.forEach(function (param) {
+			var param_key = param.split('=')[0],
+				param_val = param.split('=')[1];
 
-			// Get pagination type
-			var paginationType = $('.bt-product-layout').data('pagination-type');
-
-			param_in.forEach(function (param) {
-				var param_key = param.split('=')[0],
-					param_val = param.split('=')[1];
-
-				// Skip current_page param for infinite scroll and load more button
-				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
-					return;
-				}
-				if ('' !== param_val) {
-					param_out.push(param);
-				}
-			});
-
-			if (0 < param_out.length) {
-				param_str = param_out.join('&');
+			// Skip current_page param for infinite scroll and load more button
+			if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+				return;
 			}
-
-			if ('' !== param_str) {
-				window.history.replaceState(null, null, `?${param_str}`);
-				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
+			
+			// Update or add form params to URL params
+			if ('' !== param_val) {
+				urlParams.set(param_key, decodeURIComponent(param_val));
 			} else {
-				window.history.replaceState(null, null, window.location.pathname);
-				$(this).find('.bt-reset-filter-product-btn').addClass('disable');
+				// Remove empty params from URL
+				urlParams.delete(param_key);
 			}
+		});
+		
+		var param_str = urlParams.toString();
+
+		if ('' !== param_str) {
+			window.history.replaceState(null, null, `?${param_str}`);
+			$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
+		} else {
+			window.history.replaceState(null, null, window.location.pathname);
+			$(this).find('.bt-reset-filter-product-btn').addClass('disable');
+		}
 		});
 
 		//Sort order
@@ -1543,62 +1551,88 @@
 			$('.bt-product-filter-form .bt-reset-filter-product-btn').removeClass('disable');
 		}
 
-		$('.bt-reset-filter-product-btn').on('click', function (e) {
-			e.preventDefault();
+	$('.bt-reset-filter-product-btn').on('click', function (e) {
+		e.preventDefault();
 
-			if ($(this).hasClass('disable')) {
+		if ($(this).hasClass('disable')) {
+			return;
+		}
+		$('.bt-list-tag-filter').removeClass('active');
+		$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
+		
+		// Get current URL params
+		var urlParams = new URLSearchParams(window.location.search);
+		
+		// Get all form field names to remove only form-related params
+		var formParams = [];
+		$('.bt-product-filter-form').serializeArray().forEach(function(item) {
+			if (!formParams.includes(item.name)) {
+				formParams.push(item.name);
+			}
+		});
+		
+		// Remove only form-related params from URL
+		formParams.forEach(function(paramName) {
+			urlParams.delete(paramName);
+		});
+		
+		var param_str = urlParams.toString();
+		if ('' !== param_str) {
+			window.history.replaceState(null, null, `?${param_str}`);
+		} else {
+			window.history.replaceState(null, null, window.location.pathname);
+		}
+		
+		$('.bt-product-filter-form input').not('[type="radio"]').val('');
+		$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
+		$('.bt-product-filter-form .bt-field-item').removeClass('checked');
+		$('.bt-product-filter-form select').select2().val('').trigger('change');
+		$(this).addClass('disable')
+
+		$('.bt-product-filter-form').submit();
+	});
+	// Ajax filter
+	$('.bt-product-filter-form').submit(function () {
+		// Get current URL params
+		var urlParams = new URLSearchParams(window.location.search);
+		
+		var param_in = $(this).serialize().split('&');
+
+		var param_ajax = {
+			action: 'woozio_products_filter',
+		};
+
+		// Get pagination type
+		var paginationType = $('.bt-product-layout').data('pagination-type');
+
+		param_in.forEach(function (param) {
+			var param_key = param.split('=')[0],
+				param_val = param.split('=')[1];
+
+			// Skip current_page param for infinite scroll and load more button
+			if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
 				return;
 			}
-			$('.bt-list-tag-filter').removeClass('active');
-			$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
-			window.history.replaceState(null, null, window.location.pathname);
-			$('.bt-product-filter-form input').not('[type="radio"]').val('');
-			$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
-			$('.bt-product-filter-form .bt-field-item').removeClass('checked');
-			$('.bt-product-filter-form select').select2().val('').trigger('change');
-			$(this).addClass('disable')
 
-			$('.bt-product-filter-form').submit();
-		});
-		// Ajax filter
-		$('.bt-product-filter-form').submit(function () {
-			var param_str = '',
-				param_out = [],
-				param_in = $(this).serialize().split('&');
-
-			var param_ajax = {
-				action: 'woozio_products_filter',
-			};
-
-			// Get pagination type
-			var paginationType = $('.bt-product-layout').data('pagination-type');
-
-			param_in.forEach(function (param) {
-				var param_key = param.split('=')[0],
-					param_val = param.split('=')[1];
-
-				// Skip current_page param for infinite scroll and load more button
-				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
-					return;
-				}
-
-				if ('' !== param_val) {
-					param_out.push(param);
-					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
-				}
-			});
-
-			if (0 < param_out.length) {
-				param_str = param_out.join('&');
-			}
-
-			if ('' !== param_str) {
-				window.history.replaceState(null, null, `?${param_str}`);
-				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
+			if ('' !== param_val) {
+				var decodedVal = decodeURIComponent(param_val);
+				urlParams.set(param_key, decodedVal);
+				param_ajax[param_key] = decodedVal.replace(/%2C/g, ',');
 			} else {
-				window.history.replaceState(null, null, window.location.pathname);
-				$(this).find('.bt-reset-filter-product-btn').addClass('disable');
+				// Remove empty params from URL
+				urlParams.delete(param_key);
 			}
+		});
+
+		var param_str = urlParams.toString();
+
+		if ('' !== param_str) {
+			window.history.replaceState(null, null, `?${param_str}`);
+			$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
+		} else {
+			window.history.replaceState(null, null, window.location.pathname);
+			$(this).find('.bt-reset-filter-product-btn').addClass('disable');
+		}
 			WoozioLoadFilterTagProduct();
 			// console.log(param_ajax);
 
@@ -1620,6 +1654,35 @@
 				success: function (response) {
 					//console.log(response);
 					if (response.success) {
+
+						// Update category title and description
+						var $title = $('.bt-shop-titlebar .bt-page-titlebar--title');
+						var $description = $('.bt-shop-titlebar .bt-page-titlebar--description');
+						
+						if ($title.length > 0) {
+							if (response.data['category_title']) {
+								// Set category title
+								$title.text(response.data['category_title']);
+							} else {
+								// Restore original title
+								var originalTitle = $title.attr('data-original-title');
+								if (originalTitle) {
+									$title.text(originalTitle);
+								}
+							}
+						}
+						
+						if ($description.length > 0) {
+							// Check if filtering by category
+							if (response.data['has_category_filter']) {
+								// Filtering by category: use category description (may be empty)
+								$description.html(response.data['category_description'] || '');
+							} else {
+								// Not filtering by category: restore original description
+								var originalDescription = $description.attr('data-original-description');
+								$description.html(originalDescription || '');
+							}
+						}
 
 						setTimeout(function () {
 							$('.bt-results-count').html(response.data['results']).fadeIn('slow');

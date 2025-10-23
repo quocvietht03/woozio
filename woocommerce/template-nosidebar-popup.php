@@ -16,15 +16,19 @@ $total_page = $wp_query->max_num_pages;
 $total_products = $wp_query->found_posts;
 $archive_shop = get_field('archive_shop', 'option');
 $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
+$content_width = isset($archive_shop['content_width']) ? $archive_shop['content_width'] : 'boxed';
+if(isset($_GET['content_width']) && !empty($_GET['content_width'])) {
+    $content_width = sanitize_text_field($_GET['content_width']);
+}
 get_header('shop');
-get_template_part('framework/templates/site', 'titlebar');
+get_template_part('framework/templates/shop', 'titlebar');
 
 ?>
 <div class="bt-filter-scroll-pos"></div>
 <main id="bt_main" class="bt-site-main">
 	<div class="bt-main-content">
 		<div class="bt-main-products-ss bt-template-nosidebar-popup">
-			<div class="bt-container">
+			<div class="bt-container <?php echo esc_attr($content_width); ?>">
 				<div class="bt-products-sidebar">
 					<?php get_template_part('woocommerce/sidebar', 'product', array('total_products' => $total_products)); ?>
 				</div>

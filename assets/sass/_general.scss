@@ -205,6 +205,13 @@
   margin-right: auto;
   padding-left: $padding-start;
   padding-right: $padding-end;
+  &.full-width {
+    max-width: 100%;
+    @media (min-width: 1300px) {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+  }
 }
 
 .bt-fl-no-mg {

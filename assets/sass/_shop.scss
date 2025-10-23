@@ -70,7 +70,7 @@
         @extend .__scrollbar_style;
         display: flex;
         flex-wrap: wrap;
-        max-height: 400px;
+        max-height: 410px;
         margin-right: -8px;
         padding-right: 8px;
       }
@@ -560,6 +560,11 @@
 .bt-main-products-ss {
   /* filter sidebar */
   &.bt-template-sidebar {
+    &.sidebar-right {
+      .bt-main-product-row {
+        flex-direction: row-reverse;
+      }
+    }
     .bt-main-product-row {
       display: flex;
       justify-content: space-between;

@@ -16,15 +16,23 @@ $total_page = $wp_query->max_num_pages;
 $total_products = $wp_query->found_posts;
 $archive_shop = get_field('archive_shop', 'option');
 $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
+$content_width = isset($archive_shop['content_width']) ? $archive_shop['content_width'] : 'boxed';
+if(isset($_GET['content_width']) && !empty($_GET['content_width'])) {
+    $content_width = sanitize_text_field($_GET['content_width']);
+}
+$sidebar_position = isset($archive_shop['sidebar_position']) ? $archive_shop['sidebar_position'] : 'sidebar-left';
+if(isset($_GET['sidebar_position']) && !empty($_GET['sidebar_position'])) {
+    $sidebar_position = sanitize_text_field($_GET['sidebar_position']);
+}
 get_header('shop');
-get_template_part('framework/templates/site', 'titlebar');
+get_template_part('framework/templates/shop', 'titlebar');
 
 ?>
 <div class="bt-filter-scroll-pos"></div>
 <main id="bt_main" class="bt-site-main">
 	<div class="bt-main-content">
-		<div class="bt-main-products-ss bt-template-sidebar">
-			<div class="bt-container">
+		<div class="bt-main-products-ss bt-template-sidebar <?php echo esc_attr($sidebar_position); ?>">
+			<div class="bt-container <?php echo esc_attr($content_width); ?>">
 				<?php
 				if ($total_products == 0) {
 					echo '<h3 class="not-found-post">'

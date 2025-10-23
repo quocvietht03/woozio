@@ -196,3 +196,4 @@ function bt_custom_search_filter($query)
 	}
 }
 add_action('pre_get_posts', 'bt_custom_search_filter');
+

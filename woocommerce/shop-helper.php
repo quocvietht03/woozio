@@ -1074,6 +1074,23 @@ function woozio_products_filter()
 
     wp_reset_postdata();
 
+    // Get category title and description if product_cat is set
+    if (isset($_POST['product_cat']) && !empty($_POST['product_cat'])) {
+        $cat_slug = sanitize_text_field($_POST['product_cat']);
+        $category_term = get_term_by('slug', $cat_slug, 'product_cat');
+        
+        if ($category_term && !is_wp_error($category_term)) {
+            $output['category_title'] = $category_term->name;
+            $output['category_description'] = term_description($category_term->term_id, 'product_cat');
+            $output['has_category_filter'] = true; // Flag to indicate category filter is active
+        }
+    } else {
+        // No category selected, return empty to indicate reset to original
+        $output['category_title'] = '';
+        $output['category_description'] = '';
+        $output['has_category_filter'] = false; // No category filter
+    }
+
     wp_send_json_success($output);
 
     die();
