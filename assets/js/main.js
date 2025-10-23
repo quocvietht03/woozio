@@ -1171,6 +1171,12 @@
 			params.delete('search_keyword');
 			params.delete('content_width');
 			params.delete('sidebar_position');
+			params.delete('titlebar');
+			params.delete('breadcrumb_position');
+			params.delete('enable_description');
+			params.delete('enable_background');
+			params.delete('enable_section_bottom');
+			params.delete('section_bottom_id');
 			// Clean up URL params by removing empty values
 			for (const [key, value] of params.entries()) {
 				//	console.log(key, value);
