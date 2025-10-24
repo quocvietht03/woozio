@@ -2209,6 +2209,9 @@
             &.loading {
               color: transparent !important;
               opacity: 0.5;
+              * {
+                color: transparent !important;
+              }
               &::before {
                 opacity: 0;
               }
@@ -8720,5 +8723,136 @@
     del {
       order: 1;
     }
+  }
+}
+
+// Product Video Button
+.bt-button-product-video {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  
+  .bt-product-video__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50px;
+    color: $color-primary;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    
+    &:hover {
+      background: $color-accent;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      
+      svg {
+        circle,
+        path {
+          stroke: #fff;
+          fill: #fff;
+        }
+      }
+    }
+  }
+}
+
+// Product Video Popup
+.bt-product-video__popup {
+  .mfp-content__inner {
+    max-width: 900px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .bt-video-embed {
+    video {
+      display: block;
+    }
+  }
+}
+
+// Product 360 Button
+.bt-button-product-360 {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  z-index: 10;
+  
+  .bt-product-360__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50px;
+    color: $color-primary;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    
+    &:hover {
+      background: $color-accent;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      
+      svg {
+        path {
+          stroke: #fff;
+        }
+      }
+    }
+  }
+}
+
+// If there's no video button, move 360 button to top
+.woocommerce-product-gallery:not(:has(.bt-button-product-video)) {
+  .bt-button-product-360 {
+    top: 20px;
+  }
+}
+
+// Product 360 Popup
+.bt-product-360__popup {
+  .mfp-content__inner {
+    max-width: 1000px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+  
+  model-viewer {
+    background: #fff;
+    border-radius: 4px;
   }
 }

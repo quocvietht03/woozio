@@ -29,9 +29,11 @@ if (isset($_GET['layout-titlebar'])) {
     }
     if ($layout_titlebar === 'description') {
         $shop_title_bar['enable_description_titlebarshop'] = true;
+        $shop_title_bar['breadcrumb_position'] = 'center';
     }
     if ($layout_titlebar === 'background') {
         $shop_title_bar['enable_background_titlebarshop'] = true;
+        $shop_title_bar['breadcrumb_position'] = 'center';
     }
 }
 

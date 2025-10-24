@@ -1724,6 +1724,69 @@ function woozio_woocommerce_custom_field()
         'options' => $layout_options,
         'value' => $layout_value
     ));
+    
+    // Product Video Settings
+    $video_type_options = array(
+        'youtube' => __('YouTube', 'woozio'),
+        'vimeo' => __('Vimeo', 'woozio'),
+        'mp4' => __('MP4', 'woozio')
+    );
+
+    $video_type_value = get_post_meta($post->ID, '_product_video_type', true);
+    if (empty($video_type_value)) {
+        $video_type_value = 'youtube';
+    }
+    
+    woocommerce_wp_select(array(
+        'id' => '_product_video_type',
+        'label' => __('Product Video Type', 'woozio'),
+        'description' => '',
+        'options' => $video_type_options,
+        'value' => $video_type_value
+    ));
+
+    // Video link input
+    woocommerce_wp_text_input(array(
+        'id' => '_product_video_link',
+        'label' => __('Product Video Link', 'woozio'),
+        'description' => __('Enter the video URL (YouTube, Vimeo, or MP4 file URL)', 'woozio'),
+        'type' => 'url',
+        'placeholder' => 'https://'
+    ));
+
+    // Product 360 GLB file upload
+    $product_360_file = get_post_meta($post->ID, '_product_360_images', true);
+    
+    echo '<p class="form-field _product_360_images_field">';
+    echo '<label for="_product_360_images">' . __('Product 360° GLB File', 'woozio') . '</label>';
+    echo '<button type="button" class="button upload_360_images_button">' . __('Upload GLB File', 'woozio') . '</button>';
+    echo '<input type="hidden" id="_product_360_images" name="_product_360_images" value="' . esc_attr($product_360_file) . '" />';
+    echo '<span class="description">' . __('Upload a .glb file for 360° product view', 'woozio') . '</span>';
+    echo '</p>';
+    
+    // Display selected file name
+    if (!empty($product_360_file)) {
+        $file_path = get_attached_file($product_360_file);
+        $file_name = basename($file_path);
+        $file_url = wp_get_attachment_url($product_360_file);
+        
+        if ($file_path && file_exists($file_path)) {
+            echo '<div class="product-360-preview" style="margin-left: 150px;">';
+            echo '<div class="file-preview" style="display: flex; align-items: center; padding: 10px; background: #f5f5f5; border-radius: 4px; max-width: 400px;">';
+            echo '<span class="dashicons dashicons-media-document" style="font-size: 24px; margin-right: 10px;"></span>';
+            echo '<div style="flex: 1;">';
+            echo '<strong>' . esc_html($file_name) . '</strong><br>';
+            echo '<small style="color: #666;">' . size_format(filesize($file_path)) . '</small>';
+            echo '</div>';
+            if ($file_url) {
+                echo '<a href="' . esc_url($file_url) . '" target="_blank" class="button button-small" style="margin-left: 10px;">' . __('View', 'woozio') . '</a>';
+            }
+            echo '<button type="button" class="button button-small remove_360_file_button" style="margin-left: 5px; color: #b32d2e;">' . __('Remove', 'woozio') . '</button>';
+            echo '</div>';
+            echo '</div>';
+        }
+    }
+    
     // add product sold
     woocommerce_wp_text_input(array(
         'id' => '_product_sold',
@@ -1823,6 +1886,21 @@ function woozio_woocommerce_custom_field_save($post_id)
         $layout = sanitize_text_field($_POST['_layout_product']);
         update_post_meta($post_id, '_layout_product', $layout);
     }
+    // Save product video type
+    if (isset($_POST['_product_video_type'])) {
+        $video_type = sanitize_text_field($_POST['_product_video_type']);
+        update_post_meta($post_id, '_product_video_type', $video_type);
+    }
+    // Save product video link
+    if (isset($_POST['_product_video_link'])) {
+        $video_link = esc_url_raw($_POST['_product_video_link']);
+        update_post_meta($post_id, '_product_video_link', $video_link);
+    }
+    // Save product 360 images
+    if (isset($_POST['_product_360_images'])) {
+        $images_360 = sanitize_text_field($_POST['_product_360_images']);
+        update_post_meta($post_id, '_product_360_images', $images_360);
+    }
     if (isset($_POST['_product_sold'])) {
         $product_sold = intval($_POST['_product_sold']);
         update_post_meta($post_id, '_product_sold', $product_sold);
@@ -1887,7 +1965,7 @@ function woozio_display_button_buy_now()
             $variations = $product->get_available_variations();
             if (!empty($variations)) {
                 echo '<div class="bt-button-buy-now">';
-                echo '<a class="button ' . ($product->is_type('variable') ? 'disabled' : '') . '" data-id="' . get_the_ID() . '">' . esc_html__('Buy it now ', 'woozio') . '</a>';
+                echo '<a class="button disabled" data-id="' . get_the_ID() . '">' . esc_html__('Buy it now ', 'woozio') . '</a>';
                 echo '</div>';
             }
         }
@@ -2738,6 +2816,64 @@ function woozio_save_variation_gallery($variation_id, $loop)
  * @param int  $image_index The image index in the gallery.
  * @return string
  */
+
+/**
+ * Get video embed HTML based on video type and link
+ * @param string $video_type Type of video (youtube, vimeo, mp4)
+ * @param string $video_link Video URL
+ * @return string Video embed HTML
+ */
+function woozio_get_product_video_embed($video_type, $video_link)
+{
+    if (empty($video_link)) {
+        return '';
+    }
+
+    $video_html = '';
+
+    switch ($video_type) {
+        case 'youtube':
+            // Extract YouTube video ID
+            preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $video_link, $matches);
+            $video_id = !empty($matches[1]) ? $matches[1] : '';
+            
+            if ($video_id) {
+                $video_html = '<div class="bt-video-embed bt-video-youtube" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
+                $video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr($video_id) . '?rel=0" ';
+                $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
+                $video_html .= 'frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>';
+                $video_html .= '</iframe>';
+                $video_html .= '</div>';
+            }
+            break;
+
+        case 'vimeo':
+            // Extract Vimeo video ID
+            preg_match('/vimeo\.com\/(?:.*\/)?(\d+)/', $video_link, $matches);
+            $video_id = !empty($matches[1]) ? $matches[1] : '';
+            
+            if ($video_id) {
+                $video_html = '<div class="bt-video-embed bt-video-vimeo" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
+                $video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr($video_id) . '" ';
+                $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
+                $video_html .= 'frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen>';
+                $video_html .= '</iframe>';
+                $video_html .= '</div>';
+            }
+            break;
+
+        case 'mp4':
+            $video_html = '<div class="bt-video-embed bt-video-mp4">';
+            $video_html .= '<video controls style="width: 100%; height: auto;">';
+            $video_html .= '<source src="' . esc_url($video_link) . '" type="video/mp4">';
+            $video_html .= __('Your browser does not support the video tag.', 'woozio');
+            $video_html .= '</video>';
+            $video_html .= '</div>';
+            break;
+    }
+
+    return $video_html;
+}
 
 function woozio_get_gallery_image_html($attachment_id, $main_image = false, $swiper_slide = false, $image_index = -1)
 {

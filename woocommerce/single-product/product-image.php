@@ -39,7 +39,81 @@ $attachment_ids = $product->get_gallery_image_ids();
 
 ?>
 <div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
-    <div class="woocommerce-product-gallery__wrapper<?php echo (!empty($attachment_ids) && has_post_thumbnail()) ? ' bt-has-slide-thumbs' : ''; ?>">
+    <?php
+    // Only show video and 360 buttons on single product pages
+    if (is_product()) {
+        // Product Video Button and Popup
+        $video_type = get_post_meta($product->get_id(), '_product_video_type', true);
+        $video_link = get_post_meta($product->get_id(), '_product_video_link', true);
+        
+        if (!empty($video_link) && function_exists('woozio_get_product_video_embed')) {
+            $video_embed = woozio_get_product_video_embed($video_type, $video_link);
+            
+            if (!empty($video_embed)) {
+                ?>
+                <div class="bt-button-product-video">
+                    <!-- Popup Container -->
+                    <div id="bt_product_video" class="bt-product-video__popup mfp-content__popup mfp-hide">
+                        <div class="bt-product-video__content mfp-content__inner">
+                            <?php echo $video_embed; ?>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Button Trigger -->
+                    <a href="#bt_product_video" class="bt-product-video__link bt-js-open-popup-link" title="<?php echo esc_attr__('Watch Product Video', 'woozio'); ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M9.5 8.5L15.5 12L9.5 15.5V8.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <span><?php echo esc_html__('Watch Video', 'woozio'); ?></span>
+                    </a>
+                </div>
+                <?php
+            }
+        }
+        
+        // Product 360 Button and Popup
+        $product_360_file = get_post_meta($product->get_id(), '_product_360_images', true);
+        
+        if (!empty($product_360_file)) {
+            $file_url = wp_get_attachment_url($product_360_file);
+            
+            if ($file_url) {
+                ?>
+                <!-- Load model-viewer as ES6 module -->
+                <script type="module" src="<?php echo get_template_directory_uri(); ?>/assets/libs/model-viewer/model-viewer.min.js"></script>
+                
+                <div class="bt-button-product-360">
+                    <!-- Popup Container -->
+                    <div id="bt_product_360" class="bt-product-360__popup mfp-content__popup mfp-hide">
+                        <div class="bt-product-360__content mfp-content__inner">
+                            <model-viewer 
+                                src="<?php echo esc_url($file_url); ?>"
+                                alt="<?php echo esc_attr($product->get_name()); ?> 360° View"
+                                auto-rotate
+                                camera-controls
+                                shadow-intensity="1"
+                                style="width: 100%; height: 600px;">
+                            </model-viewer>
+                        </div>
+                    </div>
+                    
+                    <!-- 360 Button Trigger -->
+                    <a href="#bt_product_360" class="bt-product-360__link bt-js-open-popup-link" title="<?php echo esc_attr__('View 360°', 'woozio'); ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2C8.13 2 5 3.79 5 6V18C5 20.21 8.13 22 12 22C15.87 22 19 20.21 19 18V6C19 3.79 15.87 2 12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 6C5 8.21 8.13 10 12 10C15.87 10 19 8.21 19 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 14V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span><?php echo esc_html__('View 360°', 'woozio'); ?></span>
+                    </a>
+                </div>
+                <?php
+            }
+        }
+    }
+    ?>
+<div class="woocommerce-product-gallery__wrapper<?php echo (!empty($attachment_ids) && has_post_thumbnail()) ? ' bt-has-slide-thumbs' : ''; ?>">
         <?php
         
         if ( $post_thumbnail_id ) {

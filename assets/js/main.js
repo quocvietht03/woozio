@@ -300,9 +300,9 @@
 				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					var variationId = variation.variation_id;
-					//alert(variationId);
+					
 					if (variationId && variationId !== '0') {
-						$('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
+						$(this).closest('.variations_form').find('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
 							$addToCartBtn.removeClass('disabled').attr('data-variation', variationId);
@@ -466,7 +466,7 @@
 							}
 						}
 					} else {
-						$('.bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
+						$(this).closest('.variations_form').find('.bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
 							$(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable').addClass('disabled').removeAttr('data-variation');
 						}

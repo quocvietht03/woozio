@@ -6773,6 +6773,9 @@
           &.loading {
             color: transparent !important;
             opacity: 0.5;
+            * {
+              color: transparent !important;
+            }
             &::before {
               opacity: 0;
             }
@@ -7339,6 +7342,9 @@
           &.loading {
             color: transparent !important;
             opacity: 0.5;
+            * {
+              color: transparent !important;
+            }
             &::before {
               opacity: 0;
             }
@@ -8115,6 +8121,9 @@
           &.loading {
             color: transparent !important;
             opacity: 0.5;
+            * {
+              color: transparent !important;
+            }
             &::before {
               opacity: 0;
             }

@@ -15,13 +15,40 @@ if (!function_exists('woozio_register_sidebar')) {
 	add_action('widgets_init', 'woozio_register_sidebar');
 }
 
-/* Add Support Upload Image Type SVG */
+/* Add Support Upload Image Type SVG and 3D Models */
 function woozio_mime_types($mimes)
 {
 	$mimes['svg'] = 'image/svg+xml';
+	$mimes['glb'] = 'model/gltf-binary';
+	$mimes['gltf'] = 'model/gltf+json';
 	return $mimes;
 }
 add_filter('upload_mimes', 'woozio_mime_types');
+
+/* Fix WordPress check filetype for GLB files */
+function woozio_fix_mime_type_glb($data, $file, $filename, $mimes, $real_mime)
+{
+	if (!empty($data['ext']) && !empty($data['type'])) {
+		return $data;
+	}
+
+	$wp_file_type = wp_check_filetype($filename, $mimes);
+
+	// Check for GLB files
+	if ($wp_file_type['ext'] === 'glb') {
+		$data['ext'] = 'glb';
+		$data['type'] = 'model/gltf-binary';
+	}
+
+	// Check for GLTF files
+	if ($wp_file_type['ext'] === 'gltf') {
+		$data['ext'] = 'gltf';
+		$data['type'] = 'model/gltf+json';
+	}
+
+	return $data;
+}
+add_filter('wp_check_filetype_and_ext', 'woozio_fix_mime_type_glb', 10, 5);
 
 /* Get icon SVG HTML */
 function woozio_get_icon_svg_html($icon_file_name)
