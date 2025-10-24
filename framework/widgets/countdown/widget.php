@@ -34,6 +34,10 @@ class Widget_CountDown extends Widget_Base
 	{
 		return ['woozio'];
 	}
+	public function get_script_depends()
+	{
+		return ['elementor-widgets'];
+	}
 
 	protected function register_content_section_controls()
 	{
@@ -233,7 +237,7 @@ class Widget_CountDown extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 		$date_countdown = $settings['countdown_date'];
-		
+
 		if ($settings['show_infinity_date'] === 'yes') {
 			$date_countdown = $this->get_infinity_countdown_date($settings);
 		}
