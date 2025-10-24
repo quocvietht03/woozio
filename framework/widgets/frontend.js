@@ -49,28 +49,6 @@
 		});
 	}
 
-	/* Location list toggle */
-	const LocationListHandler = function ($scope, $) {
-		var buttonMore = $scope.find('.bt-more-info');
-		var contentList = $scope.find('.bt-location-list--content');
-		if (buttonMore.length > 0) {
-			buttonMore.on('click', function (e) {
-				e.preventDefault();
-				if ($(this).hasClass('active')) {
-					$(this).parent().find('.bt-location-list--content').slideUp();
-					$(this).removeClass('active');
-					$(this).children('span').text('More Information');
-				} else {
-					contentList.slideUp();
-					buttonMore.children('span').text('More Information');
-					buttonMore.removeClass('active');
-					$(this).parent().find('.bt-location-list--content').slideDown();
-					$(this).addClass('active');
-					$(this).children('span').text('Less Information');
-				}
-			});
-		}
-	};
 	const FaqHandler = function ($scope, $) {
 		const $titleFaq = $scope.find('.bt-item-title');
 		if ($titleFaq.length > 0) {
@@ -2327,7 +2305,6 @@
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-location-list.default', LocationListHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-list-faq.default', FaqHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion.default', BtAccordionHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product.default', SearchProductHandler);

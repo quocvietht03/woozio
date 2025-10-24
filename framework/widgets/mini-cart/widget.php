@@ -35,6 +35,10 @@ class Widget_MiniCart extends Widget_Base
 	{
 		return ['woozio'];
 	}
+	public function get_script_depends()
+	{
+		return ['elementor-widgets'];
+	}
 
 	protected function register_content_section_controls()
 	{
