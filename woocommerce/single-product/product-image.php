@@ -18,9 +18,20 @@ if (!function_exists('wc_get_gallery_image_html')) {
 }
 
 global $product;
-$product_layout = get_post_meta($product->get_id(), '_layout_product', true);
-if(isset($_GET['layout']) && !empty($_GET['layout'])) {
-    $product_layout = sanitize_text_field($_GET['layout']);
+
+// Check if we're in quick view mode
+// Note: In quick view, always use 'bottom-thumbnail' layout for better UX in the popup
+$is_quick_view = (isset($_REQUEST['action']) && $_REQUEST['action'] === 'woozio_products_quick_view');
+
+if ($is_quick_view) {
+    // Force bottom-thumbnail layout for quick view
+    $product_layout = 'bottom-thumbnail';
+} else {
+    // Use product meta or URL parameter for regular product pages
+    $product_layout = get_post_meta($product->get_id(), '_layout_product', true);
+    if(isset($_GET['layout']) && !empty($_GET['layout'])) {
+        $product_layout = sanitize_text_field($_GET['layout']);
+    }
 }
 $columns           = apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
 $post_thumbnail_id = $product->get_image_id();
