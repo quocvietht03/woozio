@@ -2091,9 +2091,7 @@
             animation-timing-function: linear;
             opacity: 0;
           }
-          .ppcp-messages{
-            display: none;
-          }
+
           &.loading {
             svg {
               opacity: 0;
@@ -2507,7 +2505,9 @@
         }
       }
     }
-
+    .ppcp-messages{
+      display: none;
+    }
   }
 }
 .bt-elwg-product-loop-item {

@@ -268,7 +268,7 @@
 						if (this.content.hasClass('bt-product-video__popup')) {
 							const videoElement = this.content.find('video');
 							const iframeElement = this.content.find('iframe');
-							
+
 							if (videoElement.length > 0) {
 								// Pause and reset MP4 video
 								videoElement[0].pause();
@@ -344,7 +344,7 @@
 				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					var variationId = variation.variation_id;
-					
+
 					if (variationId && variationId !== '0') {
 						$(this).closest('.variations_form').find('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						if ($('.bt-product-add-to-cart-variable').length > 0) {
@@ -1359,46 +1359,46 @@
 				$('.bt-product-layout').attr('data-view', view_type);
 			}
 
-		$('.bt-view-type').removeClass('active');
-		$(this).addClass('active');
-		//	$('.bt-product-filter-form').submit();
-		
-		// Get current URL params
-		var urlParams = new URLSearchParams(window.location.search);
-		
-		// Get pagination type
-		var paginationType = $('.bt-product-layout').data('pagination-type');
-		
-		// Get form params
-		var param_in = $('.bt-product-filter-form').serialize().split('&');
-		
-		param_in.forEach(function (param) {
-			var param_key = param.split('=')[0],
-				param_val = param.split('=')[1];
+			$('.bt-view-type').removeClass('active');
+			$(this).addClass('active');
+			//	$('.bt-product-filter-form').submit();
 
-			// Skip current_page param for infinite scroll and load more button
-			if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
-				return;
-			}
-			
-			// Update or add form params to URL params
-			if ('' !== param_val) {
-				urlParams.set(param_key, decodeURIComponent(param_val));
+			// Get current URL params
+			var urlParams = new URLSearchParams(window.location.search);
+
+			// Get pagination type
+			var paginationType = $('.bt-product-layout').data('pagination-type');
+
+			// Get form params
+			var param_in = $('.bt-product-filter-form').serialize().split('&');
+
+			param_in.forEach(function (param) {
+				var param_key = param.split('=')[0],
+					param_val = param.split('=')[1];
+
+				// Skip current_page param for infinite scroll and load more button
+				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+					return;
+				}
+
+				// Update or add form params to URL params
+				if ('' !== param_val) {
+					urlParams.set(param_key, decodeURIComponent(param_val));
+				} else {
+					// Remove empty params from URL
+					urlParams.delete(param_key);
+				}
+			});
+
+			var param_str = urlParams.toString();
+
+			if ('' !== param_str) {
+				window.history.replaceState(null, null, `?${param_str}`);
+				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
 			} else {
-				// Remove empty params from URL
-				urlParams.delete(param_key);
+				window.history.replaceState(null, null, window.location.pathname);
+				$(this).find('.bt-reset-filter-product-btn').addClass('disable');
 			}
-		});
-		
-		var param_str = urlParams.toString();
-
-		if ('' !== param_str) {
-			window.history.replaceState(null, null, `?${param_str}`);
-			$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
-		} else {
-			window.history.replaceState(null, null, window.location.pathname);
-			$(this).find('.bt-reset-filter-product-btn').addClass('disable');
-		}
 		});
 
 		//Sort order
@@ -1597,88 +1597,88 @@
 			$('.bt-product-filter-form .bt-reset-filter-product-btn').removeClass('disable');
 		}
 
-	$('.bt-reset-filter-product-btn').on('click', function (e) {
-		e.preventDefault();
+		$('.bt-reset-filter-product-btn').on('click', function (e) {
+			e.preventDefault();
 
-		if ($(this).hasClass('disable')) {
-			return;
-		}
-		$('.bt-list-tag-filter').removeClass('active');
-		$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
-		
-		// Get current URL params
-		var urlParams = new URLSearchParams(window.location.search);
-		
-		// Get all form field names to remove only form-related params
-		var formParams = [];
-		$('.bt-product-filter-form').serializeArray().forEach(function(item) {
-			if (!formParams.includes(item.name)) {
-				formParams.push(item.name);
-			}
-		});
-		
-		// Remove only form-related params from URL
-		formParams.forEach(function(paramName) {
-			urlParams.delete(paramName);
-		});
-		
-		var param_str = urlParams.toString();
-		if ('' !== param_str) {
-			window.history.replaceState(null, null, `?${param_str}`);
-		} else {
-			window.history.replaceState(null, null, window.location.pathname);
-		}
-		
-		$('.bt-product-filter-form input').not('[type="radio"]').val('');
-		$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
-		$('.bt-product-filter-form .bt-field-item').removeClass('checked');
-		$('.bt-product-filter-form select').select2().val('').trigger('change');
-		$(this).addClass('disable')
-
-		$('.bt-product-filter-form').submit();
-	});
-	// Ajax filter
-	$('.bt-product-filter-form').submit(function () {
-		// Get current URL params
-		var urlParams = new URLSearchParams(window.location.search);
-		
-		var param_in = $(this).serialize().split('&');
-
-		var param_ajax = {
-			action: 'woozio_products_filter',
-		};
-
-		// Get pagination type
-		var paginationType = $('.bt-product-layout').data('pagination-type');
-
-		param_in.forEach(function (param) {
-			var param_key = param.split('=')[0],
-				param_val = param.split('=')[1];
-
-			// Skip current_page param for infinite scroll and load more button
-			if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+			if ($(this).hasClass('disable')) {
 				return;
 			}
+			$('.bt-list-tag-filter').removeClass('active');
+			$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
 
-			if ('' !== param_val) {
-				var decodedVal = decodeURIComponent(param_val);
-				urlParams.set(param_key, decodedVal);
-				param_ajax[param_key] = decodedVal.replace(/%2C/g, ',');
+			// Get current URL params
+			var urlParams = new URLSearchParams(window.location.search);
+
+			// Get all form field names to remove only form-related params
+			var formParams = [];
+			$('.bt-product-filter-form').serializeArray().forEach(function (item) {
+				if (!formParams.includes(item.name)) {
+					formParams.push(item.name);
+				}
+			});
+
+			// Remove only form-related params from URL
+			formParams.forEach(function (paramName) {
+				urlParams.delete(paramName);
+			});
+
+			var param_str = urlParams.toString();
+			if ('' !== param_str) {
+				window.history.replaceState(null, null, `?${param_str}`);
 			} else {
-				// Remove empty params from URL
-				urlParams.delete(param_key);
+				window.history.replaceState(null, null, window.location.pathname);
 			}
+
+			$('.bt-product-filter-form input').not('[type="radio"]').val('');
+			$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
+			$('.bt-product-filter-form .bt-field-item').removeClass('checked');
+			$('.bt-product-filter-form select').select2().val('').trigger('change');
+			$(this).addClass('disable')
+
+			$('.bt-product-filter-form').submit();
 		});
+		// Ajax filter
+		$('.bt-product-filter-form').submit(function () {
+			// Get current URL params
+			var urlParams = new URLSearchParams(window.location.search);
 
-		var param_str = urlParams.toString();
+			var param_in = $(this).serialize().split('&');
 
-		if ('' !== param_str) {
-			window.history.replaceState(null, null, `?${param_str}`);
-			$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
-		} else {
-			window.history.replaceState(null, null, window.location.pathname);
-			$(this).find('.bt-reset-filter-product-btn').addClass('disable');
-		}
+			var param_ajax = {
+				action: 'woozio_products_filter',
+			};
+
+			// Get pagination type
+			var paginationType = $('.bt-product-layout').data('pagination-type');
+
+			param_in.forEach(function (param) {
+				var param_key = param.split('=')[0],
+					param_val = param.split('=')[1];
+
+				// Skip current_page param for infinite scroll and load more button
+				if ((paginationType === 'infinite-scrolling' || paginationType === 'button-load-more') && param_key === 'current_page') {
+					return;
+				}
+
+				if ('' !== param_val) {
+					var decodedVal = decodeURIComponent(param_val);
+					urlParams.set(param_key, decodedVal);
+					param_ajax[param_key] = decodedVal.replace(/%2C/g, ',');
+				} else {
+					// Remove empty params from URL
+					urlParams.delete(param_key);
+				}
+			});
+
+			var param_str = urlParams.toString();
+
+			if ('' !== param_str) {
+				window.history.replaceState(null, null, `?${param_str}`);
+				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
+			} else {
+				window.history.replaceState(null, null, window.location.pathname);
+				$(this).find('.bt-reset-filter-product-btn').addClass('disable');
+			}
 			WoozioLoadFilterTagProduct();
 			// console.log(param_ajax);
 
@@ -1704,7 +1704,7 @@
 						// Update category title and description
 						var $title = $('.bt-shop-titlebar .bt-page-titlebar--title');
 						var $description = $('.bt-shop-titlebar .bt-page-titlebar--description');
-						
+
 						if ($title.length > 0) {
 							if (response.data['category_title']) {
 								// Set category title
@@ -1717,7 +1717,7 @@
 								}
 							}
 						}
-						
+
 						if ($description.length > 0) {
 							// Check if filtering by category
 							if (response.data['has_category_filter']) {
@@ -2506,25 +2506,46 @@
 				let price;
 
 				// Get regular price
-				const regularPrice = parseFloat($priceElement.first().text().replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), ''));
+				const regularPriceText = $priceElement.first().text();
+				const regularPrice = parseFloat(
+					regularPriceText
+						.replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), '') // Remove all non-numeric except separators
+						.replace(new RegExp('\\' + thousandSeparator, 'g'), '') // Remove thousand separator
+						.replace(new RegExp('\\' + decimalSeparator, 'g'), '.') // Replace decimal separator with dot for parseFloat
+				);
 
 				// Get sale price if exists
 				if ($item.find('ins').length) {
-					price = parseFloat($item.find('ins .woocommerce-Price-amount').text().replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), ''));
+					const salePriceText = $item.find('ins .woocommerce-Price-amount').text();
+					price = parseFloat(
+						salePriceText
+							.replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), '') // Remove all non-numeric except separators
+							.replace(new RegExp('\\' + thousandSeparator, 'g'), '') // Remove thousand separator
+							.replace(new RegExp('\\' + decimalSeparator, 'g'), '.') // Replace decimal separator with dot for parseFloat
+					);
 				} else {
 					price = regularPrice;
 				}
-				
+
 				const quantity = parseInt($quantity.val()) || 0;
 				totalPrice += price * quantity;
 				regularTotalPrice += regularPrice * quantity;
 			});
 
+			// Helper function to format price with proper separators
+			function formatPrice(price) {
+				const parts = price.toFixed(2).split('.');
+				// Format integer part with thousand separator
+				parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+				// Join with decimal separator
+				return parts.join(decimalSeparator);
+			}
+
 			// Update price display
 			if (totalPrice < regularTotalPrice) {
-				$('.bt-price').html(`<del>${currencySymbol}${regularTotalPrice.toFixed(2)}</del> ${currencySymbol}${totalPrice.toFixed(2)}`);
+				$('.bt-price').html(`<del>${currencySymbol}${formatPrice(regularTotalPrice)}</del> ${currencySymbol}${formatPrice(totalPrice)}`);
 			} else {
-				$('.bt-price').text(currencySymbol + totalPrice.toFixed(2));
+				$('.bt-price').text(currencySymbol + formatPrice(totalPrice));
 			}
 			// Update buy now button state
 
