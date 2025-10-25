@@ -2839,9 +2839,9 @@ function woozio_get_product_video_embed($video_type, $video_link)
             
             if ($video_id) {
                 $video_html = '<div class="bt-video-embed bt-video-youtube" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
-                $video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr($video_id) . '?rel=0" ';
+                $video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr($video_id) . '?rel=0&enablejsapi=1" ';
                 $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
-                $video_html .= 'frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>';
+                $video_html .= 'frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>';
                 $video_html .= '</iframe>';
                 $video_html .= '</div>';
             }
@@ -2854,9 +2854,9 @@ function woozio_get_product_video_embed($video_type, $video_link)
             
             if ($video_id) {
                 $video_html = '<div class="bt-video-embed bt-video-vimeo" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
-                $video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr($video_id) . '" ';
+                $video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr($video_id) . '?api=1" ';
                 $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
-                $video_html .= 'frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen>';
+                $video_html .= 'frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>';
                 $video_html .= '</iframe>';
                 $video_html .= '</div>';
             }

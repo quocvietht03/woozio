@@ -1462,7 +1462,9 @@
     }
   }
 }
-
+.mfp-bg{
+  cursor: url('../images/close-popup.svg') 60 60, zoom-out;
+}
 .mfp-wrap {
   .admin-bar & {
     height: calc(100% - 32px);
@@ -1473,12 +1475,17 @@
   }
   .mfp-content {
     position: initial;
+    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
     figcaption {
       position: relative;
     }
   }
+  .mfp-content__popup{
+    cursor: initial;
+  }
   .mfp-container {
     padding: 15px;
+    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
   }
   .mfp-close {
     right: 15px;
@@ -1492,6 +1499,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
+    cursor: pointer;
   }
   button.mfp-arrow {
     display: flex;

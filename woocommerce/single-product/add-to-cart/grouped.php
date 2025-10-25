@@ -52,7 +52,11 @@ do_action('woocommerce_before_add_to_cart_form');
 				$show_add_to_cart_button = true;
 			}
 
-			echo '<li id="product-' . esc_attr($grouped_product_child->get_id()) . '" class="woocommerce-grouped-product-list-item ' . esc_attr(implode(' ', wc_get_product_class('', $grouped_product_child))) . '">';
+			echo '<li id="product-' . esc_attr($grouped_product_child->get_id()) . '" 
+				class="woocommerce-grouped-product-list-item ' . esc_attr(implode(' ', wc_get_product_class('', $grouped_product_child))) . '"
+				data-currency="' . esc_attr(get_woocommerce_currency_symbol()) . '"
+				data-thousand-separator="' . esc_attr(wc_get_price_thousand_separator()) . '"
+				data-decimal-separator="' . esc_attr(wc_get_price_decimal_separator()) . '">';
 
 			// Output columns for each product.
 			foreach ($grouped_product_columns as $column_id) {

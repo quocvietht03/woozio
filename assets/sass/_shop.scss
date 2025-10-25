@@ -1226,6 +1226,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.83);
     z-index: 1000;
+    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
   }
 }
 .bt-table-compare {
@@ -1904,6 +1905,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.83);
     z-index: 1000;
+    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
   }
 }
 /* wishlist */
@@ -2088,6 +2090,9 @@
             animation-iteration-count: infinite;
             animation-timing-function: linear;
             opacity: 0;
+          }
+          .ppcp-messages{
+            display: none;
           }
           &.loading {
             svg {
@@ -2502,6 +2507,7 @@
         }
       }
     }
+
   }
 }
 .bt-elwg-product-loop-item {
@@ -8839,6 +8845,7 @@
       .bt-video-embed {
         video {
           display: block;
+          max-height: 80vh;
         }
       }
     }

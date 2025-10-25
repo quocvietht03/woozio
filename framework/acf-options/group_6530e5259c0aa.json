@@ -1345,6 +1345,27 @@
             "selected": 0
         },
         {
+            "key": "field_68fc2ab509391",
+            "label": "Size Guide",
+            "name": "size_guide",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
             "key": "field_668cadcc8c2b9",
             "label": "Enable Related Posts",
             "name": "enable_related_product",
@@ -2306,5 +2327,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1761183953
+    "modified": 1761356541
 }

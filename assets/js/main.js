@@ -240,7 +240,51 @@
 			$('.bt-js-open-popup-link').magnificPopup({
 				type: 'inline',
 				midClick: true,
-				mainClass: 'mfp-fade'
+				mainClass: 'mfp-fade',
+				callbacks: {
+					open: function () {
+						// Check if this is product video popup
+						if (this.content.hasClass('bt-product-video__popup')) {
+							const videoPopup = this.content.find('.bt-video-embed');
+							const videoElement = videoPopup.find('video');
+							const iframeElement = videoPopup.find('iframe');
+
+							if (videoElement.length > 0) {
+								// Handle MP4 video - autoplay
+								videoElement[0].play();
+							} else if (iframeElement.length > 0) {
+								// Handle iframe video (YouTube, Vimeo, etc.)
+								const src = iframeElement.attr('src');
+								if (src && !src.includes('autoplay=1')) {
+									// Add autoplay parameter to iframe
+									const separator = src.includes('?') ? '&' : '?';
+									iframeElement.attr('src', src + separator + 'autoplay=1');
+								}
+							}
+						}
+					},
+					close: function () {
+						// Check if this is product video popup
+						if (this.content.hasClass('bt-product-video__popup')) {
+							const videoElement = this.content.find('video');
+							const iframeElement = this.content.find('iframe');
+							
+							if (videoElement.length > 0) {
+								// Pause and reset MP4 video
+								videoElement[0].pause();
+								videoElement[0].currentTime = 0;
+							} else if (iframeElement.length > 0) {
+								// Stop iframe video by reloading without autoplay
+								const src = iframeElement.attr('src');
+								if (src) {
+									// Remove autoplay parameter and reload iframe to stop video
+									const newSrc = src.replace(/[?&]autoplay=1/g, '');
+									iframeElement.attr('src', newSrc);
+								}
+							}
+						}
+					}
+				}
 			});
 		}
 
@@ -2445,7 +2489,9 @@
 			var productGrouped = [];
 			let totalPrice = 0;
 			let regularTotalPrice = 0;
-			let currencySymbol = '$';
+			let currencySymbol = parent.data('currency') || '$';
+			let thousandSeparator = parent.data('thousand-separator') || ',';
+			let decimalSeparator = parent.data('decimal-separator') || '.';
 			$('.bt-product-grouped-js input[type="checkbox"]:checked').each(function () {
 				const $checkbox = $(this);
 				const $item = $checkbox.closest('.woocommerce-grouped-product-list-item');
@@ -2455,20 +2501,20 @@
 				productGrouped.push($checkbox.val() + ':' + $quantity.val());
 
 				// Calculate total price of checked products
-				currencySymbol = $item.find('.woocommerce-Price-currencySymbol').first().text() || '$';
+				currencySymbol = $item.data('currency') || '$';
 				const $priceElement = $item.find('.woocommerce-Price-amount');
 				let price;
 
 				// Get regular price
-				const regularPrice = parseFloat($priceElement.first().text().replace(/[^0-9.-]+/g, ''));
+				const regularPrice = parseFloat($priceElement.first().text().replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), ''));
 
 				// Get sale price if exists
 				if ($item.find('ins').length) {
-					price = parseFloat($item.find('ins .woocommerce-Price-amount').text().replace(/[^0-9.-]+/g, ''));
+					price = parseFloat($item.find('ins .woocommerce-Price-amount').text().replace(new RegExp('[^0-9' + thousandSeparator + decimalSeparator + ']+', 'g'), ''));
 				} else {
 					price = regularPrice;
 				}
-
+				
 				const quantity = parseInt($quantity.val()) || 0;
 				totalPrice += price * quantity;
 				regularTotalPrice += regularPrice * quantity;
