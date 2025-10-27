@@ -73,6 +73,7 @@ global $product;
                 <?php 
                 do_action('woozio_woocommerce_template_single_more_information');
                 do_action('woozio_woocommerce_template_single_meta');
+                do_action('woozio_woocommerce_template_frequently_bought_together');
                 do_action('woozio_woocommerce_template_upsell_products');
                 do_action('woozio_woocommerce_template_single_safe_checkout');
                 do_action('woozio_woocommerce_template_single_toggle');

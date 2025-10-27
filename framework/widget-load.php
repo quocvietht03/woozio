@@ -52,6 +52,7 @@ class ElementorWidgets
 			'site-copyright',
 			'site-notification',
 			'instagram-posts',
+			'recent-posts',
 			'banner-product-slider',
 			'page-breadcrumb',
 			'mobile-menu',
@@ -200,6 +201,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteSocial\Widget_SiteSocial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteCopyright\Widget_SiteCopyright());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\RecentPosts\Widget_RecentPosts());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OffersSlider\Widget_OffersSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());

@@ -68,11 +68,32 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 				$data_attribute = strtolower($attribute_name);
 				$data_attribute_slug = sanitize_title($attribute_name);
 				$selected_value = isset($_REQUEST['attribute_' . $data_attribute_slug]) ? wc_clean(wp_unslash($_REQUEST['attribute_' . $data_attribute_slug])) : $product->get_variation_default_attribute($attribute_name);
+				
+				// Check if this is size attribute for Size Guide button
+				$is_size_attr = (strpos(strtolower($attribute_name), 'size') !== false);
 				?>
 				<div class="bt-attributes--item" data-attribute-name="<?php echo esc_attr($data_attribute_slug); ?>">
 					<div class="bt-attributes--name">
 						<div class="bt-name"><?php echo wc_attribute_label($attribute_name) . ':'; ?></div>
 						<div class="bt-result"></div>
+						<?php 
+						// Display Size Guide button inline with Size label
+						if ($is_size_attr) {
+							// Check if size guide is enabled for this product
+							$enable_size_guide = get_post_meta($product->get_id(), '_enable_size_guide', true);
+							$size_guide = get_field('size_guide', 'option');
+							
+							if ($enable_size_guide === 'yes' && !empty($size_guide)) {
+								?>
+								<div class="bt-size-guide-wrapper bt-inline-position">
+									<a href="#bt-size-guide-popup" class="bt-size-guide-button bt-js-open-popup-link">
+										<?php echo esc_html__('Size Guide', 'woozio'); ?>
+									</a>
+								</div>
+								<?php
+							}
+						}
+						?>
 					</div>
 					<?php if ($attribute_name == 'pa_color') { ?>
 						<div class="bt-attributes--value bt-value-color">

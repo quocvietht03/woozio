@@ -14,6 +14,7 @@ add_action('woozio_woocommerce_template_single_rating', 'woocommerce_template_si
 add_action('woozio_woocommerce_template_single_price', 'woocommerce_template_single_price', 10);
 add_action('woozio_woocommerce_template_single_excerpt', 'woocommerce_template_single_excerpt', 20);
 add_action('woozio_woocommerce_template_single_add_to_cart', 'woocommerce_template_single_add_to_cart', 30);
+add_action('woocommerce_before_add_to_cart_quantity', 'woozio_size_guide_button_before_quantity', 5);
 remove_action('woocommerce_single_product_meta', 'woocommerce_template_single_meta');
 add_action('woocommerce_single_product_meta', 'custom_woocommerce_single_product_meta');
 
@@ -30,7 +31,7 @@ remove_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display');
 remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15);
 
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
-
+add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_display_frequently_bought_together', 20);
 function register_product_taxonomy()
 {
     $labels = array(
@@ -93,6 +94,75 @@ function woozio_woocommerce_single_product_meta()
     }
     echo '</ul>';
 }
+
+// Size Guide Button - Display before quantity (for simple products or products without size)
+function woozio_size_guide_button_before_quantity()
+{
+    global $product;
+
+    // Check if size guide is enabled for this product
+    $enable_size_guide = get_post_meta($product->get_id(), '_enable_size_guide', true);
+    if ($enable_size_guide !== 'yes') {
+        return; // Size guide is disabled for this product
+    }
+
+    // Only show if product doesn't have size variation
+    if ($product && $product->is_type('variable')) {
+        $attributes = $product->get_variation_attributes();
+        foreach ($attributes as $attribute_name => $options) {
+            $attr_name_lower = strtolower($attribute_name);
+            if (strpos($attr_name_lower, 'size') !== false) {
+                return; // Has size variation, button will show inline in variable.php template
+            }
+        }
+    }
+
+    $size_guide = get_field('size_guide', 'option');
+
+    if (!empty($size_guide)) {
+?>
+        <div class="bt-size-guide-wrapper">
+            <a href="#bt-size-guide-popup" class="bt-size-guide-button bt-js-open-popup-link">
+                <?php echo esc_html__('Size Guide', 'woozio'); ?>
+            </a>
+        </div>
+    <?php
+    }
+}
+
+// Size Guide Popup Content
+function woozio_size_guide_popup_content()
+{
+    if (!is_product()) {
+        return;
+    }
+
+    global $product;
+
+    // Check if size guide is enabled for this product
+    $enable_size_guide = get_post_meta($product->get_id(), '_enable_size_guide', true);
+    if ($enable_size_guide !== 'yes') {
+        return; // Size guide is disabled for this product
+    }
+
+    $size_guide = get_field('size_guide', 'option');
+
+    if (!empty($size_guide)) {
+    ?>
+        <div id="bt-size-guide-popup" class="bt-size-guide-popup mfp-content__popup mfp-hide ">
+            <div class="bt-size-guide-popup-content mfp-content__inner">
+                <div class="bt-size-guide-popup-header">
+                    <h3><?php echo esc_html__('Size Guide', 'woozio'); ?></h3>
+                </div>
+                <div class="bt-size-guide-popup-body">
+                    <?php echo wp_kses_post($size_guide); ?>
+                </div>
+            </div>
+        </div>
+    <?php
+    }
+}
+add_action('wp_footer', 'woozio_size_guide_popup_content');
 
 // custom product loop image
 add_action('woozio_woocommerce_template_loop_product_thumbnail', 'woozio_woocommerce_template_loop_product_thumbnail', 10);
@@ -350,7 +420,7 @@ function woozio_render_review_title_meta_box($comment)
 {
     $review_title = get_comment_meta($comment->comment_ID, 'review_title', true);
     wp_nonce_field('woozio_review_title_update', 'review_title_nonce');
-?>
+    ?>
     <p>
         <label for="review_title"><?php esc_html_e('Review Title', 'woozio'); ?></label><br>
         <input type="text" id="review_title" name="review_title" value="<?php echo esc_attr($review_title); ?>" size="30" maxlength="100">
@@ -1078,7 +1148,7 @@ function woozio_products_filter()
     if (isset($_POST['product_cat']) && !empty($_POST['product_cat'])) {
         $cat_slug = sanitize_text_field($_POST['product_cat']);
         $category_term = get_term_by('slug', $cat_slug, 'product_cat');
-        
+
         if ($category_term && !is_wp_error($category_term)) {
             $output['category_title'] = $category_term->name;
             $output['category_description'] = term_description($category_term->term_id, 'product_cat');
@@ -1688,7 +1758,7 @@ function woozio_display_button_wishlist_compare()
             </svg>
         </a>
     </div>
-    <?php
+<?php
 }
 
 add_action('woocommerce_after_add_to_cart_button', 'woozio_display_button_wishlist_compare');
@@ -1724,7 +1794,7 @@ function woozio_woocommerce_custom_field()
         'options' => $layout_options,
         'value' => $layout_value
     ));
-    
+
     // Product Video Settings
     $video_type_options = array(
         'youtube' => __('YouTube', 'woozio'),
@@ -1736,7 +1806,7 @@ function woozio_woocommerce_custom_field()
     if (empty($video_type_value)) {
         $video_type_value = 'youtube';
     }
-    
+
     woocommerce_wp_select(array(
         'id' => '_product_video_type',
         'label' => __('Product Video Type', 'woozio'),
@@ -1756,20 +1826,20 @@ function woozio_woocommerce_custom_field()
 
     // Product 360 GLB file upload
     $product_360_file = get_post_meta($post->ID, '_product_360_images', true);
-    
+
     echo '<p class="form-field _product_360_images_field">';
     echo '<label for="_product_360_images">' . __('Product 360° GLB File', 'woozio') . '</label>';
     echo '<button type="button" class="button upload_360_images_button">' . __('Upload GLB File', 'woozio') . '</button>';
     echo '<input type="hidden" id="_product_360_images" name="_product_360_images" value="' . esc_attr($product_360_file) . '" />';
     echo '<span class="description">' . __('Upload a .glb file for 360° product view', 'woozio') . '</span>';
     echo '</p>';
-    
+
     // Display selected file name
     if (!empty($product_360_file)) {
         $file_path = get_attached_file($product_360_file);
         $file_name = basename($file_path);
         $file_url = wp_get_attachment_url($product_360_file);
-        
+
         if ($file_path && file_exists($file_path)) {
             echo '<div class="product-360-preview" style="margin-left: 150px;">';
             echo '<div class="file-preview" style="display: flex; align-items: center; padding: 10px; background: #f5f5f5; border-radius: 4px; max-width: 400px;">';
@@ -1786,7 +1856,13 @@ function woozio_woocommerce_custom_field()
             echo '</div>';
         }
     }
-    
+    // Add size guide toggle option
+    woocommerce_wp_checkbox(array(
+        'id' => '_enable_size_guide',
+        'label' => __('Enable Size Guide', 'woozio'),
+        'description' => __('Show size guide button for this product', 'woozio'),
+        'value' => get_post_meta($post->ID, '_enable_size_guide', true)
+    ));
     // add product sold
     woocommerce_wp_text_input(array(
         'id' => '_product_sold',
@@ -1874,10 +1950,134 @@ function woozio_woocommerce_custom_field()
     }
 }
 
+// Add Frequently Bought Together field to Linked Products tab
+add_action('woocommerce_product_options_related', 'woozio_add_frequently_bought_together_field');
+
+function woozio_add_frequently_bought_together_field()
+{
+    global $post;
+?>
+    <p class="form-field">
+        <label for="frequently_bought_together_ids">
+            <?php _e('Frequently Bought Together', 'woozio'); ?>
+
+        </label>
+        <select class="wc-product-search" multiple="multiple" style="width: 50%;" id="frequently_bought_together_ids" name="frequently_bought_together_ids[]" data-placeholder="<?php esc_attr_e('Search for a product&hellip;', 'woozio'); ?>" data-action="woozio_json_search_simple_products" data-exclude="<?php echo intval($post->ID); ?>">
+            <?php
+            $product_ids = get_post_meta($post->ID, '_frequently_bought_together_ids', true);
+
+            if (!empty($product_ids) && is_array($product_ids)) {
+                foreach ($product_ids as $product_id) {
+                    $product = wc_get_product($product_id);
+                    if (is_object($product)) {
+                        echo '<option value="' . esc_attr($product_id) . '"' . selected(true, true, false) . '>' . esc_html(wp_strip_all_tags($product->get_formatted_name())) . '</option>';
+                    }
+                }
+            }
+            ?>
+        </select>
+        <?php echo wc_help_tip(__('Select products (simple or variations) that are frequently bought together with this product.', 'woozio')); ?>
+    </p>
+    <?php
+}
+
+// AJAX handler to search simple products and variations Frequently Bought Together
+add_action('wp_ajax_woozio_json_search_simple_products', 'woozio_json_search_simple_products');
+
+function woozio_json_search_simple_products()
+{
+    check_ajax_referer('search-products', 'security');
+
+    if (!current_user_can('edit_products')) {
+        wp_die(-1);
+    }
+
+    $term = isset($_GET['term']) ? (string) wc_clean(wp_unslash($_GET['term'])) : '';
+    $exclude = isset($_GET['exclude']) ? array_map('intval', (array) $_GET['exclude']) : array();
+
+    if (empty($term)) {
+        wp_die();
+    }
+
+    $data_store = WC_Data_Store::load('product');
+    $ids = $data_store->search_products($term, '', true, false, null);
+
+    $products = array();
+
+    foreach ($ids as $id) {
+        $product = wc_get_product($id);
+
+        if (!$product || in_array($id, $exclude)) {
+            continue;
+        }
+
+        // Include simple products
+        if ($product->is_type('simple')) {
+            $formatted_name = $product->get_formatted_name();
+            $products[$id] = rawurldecode(wp_strip_all_tags($formatted_name));
+        }
+
+        // Include variations (not parent variable product)
+        if ($product->is_type('variable')) {
+            $variations = $product->get_available_variations();
+            foreach ($variations as $variation) {
+                $variation_id = $variation['variation_id'];
+                if (in_array($variation_id, $exclude)) {
+                    continue;
+                }
+
+                $variation_obj = wc_get_product($variation_id);
+                if ($variation_obj) {
+                    $attributes = [];
+                    foreach ($variation['attributes'] as $attr_name => $attr_value) {
+                        $attr_label = str_replace('attribute_', '', $attr_name);
+                        $attr_label = str_replace('pa_', '', $attr_label);
+                        $attr_label = ucfirst($attr_label);
+
+                        // Get term name if it's a taxonomy
+                        if (taxonomy_exists($attr_name)) {
+                            $term_obj = get_term_by('slug', $attr_value, $attr_name);
+                            $attr_value = $term_obj ? $term_obj->name : $attr_value;
+                        }
+
+                        $attributes[] = ucfirst($attr_value);
+                    }
+                    $variation_name = $product->get_name() . ' - ' . implode('/', $attributes);
+                    $products[$variation_id] = rawurldecode($variation_name);
+                }
+            }
+        }
+    }
+
+    wp_send_json($products);
+}
+
 add_action('woocommerce_process_product_meta', 'woozio_woocommerce_custom_field_save');
 
 function woozio_woocommerce_custom_field_save($post_id)
 {
+    // Save Frequently Bought Together products
+    if (isset($_POST['frequently_bought_together_ids'])) {
+        $product_ids = array_map('intval', (array) $_POST['frequently_bought_together_ids']);
+
+        // Filter to only save simple products and variations
+        $valid_product_ids = array();
+        foreach ($product_ids as $id) {
+            $product = wc_get_product($id);
+            if ($product && ($product->is_type('simple') || $product->is_type('variation'))) {
+                $valid_product_ids[] = $id;
+            }
+        }
+
+        if (!empty($valid_product_ids)) {
+            update_post_meta($post_id, '_frequently_bought_together_ids', $valid_product_ids);
+        } else {
+            delete_post_meta($post_id, '_frequently_bought_together_ids');
+        }
+    } else {
+        delete_post_meta($post_id, '_frequently_bought_together_ids');
+    }
+
     if (isset($_POST['_label'])) {
         $label = sanitize_text_field($_POST['_label']);
         update_post_meta($post_id, '_label', $label);
@@ -1900,6 +2100,11 @@ function woozio_woocommerce_custom_field_save($post_id)
     if (isset($_POST['_product_360_images'])) {
         $images_360 = sanitize_text_field($_POST['_product_360_images']);
         update_post_meta($post_id, '_product_360_images', $images_360);
+    }
+    // Save size guide toggle option
+    if (isset($_POST['_enable_size_guide'])) {
+        $enable_size_guide = sanitize_text_field($_POST['_enable_size_guide']);
+        update_post_meta($post_id, '_enable_size_guide', $enable_size_guide);
     }
     if (isset($_POST['_product_sold'])) {
         $product_sold = intval($_POST['_product_sold']);
@@ -2836,7 +3041,7 @@ function woozio_get_product_video_embed($video_type, $video_link)
             // Extract YouTube video ID
             preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/', $video_link, $matches);
             $video_id = !empty($matches[1]) ? $matches[1] : '';
-            
+
             if ($video_id) {
                 $video_html = '<div class="bt-video-embed bt-video-youtube" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
                 $video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr($video_id) . '?rel=0&enablejsapi=1" ';
@@ -2851,7 +3056,7 @@ function woozio_get_product_video_embed($video_type, $video_link)
             // Extract Vimeo video ID
             preg_match('/vimeo\.com\/(?:.*\/)?(\d+)/', $video_link, $matches);
             $video_id = !empty($matches[1]) ? $matches[1] : '';
-            
+
             if ($video_id) {
                 $video_html = '<div class="bt-video-embed bt-video-vimeo" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
                 $video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr($video_id) . '?api=1" ';
@@ -3468,3 +3673,268 @@ function woozio_get_bundle_product_item()
 }
 add_action('wp_ajax_woozio_get_bundle_product_item', 'woozio_get_bundle_product_item');
 add_action('wp_ajax_nopriv_woozio_get_bundle_product_item', 'woozio_get_bundle_product_item');
+
+/**
+ * Get Frequently Bought Together products for a given product
+ * 
+ * @param int $product_id Product ID
+ * @return array Array of WC_Product objects
+ */
+function woozio_get_frequently_bought_together($product_id = null)
+{
+    if (empty($product_id)) {
+        global $product;
+        if (!$product) {
+            return array();
+        }
+        $product_id = $product->get_id();
+    }
+
+    $product_ids = get_post_meta($product_id, '_frequently_bought_together_ids', true);
+
+    if (empty($product_ids) || !is_array($product_ids)) {
+        return array();
+    }
+
+    $products = array();
+    foreach ($product_ids as $id) {
+        $fbt_product = wc_get_product($id);
+        if ($fbt_product && $fbt_product->is_visible() && $fbt_product->is_in_stock()) {
+            $products[] = $fbt_product;
+        }
+    }
+
+    return $products;
+}
+
+/**
+ * Display Frequently Bought Together products section
+ * 
+ * @param int $product_id Product ID
+ */
+function woozio_display_frequently_bought_together($product_id = null)
+{
+    global $product;
+
+    // Get current product
+    if (empty($product_id)) {
+        if (!$product) {
+            return;
+        }
+        $product_id = $product->get_id();
+    } else {
+        $product = wc_get_product($product_id);
+    }
+
+    if (!$product) {
+        return;
+    }
+
+    $fbt_products = woozio_get_frequently_bought_together($product_id);
+
+    if (empty($fbt_products)) {
+        return;
+    }
+
+    // Currency settings
+    $currency_symbol = get_woocommerce_currency_symbol();
+    $decimal_separator = wc_get_price_decimal_separator();
+    $thousand_separator = wc_get_price_thousand_separator();
+
+?>
+    <section class="woozio-frequently-bought-together">
+        <?php
+        // Get heading from theme options
+        $fbt_options = get_field('frequently_bought_together', 'option');
+        $custom_heading = '';
+        if ($fbt_options && isset($fbt_options['enable_frequently_bought_together']) && $fbt_options['enable_frequently_bought_together']) {
+            if (!empty($fbt_options['heading'])) {
+                $custom_heading = $fbt_options['heading'];
+            }
+        }
+
+        // Use custom heading if available, otherwise use default
+        $default_heading = __('Frequently Bought Together', 'woozio');
+        $heading = !empty($custom_heading) ? $custom_heading : $default_heading;
+
+        // Allow filtering
+        $heading = apply_filters('woozio_product_frequently_bought_together_heading', $heading);
+
+        if ($heading) :
+        ?>
+            <h2 class="fbt-heading"><?php echo esc_html($heading); ?></h2>
+        <?php endif; ?>
+
+        <div class="fbt-products-list"
+            data-currency="<?php echo esc_attr($currency_symbol); ?>"
+            data-decimal-separator="<?php echo esc_attr($decimal_separator); ?>"
+            data-thousand-separator="<?php echo esc_attr($thousand_separator); ?>">
+
+            <?php
+            // Display current product first (always checked, disabled)
+            $current_price = $product->get_price();
+            $current_regular_price = $product->get_regular_price() ? $product->get_regular_price() : $current_price;
+            $is_variable = $product->is_type('variable');
+            $current_name = $product->get_name();
+
+            // If it's a variable product, we'll need to get the selected variation via JS
+            $current_product_id = $product->get_id();
+            ?>
+
+            <div class="fbt-product-item fbt-current-product"
+                data-product-id="<?php echo esc_attr($current_product_id); ?>"
+                data-is-variable="<?php echo $is_variable ? '1' : '0'; ?>"
+                data-price="<?php echo esc_attr($current_price); ?>"
+                data-regular-price="<?php echo esc_attr($current_regular_price); ?>">
+                <div class="fbt-product-checkbox">
+                    <input type="checkbox"
+                        id="fbt-product-current"
+                        value="<?php echo esc_attr($current_product_id); ?>"
+                        checked
+                        disabled>
+                    <label for="fbt-product-current"></label>
+                </div>
+                <div class="fbt-product-image">
+                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                        <?php echo $product->get_image('woocommerce_gallery_thumbnail'); ?>
+                    </a>
+                </div>
+                <div class="fbt-product-details">
+                    <h3 class="fbt-product-name">
+                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                            <?php echo esc_html($current_name); ?>
+                            <?php if ($is_variable) : ?>
+                                <span class="fbt-variation-text"></span>
+                            <?php endif; ?>
+                        </a>
+
+                    </h3>
+                    <div class="fbt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                </div>
+            </div>
+
+            <?php
+            // Display frequently bought together products
+            foreach ($fbt_products as $fbt_product) :
+                if (empty($fbt_product) || !$fbt_product->is_visible()) {
+                    continue;
+                }
+
+                $fbt_price = $fbt_product->get_price();
+                $fbt_regular_price = $fbt_product->get_regular_price() ? $fbt_product->get_regular_price() : $fbt_price;
+                $is_variation = $fbt_product->is_type('variation');
+                $product_name = $fbt_product->get_name();
+
+                if ($is_variation) {
+                    $parent_id = $fbt_product->get_parent_id();
+                    $parent = wc_get_product($parent_id);
+                    $attributes = $fbt_product->get_attributes();
+                    $attr_labels = [];
+
+                    foreach ($attributes as $attr_name => $attr_value) {
+                        if (taxonomy_exists($attr_name)) {
+                            $term = get_term_by('slug', $attr_value, $attr_name);
+                            $attr_value = $term ? $term->name : $attr_value;
+                        }
+                        $attr_labels[] = ucfirst($attr_value);
+                    }
+
+                    if (!empty($attr_labels)) {
+                        $product_name = $parent->get_name() . ' - ' . implode('/', $attr_labels);
+                    }
+                }
+            ?>
+
+                <div class="fbt-product-item"
+                    data-product-id="<?php echo esc_attr($fbt_product->get_id()); ?>"
+                    data-price="<?php echo esc_attr($fbt_price); ?>"
+                    data-regular-price="<?php echo esc_attr($fbt_regular_price); ?>">
+                    <div class="fbt-product-checkbox">
+                        <input type="checkbox"
+                            id="fbt-product-<?php echo esc_attr($fbt_product->get_id()); ?>"
+                            value="<?php echo esc_attr($fbt_product->get_id()); ?>"
+                            checked>
+                        <label for="fbt-product-<?php echo esc_attr($fbt_product->get_id()); ?>"></label>
+                    </div>
+                    <div class="fbt-product-image">
+                        <a href="<?php echo esc_url($fbt_product->get_permalink()); ?>">
+                            <?php echo $fbt_product->get_image('woocommerce_gallery_thumbnail'); ?>
+                        </a>
+                    </div>
+                    <div class="fbt-product-details">
+                        <h3 class="fbt-product-name">
+                            <a href="<?php echo esc_url($fbt_product->get_permalink()); ?>">
+                                <?php echo esc_html($product_name); ?>
+                            </a>
+                        </h3>
+                        <div class="fbt-product-price"><?php echo wp_kses_post($fbt_product->get_price_html()); ?></div>
+                    </div>
+                </div>
+
+            <?php endforeach; ?>
+        </div>
+
+        <div class="fbt-summary">
+            <div class="fbt-total-price">
+                <span class="fbt-total-label"><?php _e('Total Price:', 'woozio'); ?></span>
+                <span class="fbt-total-amount"></span>
+            </div>
+            <button type="button" class="fbt-add-to-cart-btn" disabled>
+                <?php _e('Add Selected to Cart', 'woozio'); ?>
+            </button>
+        </div>
+    </section>
+
+<?php
+    wp_reset_postdata();
+}
+
+// AJAX handler for adding Frequently Bought Together products to cart
+add_action('wp_ajax_woozio_add_fbt_to_cart', 'woozio_add_fbt_to_cart');
+add_action('wp_ajax_nopriv_woozio_add_fbt_to_cart', 'woozio_add_fbt_to_cart');
+
+function woozio_add_fbt_to_cart()
+{
+    if (!isset($_POST['product_ids']) || empty($_POST['product_ids'])) {
+        wp_send_json_error(array('message' => __('No products selected', 'woozio')));
+        return;
+    }
+
+    $product_ids = array_map('intval', $_POST['product_ids']);
+    $added_products = array();
+    $failed_products = array();
+
+    foreach ($product_ids as $product_id) {
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            $failed_products[] = $product_id;
+            continue;
+        }
+
+        // Check if product can be added to cart
+        if (!$product->is_purchasable() || !$product->is_in_stock()) {
+            $failed_products[] = $product_id;
+            continue;
+        }
+
+        // Add product to cart
+        $cart_item_key = WC()->cart->add_to_cart($product_id, 1);
+
+        if ($cart_item_key) {
+            $added_products[] = $product_id;
+        } else {
+            $failed_products[] = $product_id;
+        }
+    }
+
+    if (!empty($added_products)) {
+        wp_send_json_success(array(
+            'message' => sprintf(__('%d product(s) added to cart', 'woozio'), count($added_products)),
+            'added' => $added_products,
+            'failed' => $failed_products
+        ));
+    } else {
+        wp_send_json_error(array('message' => __('Failed to add products to cart', 'woozio')));
+    }
+}
