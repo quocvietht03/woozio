@@ -2431,23 +2431,43 @@
 			}, 30);
 		}
 	}
-	// js Customize WooCommerce product toggle on single product page
+	/**
+	 * ========================================
+	 * Product Info Display - Toggle Handler
+	 * ========================================
+	 * Handle toggle/accordion for product information
+	 * Note: Tabs are handled by WooCommerce default JS, styled via body class
+	 */
 	function WoozioCustomizeProductToggle() {
-		// Check if the product toggle exist
-		if ($('.bt-product-toggle-js').length > 0) {
-			$('.bt-product-toggle-js .bt-item-title').on('click', function (e) {
-				e.preventDefault();
-				if ($(this).hasClass('active')) {
-					$(this).parent().find('.bt-item-content').slideUp();
-					$(this).removeClass('active');
-				} else {
-					$('.bt-product-toggle-js .bt-item-content').slideUp();
-					$('.bt-product-toggle-js .bt-item-title').removeClass('active');
-					$(this).parent().find('.bt-item-content').slideDown();
-					$(this).addClass('active');
-				}
-			});
+		if ($('.bt-product-toggle-js').length === 0) {
+			return;
 		}
+
+		$('.bt-product-toggle-js .bt-item-title').on('click', function (e) {
+			e.preventDefault();
+			
+			var $clickedTitle = $(this);
+			var $clickedContent = $clickedTitle.parent().find('.bt-item-content');
+			var $toggleContainer = $clickedTitle.closest('.bt-product-toggle-js');
+			var toggleState = $toggleContainer.data('toggle-state');
+			
+			if ($clickedTitle.hasClass('active')) {
+				// Close clicked toggle
+				$clickedContent.slideUp(300);
+				$clickedTitle.removeClass('active');
+			} else {
+				// If toggle-state is 'first', close all others
+				// If toggle-state is 'all', keep others open
+				if (toggleState === 'first') {
+					$toggleContainer.find('.bt-item-content').slideUp(300);
+					$toggleContainer.find('.bt-item-title').removeClass('active');
+				}
+				
+				// Open clicked toggle
+				$clickedContent.slideDown(300);
+				$clickedTitle.addClass('active');
+			}
+		});
 	}
 	// checkbox customize grouped product
 	function WoozioCustomizeGroupedProduct() {
@@ -3056,7 +3076,7 @@
 		WoozioAddToRecentlyViewed();
 		WoozioLoadRecentlyViewedProducts();
 		WoozioCountdownProductSale();
-		WoozioCustomizeProductToggle();
+		WoozioCustomizeProductToggle(); // Product info toggle handler (tabs styled via body class)
 		WoozioCustomizeGroupedProduct();
 		WoozioPopupNewsletter();
 		WoozioProductColorVariationsLoadImage();

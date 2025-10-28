@@ -1795,6 +1795,76 @@ function woozio_woocommerce_custom_field()
         'value' => $layout_value
     ));
 
+    // Product Info Display Mode Settings
+    echo '<div class="options_group">';
+    
+    $info_display_options = array(
+        'tab' => __('Tab', 'woozio'),
+        'toggle' => __('Toggle', 'woozio'),
+        'disable' => __('Disable', 'woozio')
+    );
+
+    $info_display_value = get_post_meta($post->ID, '_product_info_display_mode', true);
+    if (empty($info_display_value)) {
+        $info_display_value = 'tab'; // Default
+    }
+
+    woocommerce_wp_select(array(
+        'id' => '_product_info_display_mode',
+        'label' => __('Product Info Display', 'woozio'),
+        'description' => __('Choose how to display product information section', 'woozio'),
+        'options' => $info_display_options,
+        'value' => $info_display_value,
+        'desc_tip' => true
+    ));
+
+    // Tab Position (only for Tab mode and only for thumbnail layouts)
+    $tab_position_options = array(
+        'top' => __('Top', 'woozio'),
+        'left' => __('Left', 'woozio'),
+        'right' => __('Right', 'woozio')
+    );
+
+    $tab_position_value = get_post_meta($post->ID, '_product_tab_position', true);
+    if (empty($tab_position_value)) {
+        $tab_position_value = 'top'; // Default
+    }
+
+    woocommerce_wp_select(array(
+        'id' => '_product_tab_position',
+        'label' => __('Tab Position', 'woozio'),
+        'description' => __('Position of tabs (only available for thumbnail layouts)', 'woozio'),
+        'options' => $tab_position_options,
+        'value' => $tab_position_value,
+        'desc_tip' => true,
+        'wrapper_class' => 'woozio_tab_position_field'
+    ));
+
+    // Toggle Default State (only for Toggle mode)
+    $toggle_state_options = array(
+        'first' => __('Open First Toggle', 'woozio'),
+        'all' => __('Open All Toggles', 'woozio')
+    );
+
+    $toggle_state_value = get_post_meta($post->ID, '_product_toggle_state', true);
+    if (empty($toggle_state_value)) {
+        $toggle_state_value = 'first'; // Default
+    }
+
+    woocommerce_wp_select(array(
+        'id' => '_product_toggle_state',
+        'label' => __('Toggle Default State', 'woozio'),
+        'description' => __('Choose which toggles should be open by default', 'woozio'),
+        'options' => $toggle_state_options,
+        'value' => $toggle_state_value,
+        'desc_tip' => true,
+        'wrapper_class' => 'woozio_toggle_state_field'
+    ));
+
+    echo '</div>';
+
+
+
     // Product Video Settings
     $video_type_options = array(
         'youtube' => __('YouTube', 'woozio'),
@@ -2085,6 +2155,21 @@ function woozio_woocommerce_custom_field_save($post_id)
     if (isset($_POST['_layout_product'])) {
         $layout = sanitize_text_field($_POST['_layout_product']);
         update_post_meta($post_id, '_layout_product', $layout);
+    }
+    // Save product info display mode
+    if (isset($_POST['_product_info_display_mode'])) {
+        $info_display_mode = sanitize_text_field($_POST['_product_info_display_mode']);
+        update_post_meta($post_id, '_product_info_display_mode', $info_display_mode);
+    }
+    // Save product tab position
+    if (isset($_POST['_product_tab_position'])) {
+        $tab_position = sanitize_text_field($_POST['_product_tab_position']);
+        update_post_meta($post_id, '_product_tab_position', $tab_position);
+    }
+    // Save product toggle state
+    if (isset($_POST['_product_toggle_state'])) {
+        $toggle_state = sanitize_text_field($_POST['_product_toggle_state']);
+        update_post_meta($post_id, '_product_toggle_state', $toggle_state);
     }
     // Save product video type
     if (isset($_POST['_product_video_type'])) {
@@ -2894,24 +2979,161 @@ function woozio_woocommerce_single_product_safe_checkout()
 <?php
 }
 
-// Customize WooCommerce product tabs to toggle with slide animation on single product page
-add_action('woozio_woocommerce_template_single_toggle', 'woozio_woocommerce_single_product_toggle', 10);
-function woozio_woocommerce_single_product_toggle()
+/**
+ * ========================================
+ * Product Info Display - Main Handler
+ * ========================================
+ * Handles Tab, Toggle, or Disable modes based on product settings
+ */
+
+/**
+ * Main function to render product info display based on settings
+ * For gallery layouts: toggle or disable
+ * For thumbnail layouts: handled by woozio_handle_thumbnail_layout_mode()
+ */
+function woozio_render_product_info_display()
 {
-    $product_tabs = apply_filters('woocommerce_product_tabs', array()); ?>
-    <div class="woocommerce-tabs bt-product-toggle bt-product-toggle-js">
-        <?php foreach ($product_tabs as $key => $product_tab) : ?>
+    global $product;
+    
+    if (!$product) {
+        return;
+    }
+    
+    // Get display mode setting
+    $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
+    
+    // Default to toggle for gallery layouts
+    if (empty($display_mode)) {
+        $display_mode = 'toggle';
+    }
+    
+    // Render based on mode
+    if ($display_mode === 'toggle') {
+        woozio_render_product_info_toggle();
+    }
+    // If disable, do nothing (hide the section)
+}
+
+// Hook for gallery layouts (slider and grid)
+add_action('woozio_woocommerce_template_single_toggle', 'woozio_render_product_info_display', 10);
+
+/**
+ * Handle thumbnail layouts display mode
+ * - Tab mode: Let WooCommerce render default tabs, just add classes
+ * - Toggle mode: Remove WooCommerce tabs, render toggle
+ * - Disable mode: Remove WooCommerce tabs
+ */
+function woozio_handle_thumbnail_layout_mode()
+{
+    global $product;
+    
+    if (!$product) {
+        return;
+    }
+    
+    $layout = get_post_meta($product->get_id(), '_layout_product', true);
+    if (empty($layout)) {
+        $layout = 'bottom-thumbnail';
+    }
+    
+    $thumbnail_layouts = array('bottom-thumbnail', 'left-thumbnail', 'right-thumbnail');
+    
+    // Only for thumbnail layouts
+    if (!in_array($layout, $thumbnail_layouts)) {
+        return;
+    }
+    
+    // Get display mode
+    $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
+    if (empty($display_mode)) {
+        $display_mode = 'tab'; // Default for thumbnail layouts
+    }
+    
+    if ($display_mode === 'tab') {
+        // Tab mode: Let WooCommerce handle it, we just add classes via filter
+        // Do nothing here, classes added via woozio_add_tab_position_class filter
+    } elseif ($display_mode === 'toggle') {
+        // Toggle mode: Remove default tabs, add toggle
+        remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
+        add_action('woocommerce_after_single_product_summary', 'woozio_render_product_info_toggle', 10);
+    } elseif ($display_mode === 'disable') {
+        // Disable mode: Remove default tabs
+        remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
+    }
+}
+add_action('woocommerce_before_single_product', 'woozio_handle_thumbnail_layout_mode', 1);
+
+/**
+ * Add tab position to body class for CSS targeting
+ * CSS will use body.bt-tabs-position-{position} .woocommerce-tabs selector
+ */
+function woozio_add_tab_position_body_class($classes)
+{
+    if (is_product()) {
+        global $post;
+        
+        if ($post && isset($post->ID)) {
+            $display_mode = get_post_meta($post->ID, '_product_info_display_mode', true);
+            
+            // Only add tab position class if display mode is 'tab'
+            if ($display_mode === 'tab') {
+                $tab_position = get_post_meta($post->ID, '_product_tab_position', true);
+                if (empty($tab_position)) {
+                    $tab_position = 'top';
+                }
+                
+                $classes[] = 'bt-tabs-position-' . $tab_position;
+            }
+        }
+    }
+    
+    return $classes;
+}
+add_filter('body_class', 'woozio_add_tab_position_body_class');
+
+/**
+ * Render product info as TOGGLE/ACCORDION
+ * For all layouts that support toggle mode
+ */
+function woozio_render_product_info_toggle()
+{
+    global $product;
+    
+    if (!$product) {
+        return;
+    }
+    
+    // Get toggle state setting
+    $toggle_state = get_post_meta($product->get_id(), '_product_toggle_state', true);
+    if (empty($toggle_state)) {
+        $toggle_state = 'first'; // Default: open first toggle
+    }
+    
+    $product_tabs = apply_filters('woocommerce_product_tabs', array());
+    
+    if (empty($product_tabs)) {
+        return;
+    }
+    ?>
+    <div class="woocommerce-tabs bt-product-toggle bt-product-toggle-js" data-toggle-state="<?php echo esc_attr($toggle_state); ?>">
+        <?php 
+        $i = 0;
+        foreach ($product_tabs as $key => $product_tab) : 
+            $i++;
+            $is_first = ($i === 1);
+            $is_active = ($toggle_state === 'all') || ($toggle_state === 'first' && $is_first);
+        ?>
             <div class="bt-item">
                 <div class="bt-item-inner">
-                    <div class="bt-item-title <?php echo esc_attr($key === 'description' ? 'active' : ''); ?>">
-                        <h3> <?php echo wp_kses_post(apply_filters('woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key)); ?> </h3>
+                    <div class="bt-item-title <?php echo $is_active ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($key); ?>">
+                        <h3><?php echo wp_kses_post(apply_filters('woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key)); ?></h3>
                         <svg xmlns="http://www.w3.org/2000/svg" class="plus" width="18" height="18" viewBox="0 0 160 160">
                             <rect class="vertical-line" x="70" width="15" height="160" rx="7" ry="7" />
                             <rect class="horizontal-line" y="70" width="160" height="15" rx="7" ry="7" />
                         </svg>
                     </div>
                     <?php
-                    echo '<div class="bt-item-content"' . (($key === 'description') ? ' style="display:block;"' : '') . ' id="tab-' . esc_attr($key) . '">';
+                    echo '<div class="bt-item-content"' . ($is_active ? ' style="display:block;"' : '') . ' id="tab-' . esc_attr($key) . '">';
                     if (isset($product_tab['callback'])) {
                         call_user_func($product_tab['callback'], $key, $product_tab);
                     }
@@ -2921,7 +3143,7 @@ function woozio_woocommerce_single_product_toggle()
             </div>
         <?php endforeach; ?>
     </div>
-<?php
+    <?php
 }
 
 /**

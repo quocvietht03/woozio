@@ -6662,6 +6662,165 @@
       }
     }
   }
+  // Tab Position: Left (via body class)
+  &.bt-tabs-position-left {
+    div.product {
+      @media (min-width: $break-md) {
+        .woocommerce-tabs {
+          display: flex;
+          padding: 0;
+          margin: 80px auto 0 auto;
+          gap: 20px;
+          .tabs.wc-tabs {
+            flex-direction: column;
+            border-bottom: none;
+            min-width: 250px;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            overflow: hidden;
+            display: flex;
+            gap: 20px;
+            li {
+              border-radius: 0;
+              border: none;
+              background-color: transparent;
+              padding: 0;
+              margin: 0;
+              display: block;
+              &:before,
+              &:after {
+                display: none;
+              }
+
+              a {
+                padding: 10px 0;
+                color: $color-primary;
+                font-family: $text-font;
+                font-size: 22px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 1.4;
+                padding: 0;
+                position: relative;
+                border: none;
+                &:before {
+                  background-color: $color-primary;
+                  content: "";
+                  bottom: 0;
+                  left: 0;
+                  position: absolute;
+                  width: 0;
+                  height: 1px;
+                  transition: width 450ms ease-in-out;
+                }
+              }
+              &:hover {
+                a{
+                  &:before {
+                    width: 100%;
+                  }
+                }
+              }
+
+              &.active {
+                a{
+                  &:before {
+                    width: 100%;
+                  }
+                }
+              }
+            }
+          }
+          .woocommerce-Tabs-panel {
+            flex: 1;
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Tab Position: Right (via body class)
+  &.bt-tabs-position-right {
+    div.product {
+      @media (min-width: $break-md) {
+        .woocommerce-tabs {
+          display: flex;
+          flex-direction: row-reverse;
+          padding: 0;
+          margin: 80px auto 0 auto;
+          gap: 20px;
+          .tabs.wc-tabs {
+            flex-direction: column;
+            border-bottom: none;
+            min-width: 250px;
+            padding: 0;
+            margin: 0;
+            text-align: right;
+            overflow: hidden;
+            display: flex;
+            gap: 20px;
+            li {
+              border-radius: 0;
+              border: none;
+              background-color: transparent;
+              padding: 0;
+              margin: 0;
+              display: block;
+              transition: all 450ms ease-in-out;
+              &:before,
+              &:after {
+                display: none;
+              }
+
+              a {
+                padding: 10px 0;
+                color: $color-primary;
+                font-family: $text-font;
+                font-size: 22px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 1.4;
+                padding: 0;
+                position: relative;
+                border: none;
+                &:before {
+                  background-color: $color-primary;
+                  content: "";
+                  bottom: 0;
+                  right: 0;
+                  position: absolute;
+                  width: 0;
+                  height: 1px;
+                  transition: width 450ms ease-in-out;
+                }
+              }
+              &:hover {
+                a{
+                  &:before {
+                    width: 100%;
+                  }
+                }
+              }
+
+              &.active {
+                a{
+                  &:before {
+                    width: 100%;
+                  }
+                }
+              }
+            }
+          }
+          .woocommerce-Tabs-panel {
+            flex: 1;
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+  }
 }
 
 .woocommerce,
@@ -9513,7 +9672,7 @@
             height: 80px;
           }
         }
-       
+
         .fbt-product-details {
           .fbt-product-name {
             a {
@@ -9571,5 +9730,5 @@
 .bt-product-extra-content {
   width: var(--width-body);
   position: relative;
-  left: calc(50% - var(--width-body)/2);
+  left: calc(50% - var(--width-body) / 2);
 }

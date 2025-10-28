@@ -1,10 +1,177 @@
 !(function ($) {
 	"use strict";
+	// Product Extra Content - Admin Functions
+	function woozioExtraContentHandlers() {
+		// Create Extra Content
+		$(document).on('click', '.woozio-create-extra-content', function (e) {
+			e.preventDefault();
 
-	jQuery(document).ready(function ($) {
-		if (!$('#woocommerce-product-data').length) {
-			return;
-		}
+			var $button = $(this);
+			var $box = $button.closest('.woozio-extra-content-box');
+			var $loading = $box.find('.woozio-extra-loading');
+			var productId = $button.data('product-id');
+
+			if (!productId) {
+				alert('Invalid Product ID!');
+				return;
+			}
+
+			// Confirm before creating
+			if (!confirm('Do you want to create Extra Content for this product?')) {
+				return;
+			}
+
+			// Show loading
+			$button.prop('disabled', true);
+			$loading.show();
+
+			$.ajax({
+				url: ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'woozio_create_extra_content',
+					product_id: productId,
+					nonce: woozioExtraContent.nonce
+				},
+				success: function (response) {
+					if (response.success) {
+						// Update UI
+						var newHTML = '<p class="woozio-extra-status">' +
+							'<span class="dashicons dashicons-yes-alt"></span>' +
+							'Extra Content Created' +
+							'</p>' +
+							'<p>' +
+							'<a href="' + response.data.edit_link + '" ' +
+							'class="button button-primary button-large woozio-edit-extra-content" ' +
+							'target="_blank">' +
+							'<span class="dashicons dashicons-edit"></span> ' +
+							'Edit Extra Content' +
+							'</a>' +
+							'</p>' +
+							'<p>' +
+							'<button type="button" ' +
+							'class="button button-link-delete woozio-delete-extra-content" ' +
+							'data-product-id="' + productId + '" ' +
+							'data-extra-id="' + response.data.extra_content_id + '">' +
+							'<span class="dashicons dashicons-trash"></span> ' +
+							'Delete Extra Content' +
+							'</button>' +
+							'</p>';
+
+						$box.html(newHTML);
+
+						// Update hidden field
+						$('#woozio_extra_content_post_id').val(response.data.extra_content_id);
+
+						// Show notification
+						if (typeof wp !== 'undefined' && wp.data) {
+							wp.data.dispatch('core/notices').createNotice(
+								'success',
+								response.data.message,
+								{ isDismissible: true }
+							);
+						} else {
+							alert(response.data.message);
+						}
+
+						// Open Elementor editor in new tab
+						window.open(response.data.edit_link, '_blank');
+
+					} else {
+						alert(response.data.message || 'An error occurred!');
+					}
+				},
+				error: function () {
+					alert('Server connection error!');
+				},
+				complete: function () {
+					$button.prop('disabled', false);
+					$loading.hide();
+				}
+			});
+		});
+
+		// Delete Extra Content
+		$(document).on('click', '.woozio-delete-extra-content', function (e) {
+			e.preventDefault();
+
+			var $button = $(this);
+			var $box = $button.closest('.woozio-extra-content-box');
+			var $loading = $box.find('.woozio-extra-loading');
+			var productId = $button.data('product-id');
+			var extraId = $button.data('extra-id');
+
+			if (!productId || !extraId) {
+				alert('Invalid ID!');
+				return;
+			}
+
+			// Confirm before deleting
+			if (!confirm('Are you sure you want to delete this Extra Content? This action cannot be undone!')) {
+				return;
+			}
+
+			// Show loading
+			$button.prop('disabled', true);
+			$loading.show();
+
+			$.ajax({
+				url: ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'woozio_delete_extra_content',
+					product_id: productId,
+					extra_id: extraId,
+					nonce: woozioExtraContent.nonce
+				},
+				success: function (response) {
+					if (response.success) {
+						// Update UI
+						var newHTML = '<p class="woozio-extra-status">' +
+							'<span class="dashicons dashicons-info"></span>' +
+							'No Extra Content Yet' +
+							'</p>' +
+							'<p>' +
+							'<button type="button" ' +
+							'class="button button-primary button-large woozio-create-extra-content" ' +
+							'data-product-id="' + productId + '">' +
+							'<span class="dashicons dashicons-plus-alt"></span> ' +
+							'Create Extra Content' +
+							'</button>' +
+							'</p>';
+
+						$box.html(newHTML);
+
+						// Update hidden field
+						$('#woozio_extra_content_post_id').val('');
+
+						// Show notification
+						if (typeof wp !== 'undefined' && wp.data) {
+							wp.data.dispatch('core/notices').createNotice(
+								'success',
+								response.data.message,
+								{ isDismissible: true }
+							);
+						} else {
+							alert(response.data.message);
+						}
+
+					} else {
+						alert(response.data.message || 'An error occurred!');
+					}
+				},
+				error: function () {
+					alert('Server connection error!');
+				},
+				complete: function () {
+					$button.prop('disabled', false);
+					$loading.hide();
+				}
+			});
+		});
+	}
+	// Handle variation gallery images
+	function woozioVariationGalleryHandlers() {
 		// Add gallery images
 		$(document).on('click', '.add-variation-gallery-image', function (e) {
 			e.preventDefault();
@@ -56,12 +223,15 @@
 			}
 
 			wrapper.find('.variation-gallery-ids').val(attachmentIds.join(','));
-		wrapper.closest('.woocommerce_variation').addClass('variation-needs-update');
-		image.remove();
-	});
-
-	// Media uploader for 360 GLB file
+			wrapper.closest('.woocommerce_variation').addClass('variation-needs-update');
+			image.remove();
+		});
+	}
+	// Handle 360 GLB file upload
+	function woozio360GLBUploadHandlers() {
 		var frame360;
+
+		// Upload button click handler
 		$('.upload_360_images_button').on('click', function (e) {
 			e.preventDefault();
 
@@ -113,12 +283,52 @@
 			frame360.open();
 		});
 
-		// Remove 360 GLB file
+		// Remove button click handler
 		$(document).on('click', '.remove_360_file_button', function (e) {
 			e.preventDefault();
 			$('#_product_360_images').val('');
 			$('.product-360-preview').remove();
 		});
+	}
+	// Handle product info fields
+	function woozioToggleProductInfoFields() {
+		var layoutValue = $('#_layout_product').val();
+		var displayMode = $('#_product_info_display_mode').val();
+		var $displayModeSelect = $('#_product_info_display_mode');
+		var $displayModeField = $displayModeSelect.closest('p');
+		var currentValue = $displayModeSelect.val();
+		var thumbnailLayouts = ['bottom-thumbnail', 'left-thumbnail', 'right-thumbnail'];
+		var isTabAllowed = thumbnailLayouts.indexOf(layoutValue) !== -1;
+
+		// Handle Tab Position visibility
+		$('.woozio_tab_position_field')[displayMode === 'tab' && isTabAllowed ? 'show' : 'hide']();
+
+		// Handle Toggle State visibility  
+		$('.woozio_toggle_state_field')[displayMode === 'toggle' ? 'show' : 'hide']();
+
+		// If current value is 'tab' but layout doesn't support it, switch to toggle
+		if (!isTabAllowed && currentValue === 'tab') {
+			$displayModeSelect.val('toggle').trigger('change');
+		}
+
+		// Disable/enable Tab option based on layout
+		$displayModeSelect.find('option[value="tab"]').prop('disabled', !isTabAllowed);
+
+		// Update note
+		$displayModeField.find('.woozio-tab-note').remove();
+		if (!isTabAllowed) {
+			$displayModeField.append('<span class="woozio-tab-note" style="color: #666; font-style: italic; font-size: 12px;">Note: Tab option is only available for Thumbnail layouts</span>');
+		}
+	}
+	jQuery(document).ready(function ($) {
+		woozioExtraContentHandlers();
+		if (!$('#woocommerce-product-data').length) {
+			return;
+		}
+		woozioVariationGalleryHandlers();
+		woozio360GLBUploadHandlers();
+		woozioToggleProductInfoFields();
+		$('#_layout_product, #_product_info_display_mode').on('change', woozioToggleProductInfoFields);
 	});
 
 	jQuery(window).on('resize', function () {
@@ -128,177 +338,4 @@
 	jQuery(window).on('scroll', function () {
 
 	});
-
-	// ========================================
-	// Product Extra Content - Admin Functions
-	// ========================================
-	
-	// Create Extra Content
-	$(document).on('click', '.woozio-create-extra-content', function(e) {
-		e.preventDefault();
-		
-		var $button = $(this);
-		var $box = $button.closest('.woozio-extra-content-box');
-		var $loading = $box.find('.woozio-extra-loading');
-		var productId = $button.data('product-id');
-		
-		if (!productId) {
-			alert('Invalid Product ID!');
-			return;
-		}
-		
-		// Confirm before creating
-		if (!confirm('Do you want to create Extra Content for this product?')) {
-			return;
-		}
-		
-		// Show loading
-		$button.prop('disabled', true);
-		$loading.show();
-		
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'woozio_create_extra_content',
-				product_id: productId,
-				nonce: woozioExtraContent.nonce
-			},
-			success: function(response) {
-				if (response.success) {
-					// Update UI
-					var newHTML = '<p class="woozio-extra-status">' +
-								  '<span class="dashicons dashicons-yes-alt"></span>' +
-								  'Extra Content Created' +
-								  '</p>' +
-								  '<p>' +
-								  '<a href="' + response.data.edit_link + '" ' +
-								  'class="button button-primary button-large woozio-edit-extra-content" ' +
-								  'target="_blank">' +
-								  '<span class="dashicons dashicons-edit"></span> ' +
-								  'Edit Extra Content' +
-								  '</a>' +
-								  '</p>' +
-								  '<p>' +
-								  '<button type="button" ' +
-								  'class="button button-link-delete woozio-delete-extra-content" ' +
-								  'data-product-id="' + productId + '" ' +
-								  'data-extra-id="' + response.data.extra_content_id + '">' +
-								  '<span class="dashicons dashicons-trash"></span> ' +
-								  'Delete Extra Content' +
-								  '</button>' +
-								  '</p>';
-					
-					$box.html(newHTML);
-					
-					// Update hidden field
-					$('#woozio_extra_content_post_id').val(response.data.extra_content_id);
-					
-					// Show notification
-					if (typeof wp !== 'undefined' && wp.data) {
-						wp.data.dispatch('core/notices').createNotice(
-							'success',
-							response.data.message,
-							{ isDismissible: true }
-						);
-					} else {
-						alert(response.data.message);
-					}
-					
-					// Open Elementor editor in new tab
-					window.open(response.data.edit_link, '_blank');
-					
-				} else {
-					alert(response.data.message || 'An error occurred!');
-				}
-			},
-			error: function() {
-				alert('Server connection error!');
-			},
-			complete: function() {
-				$button.prop('disabled', false);
-				$loading.hide();
-			}
-		});
-	});
-	
-	// Delete Extra Content
-	$(document).on('click', '.woozio-delete-extra-content', function(e) {
-		e.preventDefault();
-		
-		var $button = $(this);
-		var $box = $button.closest('.woozio-extra-content-box');
-		var $loading = $box.find('.woozio-extra-loading');
-		var productId = $button.data('product-id');
-		var extraId = $button.data('extra-id');
-		
-		if (!productId || !extraId) {
-			alert('Invalid ID!');
-			return;
-		}
-		
-		// Confirm before deleting
-		if (!confirm('Are you sure you want to delete this Extra Content? This action cannot be undone!')) {
-			return;
-		}
-		
-		// Show loading
-		$button.prop('disabled', true);
-		$loading.show();
-		
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'woozio_delete_extra_content',
-				product_id: productId,
-				extra_id: extraId,
-				nonce: woozioExtraContent.nonce
-			},
-			success: function(response) {
-				if (response.success) {
-					// Update UI
-					var newHTML = '<p class="woozio-extra-status">' +
-								  '<span class="dashicons dashicons-info"></span>' +
-								  'No Extra Content Yet' +
-								  '</p>' +
-								  '<p>' +
-								  '<button type="button" ' +
-								  'class="button button-primary button-large woozio-create-extra-content" ' +
-								  'data-product-id="' + productId + '">' +
-								  '<span class="dashicons dashicons-plus-alt"></span> ' +
-								  'Create Extra Content' +
-								  '</button>' +
-								  '</p>';
-					
-					$box.html(newHTML);
-					
-					// Update hidden field
-					$('#woozio_extra_content_post_id').val('');
-					
-					// Show notification
-					if (typeof wp !== 'undefined' && wp.data) {
-						wp.data.dispatch('core/notices').createNotice(
-							'success',
-							response.data.message,
-							{ isDismissible: true }
-						);
-					} else {
-						alert(response.data.message);
-					}
-					
-				} else {
-					alert(response.data.message || 'An error occurred!');
-				}
-			},
-			error: function() {
-				alert('Server connection error!');
-			},
-			complete: function() {
-				$button.prop('disabled', false);
-				$loading.hide();
-			}
-		});
-	});
-
 })(jQuery);
