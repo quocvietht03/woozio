@@ -1079,7 +1079,9 @@ function woozio_products_filter()
     // Get pagination type from ACF option
     $archive_shop = get_field('archive_shop', 'option');
     $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
-
+    if(isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+        $pagination_type = sanitize_text_field($_GET['layout-pagination']);
+    }
     // Update Results Block
     ob_start();
     if ($total_products > 0) {
