@@ -29,12 +29,13 @@ nav .elementor-nav-menu .sub-arrow {
 .elementor-widget-n-menu .e-n-menu-item {
   sup {
     --label-color: #181818;
+    font-weight: 600;
     line-height: 1;
     text-transform: uppercase;
     color: #fff;
     background: var(--label-color);
     position: relative;
-    top: -18px;
+    top: -15px;
     left: -20px;
     padding: 3px 5px;
     &:before {
