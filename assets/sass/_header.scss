@@ -24,6 +24,42 @@
 nav .elementor-nav-menu .sub-arrow {
   margin-block-start: -5px;
 }
+
+.bt-primary-menu-wrapper .menu-item,
+.elementor-widget-n-menu .e-n-menu-item {
+  sup {
+    --label-color: #181818;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--label-color);
+    position: relative;
+    top: -18px;
+    left: -20px;
+    padding: 3px 5px;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      inset-inline-start: 10px;
+      border: 4px solid var(--label-color);
+      border-bottom-color: transparent !important;
+      border-inline-end-color: transparent !important;
+      border-inline-end-width: 7px;
+      border-inline-start-width: 0;
+    }
+    &.red {
+      --label-color: #D41212;
+    }
+    &.orange {
+      --label-color: #FBBC34;
+    }
+    &.green {
+      --label-color: #65B32E;
+    }
+  } 
+}
+
 .bt-site-header {
   position: relative;
   z-index: 999;
