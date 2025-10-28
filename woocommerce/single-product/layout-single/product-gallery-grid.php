@@ -81,12 +81,12 @@ global $product;
 
         </div>
     </div>
-
     <?php
 
     /**
      * Hook: woozio_woocommerce_template_related_products.
      *
+     * @hooked woozio_output_product_extra_content - 18
      * @hooked woocommerce_output_related_products - 20
      */
     if (function_exists('get_field')) {

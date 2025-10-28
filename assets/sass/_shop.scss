@@ -9567,3 +9567,13 @@
     }
   }
 }
+
+.bt-product-extra-content {
+  width: var(--width-body);
+  position: relative;
+  left: calc(50% - var(--width-body)/2);
+  @media(max-width: $break-lg) {
+    width: 100%;
+    left: 0;
+  }
+}
