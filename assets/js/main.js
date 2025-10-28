@@ -2652,8 +2652,15 @@
 	/* Get width body */
 	function WoozioUpdateBodyWidthVariable() {
 		var widthBody = $(window).width();
-		$('.bt-col-container-left').css('--width-body', widthBody + 'px');
-		$('.bt-col-container-right').css('--width-body', widthBody + 'px');
+		if ($('.bt-col-container-left').length) {
+			$('.bt-col-container-left').css('--width-body', widthBody + 'px');
+		}
+		if ($('.bt-col-container-right').length) {
+			$('.bt-col-container-right').css('--width-body', widthBody + 'px');
+		}
+		if ($('.bt-product-extra-content').length) {
+			$('.bt-product-extra-content').css('--width-body', widthBody + 'px');
+		}
 	}
 	/* add to cart ajax product variable */
 	function WoozioAddToCartVariable() {
