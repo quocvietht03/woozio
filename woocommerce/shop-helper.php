@@ -1079,7 +1079,9 @@ function woozio_products_filter()
     // Get pagination type from ACF option
     $archive_shop = get_field('archive_shop', 'option');
     $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
-
+    if(isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+        $pagination_type = sanitize_text_field($_GET['layout-pagination']);
+    }
     // Update Results Block
     ob_start();
     if ($total_products > 0) {
@@ -2983,16 +2985,8 @@ function woozio_woocommerce_single_product_safe_checkout()
 }
 
 /**
- * ========================================
  * Product Info Display - Main Handler
- * ========================================
  * Handles Tab, Toggle, or Disable modes based on product settings
- */
-
-/**
- * Main function to render product info display based on settings
- * For gallery layouts: toggle or disable
- * For thumbnail layouts: handled by woozio_handle_thumbnail_layout_mode()
  */
 function woozio_render_product_info_display()
 {
@@ -3053,8 +3047,7 @@ function woozio_handle_thumbnail_layout_mode()
     }
     
     if ($display_mode === 'tab') {
-        // Tab mode: Let WooCommerce handle it, we just add classes via filter
-        // Do nothing here, classes added via woozio_add_tab_position_class filter
+        // Do nothing here, classes added via woozio_add_tab_position_body_class filter
     } elseif ($display_mode === 'toggle') {
         // Toggle mode: Remove default tabs, add toggle
         remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);

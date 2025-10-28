@@ -1216,6 +1216,7 @@
 			params.delete('search_keyword');
 			params.delete('content_width');
 			params.delete('sidebar_position');
+			params.delete('layout-pagination');
 			params.delete('layout-titlebar');
 			params.delete('layout-bottom-titlebar');
 			// Clean up URL params by removing empty values
@@ -2130,22 +2131,6 @@
 			function formatTime(minutes, seconds) {
 				return (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
 			}
-		}
-	}
-
-	function WoozioMegaMenu() {
-		/* mega menu add class custom */
-		jQuery('.bt-mega-menu-sub').each(function () {
-			jQuery(this).parent().parent().addClass('bt-submenu-content');
-		});
-		/* mega menu fix hover Content */
-		if (!$('body').hasClass('elementor-editor-active')) {
-			$('.bt-mega-menu > .e-n-menu > .e-n-menu-wrapper > .e-n-menu-heading > li.e-n-menu-item').on('mousemove', function (e) {
-				const target = $(e.target);
-				if (!target.closest('.bt-mega-menu-submega-content').length && target.closest('.bt-mega-menu-submega').length) {
-					$(this).find('.bt-mega-menu-submega').hide();
-				}
-			});
 		}
 	}
 	function WoozioBuyNow() {
@@ -3064,7 +3049,6 @@
 		WoozioUpdateMiniCart();
 		WoozioProgressCart();
 		WoozioCountdownCart();
-		WoozioMegaMenu();
 		WoozioBuyNow();
 		WoozioReviewPopup();
 		WoozioHandleGridViewResize();
@@ -3077,7 +3061,7 @@
 		WoozioAddToRecentlyViewed();
 		WoozioLoadRecentlyViewedProducts();
 		WoozioCountdownProductSale();
-		WoozioCustomizeProductToggle(); // Product info toggle handler (tabs styled via body class)
+		WoozioCustomizeProductToggle();
 		WoozioCustomizeGroupedProduct();
 		WoozioPopupNewsletter();
 		WoozioProductColorVariationsLoadImage();

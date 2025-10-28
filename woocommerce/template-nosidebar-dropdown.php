@@ -16,6 +16,9 @@ $total_page = $wp_query->max_num_pages;
 $total_products = $wp_query->found_posts;
 $archive_shop = get_field('archive_shop', 'option');
 $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
+if(isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+    $pagination_type = sanitize_text_field($_GET['layout-pagination']);
+}
 $content_width = isset($archive_shop['content_width']) ? $archive_shop['content_width'] : 'boxed';
 if(isset($_GET['content_width']) && !empty($_GET['content_width'])) {
     $content_width = sanitize_text_field($_GET['content_width']);
