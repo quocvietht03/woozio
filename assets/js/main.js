@@ -326,7 +326,8 @@
 				var gallerylayout = '';
 				if ($('.bt-gallery-slider-container').length > 0 || $('.bt-gallery-slider-fullwidth').length > 0) {
 					gallerylayout = 'gallery-slider';
-				} else if ($('.bt-gallery-one-column').length > 0 || $('.bt-gallery-two-column').length > 0 || $('.bt-gallery-stacked').length > 0) {
+				} else if ($('.bt-gallery-one-column').length > 0 || $('.bt-gallery-two-columns').length > 0 || $('.bt-gallery-three-columns').length > 0 || 
+						$('.bt-gallery-four-columns').length > 0 || $('.bt-gallery-grid-fullwidth').length > 0 || $('.bt-gallery-stacked').length > 0) {
 					gallerylayout = 'gallery-grid';
 				} else {
 					gallerylayout = 'slider-thumb';
@@ -363,7 +364,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-
+						
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
