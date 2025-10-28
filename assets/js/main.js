@@ -3076,7 +3076,7 @@
 		WoozioAddToRecentlyViewed();
 		WoozioLoadRecentlyViewedProducts();
 		WoozioCountdownProductSale();
-		WoozioCustomizeProductToggle(); // Product info toggle handler (tabs styled via body class)
+		WoozioCustomizeProductToggle();
 		WoozioCustomizeGroupedProduct();
 		WoozioPopupNewsletter();
 		WoozioProductColorVariationsLoadImage();
