@@ -4336,7 +4336,8 @@
     }
 
     &.bt-gallery-grid-fullwidth {
-      div.images .bt-gallery-grid-product {
+      div.images .bt-gallery-grid-product,
+      div.images.loading {
         width: calc(100vw - 40px);
         position: relative;
         left: calc(50% - 50vw + 20px);
@@ -4351,7 +4352,7 @@
           width: calc(33.33% - 13.34px);
         }
         @media(max-width: $break-xs) {
-          width: calc(50% - 10px); 
+          width: calc(50% - 10px);
         }
       }
     }
