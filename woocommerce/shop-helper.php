@@ -1079,7 +1079,7 @@ function woozio_products_filter()
     // Get pagination type from ACF option
     $archive_shop = get_field('archive_shop', 'option');
     $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
-    if(isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+    if (isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
         $pagination_type = sanitize_text_field($_GET['layout-pagination']);
     }
     // Update Results Block
@@ -1771,6 +1771,25 @@ add_action('woocommerce_product_options_advanced', 'woozio_woocommerce_custom_fi
 function woozio_woocommerce_custom_field()
 {
     global $post, $product_object;
+    // Loop Product Display Options
+    echo '<div class="options_group">';
+    echo '<h4 style="padding: 10px 12px; margin: 0; border-bottom: 1px solid #eee;">' . __('Loop Product Display', 'woozio') . '</h4>';
+
+    woocommerce_wp_checkbox(array(
+        'id' => '_enable_loop_sale_marquee',
+        'label' => __('Enable Sale Marquee', 'woozio'),
+        'description' => __('Show sale percentage marquee in product loop', 'woozio'),
+        'desc_tip' => true
+    ));
+
+    woocommerce_wp_checkbox(array(
+        'id' => '_enable_loop_countdown',
+        'label' => __('Enable Countdown Timer', 'woozio'),
+        'description' => __('Show countdown timer in product loop (requires countdown date below)', 'woozio'),
+        'desc_tip' => true
+    ));
+
+    echo '</div>';
     // Add layout selector
     $layout_options = array(
         'bottom-thumbnail' => __('Bottom Thumbnail', 'woozio'),
@@ -1799,7 +1818,7 @@ function woozio_woocommerce_custom_field()
 
     // Product Info Display Mode Settings
     echo '<div class="options_group">';
-    
+
     $info_display_options = array(
         'tab' => __('Tab', 'woozio'),
         'toggle' => __('Toggle', 'woozio'),
@@ -1864,8 +1883,6 @@ function woozio_woocommerce_custom_field()
     ));
 
     echo '</div>';
-
-
 
     // Product Video Settings
     $video_type_options = array(
@@ -2193,6 +2210,13 @@ function woozio_woocommerce_custom_field_save($post_id)
         $enable_size_guide = sanitize_text_field($_POST['_enable_size_guide']);
         update_post_meta($post_id, '_enable_size_guide', $enable_size_guide);
     }
+
+    // Save loop product display options
+    $enable_loop_sale_marquee = isset($_POST['_enable_loop_sale_marquee']) ? 'yes' : 'no';
+    update_post_meta($post_id, '_enable_loop_sale_marquee', $enable_loop_sale_marquee);
+
+    $enable_loop_countdown = isset($_POST['_enable_loop_countdown']) ? 'yes' : 'no';
+    update_post_meta($post_id, '_enable_loop_countdown', $enable_loop_countdown);
     if (isset($_POST['_product_sold'])) {
         $product_sold = intval($_POST['_product_sold']);
         update_post_meta($post_id, '_product_sold', $product_sold);
@@ -2988,19 +3012,19 @@ function woozio_woocommerce_single_product_safe_checkout()
 function woozio_render_product_info_display()
 {
     global $product;
-    
+
     if (!$product) {
         return;
     }
-    
+
     // Get display mode setting
     $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
-    
+
     // Default to toggle for gallery layouts
     if (empty($display_mode)) {
         $display_mode = 'toggle';
     }
-    
+
     // Render based on mode
     if ($display_mode === 'toggle') {
         woozio_render_product_info_toggle();
@@ -3020,29 +3044,29 @@ add_action('woozio_woocommerce_template_single_toggle', 'woozio_render_product_i
 function woozio_handle_thumbnail_layout_mode()
 {
     global $product;
-    
+
     if (!$product) {
         return;
     }
-    
+
     $layout = get_post_meta($product->get_id(), '_layout_product', true);
     if (empty($layout)) {
         $layout = 'bottom-thumbnail';
     }
-    
+
     $thumbnail_layouts = array('bottom-thumbnail', 'left-thumbnail', 'right-thumbnail');
-    
+
     // Only for thumbnail layouts
     if (!in_array($layout, $thumbnail_layouts)) {
         return;
     }
-    
+
     // Get display mode
     $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
     if (empty($display_mode)) {
         $display_mode = 'tab'; // Default for thumbnail layouts
     }
-    
+
     if ($display_mode === 'tab') {
         // Do nothing here, classes added via woozio_add_tab_position_body_class filter
     } elseif ($display_mode === 'toggle') {
@@ -3064,22 +3088,22 @@ function woozio_add_tab_position_body_class($classes)
 {
     if (is_product()) {
         global $post;
-        
+
         if ($post && isset($post->ID)) {
             $display_mode = get_post_meta($post->ID, '_product_info_display_mode', true);
-            
+
             // Only add tab position class if display mode is 'tab'
             if ($display_mode === 'tab') {
                 $tab_position = get_post_meta($post->ID, '_product_tab_position', true);
                 if (empty($tab_position)) {
                     $tab_position = 'top';
                 }
-                
+
                 $classes[] = 'bt-tabs-position-' . $tab_position;
             }
         }
     }
-    
+
     return $classes;
 }
 add_filter('body_class', 'woozio_add_tab_position_body_class');
@@ -3091,27 +3115,27 @@ add_filter('body_class', 'woozio_add_tab_position_body_class');
 function woozio_render_product_info_toggle()
 {
     global $product;
-    
+
     if (!$product) {
         return;
     }
-    
+
     // Get toggle state setting
     $toggle_state = get_post_meta($product->get_id(), '_product_toggle_state', true);
     if (empty($toggle_state)) {
         $toggle_state = 'first'; // Default: open first toggle
     }
-    
+
     $product_tabs = apply_filters('woocommerce_product_tabs', array());
-    
+
     if (empty($product_tabs)) {
         return;
     }
-    ?>
+?>
     <div class="woocommerce-tabs bt-product-toggle bt-product-toggle-js" data-toggle-state="<?php echo esc_attr($toggle_state); ?>">
-        <?php 
+        <?php
         $i = 0;
-        foreach ($product_tabs as $key => $product_tab) : 
+        foreach ($product_tabs as $key => $product_tab) :
             $i++;
             $is_first = ($i === 1);
             $is_active = ($toggle_state === 'all') || ($toggle_state === 'first' && $is_first);
@@ -3136,7 +3160,7 @@ function woozio_render_product_info_toggle()
             </div>
         <?php endforeach; ?>
     </div>
-    <?php
+<?php
 }
 
 /**

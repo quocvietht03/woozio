@@ -1746,7 +1746,7 @@
 							WoozioProductButtonStatus();
 							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
-
+							WoozioCountdownProductSale();
 							// Trigger event for infinite scroll to re-initialize
 							$(document).trigger('filter-products-complete');
 						}, 500);
@@ -2370,26 +2370,66 @@
 
 		}
 	}
-	/* Countdown product sale  */
-	function WoozioCountdownProductSale() {
-		if ($('.bt-countdown-product-sale').length > 0) {
-			var idproduct = $('.bt-countdown-product-sale .bt-countdown-product-js').data('idproduct');
-			const countDown = $('.bt-countdown-product-sale .bt-countdown-product-js[data-idproduct="' + idproduct + '"]');
+	/* Helper function to sync countdown values to cloned slides */
+	function syncCountdownToClones(productId, values) {
+		const $clonedCountdowns = $(`.swiper-slide-duplicate .bt-countdown-product-js[data-idproduct="${productId}"]`);
 
-			const countDownDate = new Date(countDown.data('time')).getTime();
-			//	console.log(countDownDate);
+		if ($clonedCountdowns.length === 0) return;
+
+		if (typeof values === 'string') {
+			$clonedCountdowns.html(values);
+		} else {
+			$clonedCountdowns.each(function () {
+				$(this).find('.bt-countdown-days').text(values.days);
+				$(this).find('.bt-countdown-hours').text(values.hours);
+				$(this).find('.bt-countdown-mins').text(values.mins);
+				$(this).find('.bt-countdown-secs').text(values.secs);
+			});
+		}
+	}
+
+	/* Countdown product sale */
+	function WoozioCountdownProductSale($container) {
+		const $searchContext = $container || $(document);
+
+		// Find countdown timers, exclude slider clones
+		const $countdowns = $searchContext.find('.bt-countdown-product-js')
+			.not('.bt-countdown-initialized')
+			.filter(function () {
+				return !$(this).closest('.swiper-slide-duplicate').length;
+			});
+
+		if ($countdowns.length === 0) return;
+
+		$countdowns.each(function () {
+			const $countdown = $(this);
+			const countDownDate = new Date($countdown.data('time')).getTime();
+			const productId = $countdown.data('idproduct');
+
+			$countdown.addClass('bt-countdown-initialized');
+
 			if (isNaN(countDownDate)) {
-				console.error('Invalid countdown date');
+				console.error('Invalid countdown date for product:', productId);
 				return;
 			}
+
+			// Create individual timer for each countdown
 			const timer = setInterval(() => {
 				const now = new Date().getTime();
 				const distance = countDownDate - now;
 
 				if (distance < 0) {
 					clearInterval(timer);
-					countDown.html('<div class="bt-countdown-expired">EXPIRED</div>');
-					window.location.reload();
+					$countdown.html('<div class="bt-countdown-expired">EXPIRED</div>');
+					syncCountdownToClones(productId, '<div class="bt-countdown-expired">EXPIRED</div>');
+
+					if ($('body').hasClass('single-product')) {
+						setTimeout(() => window.location.reload(), 1000);
+					} else {
+						$countdown.closest('.bt-product-countdown-timer').fadeOut(300);
+						$(`.swiper-slide-duplicate .bt-countdown-product-js[data-idproduct="${productId}"]`)
+							.closest('.bt-product-countdown-timer').fadeOut(300);
+					}
 					return;
 				}
 
@@ -2398,30 +2438,37 @@
 				const mins = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
 				const secs = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
 
-				countDown.find('.bt-countdown-days').text(days);
-				countDown.find('.bt-countdown-hours').text(hours);
-				countDown.find('.bt-countdown-mins').text(mins);
-				countDown.find('.bt-countdown-secs').text(secs);
+				$countdown.find('.bt-countdown-days').text(days);
+				$countdown.find('.bt-countdown-hours').text(hours);
+				$countdown.find('.bt-countdown-mins').text(mins);
+				$countdown.find('.bt-countdown-secs').text(secs);
+
+				// Sync to cloned slides
+				syncCountdownToClones(productId, { days, hours, mins, secs });
 			}, 1000);
-			// progress bar countdown product sale
-			let progressWidth = $(".bt-progress-bar-sold").data("width");
-			let currentWidth = 0;
-			var interval = setInterval(function () {
-				if (currentWidth >= progressWidth) {
-					clearInterval(interval);
-				} else {
-					currentWidth++;
-					$(".bt-progress-bar-sold").css("width", currentWidth + "%");
-				}
-			}, 30);
+		});
+
+		// Progress bar countdown product sale (only for single product)
+		if ($('body').hasClass('single-product') && $('.bt-progress-bar-sold').length > 0) {
+			const $progressBar = $('.bt-progress-bar-sold');
+			if (!$progressBar.hasClass('bt-progress-initialized')) {
+				$progressBar.addClass('bt-progress-initialized');
+				let progressWidth = $progressBar.data("width");
+				let currentWidth = 0;
+				var interval = setInterval(function () {
+					if (currentWidth >= progressWidth) {
+						clearInterval(interval);
+					} else {
+						currentWidth++;
+						$progressBar.css("width", currentWidth + "%");
+					}
+				}, 30);
+			}
 		}
 	}
 	/**
-	 * ========================================
 	 * Product Info Display - Toggle Handler
-	 * ========================================
 	 * Handle toggle/accordion for product information
-	 * Note: Tabs are handled by WooCommerce default JS, styled via body class
 	 */
 	function WoozioCustomizeProductToggle() {
 		if ($('.bt-product-toggle-js').length === 0) {
@@ -2430,12 +2477,12 @@
 
 		$('.bt-product-toggle-js .bt-item-title').on('click', function (e) {
 			e.preventDefault();
-			
+
 			var $clickedTitle = $(this);
 			var $clickedContent = $clickedTitle.parent().find('.bt-item-content');
 			var $toggleContainer = $clickedTitle.closest('.bt-product-toggle-js');
 			var toggleState = $toggleContainer.data('toggle-state');
-			
+
 			if ($clickedTitle.hasClass('active')) {
 				// Close clicked toggle
 				$clickedContent.slideUp(300);
@@ -2447,7 +2494,7 @@
 					$toggleContainer.find('.bt-item-content').slideUp(300);
 					$toggleContainer.find('.bt-item-title').removeClass('active');
 				}
-				
+
 				// Open clicked toggle
 				$clickedContent.slideDown(300);
 				$clickedTitle.addClass('active');
@@ -2855,17 +2902,17 @@
 			let regularTotalPrice = 0;
 			let checkedCount = 0;
 
-			$productsList.find('.fbt-product-item').each(function() {
+			$productsList.find('.fbt-product-item').each(function () {
 				const $item = $(this);
 				const $checkbox = $item.find('input[type="checkbox"]');
-				
+
 				if ($checkbox.is(':checked')) {
 					const price = parseFloat($item.data('price')) || 0;
 					const regularPrice = parseFloat($item.data('regular-price')) || price;
-					
+
 					totalPrice += price;
 					regularTotalPrice += regularPrice;
-					
+
 					// Count only non-disabled checkboxes
 					if (!$checkbox.is(':disabled')) {
 						checkedCount++;
@@ -2890,13 +2937,13 @@
 		}
 
 		// Handle checkbox change
-		$productsList.on('change', 'input[type="checkbox"]:not(:disabled)', function() {
+		$productsList.on('change', 'input[type="checkbox"]:not(:disabled)', function () {
 			calculateTotal();
 		});
 
 		// Listen to WooCommerce variation changes
 		if (isVariable) {
-			$('.variations_form').on('found_variation', function(event, variation) {
+			$('.variations_form').on('found_variation', function (event, variation) {
 				currentVariationId = variation.variation_id;
 				currentVariationSelected = true;
 
@@ -2905,7 +2952,7 @@
 				$currentProduct.attr('data-product-id', variation.variation_id);
 				$currentProduct.data('price', variation.display_price);
 				$currentProduct.data('regular-price', variation.display_regular_price || variation.display_price);
-				
+
 				// Update checkbox value
 				$currentProduct.find('input[type="checkbox"]').val(variation.variation_id);
 
@@ -2937,10 +2984,10 @@
 				calculateTotal();
 			});
 
-			$('.variations_form').on('reset_data', function() {
+			$('.variations_form').on('reset_data', function () {
 				currentVariationId = null;
 				currentVariationSelected = false;
-				
+
 				// Reset variation text
 				$currentProduct.find('.fbt-variation-text').text('');
 
@@ -2950,9 +2997,9 @@
 		}
 
 		// Handle add to cart button click
-		$addToCartBtn.on('click', function(e) {
+		$addToCartBtn.on('click', function (e) {
 			e.preventDefault();
-			
+
 			if ($(this).prop('disabled')) {
 				return;
 			}
@@ -2961,7 +3008,7 @@
 				return;
 			}
 			const productIds = [];
-			$productsList.find('.fbt-product-item input[type="checkbox"]:checked').each(function() {
+			$productsList.find('.fbt-product-item input[type="checkbox"]:checked').each(function () {
 				const productId = $(this).val();
 				// For current product, use variation ID if selected
 				if ($(this).closest('.fbt-current-product').length && currentVariationId) {
@@ -2976,7 +3023,7 @@
 			}
 
 			// Disable button and show loading
-		
+
 			$addToCartBtn.prop('disabled', true).addClass('loading');
 
 			$.ajax({
@@ -2986,7 +3033,7 @@
 					action: 'woozio_add_fbt_to_cart',
 					product_ids: productIds
 				},
-				success: function(response) {
+				success: function (response) {
 					if (response.success) {
 						// Show toast for each added product with sequential delay
 						if (AJ_Options.cart_toast && response.data.added) {
@@ -3000,7 +3047,7 @@
 						// Trigger WooCommerce added_to_cart event
 						$(document.body).trigger('wc_fragment_refresh');
 						$addToCartBtn.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-						
+
 						// Open mini cart on mobile
 						if ($(window).width() <= 1023) {
 							$('.bt-mini-cart-sidebar').addClass('active');
@@ -3011,12 +3058,12 @@
 							});
 						}
 					}
-					
+
 					// Reset button
 					$addToCartBtn.prop('disabled', false).removeClass('loading');
 					calculateTotal(); // Recheck state
 				},
-				error: function() {
+				error: function () {
 					$addToCartBtn.prop('disabled', false).removeClass('loading');
 					calculateTotal(); // Recheck state
 				}
