@@ -149,6 +149,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			'compare_toast_time' => $compare_toast_time,
 			'cart_toast_time' => $cart_toast_time,
 			'user_info' => wp_get_current_user(),
+			'order_tracking_nonce' => wp_create_nonce('woozio_order_tracking_nonce'),
 		);
 
 		wp_localize_script('woozio-main', 'AJ_Options', $js_options);

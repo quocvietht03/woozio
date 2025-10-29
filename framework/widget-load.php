@@ -106,7 +106,8 @@ class ElementorWidgets
 			'product-nav-image',
 			'vertical-banner-slider',
 			'offers-slider',
-			'bundle-save'
+			'bundle-save',
+			'order-tracking'
 		);
 
 		return $this->widgets;
@@ -260,6 +261,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BundleSave\Widget_BundleSave());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OrderTracking\Widget_OrderTracking());
 	}
 
 	/**
