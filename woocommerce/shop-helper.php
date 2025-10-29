@@ -4246,22 +4246,6 @@ if (!function_exists('woozio_add_bulk_actions_custom_statuses')) {
 	add_filter('bulk_actions-edit-shop_order', 'woozio_add_bulk_actions_custom_statuses', 20, 1);
 }
 
-/* Add Custom Status to Order Actions Dropdown */
-if (!function_exists('woozio_add_order_action_custom_statuses')) {
-	function woozio_add_order_action_custom_statuses($actions) {
-		global $theorder;
-
-		// Add "Approved" action
-		$actions['wc-approved'] = __('Approved', 'woozio');
-		
-		// Add "Shipped" action
-		$actions['wc-shipped'] = __('Shipped', 'woozio');
-		
-		return $actions;
-	}
-	add_filter('woocommerce_order_actions', 'woozio_add_order_action_custom_statuses');
-}
-
 /* Order Tracking AJAX Handler */
 if (!function_exists('woozio_track_order_callback')) {
 	function woozio_track_order_callback() {
