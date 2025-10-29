@@ -326,8 +326,8 @@
 				var gallerylayout = '';
 				if ($('.bt-gallery-slider-container').length > 0 || $('.bt-gallery-slider-fullwidth').length > 0) {
 					gallerylayout = 'gallery-slider';
-				} else if ($('.bt-gallery-one-column').length > 0 || $('.bt-gallery-two-columns').length > 0 || $('.bt-gallery-three-columns').length > 0 || 
-						$('.bt-gallery-four-columns').length > 0 || $('.bt-gallery-grid-fullwidth').length > 0 || $('.bt-gallery-stacked').length > 0) {
+				} else if ($('.bt-gallery-one-column').length > 0 || $('.bt-gallery-two-columns').length > 0 || $('.bt-gallery-three-columns').length > 0 ||
+					$('.bt-gallery-four-columns').length > 0 || $('.bt-gallery-grid-fullwidth').length > 0 || $('.bt-gallery-stacked').length > 0) {
 					gallerylayout = 'gallery-grid';
 				} else {
 					gallerylayout = 'slider-thumb';
@@ -364,7 +364,7 @@
 							gallery_layout: gallerylayout,
 							variation_id: variationId
 						};
-						
+
 						$.ajax({
 							type: 'POST',
 							dataType: 'json',
@@ -617,96 +617,7 @@
 			});
 		}
 	}
-	/* Product Toast */
-	function LoadWoozioProductToast() {
-		if (AJ_Options.wishlist_toast || AJ_Options.compare_toast || AJ_Options.cart_toast) {
-			$('body').append('<div class="bt-toast"></div>');
-		}
-	}
-	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
-		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
-			// ajax load product toast
-			var toastTimeshow;
-			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
-				toastTimeshow = AJ_Options.wishlist_toast_time;
-			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
-				toastTimeshow = AJ_Options.compare_toast_time;
-			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
-				toastTimeshow = AJ_Options.cart_toast_time;
-			} else {
-				toastTimeshow = 3000; // Default fallback time
-			}
-			var param_ajax = {
-				action: 'woozio_load_product_toast',
-				idproduct: idproduct,
-				status: status,
-				tools: tools
-			};
-			$.ajax({
-				type: 'POST',
-				dataType: 'json',
-				url: AJ_Options.ajax_url,
-				data: param_ajax,
-				beforeSend: function () {
-				},
-				success: function (response) {
-					if (response.success) {
-						// Append and show new toast
-						$('.bt-toast').append(response.data['toast']);
-						const $newToast = $('.bt-toast .bt-product-toast').last();
-						setTimeout(() => {
-							$newToast.addClass('show');
-						}, 100);
-						// Handle close button click
-						$newToast.find('.bt-product-toast--close').on('click', function () {
-							removeToast($newToast);
-						});
-						let toastTimeout;
 
-						function startRemovalTimer($toast) {
-							toastTimeout = setTimeout(() => {
-								removeToast($toast);
-							}, toastTimeshow);
-						}
-
-						// Handle hover events
-						$newToast.hover(
-							function () {
-								// On mouse enter, clear the timeout
-								clearTimeout(toastTimeout);
-							},
-							function () {
-								// On mouse leave, start a new timeout
-								startRemovalTimer($(this));
-							}
-						);
-
-						// Start initial removal timer
-						startRemovalTimer($newToast);
-
-						function removeToast($toast) {
-							$toast.addClass('remove-visibility');
-
-							// Remove toast element after animation
-							setTimeout(() => {
-								$toast.addClass('remove-height');
-								setTimeout(() => {
-									$toast.remove();
-								}, 300);
-							}, 300);
-						}
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error('Ajax request failed:', {
-						status: status,
-						error: error,
-						response: xhr.responseText
-					});
-				}
-			});
-		}
-	}
 	/* Product wishlist */
 	function WoozioProductWishlist() {
 		if ($('.bt-product-wishlist-btn').length > 0) {
@@ -1204,6 +1115,96 @@
 			});
 		}
 
+	}
+	/* Product Toast */
+	function LoadWoozioProductToast() {
+		if (AJ_Options.wishlist_toast || AJ_Options.compare_toast || AJ_Options.cart_toast) {
+			$('body').append('<div class="bt-toast"></div>');
+		}
+	}
+	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
+		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
+			// ajax load product toast
+			var toastTimeshow;
+			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
+				toastTimeshow = AJ_Options.wishlist_toast_time;
+			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
+				toastTimeshow = AJ_Options.compare_toast_time;
+			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
+				toastTimeshow = AJ_Options.cart_toast_time;
+			} else {
+				toastTimeshow = 3000; // Default fallback time
+			}
+			var param_ajax = {
+				action: 'woozio_load_product_toast',
+				idproduct: idproduct,
+				status: status,
+				tools: tools
+			};
+			$.ajax({
+				type: 'POST',
+				dataType: 'json',
+				url: AJ_Options.ajax_url,
+				data: param_ajax,
+				beforeSend: function () {
+				},
+				success: function (response) {
+					if (response.success) {
+						// Append and show new toast
+						$('.bt-toast').append(response.data['toast']);
+						const $newToast = $('.bt-toast .bt-product-toast').last();
+						setTimeout(() => {
+							$newToast.addClass('show');
+						}, 100);
+						// Handle close button click
+						$newToast.find('.bt-product-toast--close').on('click', function () {
+							removeToast($newToast);
+						});
+						let toastTimeout;
+
+						function startRemovalTimer($toast) {
+							toastTimeout = setTimeout(() => {
+								removeToast($toast);
+							}, toastTimeshow);
+						}
+
+						// Handle hover events
+						$newToast.hover(
+							function () {
+								// On mouse enter, clear the timeout
+								clearTimeout(toastTimeout);
+							},
+							function () {
+								// On mouse leave, start a new timeout
+								startRemovalTimer($(this));
+							}
+						);
+
+						// Start initial removal timer
+						startRemovalTimer($newToast);
+
+						function removeToast($toast) {
+							$toast.addClass('remove-visibility');
+
+							// Remove toast element after animation
+							setTimeout(() => {
+								$toast.addClass('remove-height');
+								setTimeout(() => {
+									$toast.remove();
+								}, 300);
+							}, 300);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error('Ajax request failed:', {
+						status: status,
+						error: error,
+						response: xhr.responseText
+					});
+				}
+			});
+		}
 	}
 	/* load Show filter Tag */
 	function WoozioLoadFilterTagProduct() {
@@ -3082,12 +3083,12 @@
 		WoozioShop();
 		WoozioProductVariationHandler();
 		WoozioCommentValidation();
-		LoadWoozioProductToast();
 		WoozioProductCompare();
 		WoozioProductCompareLoad();
 		WoozioProductWishlist();
 		WoozioProductWishlistLoad();
 		WoozioProductQuickView();
+		LoadWoozioProductToast();
 		WoozioProductsFilter();
 		WoozioLoadMoreButton();
 		WoozioInfiniteScroll();

@@ -5928,7 +5928,7 @@
         }
         .shop_attributes {
           margin-top: 21px;
-          border: 1px solid #e5e7eb;
+          border: none;
           th,
           td {
             font-style: normal;
@@ -5942,6 +5942,9 @@
             }
           }
           tr {
+            &:nth-child(odd) {
+              background-color: #f7f7f7;
+            }
             &:nth-child(even) {
               background-color: #ffffff;
               th,
