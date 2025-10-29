@@ -18,7 +18,9 @@ global $product;
         $attachment_ids = $product->get_gallery_image_ids();
         $featured_image_id = $product->get_image_id();
         $itemgallery = count($attachment_ids) + 1;
-        if ($args['layout'] === 'gallery-four-columns') {
+        if ($args['layout'] === 'gallery-grid-fullwidth') {
+            $show_number = 10;
+        } elseif ($args['layout'] === 'gallery-four-columns') {
             $show_number = 8;
         } elseif ($args['layout'] === 'gallery-three-columns') {
             $show_number = 6;
@@ -32,9 +34,9 @@ global $product;
 
         ?>
         <div class="images bt-gallery-grid-products" data-items="<?php echo esc_attr($itemgallery); ?>" data-shown="<?php echo esc_attr($show_number); ?>">
-            
+
             <div class="bt-gallery-grid-product bt-gallery-lightbox bt-gallery-zoomable">
-                <?php 
+                <?php
                     $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html( $featured_image_id, true, false ) . '</div>';
 
                     if(!empty($attachment_ids)) {
@@ -50,38 +52,42 @@ global $product;
             ?>
         </div>
         <div class="summary entry-summary">
-            <div class="woocommerce-product-rating-sold">
-                <?php
-                do_action('woozio_woocommerce_shop_loop_item_label');
-                do_action('woozio_woocommerce_template_single_rating');
-                ?>
-            </div>
-            <?php
-            do_action('woozio_woocommerce_template_single_title');
-            ?>
-            <div class="woocommerce-product-price-wrap">
-                <?php
-                do_action('woozio_woocommerce_template_single_price');
-                do_action('woozio_woocommerce_show_product_loop_sale_flash');
+            <div class="bt-single-product-info">
+                <div class="bt-single-product-info__inner">
+                    <div class="woocommerce-product-rating-sold">
+                        <?php
+                        do_action('woozio_woocommerce_shop_loop_item_label');
+                        do_action('woozio_woocommerce_template_single_rating');
+                        ?>
+                    </div>
+                    <?php do_action('woozio_woocommerce_template_single_title'); ?>
+                    <div class="woocommerce-product-price-wrap">
+                        <?php
+                        do_action('woozio_woocommerce_template_single_price');
+                        do_action('woozio_woocommerce_show_product_loop_sale_flash');
 
-                ?>
+                        ?>
+                    </div>
+                    <div class="bt-product-excerpt-add-to-cart">
+                        <?php
+                        do_action('woozio_woocommerce_template_single_excerpt');
+                        do_action('woozio_woocommerce_template_single_countdown'); 
+                        do_action('woozio_woocommerce_template_single_add_to_cart');
+                        ?>
+                    </div>
+                </div>
             </div>
-            <div class="bt-product-excerpt-add-to-cart">
-                <?php
-                do_action('woozio_woocommerce_template_single_excerpt');
-                do_action('woozio_woocommerce_template_single_countdown'); 
-                do_action('woozio_woocommerce_template_single_add_to_cart');
+
+            <div class="bt-single-product-sumary">
+                <?php 
                 do_action('woozio_woocommerce_template_single_more_information');
+                do_action('woozio_woocommerce_template_single_meta');
+                do_action('woozio_woocommerce_template_frequently_bought_together');
+                do_action('woozio_woocommerce_template_upsell_products');
+                do_action('woozio_woocommerce_template_single_safe_checkout');
+                do_action('woozio_woocommerce_template_single_toggle');
                 ?>
             </div>
-            <?php 
-            do_action('woozio_woocommerce_template_single_meta');
-            do_action('woozio_woocommerce_template_frequently_bought_together');
-            do_action('woozio_woocommerce_template_upsell_products');
-            do_action('woozio_woocommerce_template_single_safe_checkout');
-            do_action('woozio_woocommerce_template_single_toggle');
-            ?>
-
         </div>
     </div>
     <?php

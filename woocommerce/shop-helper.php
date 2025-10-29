@@ -1795,8 +1795,11 @@ function woozio_woocommerce_custom_field()
         'bottom-thumbnail' => __('Bottom Thumbnail', 'woozio'),
         'left-thumbnail' => __('Left Thumbnail', 'woozio'),
         'right-thumbnail' => __('Right Thumbnail', 'woozio'),
-        'gallery-one-column' => __('Gallery One Column', 'woozio'),
-        'gallery-two-column' => __('Gallery Two Column', 'woozio'),
+        'gallery-one-column' => __('Gallery 1 Column', 'woozio'),
+        'gallery-two-columns' => __('Gallery 2 Columns', 'woozio'),
+        'gallery-three-columns' => __('Gallery 3 Columns', 'woozio'),
+        'gallery-four-columns' => __('Gallery 4 Columns', 'woozio'),
+        'gallery-grid-fullwidth' => __('Gallery Grid Fullwidth', 'woozio'),
         'gallery-stacked' => __('Gallery Stacked', 'woozio'),
         'gallery-slider-container' => __('Gallery Slider Container', 'woozio'),
         'gallery-slider-fullwidth' => __('Gallery Slider Fullwidth', 'woozio')
@@ -3417,7 +3420,7 @@ function woozio_load_product_gallery()
         echo '</div>';
 
         $output['gallery-slider'] = ob_get_clean();
-    } else if ($gallery_layout == 'gallery-grid') {
+    } else if ($gallery_layout == 'gallery-grid' || $gallery_layout == 'gallery-grid-top') {
         ob_start();
         $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($variation_image_id, true, false) . '</div>';
 
