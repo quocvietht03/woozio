@@ -282,77 +282,6 @@
 		});
 	}
 
-	const TiktokShopSliderHandler = function ($scope, $) {
-		const $tiktokSlider = $scope.find('.bt-elwg-tiktok-shop-slider--default');
-		// Get Elementor breakpoints
-		const $sliderSettings = $tiktokSlider.data('slider-settings');
-		//	console.log($sliderSettings.breakpoints);
-		if ($tiktokSlider.length > 0) {
-
-			const $swiper = new Swiper($tiktokSlider[0], {
-				slidesPerView: $sliderSettings.slidesPerView,
-				loop: $sliderSettings.loop,
-				spaceBetween: $sliderSettings.spaceBetween,
-				speed: $sliderSettings.speed,
-				pagination: {
-					el: $tiktokSlider.find('.bt-swiper-pagination')[0],
-					clickable: true,
-					type: 'bullets',
-					renderBullet: function (index, className) {
-						return '<span class="' + className + '"></span>';
-					},
-				},
-				autoplay: $sliderSettings.autoplay ? {
-					delay: 3000,
-					disableOnInteraction: false
-				} : false,
-				navigation: {
-					nextEl: $tiktokSlider.find('.bt-button-next')[0],
-					prevEl: $tiktokSlider.find('.bt-button-prev')[0],
-				},
-				breakpoints: $sliderSettings.breakpoints,
-			});
-
-			if ($sliderSettings.autoplay) {
-				$tiktokSlider[0].addEventListener('mouseenter', () => {
-					$swiper.autoplay.stop();
-				});
-				$tiktokSlider[0].addEventListener('mouseleave', () => {
-					$swiper.autoplay.start();
-				});
-			}
-			// tiktok popup video
-			$tiktokSlider.find('.js-open-popup').magnificPopup({
-				type: 'inline',
-				preloader: false,
-				removalDelay: 300,
-				mainClass: 'mfp-fade',
-				callbacks: {
-					beforeOpen: function () {
-						this.st.mainClass = this.st.el.attr('data-effect');
-					},
-					open: function () {
-						// Initialize video elements when popup opens
-						const videoPopup = this.content.find('.bt-video-wrap');
-						const videoElement = videoPopup.find('video');
-
-						if (videoElement.length > 0) {
-							// Handle uploaded video
-							videoElement[0].play();
-						}
-					},
-					close: function () {
-						// Pause video when popup closes
-						const videoElement = this.content.find('video');
-						if (videoElement.length > 0) {
-							videoElement[0].pause();
-							videoElement[0].currentTime = 0;
-						}
-					}
-				}
-			});
-		}
-	};
 	function WoozioshowToast(idproduct, tools = 'cart', status = 'add') {
 		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
 			// ajax load product toast
@@ -547,47 +476,6 @@
 				});
 				$TestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseleave', () => {
 					swiper.autoplay.start();
-				});
-			}
-		}
-	};
-	const ProductTestimonialSliderHandler = function ($scope) {
-		const $ProductTestimonialSlider = $scope.find('.js-data-product-testimonial-slider');
-		if ($ProductTestimonialSlider.length > 0) {
-			const $sliderSettings = $ProductTestimonialSlider.data('slider-settings') || {};
-			// Initialize the testimonial slider
-			const testimonialSlider = new Swiper($ProductTestimonialSlider.find('.js-testimonial-slider')[0], {
-				slidesPerView: $sliderSettings.slidesPerView,
-				spaceBetween: $sliderSettings.spaceBetween,
-				loop: $sliderSettings.loop,
-				speed: $sliderSettings.speed,
-				autoplay: $sliderSettings.autoplay ? {
-					delay: $sliderSettings.autoplay_delay,
-					disableOnInteraction: false
-				} : false,
-				navigation: {
-					nextEl: $scope.find('.bt-button-next')[0],
-					prevEl: $scope.find('.bt-button-prev')[0],
-				},
-				pagination: {
-					el: $scope.find('.bt-swiper-pagination')[0],
-					clickable: true,
-					type: 'bullets',
-					renderBullet: function (index, className) {
-						return '<span class="' + className + '"></span>';
-					},
-				},
-				breakpoints: $sliderSettings.breakpoints,
-			});
-
-			// Pause autoplay on hover if autoplay is enabled
-			if ($sliderSettings.autoplay) {
-				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseenter', () => {
-					testimonialSlider.autoplay.stop();
-				});
-
-				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseleave', () => {
-					testimonialSlider.autoplay.start();
 				});
 			}
 		}
@@ -2394,11 +2282,9 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-banner-product-slider.default', BannerProductSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-offers-slider.default', OffersSliderHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-tiktok-shop-slider.default', TiktokShopSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-tooltip-hotspot.default', ProductTooltipHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonial-slider.default', TestimonialSliderHandler);
-		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial-slider.default', ProductTestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonials-staggered-slider.default', TestimonialsStaggeredSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-countdown.default', countDownHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-site-notification.default', NotificationSliderHandler);
