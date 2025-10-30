@@ -968,7 +968,7 @@
   position: fixed;
   bottom: 30px;
   right: 10px;
-  z-index: 9999;
+  z-index: 9999999999;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -1372,7 +1372,7 @@
       &.swiper-pagination-bullet-active {
         padding: 2px 20px;
       }
-    }
+    } 
   }
 }
 .bt-style-pagination-themes {
@@ -1470,7 +1470,7 @@
   }
 }
 .mfp-bg{
-  cursor: url('../images/close-popup.svg') 60 60, zoom-out;
+  cursor: zoom-out;
 }
 .mfp-wrap {
   .admin-bar & {
@@ -1482,7 +1482,7 @@
   }
   .mfp-content {
     position: initial;
-    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
+    cursor: zoom-out;
     figcaption {
       position: relative;
     }
@@ -1492,7 +1492,7 @@
   }
   .mfp-container {
     padding: 15px;
-    cursor: url('../images/close-popup.svg') 60 60, zoom-out;
+    cursor: zoom-out;
   }
   .mfp-close {
     right: 15px;
@@ -1506,7 +1506,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     padding: 0;
-    cursor: pointer;
+    cursor: pointer !important;
   }
   button.mfp-arrow {
     display: flex;

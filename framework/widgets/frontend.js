@@ -2302,6 +2302,88 @@
 		}
 	};
 
+	const OrderTrackingHandler = function ($scope, $) {
+		const $form = $scope.find('.bt-order-tracking-form');
+		const $message = $scope.find('.bt-order-tracking-message');
+		const $result = $scope.find('.bt-order-tracking-result');
+
+		if ($form.length) {
+			$form.on('submit', function (e) {
+				e.preventDefault();
+
+				const orderId = $form.find('input[name="order_id"]').val();
+				const billingEmail = $form.find('input[name="billing_email"]').val();
+				const $button = $form.find('button[type="submit"]');
+
+				// Reset messages
+				$message.html('').removeClass('error success');
+				$result.hide();
+
+				// Disable button
+				$button.prop('disabled', true).text($button.data('loading-text') || 'Loading...');
+
+				// AJAX request
+				$.ajax({
+					url: AJ_Options.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'woozio_track_order',
+						order_id: orderId,
+						billing_email: billingEmail,
+						nonce: AJ_Options.order_tracking_nonce
+					},
+					success: function (response) {
+						$button.prop('disabled', false).text($button.data('original-text') || 'Track');
+
+						if (response.success) {
+							$message.html(response.data.message).addClass('success');
+							if (response.data.html) {
+								$result.html(response.data.html).slideDown(400, function() {
+									// Smooth scroll to result
+									$('html, body').animate({
+										scrollTop: $result.offset().top - 100
+									}, 600);
+								});
+								
+								// Initialize tabs
+								initOrderTrackingTabs($result);
+							}
+						} else {
+							$message.html(response.data.message).addClass('error');
+						}
+					},
+					error: function () {
+						$button.prop('disabled', false).text($button.data('original-text') || 'Track');
+						$message.html('An error occurred. Please try again.').addClass('error');
+					}
+				});
+			});
+
+			// Store original button text
+			const $button = $form.find('button[type="submit"]');
+			$button.data('original-text', $button.text());
+			$button.data('loading-text', 'Loading...');
+		}
+
+		// Initialize tabs functionality
+		function initOrderTrackingTabs($container) {
+			const $tabBtns = $container.find('.bt-tab-btn');
+			const $tabContents = $container.find('.bt-tab-content');
+
+			$tabBtns.on('click', function() {
+				const targetTab = $(this).data('tab');
+				
+				// Update buttons
+				$tabBtns.removeClass('active');
+				$(this).addClass('active');
+				
+				// Update content
+				$tabContents.removeClass('active');
+				$container.find('#' + targetTab + '-tab').addClass('active');
+			});
+		}
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
@@ -2339,6 +2421,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-brand-slider.default', BrandSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-vertical-banner-slider.default', VerticalBannerSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-bundle-save.default', BundleSaveHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-order-tracking.default', OrderTrackingHandler);
 	});
 
 })(jQuery);

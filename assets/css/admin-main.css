@@ -1370,7 +1370,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   position: fixed;
   bottom: 30px;
   right: 10px;
-  z-index: 9999;
+  z-index: 9999999999;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -1871,7 +1871,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 
 .mfp-bg {
-  cursor: url("../images/close-popup.svg") 60 60, zoom-out;
+  cursor: zoom-out;
 }
 
 .admin-bar .mfp-wrap {
@@ -1883,7 +1883,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 .mfp-wrap .mfp-content {
   position: initial;
-  cursor: url("../images/close-popup.svg") 60 60, zoom-out;
+  cursor: zoom-out;
 }
 .mfp-wrap .mfp-content figcaption {
   position: relative;
@@ -1893,7 +1893,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 .mfp-wrap .mfp-container {
   padding: 15px;
-  cursor: url("../images/close-popup.svg") 60 60, zoom-out;
+  cursor: zoom-out;
 }
 .mfp-wrap .mfp-close {
   right: 15px;
@@ -1907,7 +1907,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   background-size: cover;
   background-repeat: no-repeat;
   padding: 0;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 .mfp-wrap button.mfp-arrow {
   display: flex;

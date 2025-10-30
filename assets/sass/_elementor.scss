@@ -1179,7 +1179,8 @@
             line-height: 24px;
             color: $color-text;
             border: none;
-            &::before,&::after {
+            &::before,
+            &::after {
               display: none;
             }
             dt {
@@ -1195,7 +1196,7 @@
               display: flex;
               &:not(:first-of-type) {
                 &::before {
-                  content: '/';
+                  content: "/";
                   margin-right: 5px;
                 }
               }
@@ -1379,7 +1380,6 @@
     }
   }
 }
-
 
 /* list Faq */
 .bt-elwg-list-faq {
@@ -3042,13 +3042,13 @@
         display: block;
         &:hover {
           .bt-product-category--content {
-              background: #fff;
-              .bt-product-category--name {
-                color: $color-primary;
-              }
-              .bt-product-category--view-more {
-                color: $color-primary;
-              }
+            background: #fff;
+            .bt-product-category--name {
+              color: $color-primary;
+            }
+            .bt-product-category--view-more {
+              color: $color-primary;
+            }
           }
         }
       }
@@ -10855,5 +10855,565 @@
         }
       }
     }
+  }
+}
+
+/* Order Tracking Widget */
+.bt-elwg-order-tracking {
+  max-width: 800px;
+  margin: 0 auto;
+  .bt-order-tracking-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    .bt-order-tracking-note-text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      color: $color-primary;
+      flex: 0 0 100%;
+    }
+    .bt-form-field {
+      flex: 0 0 calc(50% - 7.5px);
+
+      label {
+        display: block;
+        font-size: 16px;
+        font-weight: 400;
+        margin-bottom: 8px;
+        color: $color-primary;
+        line-height: 1.5;
+      }
+
+      input {
+        width: 100%;
+        padding: 14px 18px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--color-text);
+        background-color: #ffffff;
+        border: 1px solid #e9e9e9;
+        border-radius: 0;
+        transition: all 0.3s ease;
+
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          color: $color-text;
+        }
+      }
+    }
+
+    .bt-form-submit {
+      flex: 0 0 100%;
+      button {
+        min-width: 160px;
+        padding: 16px 36px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #ffffff;
+        background-color: $color-primary;
+        border: none;
+        border-radius: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: $color-accent;
+        }
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+    }
+
+    .bt-order-tracking-message {
+      margin-top: 10px;
+      padding: 8px 18px;
+      border-radius: 4px;
+      font-size: 16px;
+      flex: 0 0 100%;
+      &.success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+      }
+
+      &.error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+      }
+    }
+  }
+
+  .bt-order-tracking-result {
+    margin-top: 50px;
+
+    // Tabs Navigation
+    .bt-order-tracking-tabs {
+      .bt-tabs-nav {
+        display: flex;
+        gap: 0;
+        border-bottom: none;
+        margin-bottom: 40px;
+
+        .bt-tab-btn {
+          flex: 0 0 auto;
+          padding: 14px 32px;
+          font-size: 16px;
+          font-weight: 500;
+          color: $color-primary;
+          background-color: #ffffff;
+          border: 1px solid #e9e9e9;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          &.active {
+            color: #fff;
+            background-color: $color-primary;
+            border-color: $color-primary;
+            z-index: 1;
+          }
+
+          &:hover:not(.active) {
+            background-color: #e9ecef;
+          }
+        }
+      }
+
+      .bt-tab-content {
+        display: none;
+
+        &.active {
+          display: block;
+          animation: fadeIn 0.4s ease;
+        }
+      }
+    }
+
+    // Order Timeline
+    .bt-order-tracking-timeline {
+      .bt-timeline-progress {
+        position: relative;
+        margin-bottom: 40px;
+        .bt-progress-line {
+          width: calc(var(--progress-width) - 30px);
+          position: absolute;
+          top: 30px;
+          left: 30px;
+          right: 30px;
+          height: 4px;
+          background: #4d8b7b;
+          transition: width 1s ease;
+          background-image: linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.3) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.3) 75%,
+            transparent 75%,
+            transparent
+          );
+          background-size: 1rem 1rem;
+          animation: 1s linear 0s infinite normal none running progress-bar-stripes;
+          transition: width 0.8s ease;
+          z-index: 1;
+          max-width: calc(100% - 60px);
+          transform: translateY(-50%);
+        }
+        .bt-timeline-steps {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 1;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            height: 4px;
+            background-color: #e0e0e0;
+            transform: translateY(-50%);
+            z-index: 0;
+          }
+
+          .bt-step {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+
+            .bt-step-circle {
+              width: 60px;
+              height: 60px;
+              border-radius: 50%;
+              background-color: #d3d3d3;
+              border: 4px solid #fff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 12px;
+              transition: all 0.3s ease;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+              svg {
+                color: #fff;
+              }
+            }
+
+            .bt-step-label {
+              font-size: 13px;
+              font-weight: 600;
+              color: #999;
+              text-align: center;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+
+            &.completed {
+              .bt-step-circle {
+                background-color: #4d8b7b;
+              }
+
+              .bt-step-label {
+                color: #4d8b7b;
+              }
+            }
+
+            &.active {
+              .bt-step-circle {
+                background-color: #4d8b7b;
+                animation: pulse-order-tracking 2s infinite;
+              }
+
+              .bt-step-label {
+                color: #4d8b7b;
+              }
+            }
+          }
+        }
+      }
+
+      .bt-tracking-details {
+        .bt-status-section {
+          margin-bottom: 30px;
+
+          .bt-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 4px solid #ffc107;
+          }
+
+          .bt-status-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            padding: 16px 20px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 12px;
+
+            .bt-status-date {
+              font-size: 16px;
+              color: $color-text;
+              font-weight: 500;
+            }
+
+            .bt-status-text {
+              font-size: 16px;
+              color: $color-text;
+            }
+          }
+        }
+      }
+    }
+
+    // Order Details Tab
+    .bt-order-details {
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        margin-top: 30px;
+        color: var(--color-heading);
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+
+      .bt-order-info {
+        background-color: #f9f9f9;
+        padding: 24px 24px 12px 24px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+
+        .bt-order-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 14px 0;
+          border-bottom: 1px solid #e0e0e0;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .bt-label {
+            font-weight: 400;
+            color: $color-primary;
+            font-size: 16px;
+          }
+
+          .bt-value {
+            color: $color-primary;
+            font-size: 16px;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .bt-order-note {
+        background-color: #fff3cd;
+        padding: 20px 24px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border-left: 4px solid #ffc107;
+
+        h4 {
+          margin-top: 0;
+          margin-bottom: 12px;
+        }
+
+        p {
+          margin: 0;
+          color: #856404;
+          line-height: 1.6;
+        }
+      }
+
+      .bt-order-items {
+        background-color: #fff;
+        padding: 24px 24px 12px 24px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+
+        h4 {
+          margin-top: 0;
+          margin-bottom: 15px;
+          color: $color-primary;
+        }
+
+        .bt-order-items-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+
+          .bt-order-item {
+            display: flex;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .bt-order-item-thumb {
+              width: 70px;
+              height: 70px;
+              flex-shrink: 0;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 0;
+              }
+            }
+
+            .bt-order-item-content {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+
+              .bt-order-item-title {
+                font-size: 16px;
+                font-weight: 400;
+                color: $color-primary;
+                line-height: 1.3;
+                @extend .__bt-max-line-ellipsis;
+                .bt-variation {
+                  font-size: 16px;
+                  color: $color-text;
+                  font-weight: 400;
+                }
+              }
+
+              .bt-order-item-meta {
+                display: flex;
+                align-items: center;
+                .bt-qty-price {
+                  color: $color-text;
+                  font-size: 16px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .bt-order-shipping {
+        background-color: #fff;
+        padding: 24px 24px 12px 24px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+        h4 {
+          margin-top: 0;
+          margin-bottom: 15px;
+          color: $color-primary;
+        }
+
+        .bt-info-row {
+          display: flex;
+          padding: 12px 0;
+          border-bottom: 1px solid #f0f0f0;
+          gap: 12px;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .bt-info-label {
+            font-weight: 500;
+            color: $color-primary;
+            min-width: 80px;
+            flex-shrink: 0;
+            font-size: 16px;
+          }
+
+          .bt-info-value {
+            flex: 1;
+            color: $color-text;
+            font-size: 16px;
+            line-height: 1.6;
+
+            a {
+              color: $color-primary;
+              text-decoration: none;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+
+        address {
+          font-style: normal;
+          color: $color-text;
+          line-height: 1.8;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  @media (max-width: $break-xs) {
+    .bt-order-tracking-form {
+      flex-direction: column;
+    }
+    .bt-order-tracking-result {
+      .bt-order-tracking-tabs {
+        .bt-tabs-nav {
+          .bt-tab-btn {
+            padding: 10px 15px;
+            font-size: 14px;
+          }
+        }
+      }
+      .bt-order-tracking-timeline {
+        .bt-timeline-progress {
+          .bt-timeline-steps {
+            &::before {
+              top: 20px;
+              left: 20px;
+              right: 20px;
+            }
+            .bt-progress-line {
+              width: calc(var(--progress-width) - 20px);
+              top: 20px;
+              left: 20px;
+              right: 20px;
+            }
+            .bt-step {
+              .bt-step-circle {
+                width: 40px;
+                height: 40px;
+                border: 2px solid #fff;
+                margin-bottom: 10px;
+              }
+              .bt-step-label {
+                font-size: 10px;
+                line-height: 1.5;
+              }
+            }
+          }
+        }
+        .bt-tracking-details {
+          .bt-status-section {
+            .bt-status-item {
+              grid-template-columns: 1fr;
+              gap: 0px;
+            }
+          }
+        }
+      }
+      .bt-order-details {
+        .bt-order-items,
+        .bt-order-shipping,
+        .bt-order-info {
+          padding: 15px 15px 5px 15px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-order-tracking {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(77, 139, 123, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(77, 139, 123, 0);
   }
 }
