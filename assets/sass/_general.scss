@@ -1329,6 +1329,13 @@
       display: none;
     }
   }
+  &.bt-menu-mobile-popup {
+    .dialog-close-button.dialog-lightbox-close-button {
+      width: 28px;
+      height: 28px;
+      background-image: url(../images/close.svg);
+    }
+  }
 }
 .elementor-lightbox {
   .dialog-close-button.dialog-lightbox-close-button {
@@ -1340,13 +1347,6 @@
     padding: 0;
     svg {
       display: none;
-    }
-  }
-  &.bt-menu-mobile-popup {
-    .dialog-close-button.dialog-lightbox-close-button {
-      width: 28px;
-      height: 28px;
-      background-image: url(../images/close.svg);
     }
   }
 }
