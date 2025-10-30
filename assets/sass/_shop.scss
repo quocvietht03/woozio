@@ -2533,18 +2533,18 @@
             align-items: center;
             min-width: 35px;
             .bt-countdown--digits {
-              font-size: 16px;
+              font-size: 20px;
               font-style: normal;
               font-weight: 600;
-              line-height: 1.2;
+              line-height: 1.25;
               color: $color-accent;
             }
             .bt-countdown--label {
-              font-size: 11px;
-              font-weight: 300;
-              line-height: 1;
+              font-size: 12px;
+              font-weight: 400;
+              line-height: 1.5;
               font-style: normal;
-              color: $color-text;
+              color: $color-primary;
             }
           }
           .bt-delimiter {

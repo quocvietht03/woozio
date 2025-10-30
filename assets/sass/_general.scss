@@ -1329,6 +1329,13 @@
       display: none;
     }
   }
+  &.bt-menu-mobile-popup {
+    .dialog-close-button.dialog-lightbox-close-button {
+      width: 28px;
+      height: 28px;
+      background-image: url(../images/close.svg);
+    }
+  }
 }
 .elementor-lightbox {
   .dialog-close-button.dialog-lightbox-close-button {
@@ -1365,7 +1372,7 @@
       &.swiper-pagination-bullet-active {
         padding: 2px 20px;
       }
-    }
+    } 
   }
 }
 .bt-style-pagination-themes {
