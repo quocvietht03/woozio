@@ -1220,6 +1220,7 @@
 			params.delete('layout-pagination');
 			params.delete('layout-titlebar');
 			params.delete('layout-bottom-titlebar');
+			params.delete('layout-shop');
 			// Clean up URL params by removing empty values
 			for (const [key, value] of params.entries()) {
 				//	console.log(key, value);

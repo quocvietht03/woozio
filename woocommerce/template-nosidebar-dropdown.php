@@ -25,8 +25,26 @@ if(isset($_GET['content_width']) && !empty($_GET['content_width'])) {
 }
 get_header('shop');
 get_template_part('framework/templates/shop', 'titlebar');
-
+$is_category_page = isset($_GET['product_cat']);
+if ($is_category_page) {
+	$display_type = get_option('woocommerce_category_archive_display', '');
+} else {
+	$display_type = get_option('woocommerce_shop_page_display', '');
+	if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+		$display_type = 'subcategories';
+	}
+}
 ?>
+<?php if (woozio_should_show_categories()) { ?>
+	<div class="bt-category-wrapper bt-display-<?php echo esc_attr($display_type); ?>">
+		<div class="bt-container <?php echo esc_attr($content_width); ?>">
+			<div class="bt-category-layout">
+				<?php do_action('woozio_shop_categories_display'); ?>
+			</div>
+		</div>
+	</div>
+<?php } ?>
+<?php if (woozio_should_show_products()) { ?>
 <div class="bt-filter-scroll-pos"></div>
 <main id="bt_main" class="bt-site-main">
 	<div class="bt-main-content">
@@ -206,4 +224,5 @@ get_template_part('framework/templates/shop', 'titlebar');
 	</div>
 </main>
 <?php
+}
 get_footer('shop');

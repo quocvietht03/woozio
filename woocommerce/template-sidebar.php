@@ -29,13 +29,14 @@ if (isset($_GET['sidebar_position']) && !empty($_GET['sidebar_position'])) {
 }
 get_header('shop');
 get_template_part('framework/templates/shop', 'titlebar');
-$shop_page_display = get_option('woocommerce_shop_page_display', '');
-$category_display = get_option('woocommerce_category_archive_display', '');
 $is_category_page = isset($_GET['product_cat']);
 if ($is_category_page) {
 	$display_type = get_option('woocommerce_category_archive_display', '');
 } else {
 	$display_type = get_option('woocommerce_shop_page_display', '');
+	if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+		$display_type = 'subcategories';
+	}
 }
 ?>
 <?php if (woozio_should_show_categories()) { ?>

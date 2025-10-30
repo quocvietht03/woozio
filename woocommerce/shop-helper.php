@@ -51,6 +51,9 @@ function woozio_shop_categories_display()
         $display_type = get_option('woocommerce_category_archive_display', '');
     } else {
         $display_type = get_option('woocommerce_shop_page_display', '');
+        if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+            $display_type = 'subcategories';
+        }
     }
 
     $category_output = '';
@@ -89,6 +92,9 @@ add_action('woozio_shop_categories_display', 'woozio_shop_categories_display');
 function woozio_should_show_categories()
 {
     $shop_page_display = get_option('woocommerce_shop_page_display', '');
+    if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+        $shop_page_display = 'subcategories';
+    }
     $category_display = get_option('woocommerce_category_archive_display', '');
 
     // Check if we're on category page
@@ -128,6 +134,9 @@ function woozio_should_show_categories()
 function woozio_should_show_products()
 {
     $shop_page_display = get_option('woocommerce_shop_page_display', '');
+    if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+        $shop_page_display = 'subcategories';
+    }
     $category_display = get_option('woocommerce_category_archive_display', '');
 
     // Check if we're on category page
@@ -1312,7 +1321,6 @@ function woozio_products_filter()
         $output['category_title'] = '';
         $output['category_description'] = '';
         $output['has_category_filter'] = false; // No category filter
-        $shop_page_display = get_option('woocommerce_shop_page_display', '');
     }
 
     wp_send_json_success($output);
