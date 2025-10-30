@@ -1230,6 +1230,7 @@
 					params.delete(key);
 				}
 			}
+		
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1244,9 +1245,9 @@
 				const svgStar = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				  <path d="M14.6431 7.17815L11.8306 9.60502L12.6875 13.2344C12.7347 13.4314 12.7226 13.638 12.6525 13.8281C12.5824 14.0182 12.4575 14.1833 12.2937 14.3025C12.1298 14.4217 11.9343 14.4896 11.7319 14.4977C11.5294 14.5059 11.3291 14.4538 11.1562 14.3481L7.99996 12.4056L4.84184 14.3481C4.66898 14.4532 4.4689 14.5048 4.2668 14.4963C4.06469 14.4879 3.8696 14.4199 3.70609 14.3008C3.54257 14.1817 3.41795 14.0169 3.3479 13.8272C3.27786 13.6374 3.26553 13.4312 3.31246 13.2344L4.17246 9.60502L1.35996 7.17815C1.20702 7.04597 1.09641 6.87166 1.04195 6.67699C0.987486 6.48232 0.99158 6.27592 1.05372 6.08356C1.11586 5.89121 1.23329 5.72142 1.39135 5.59541C1.54941 5.4694 1.7411 5.39274 1.94246 5.37502L5.62996 5.07752L7.05246 1.63502C7.12946 1.44741 7.26051 1.28693 7.42894 1.17398C7.59738 1.06104 7.7956 1.00073 7.9984 1.00073C8.2012 1.00073 8.39942 1.06104 8.56785 1.17398C8.73629 1.28693 8.86734 1.44741 8.94434 1.63502L10.3662 5.07752L14.0537 5.37502C14.2555 5.39209 14.4477 5.46831 14.6064 5.59415C14.765 5.71999 14.883 5.88984 14.9455 6.08243C15.008 6.27502 15.0123 6.48178 14.9579 6.6768C14.9034 6.87183 14.7926 7.04644 14.6393 7.17877L14.6431 7.17815Z" fill="currentColor"></path>
 				</svg>`;
-
 				params.forEach((value, key) => {
 					const tags = value.split(/[,; ]+/); // Split value by comma, semicolon, or space
+					console.log(tags);
 					tags.forEach(tag => {
 						const tagElement = $(`<span class="bt-filter-tag" data-name="${key}" data-slug="${tag.trim()}"></span>`); // Updated to use tag.trim() for data-slug
 
@@ -1256,6 +1257,11 @@
 							});
 							if (matchingLink.length) {
 								const nameTag = matchingLink.text().trim();
+								tagElement.text(nameTag).append(svgElement);
+							}else{
+								const nameTag = tag.split('-')
+								.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+								.join(' ');
 								tagElement.text(nameTag).append(svgElement);
 							}
 							tagsContainer.append(tagElement);
@@ -1517,8 +1523,13 @@
 		//Filter single tax
 		if ($('.bt-field-type-radio').length > 0) {
 			$('.bt-field-type-radio input').on('change', function () {
-				$('.bt-product-filter-form .bt-product-current-page').val('');
-				$('.bt-product-filter-form').submit();
+				var url = $(this).closest('.item-radio').data('url');
+				if (url) {
+					window.location.href = url;
+				} else {
+					$('.bt-product-filter-form .bt-product-current-page').val('');
+					$('.bt-product-filter-form').submit();
+				}
 			});
 
 			// Toggle subcategories
@@ -1644,16 +1655,31 @@
 		$('.bt-product-filter-form').submit(function () {
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
-
-			var param_in = $(this).serialize().split('&');
-
+			// NOTE: jQuery serialize() omits unchecked radio groups entirely.
+			// To ensure radio group names always exist (even when nothing is checked),
+			// build params from serializeArray() and then append empty entries for
+			// any radio groups with no selection.
+			var dataArr = $(this).serializeArray();
+			
+			// Add empty values for unchecked radio groups
+			$(this).find('input[type="radio"][name]').each(function () {
+				var radioName = this.name;
+				var hasValue = dataArr.some(item => item.name === radioName);
+				if (!hasValue) {
+					dataArr.push({ name: radioName, value: '' });
+				}
+			});
+			
+			// Convert to param strings
+			var param_in = dataArr.map(p => 
+				encodeURIComponent(p.name) + '=' + encodeURIComponent(p.value)
+			);
 			var param_ajax = {
 				action: 'woozio_products_filter',
 			};
 
 			// Get pagination type
 			var paginationType = $('.bt-product-layout').data('pagination-type');
-
 			param_in.forEach(function (param) {
 				var param_key = param.split('=')[0],
 					param_val = param.split('=')[1];
@@ -1674,7 +1700,7 @@
 			});
 
 			var param_str = urlParams.toString();
-
+			
 			if ('' !== param_str) {
 				window.history.replaceState(null, null, `?${param_str}`);
 				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');

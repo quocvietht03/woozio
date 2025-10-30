@@ -32,6 +32,140 @@ remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_di
 
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
 add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_display_frequently_bought_together', 20);
+
+// Remove categories from product loop
+remove_filter('woocommerce_product_loop_start', 'woocommerce_maybe_show_product_subcategories');
+
+// Display categories in sidebar template
+function woozio_shop_categories_display()
+{
+    // Use the helper functions to determine what to show
+    if (!woozio_should_show_categories()) {
+        return;
+    }
+
+    // Determine if we're on shop page or category page to get correct display mode
+    $is_category_page = isset($_GET['product_cat']);
+
+    if ($is_category_page) {
+        $display_type = get_option('woocommerce_category_archive_display', '');
+    } else {
+        $display_type = get_option('woocommerce_shop_page_display', '');
+    }
+
+    $category_output = '';
+
+    if ('subcategories' === $display_type || 'both' === $display_type) {
+        ob_start();
+        woocommerce_output_product_categories(
+            array(
+                'parent_id' => is_product_category() ? get_queried_object_id() : 0,
+            )
+        );
+        $category_output = ob_get_clean();
+
+        // Modify category links to use ?product_cat={slug} format
+        $category_output = preg_replace_callback(
+            '/href="([^"]*)"/',
+            function ($matches) {
+                $url = $matches[1];
+                // Extract the last category slug from URL, supporting nested paths like /product-category/parent/child/
+                if (preg_match('/\/product-category\/(?:.+\/)?([^\/]+)\/?/', $url, $slug_matches)) {
+                    $category_slug = $slug_matches[1];
+                    // Get the base shop URL
+                    $shop_url = wc_get_page_permalink('shop');
+                    return 'href="' . $shop_url . '?product_cat=' . $category_slug . '"';
+                }
+                return $matches[0];
+            },
+            $category_output
+        );
+    }
+
+    echo wp_kses_post($category_output);
+}
+add_action('woozio_shop_categories_display', 'woozio_shop_categories_display');
+
+function woozio_should_show_categories()
+{
+    $shop_page_display = get_option('woocommerce_shop_page_display', '');
+    $category_display = get_option('woocommerce_category_archive_display', '');
+
+    // Check if we're on category page
+    $is_category_page = isset($_GET['product_cat']) || is_product_category();
+
+    if ($is_category_page) {
+        // Get current category
+        $current_category = null;
+        if (isset($_GET['product_cat'])) {
+            $current_category = get_term_by('slug', $_GET['product_cat'], 'product_cat');
+        } elseif (is_product_category()) {
+            $current_category = get_queried_object();
+        }
+        
+        // Check if current category has children
+        if ($current_category) {
+            $children = get_terms(array(
+                'taxonomy' => 'product_cat',
+                'parent' => $current_category->term_id,
+                'hide_empty' => false
+            ));
+            
+            // If no children, don't show categories
+            if (empty($children)) {
+                return false;
+            }
+        }
+        
+        // Category page: show categories if display is 'subcategories' or 'both'
+        return in_array($category_display, ['subcategories', 'both']);
+    } else {
+        // Shop page: show categories if display is 'subcategories' or 'both'
+        return in_array($shop_page_display, ['subcategories', 'both']);
+    }
+    return false;
+}
+function woozio_should_show_products()
+{
+    $shop_page_display = get_option('woocommerce_shop_page_display', '');
+    $category_display = get_option('woocommerce_category_archive_display', '');
+
+    // Check if we're on category page
+    $is_category_page = isset($_GET['product_cat']) || is_product_category();
+
+    if ($is_category_page) {
+        // Get current category
+        $current_category = null;
+        if (isset($_GET['product_cat'])) {
+            $current_category = get_term_by('slug', $_GET['product_cat'], 'product_cat');
+        } elseif (is_product_category()) {
+            $current_category = get_queried_object();
+        }
+        
+        // Check if current category has no children
+        if ($current_category) {
+            $children = get_terms(array(
+                'taxonomy' => 'product_cat',
+                'parent' => $current_category->term_id,
+                'hide_empty' => false
+            ));
+            
+            // If no children, always show products
+            if (empty($children)) {
+                return true;
+            }
+        }
+        
+        // Category page: show products if display is '' (empty/products only) or 'both'
+        return $category_display === '' || $category_display === 'both';
+        
+    } else {
+        // Shop page: show products if display is '' (empty/products only) or 'both'
+        return $shop_page_display === '' || $shop_page_display === 'both';
+    }
+    return true; // Default to showing products
+}
+
 function register_product_taxonomy()
 {
     $labels = array(
@@ -534,6 +668,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
     $category_mode = 'none'; // default
     $custom_categories = array();
 
+
     if ($slug === 'product_cat') {
         $custom_filters = get_field('custom_filters', 'option');
         $category_mode = !empty($custom_filters['setting_product_category']) ? $custom_filters['setting_product_category'] : 'none';
@@ -569,6 +704,22 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
                     $is_checked = ($term->slug == $field_value);
                     $has_children = false;
                     $children = array();
+                    $url_category = '';
+                    if ($slug === 'product_cat') {
+                        $is_category_page = isset($_GET['product_cat']);
+                        $shop_url = wc_get_page_permalink('shop');
+                        if ($is_category_page) {
+                            $category_display = get_option('woocommerce_category_archive_display', '');
+                            if ($category_display == 'both') {
+                                $url_category = $shop_url . '?product_cat=' . $term->slug;
+                            }
+                        } else {
+                            $shop_page_display = get_option('woocommerce_shop_page_display', '');
+                            if ($shop_page_display == 'both') {
+                                $url_category = $shop_url . '?product_cat=' . $term->slug;
+                            }
+                        }
+                    }
 
                     // Check for subcategories if mode is 'parent'
                     if ($slug === 'product_cat' && $category_mode === 'parent') {
@@ -581,7 +732,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
                     }
                     ?>
 
-                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>">
+                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>"<?php } ?>>
                         <?php if ($is_checked) { ?>
                             <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
                         <?php } else { ?>
@@ -601,7 +752,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
                             <div class="bt-children-categories">
                                 <?php foreach ($children as $child) { ?>
                                     <?php $child_checked = ($child->slug == $field_value); ?>
-                                    <div class="item-radio item-radio-child">
+                                    <div class="item-radio item-radio-child" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>"<?php } ?>>
                                         <?php if ($child_checked) { ?>
                                             <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
                                         <?php } else { ?>
@@ -1161,6 +1312,7 @@ function woozio_products_filter()
         $output['category_title'] = '';
         $output['category_description'] = '';
         $output['has_category_filter'] = false; // No category filter
+        $shop_page_display = get_option('woocommerce_shop_page_display', '');
     }
 
     wp_send_json_success($output);
@@ -4127,7 +4279,7 @@ function woozio_display_frequently_bought_together($product_id = null)
         </div>
     </section>
 
-<?php
+    <?php
     wp_reset_postdata();
 }
 
@@ -4183,395 +4335,399 @@ function woozio_add_fbt_to_cart()
 
 /* Register Custom Order Statuses for Order Tracking */
 if (!function_exists('woozio_register_custom_order_statuses')) {
-	function woozio_register_custom_order_statuses() {
-		// Register "Approved" status
-		register_post_status('wc-approved', array(
-			'label'                     => _x('Approved', 'Order status', 'woozio'),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop('Approved <span class="count">(%s)</span>', 'Approved <span class="count">(%s)</span>', 'woozio')
-		));
+    function woozio_register_custom_order_statuses()
+    {
+        // Register "Approved" status
+        register_post_status('wc-approved', array(
+            'label'                     => _x('Approved', 'Order status', 'woozio'),
+            'public'                    => true,
+            'exclude_from_search'       => false,
+            'show_in_admin_all_list'    => true,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop('Approved <span class="count">(%s)</span>', 'Approved <span class="count">(%s)</span>', 'woozio')
+        ));
 
-		// Register "Shipped" status
-		register_post_status('wc-shipped', array(
-			'label'                     => _x('Shipped', 'Order status', 'woozio'),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop('Shipped <span class="count">(%s)</span>', 'Shipped <span class="count">(%s)</span>', 'woozio')
-		));
-	}
-	add_action('init', 'woozio_register_custom_order_statuses');
+        // Register "Shipped" status
+        register_post_status('wc-shipped', array(
+            'label'                     => _x('Shipped', 'Order status', 'woozio'),
+            'public'                    => true,
+            'exclude_from_search'       => false,
+            'show_in_admin_all_list'    => true,
+            'show_in_admin_status_list' => true,
+            'label_count'               => _n_noop('Shipped <span class="count">(%s)</span>', 'Shipped <span class="count">(%s)</span>', 'woozio')
+        ));
+    }
+    add_action('init', 'woozio_register_custom_order_statuses');
 }
 
 /* Add Custom Statuses to WooCommerce Order Statuses */
 if (!function_exists('woozio_add_custom_order_statuses')) {
-	function woozio_add_custom_order_statuses($order_statuses) {
-		$new_order_statuses = array();
+    function woozio_add_custom_order_statuses($order_statuses)
+    {
+        $new_order_statuses = array();
 
-		// Add custom statuses in the right position
-		foreach ($order_statuses as $key => $status) {
-			$new_order_statuses[$key] = $status;
+        // Add custom statuses in the right position
+        foreach ($order_statuses as $key => $status) {
+            $new_order_statuses[$key] = $status;
 
-			// Add "Approved" after "On hold"
-			if ('wc-on-hold' === $key) {
-				$new_order_statuses['wc-approved'] = _x('Approved', 'Order status', 'woozio');
-			}
+            // Add "Approved" after "On hold"
+            if ('wc-on-hold' === $key) {
+                $new_order_statuses['wc-approved'] = _x('Approved', 'Order status', 'woozio');
+            }
 
-			// Add "Shipped" after "Processing"
-			if ('wc-processing' === $key) {
-				$new_order_statuses['wc-shipped'] = _x('Shipped', 'Order status', 'woozio');
-			}
-		}
+            // Add "Shipped" after "Processing"
+            if ('wc-processing' === $key) {
+                $new_order_statuses['wc-shipped'] = _x('Shipped', 'Order status', 'woozio');
+            }
+        }
 
-		return $new_order_statuses;
-	}
-	add_filter('wc_order_statuses', 'woozio_add_custom_order_statuses');
+        return $new_order_statuses;
+    }
+    add_filter('wc_order_statuses', 'woozio_add_custom_order_statuses');
 }
 
 /* Add Custom Statuses to Bulk Actions */
 if (!function_exists('woozio_add_bulk_actions_custom_statuses')) {
-	function woozio_add_bulk_actions_custom_statuses($bulk_actions) {
-		// Add "Approved" status
-		$bulk_actions['mark_approved'] = __('Change status to approved', 'woozio');
-		
-		// Add "Shipped" status  
-		$bulk_actions['mark_shipped'] = __('Change status to shipped', 'woozio');
-		
-		return $bulk_actions;
-	}
-	add_filter('bulk_actions-edit-shop_order', 'woozio_add_bulk_actions_custom_statuses', 20, 1);
+    function woozio_add_bulk_actions_custom_statuses($bulk_actions)
+    {
+        // Add "Approved" status
+        $bulk_actions['mark_approved'] = __('Change status to approved', 'woozio');
+
+        // Add "Shipped" status  
+        $bulk_actions['mark_shipped'] = __('Change status to shipped', 'woozio');
+
+        return $bulk_actions;
+    }
+    add_filter('bulk_actions-edit-shop_order', 'woozio_add_bulk_actions_custom_statuses', 20, 1);
 }
 
 /* Order Tracking AJAX Handler */
 if (!function_exists('woozio_track_order_callback')) {
-	function woozio_track_order_callback() {
-		// Check nonce
-		if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'woozio_order_tracking_nonce')) {
-			wp_send_json_error(array(
-				'message' => esc_html__('Security check failed.', 'woozio')
-			));
-		}
+    function woozio_track_order_callback()
+    {
+        // Check nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'woozio_order_tracking_nonce')) {
+            wp_send_json_error(array(
+                'message' => esc_html__('Security check failed.', 'woozio')
+            ));
+        }
 
-		// Check if WooCommerce is active
-		if (!class_exists('WooCommerce')) {
-			wp_send_json_error(array(
-				'message' => esc_html__('WooCommerce is not active.', 'woozio')
-			));
-		}
+        // Check if WooCommerce is active
+        if (!class_exists('WooCommerce')) {
+            wp_send_json_error(array(
+                'message' => esc_html__('WooCommerce is not active.', 'woozio')
+            ));
+        }
 
-		// Get form data
-		$order_id = isset($_POST['order_id']) ? sanitize_text_field($_POST['order_id']) : '';
-		$billing_email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
+        // Get form data
+        $order_id = isset($_POST['order_id']) ? sanitize_text_field($_POST['order_id']) : '';
+        $billing_email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
 
-		// Validate inputs
-		if (empty($order_id) || empty($billing_email)) {
-			wp_send_json_error(array(
-				'message' => esc_html__('Please fill in all required fields.', 'woozio')
-			));
-		}
+        // Validate inputs
+        if (empty($order_id) || empty($billing_email)) {
+            wp_send_json_error(array(
+                'message' => esc_html__('Please fill in all required fields.', 'woozio')
+            ));
+        }
 
-		// Remove # from order ID if present
-		$order_id = str_replace('#', '', $order_id);
+        // Remove # from order ID if present
+        $order_id = str_replace('#', '', $order_id);
 
-		// Try to get order
-		$order = wc_get_order($order_id);
+        // Try to get order
+        $order = wc_get_order($order_id);
 
-		// Check if order exists and email matches
-		if (!$order) {
-			wp_send_json_error(array(
-				'message' => esc_html__('Order not found. Please check your Order ID.', 'woozio')
-			));
-		}
+        // Check if order exists and email matches
+        if (!$order) {
+            wp_send_json_error(array(
+                'message' => esc_html__('Order not found. Please check your Order ID.', 'woozio')
+            ));
+        }
 
-		// Verify billing email matches
-		if (strtolower($order->get_billing_email()) !== strtolower($billing_email)) {
-			wp_send_json_error(array(
-				'message' => esc_html__('The email address does not match the order. Please try again.', 'woozio')
-			));
-		}
+        // Verify billing email matches
+        if (strtolower($order->get_billing_email()) !== strtolower($billing_email)) {
+            wp_send_json_error(array(
+                'message' => esc_html__('The email address does not match the order. Please try again.', 'woozio')
+            ));
+        }
 
-		// Get order status
-		$order_status = $order->get_status();
-		
-		// Map WooCommerce statuses to tracking steps
-		$status_map = array(
-			'pending' => 1,      // Placed
-			'on-hold' => 1,      // Placed
-			'approved' => 2,     // Approved (Custom status)
-			'processing' => 3,   // Processed
-			'shipped' => 4,      // Shipped (Custom status)
-			'completed' => 5,    // Delivery
-			'failed' => 0,
-			'cancelled' => 0,
-			'refunded' => 0
-		);
+        // Get order status
+        $order_status = $order->get_status();
 
-		$current_step = isset($status_map[$order_status]) ? $status_map[$order_status] : 1;
+        // Map WooCommerce statuses to tracking steps
+        $status_map = array(
+            'pending' => 1,      // Placed
+            'on-hold' => 1,      // Placed
+            'approved' => 2,     // Approved (Custom status)
+            'processing' => 3,   // Processed
+            'shipped' => 4,      // Shipped (Custom status)
+            'completed' => 5,    // Delivery
+            'failed' => 0,
+            'cancelled' => 0,
+            'refunded' => 0
+        );
 
-		// Build order tracking HTML with timeline
-		ob_start();
-		?>
-		<div class="bt-order-tracking-tabs">
-			<div class="bt-tabs-nav">
-				<button class="bt-tab-btn active" data-tab="tracking">
-					<?php esc_html_e('TRACK ORDER', 'woozio'); ?>
-				</button>
-				<button class="bt-tab-btn" data-tab="details">
-					<?php esc_html_e('ORDER DETAILS', 'woozio'); ?>
-				</button>
-			</div>
+        $current_step = isset($status_map[$order_status]) ? $status_map[$order_status] : 1;
 
-			<!-- Track Order Tab -->
-			<div class="bt-tab-content active" id="tracking-tab">
-				<div class="bt-order-tracking-timeline">
-					<!-- Progress Bar -->
-					<div class="bt-timeline-progress">
-                 
-						<div class="bt-timeline-steps">
-                        <div class="bt-progress-line" style="--progress-width: <?php echo ($current_step - 1) * 25; ?>%;"></div>
-							<div class="bt-step <?php echo $current_step >= 1 ? 'completed' : ''; ?> <?php echo $current_step == 1 ? 'active' : ''; ?>">
-								<div class="bt-step-circle">
-									<?php if ($current_step > 1) : ?>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-											<polyline points="20 6 9 17 4 12"></polyline>
-										</svg>
-									<?php endif; ?>
-								</div>
-								<div class="bt-step-label"><?php esc_html_e('Placed', 'woozio'); ?></div>
-							</div>
-							<div class="bt-step <?php echo $current_step >= 2 ? 'completed' : ''; ?> <?php echo $current_step == 2 ? 'active' : ''; ?>">
-								<div class="bt-step-circle">
-									<?php if ($current_step > 2) : ?>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-											<polyline points="20 6 9 17 4 12"></polyline>
-										</svg>
-									<?php endif; ?>
-								</div>
-								<div class="bt-step-label"><?php esc_html_e('Approved', 'woozio'); ?></div>
-							</div>
-							<div class="bt-step <?php echo $current_step >= 3 ? 'completed' : ''; ?> <?php echo $current_step == 3 ? 'active' : ''; ?>">
-								<div class="bt-step-circle">
-									<?php if ($current_step > 3) : ?>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-											<polyline points="20 6 9 17 4 12"></polyline>
-										</svg>
-									<?php endif; ?>
-								</div>
-								<div class="bt-step-label"><?php esc_html_e('Processed', 'woozio'); ?></div>
-							</div>
-							<div class="bt-step <?php echo $current_step >= 4 ? 'completed' : ''; ?> <?php echo $current_step == 4 ? 'active' : ''; ?>">
-								<div class="bt-step-circle">
-									<?php if ($current_step > 4) : ?>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-											<polyline points="20 6 9 17 4 12"></polyline>
-										</svg>
-									<?php endif; ?>
-								</div>
-								<div class="bt-step-label"><?php esc_html_e('Shipped', 'woozio'); ?></div>
-							</div>
-							<div class="bt-step <?php echo $current_step >= 5 ? 'completed' : ''; ?> <?php echo $current_step == 5 ? 'active' : ''; ?>">
-								<div class="bt-step-circle">
-									<?php if ($current_step >= 5) : ?>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-											<polyline points="20 6 9 17 4 12"></polyline>
-										</svg>
-									<?php endif; ?>
-								</div>
-								<div class="bt-step-label"><?php esc_html_e('Completed', 'woozio'); ?></div>
-							</div>
-						</div>
-						
-					</div>
+        // Build order tracking HTML with timeline
+        ob_start();
+    ?>
+        <div class="bt-order-tracking-tabs">
+            <div class="bt-tabs-nav">
+                <button class="bt-tab-btn active" data-tab="tracking">
+                    <?php esc_html_e('TRACK ORDER', 'woozio'); ?>
+                </button>
+                <button class="bt-tab-btn" data-tab="details">
+                    <?php esc_html_e('ORDER DETAILS', 'woozio'); ?>
+                </button>
+            </div>
 
-					<!-- Status Details -->
-					<div class="bt-tracking-details">
-						<?php
-						// Get order notes/status history
-						$notes = wc_get_order_notes(array(
-							'order_id' => $order->get_id(),
-							'limit' => 10,
-							'order_by' => 'date_created',
-							'order' => 'DESC'
-						));
+            <!-- Track Order Tab -->
+            <div class="bt-tab-content active" id="tracking-tab">
+                <div class="bt-order-tracking-timeline">
+                    <!-- Progress Bar -->
+                    <div class="bt-timeline-progress">
 
-						if (!empty($notes)) :
-						?>
-							<div class="bt-status-section">
-								<h4 class="bt-section-title"><?php esc_html_e('Order Notes', 'woozio'); ?></h4>
-								<?php
-								foreach ($notes as $note) {
-									if ($note->customer_note) continue;
-									?>
-									<div class="bt-status-item">
-										<span class="bt-status-date">
-											<?php echo esc_html($note->date_created->date_i18n(get_option('date_format') . ' ' . get_option('time_format'))); ?>
-										</span>
-										<span class="bt-status-text">
-											<?php echo wp_kses_post($note->content); ?>
-										</span>
-									</div>
-								<?php } ?>
-							</div>
-						<?php endif; ?>
-					</div>
-				</div>
-			</div>
+                        <div class="bt-timeline-steps">
+                            <div class="bt-progress-line" style="--progress-width: <?php echo ($current_step - 1) * 25; ?>%;"></div>
+                            <div class="bt-step <?php echo $current_step >= 1 ? 'completed' : ''; ?> <?php echo $current_step == 1 ? 'active' : ''; ?>">
+                                <div class="bt-step-circle">
+                                    <?php if ($current_step > 1) : ?>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="bt-step-label"><?php esc_html_e('Placed', 'woozio'); ?></div>
+                            </div>
+                            <div class="bt-step <?php echo $current_step >= 2 ? 'completed' : ''; ?> <?php echo $current_step == 2 ? 'active' : ''; ?>">
+                                <div class="bt-step-circle">
+                                    <?php if ($current_step > 2) : ?>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="bt-step-label"><?php esc_html_e('Approved', 'woozio'); ?></div>
+                            </div>
+                            <div class="bt-step <?php echo $current_step >= 3 ? 'completed' : ''; ?> <?php echo $current_step == 3 ? 'active' : ''; ?>">
+                                <div class="bt-step-circle">
+                                    <?php if ($current_step > 3) : ?>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="bt-step-label"><?php esc_html_e('Processed', 'woozio'); ?></div>
+                            </div>
+                            <div class="bt-step <?php echo $current_step >= 4 ? 'completed' : ''; ?> <?php echo $current_step == 4 ? 'active' : ''; ?>">
+                                <div class="bt-step-circle">
+                                    <?php if ($current_step > 4) : ?>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="bt-step-label"><?php esc_html_e('Shipped', 'woozio'); ?></div>
+                            </div>
+                            <div class="bt-step <?php echo $current_step >= 5 ? 'completed' : ''; ?> <?php echo $current_step == 5 ? 'active' : ''; ?>">
+                                <div class="bt-step-circle">
+                                    <?php if ($current_step >= 5) : ?>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="bt-step-label"><?php esc_html_e('Completed', 'woozio'); ?></div>
+                            </div>
+                        </div>
 
-			<!-- Order Details Tab -->
-			<div class="bt-tab-content" id="details-tab">
-				<div class="bt-order-details">
-					<div class="bt-order-info">
-						<div class="bt-order-row">
-							<span class="bt-label"><?php esc_html_e('Order Number:', 'woozio'); ?></span>
-							<span class="bt-value">#<?php echo esc_html($order->get_order_number()); ?></span>
-						</div>
-						<div class="bt-order-row">
-							<span class="bt-label"><?php esc_html_e('Order Date:', 'woozio'); ?></span>
-							<span class="bt-value"><?php echo esc_html($order->get_date_created()->date_i18n(get_option('date_format'))); ?></span>
-						</div>
-						<div class="bt-order-row">
-							<span class="bt-label"><?php esc_html_e('Total:', 'woozio'); ?></span>
-							<span class="bt-value"><?php echo wc_price($order->get_total(), array('currency' => $order->get_currency())); ?></span>
-						</div>
-					</div>
+                    </div>
 
-					<?php if ($order->get_customer_note()) : ?>
-						<div class="bt-order-note">
-							<h4><?php esc_html_e('Order Note:', 'woozio'); ?></h4>
-							<p><?php echo esc_html($order->get_customer_note()); ?></p>
-						</div>
-					<?php endif; ?>
+                    <!-- Status Details -->
+                    <div class="bt-tracking-details">
+                        <?php
+                        // Get order notes/status history
+                        $notes = wc_get_order_notes(array(
+                            'order_id' => $order->get_id(),
+                            'limit' => 10,
+                            'order_by' => 'date_created',
+                            'order' => 'DESC'
+                        ));
 
-					<div class="bt-order-items">
-						<h4><?php esc_html_e('Order Items', 'woozio'); ?></h4>
-						<div class="bt-order-items-list">
-							<?php
-							foreach ($order->get_items() as $item_id => $item) {
-								$product = $item->get_product();
-								$line_total = $order->get_formatted_line_subtotal($item);
-								?>
-								<div class="bt-order-item">
-									<div class="bt-order-item-thumb">
-										<?php
-										if ($product && $product->get_image_id()) {
-											echo wp_kses_post($product->get_image('thumbnail'));
-										} else {
-											echo wc_placeholder_img('thumbnail');
-										}
-										?>
-									</div>
-									<div class="bt-order-item-content">
-										<div class="bt-order-item-title">
-											<?php echo esc_html($item->get_name()); ?>
-											<?php
-											if ($item->get_variation_id()) {
-												$variation_data = wc_get_formatted_variation($item->get_product(), true);
-												echo '<div class="bt-variation">' . wp_kses_post($variation_data) . '</div>';
-											}
-											?>
-										</div>
-										<div class="bt-order-item-meta">
-											<span class="bt-qty-price">
-												<?php echo esc_html($item->get_quantity()); ?> × <?php echo wp_kses_post($line_total); ?>
-											</span>
-										</div>
-									</div>
-								</div>
-							<?php } ?>
-						</div>
-					</div>
+                        if (!empty($notes)) :
+                        ?>
+                            <div class="bt-status-section">
+                                <h4 class="bt-section-title"><?php esc_html_e('Order Notes', 'woozio'); ?></h4>
+                                <?php
+                                foreach ($notes as $note) {
+                                    if ($note->customer_note) continue;
+                                ?>
+                                    <div class="bt-status-item">
+                                        <span class="bt-status-date">
+                                            <?php echo esc_html($note->date_created->date_i18n(get_option('date_format') . ' ' . get_option('time_format'))); ?>
+                                        </span>
+                                        <span class="bt-status-text">
+                                            <?php echo wp_kses_post($note->content); ?>
+                                        </span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
 
-					<?php 
-					// Get shipping or billing info
-					$use_shipping = !empty($order->get_shipping_first_name()) || !empty($order->get_shipping_address_1());
-					
-					if ($use_shipping) {
-						$name = trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name());
-						
-						// Build address without name and company
-						$address_parts = array_filter(array(
-							$order->get_shipping_address_1(),
-							$order->get_shipping_address_2(),
-							$order->get_shipping_city(),
-							$order->get_shipping_state(),
-							WC()->countries->countries[$order->get_shipping_country()] ?? $order->get_shipping_country()
-						));
-						$address = implode(', ', $address_parts);
-						
-						$phone = $order->get_billing_phone(); // Phone usually from billing
-						$email = $order->get_billing_email(); // Email usually from billing
-						$address_title = __('Shipping Information', 'woozio');
-					} else {
-						$name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
-						
-						// Build address without name and company
-						$address_parts = array_filter(array(
-							$order->get_billing_address_1(),
-							$order->get_billing_address_2(),
-							$order->get_billing_city(),
-							$order->get_billing_state(),
-							WC()->countries->countries[$order->get_billing_country()] ?? $order->get_billing_country()
-						));
-						$address = implode(', ', $address_parts);
-						
-						$phone = $order->get_billing_phone();
-						$email = $order->get_billing_email();
-						$address_title = __('Billing Information', 'woozio');
-					}
-					?>
-						<div class="bt-order-shipping">
-							<h4><?php echo esc_html($address_title); ?></h4>
-							
-							<?php if (!empty($name)) : ?>
-								<div class="bt-info-row">
-									<span class="bt-info-label"><?php esc_html_e('Name:', 'woozio'); ?></span>
-									<span class="bt-info-value"><?php echo esc_html($name); ?></span>
-								</div>
-							<?php endif; ?>
-							
-							<?php if (!empty($address)) : ?>
-								<div class="bt-info-row">
-									<span class="bt-info-label"><?php esc_html_e('Address:', 'woozio'); ?></span>
-									<span class="bt-info-value">
-										<?php echo wp_kses_post($address); ?>
-									</span>
-								</div>
-							<?php endif; ?>
-							
-							<?php if (!empty($phone)) : ?>
-								<div class="bt-info-row">
-									<span class="bt-info-label"><?php esc_html_e('Phone:', 'woozio'); ?></span>
-									<span class="bt-info-value">
-										<a href="tel:<?php echo esc_attr($phone); ?>"><?php echo esc_html($phone); ?></a>
-									</span>
-								</div>
-							<?php endif; ?>
-							
-							<?php if (!empty($email)) : ?>
-								<div class="bt-info-row">
-									<span class="bt-info-label"><?php esc_html_e('Email:', 'woozio'); ?></span>
-									<span class="bt-info-value">
-										<a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a>
-									</span>
-								</div>
-							<?php endif; ?>
-						</div>
-				</div>
-			</div>
-		</div>
-		<?php
-		$html = ob_get_clean();
+            <!-- Order Details Tab -->
+            <div class="bt-tab-content" id="details-tab">
+                <div class="bt-order-details">
+                    <div class="bt-order-info">
+                        <div class="bt-order-row">
+                            <span class="bt-label"><?php esc_html_e('Order Number:', 'woozio'); ?></span>
+                            <span class="bt-value">#<?php echo esc_html($order->get_order_number()); ?></span>
+                        </div>
+                        <div class="bt-order-row">
+                            <span class="bt-label"><?php esc_html_e('Order Date:', 'woozio'); ?></span>
+                            <span class="bt-value"><?php echo esc_html($order->get_date_created()->date_i18n(get_option('date_format'))); ?></span>
+                        </div>
+                        <div class="bt-order-row">
+                            <span class="bt-label"><?php esc_html_e('Total:', 'woozio'); ?></span>
+                            <span class="bt-value"><?php echo wc_price($order->get_total(), array('currency' => $order->get_currency())); ?></span>
+                        </div>
+                    </div>
 
-		wp_send_json_success(array(
-			'message' => esc_html__('Order found successfully!', 'woozio'),
-			'html' => $html,
-			'current_step' => $current_step
-		));
-	}
-	add_action('wp_ajax_woozio_track_order', 'woozio_track_order_callback');
-	add_action('wp_ajax_nopriv_woozio_track_order', 'woozio_track_order_callback');
+                    <?php if ($order->get_customer_note()) : ?>
+                        <div class="bt-order-note">
+                            <h4><?php esc_html_e('Order Note:', 'woozio'); ?></h4>
+                            <p><?php echo esc_html($order->get_customer_note()); ?></p>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="bt-order-items">
+                        <h4><?php esc_html_e('Order Items', 'woozio'); ?></h4>
+                        <div class="bt-order-items-list">
+                            <?php
+                            foreach ($order->get_items() as $item_id => $item) {
+                                $product = $item->get_product();
+                                $line_total = $order->get_formatted_line_subtotal($item);
+                            ?>
+                                <div class="bt-order-item">
+                                    <div class="bt-order-item-thumb">
+                                        <?php
+                                        if ($product && $product->get_image_id()) {
+                                            echo wp_kses_post($product->get_image('thumbnail'));
+                                        } else {
+                                            echo wc_placeholder_img('thumbnail');
+                                        }
+                                        ?>
+                                    </div>
+                                    <div class="bt-order-item-content">
+                                        <div class="bt-order-item-title">
+                                            <?php echo esc_html($item->get_name()); ?>
+                                            <?php
+                                            if ($item->get_variation_id()) {
+                                                $variation_data = wc_get_formatted_variation($item->get_product(), true);
+                                                echo '<div class="bt-variation">' . wp_kses_post($variation_data) . '</div>';
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="bt-order-item-meta">
+                                            <span class="bt-qty-price">
+                                                <?php echo esc_html($item->get_quantity()); ?> × <?php echo wp_kses_post($line_total); ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <?php
+                    // Get shipping or billing info
+                    $use_shipping = !empty($order->get_shipping_first_name()) || !empty($order->get_shipping_address_1());
+
+                    if ($use_shipping) {
+                        $name = trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name());
+
+                        // Build address without name and company
+                        $address_parts = array_filter(array(
+                            $order->get_shipping_address_1(),
+                            $order->get_shipping_address_2(),
+                            $order->get_shipping_city(),
+                            $order->get_shipping_state(),
+                            WC()->countries->countries[$order->get_shipping_country()] ?? $order->get_shipping_country()
+                        ));
+                        $address = implode(', ', $address_parts);
+
+                        $phone = $order->get_billing_phone(); // Phone usually from billing
+                        $email = $order->get_billing_email(); // Email usually from billing
+                        $address_title = __('Shipping Information', 'woozio');
+                    } else {
+                        $name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
+
+                        // Build address without name and company
+                        $address_parts = array_filter(array(
+                            $order->get_billing_address_1(),
+                            $order->get_billing_address_2(),
+                            $order->get_billing_city(),
+                            $order->get_billing_state(),
+                            WC()->countries->countries[$order->get_billing_country()] ?? $order->get_billing_country()
+                        ));
+                        $address = implode(', ', $address_parts);
+
+                        $phone = $order->get_billing_phone();
+                        $email = $order->get_billing_email();
+                        $address_title = __('Billing Information', 'woozio');
+                    }
+                    ?>
+                    <div class="bt-order-shipping">
+                        <h4><?php echo esc_html($address_title); ?></h4>
+
+                        <?php if (!empty($name)) : ?>
+                            <div class="bt-info-row">
+                                <span class="bt-info-label"><?php esc_html_e('Name:', 'woozio'); ?></span>
+                                <span class="bt-info-value"><?php echo esc_html($name); ?></span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($address)) : ?>
+                            <div class="bt-info-row">
+                                <span class="bt-info-label"><?php esc_html_e('Address:', 'woozio'); ?></span>
+                                <span class="bt-info-value">
+                                    <?php echo wp_kses_post($address); ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($phone)) : ?>
+                            <div class="bt-info-row">
+                                <span class="bt-info-label"><?php esc_html_e('Phone:', 'woozio'); ?></span>
+                                <span class="bt-info-value">
+                                    <a href="tel:<?php echo esc_attr($phone); ?>"><?php echo esc_html($phone); ?></a>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($email)) : ?>
+                            <div class="bt-info-row">
+                                <span class="bt-info-label"><?php esc_html_e('Email:', 'woozio'); ?></span>
+                                <span class="bt-info-value">
+                                    <a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+<?php
+        $html = ob_get_clean();
+
+        wp_send_json_success(array(
+            'message' => esc_html__('Order found successfully!', 'woozio'),
+            'html' => $html,
+            'current_step' => $current_step
+        ));
+    }
+    add_action('wp_ajax_woozio_track_order', 'woozio_track_order_callback');
+    add_action('wp_ajax_nopriv_woozio_track_order', 'woozio_track_order_callback');
 }

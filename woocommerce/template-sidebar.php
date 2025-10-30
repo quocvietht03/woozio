@@ -16,33 +16,44 @@ $total_page = $wp_query->max_num_pages;
 $total_products = $wp_query->found_posts;
 $archive_shop = get_field('archive_shop', 'option');
 $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
-if(isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
-    $pagination_type = sanitize_text_field($_GET['layout-pagination']);
+if (isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+	$pagination_type = sanitize_text_field($_GET['layout-pagination']);
 }
 $content_width = isset($archive_shop['content_width']) ? $archive_shop['content_width'] : 'boxed';
-if(isset($_GET['content_width']) && !empty($_GET['content_width'])) {
-    $content_width = sanitize_text_field($_GET['content_width']);
+if (isset($_GET['content_width']) && !empty($_GET['content_width'])) {
+	$content_width = sanitize_text_field($_GET['content_width']);
 }
 $sidebar_position = isset($archive_shop['sidebar_position']) ? $archive_shop['sidebar_position'] : 'sidebar-left';
-if(isset($_GET['sidebar_position']) && !empty($_GET['sidebar_position'])) {
-    $sidebar_position = sanitize_text_field($_GET['sidebar_position']);
+if (isset($_GET['sidebar_position']) && !empty($_GET['sidebar_position'])) {
+	$sidebar_position = sanitize_text_field($_GET['sidebar_position']);
 }
 get_header('shop');
 get_template_part('framework/templates/shop', 'titlebar');
-
+$shop_page_display = get_option('woocommerce_shop_page_display', '');
+$category_display = get_option('woocommerce_category_archive_display', '');
+$is_category_page = isset($_GET['product_cat']);
+if ($is_category_page) {
+	$display_type = get_option('woocommerce_category_archive_display', '');
+} else {
+	$display_type = get_option('woocommerce_shop_page_display', '');
+}
 ?>
-<div class="bt-filter-scroll-pos"></div>
-<main id="bt_main" class="bt-site-main">
-	<div class="bt-main-content">
-		<div class="bt-main-products-ss bt-template-sidebar <?php echo esc_attr($sidebar_position); ?>">
-			<div class="bt-container <?php echo esc_attr($content_width); ?>">
-				<?php
-				if ($total_products == 0) {
-					echo '<h3 class="not-found-post">'
-						. esc_html__('Sorry, No products found', 'woozio')
-						. '</h3>';
-				} else {
-				?>
+<?php if (woozio_should_show_categories()) { ?>
+	<div class="bt-category-wrapper bt-display-<?php echo esc_attr($display_type); ?>">
+		<div class="bt-container <?php echo esc_attr($content_width); ?>">
+			<div class="bt-category-layout">
+				<?php do_action('woozio_shop_categories_display'); ?>
+			</div>
+		</div>
+	</div>
+<?php } ?>
+<?php if (woozio_should_show_products()) { ?>
+	<div class="bt-filter-scroll-pos"></div>
+	<main id="bt_main" class="bt-site-main">
+		<div class="bt-main-content">
+			
+			<div class="bt-main-products-ss bt-template-sidebar <?php echo esc_attr($sidebar_position); ?>">
+				<div class="bt-container <?php echo esc_attr($content_width); ?>">
 					<div class="bt-main-product-row">
 						<div class="bt-products-sidebar">
 							<?php get_template_part('woocommerce/sidebar', 'product', array('total_products' => $total_products)); ?>
@@ -214,12 +225,9 @@ get_template_part('framework/templates/shop', 'titlebar');
 							</div>
 						</div>
 					</div>
-				<?php
-				}
-				?>
+				</div>
 			</div>
 		</div>
-	</div>
-</main>
-<?php
+	</main>
+<?php }
 get_footer('shop');
