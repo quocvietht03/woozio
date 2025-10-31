@@ -3287,9 +3287,9 @@ function woozio_handle_thumbnail_layout_mode()
     // Get display mode
     $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
     
-    // If layout is not thumbnail layout, force toggle mode only if display mode is not set
+    // If layout is not thumbnail layout, force toggle mode only if display mode is not set or if layout is changed via $_GET
     if (!in_array($layout, $thumbnail_layouts)) {
-        if (empty($display_mode)) {
+        if (empty($display_mode) || (isset($_GET['layout']) && !empty($_GET['layout']))) {
             $display_mode = 'toggle';
         }
     } else {
@@ -3298,7 +3298,7 @@ function woozio_handle_thumbnail_layout_mode()
             $display_mode = 'tab';
         }
     }
-
+    
     if ($display_mode === 'tab') {
         // Do nothing here, classes added via woozio_add_tab_position_body_class filter
     } elseif ($display_mode === 'toggle') {
