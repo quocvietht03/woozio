@@ -3261,36 +3261,6 @@ function woozio_woocommerce_single_product_safe_checkout()
 }
 
 /**
- * Product Info Display - Main Handler
- * Handles Tab, Toggle, or Disable modes based on product settings
- */
-function woozio_render_product_info_display()
-{
-    global $product;
-
-    if (!$product) {
-        return;
-    }
-
-    // Get display mode setting
-    $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
-
-    // Default to toggle for gallery layouts
-    if (empty($display_mode)) {
-        $display_mode = 'toggle';
-    }
-
-    // Render based on mode
-    if ($display_mode === 'toggle') {
-        woozio_render_product_info_toggle();
-    }
-    // If disable, do nothing (hide the section)
-}
-
-// Hook for gallery layouts (slider and grid)
-add_action('woozio_woocommerce_template_single_toggle', 'woozio_render_product_info_display', 10);
-
-/**
  * Handle thumbnail layouts display mode
  * - Tab mode: Let WooCommerce render default tabs, just add classes
  * - Toggle mode: Remove WooCommerce tabs, render toggle
@@ -3314,15 +3284,19 @@ function woozio_handle_thumbnail_layout_mode()
 
     $thumbnail_layouts = array('bottom-thumbnail', 'left-thumbnail', 'right-thumbnail');
 
-    // Only for thumbnail layouts
-    if (!in_array($layout, $thumbnail_layouts)) {
-        return;
-    }
-
     // Get display mode
     $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
-    if (empty($display_mode)) {
-        $display_mode = 'tab'; // Default for thumbnail layouts
+    
+    // If layout is not thumbnail layout, force toggle mode only if display mode is not set
+    if (!in_array($layout, $thumbnail_layouts)) {
+        if (empty($display_mode)) {
+            $display_mode = 'toggle';
+        }
+    } else {
+        // For thumbnail layouts, use default tab mode if empty
+        if (empty($display_mode)) {
+            $display_mode = 'tab';
+        }
     }
 
     if ($display_mode === 'tab') {
@@ -3330,14 +3304,19 @@ function woozio_handle_thumbnail_layout_mode()
     } elseif ($display_mode === 'toggle') {
         // Toggle mode: Remove default tabs, add toggle
         remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
-        add_action('woocommerce_after_single_product_summary', 'woozio_render_product_info_toggle', 10);
+        
+        // If layout is not thumbnail layout, add to woozio_woocommerce_template_single_toggle
+        if (!in_array($layout, $thumbnail_layouts)) {
+            add_action('woozio_woocommerce_template_single_toggle', 'woozio_render_product_info_toggle', 10);
+        } else {
+            add_action('woocommerce_after_single_product_summary', 'woozio_render_product_info_toggle', 10);
+        }
     } elseif ($display_mode === 'disable') {
-        // Disable mode: Remove default tabs
+        // Disable mode: Remove default tabs 
         remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
     }
 }
 add_action('woocommerce_before_single_product', 'woozio_handle_thumbnail_layout_mode', 1);
-
 /**
  * Add tab position to body class for CSS targeting
  * CSS will use body.bt-tabs-position-{position} .woocommerce-tabs selector
