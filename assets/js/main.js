@@ -1231,7 +1231,7 @@
 					params.delete(key);
 				}
 			}
-		
+
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1259,10 +1259,10 @@
 							if (matchingLink.length) {
 								const nameTag = matchingLink.text().trim();
 								tagElement.text(nameTag).append(svgElement);
-							}else{
+							} else {
 								const nameTag = tag.split('-')
-								.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-								.join(' ');
+									.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+									.join(' ');
 								tagElement.text(nameTag).append(svgElement);
 							}
 							tagsContainer.append(tagElement);
@@ -1661,7 +1661,7 @@
 			// build params from serializeArray() and then append empty entries for
 			// any radio groups with no selection.
 			var dataArr = $(this).serializeArray();
-			
+
 			// Add empty values for unchecked radio groups
 			$(this).find('input[type="radio"][name]').each(function () {
 				var radioName = this.name;
@@ -1670,9 +1670,9 @@
 					dataArr.push({ name: radioName, value: '' });
 				}
 			});
-			
+
 			// Convert to param strings
-			var param_in = dataArr.map(p => 
+			var param_in = dataArr.map(p =>
 				encodeURIComponent(p.name) + '=' + encodeURIComponent(p.value)
 			);
 			var param_ajax = {
@@ -1701,7 +1701,7 @@
 			});
 
 			var param_str = urlParams.toString();
-			
+
 			if ('' !== param_str) {
 				window.history.replaceState(null, null, `?${param_str}`);
 				$(this).find('.bt-reset-filter-product-btn').removeClass('disable');
@@ -2789,15 +2789,16 @@
 						} else {
 							WoozioshowToast(product_id, 'cart', 'add');
 						}
-					// Open mini cart on mobile
-					if ($(window).width() <= 1023) {
-						$('.bt-mini-cart-sidebar').addClass('active');
-						const scrollbarWidth = window.innerWidth - $(window).width();
-						$('body').css({
-							'overflow': 'hidden',
-							'padding-right': scrollbarWidth + 'px'
-						});
-					}
+						// Open mini cart on mobile
+						if ($(window).width() <= 1023) {
+							$('.bt-mini-cart-sidebar').addClass('active');
+							const scrollbarWidth = window.innerWidth - $(window).width();
+							$('body').css({
+								'overflow': 'hidden',
+								'padding-right': scrollbarWidth + 'px'
+							});
+						}
+						
 						// Update mini cart after successful add to cart
 						$.ajax({
 							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
@@ -2807,12 +2808,20 @@
 									$.each(response.fragments, function (key, value) {
 										$(key).replaceWith(value);
 									});
+									const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
+									if (cartCount === 0) {
+										$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+									} else {
+										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+									}
 								}
 							},
 							error: function () {
 								console.error('Failed to update mini cart.');
 							}
 						});
+						// Free shipping message
+						WoozioFreeShippingMessage();
 					} else {
 						console.log('error');
 					}

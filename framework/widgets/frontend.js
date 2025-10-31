@@ -3,26 +3,6 @@
 	   * @param $scope The Widget wrapper element as a jQuery element
 	 * @param $ The jQuery alias
 	**/
-	/* Check Background Light or Dark */
-	function WoozioCheckBgLightDark() {
-		if ($('.js-check-bg-color').length > 0) {
-			$(".js-check-bg-color").each(function () {
-				let $el = $(this);
-				let bg = $el.css("background-color");
-				let rgb = bg.match(/\d+/g);
-				if (!rgb) return;
-
-				let r = parseInt(rgb[0]),
-					g = parseInt(rgb[1]),
-					b = parseInt(rgb[2]);
-
-				let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-
-				$el.removeClass("bt-bg-light bt-bg-dark")
-					.addClass(yiq >= 128 ? "bt-bg-light" : "bt-bg-dark");
-			});
-		}
-	}
 
 	/* Submenu toggle */
 	const SubmenuToggleHandler = function ($scope, $) {
@@ -367,6 +347,7 @@
 		}
 	}
 	function WoozioFreeShippingMessage() {
+		console.log("trong");
 		$.ajax({
 			url: AJ_Options.ajax_url,
 			type: 'POST',
@@ -2189,7 +2170,7 @@
 						$(document.body).trigger('updated_wc_div');
 						WoozioFreeShippingMessage();
 						$button.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-
+						
 					} else {
 						alert('Failed to add products to cart.');
 						$button.prop('disabled', false).text(originalText);
