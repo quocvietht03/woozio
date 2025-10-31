@@ -3305,6 +3305,9 @@ function woozio_handle_thumbnail_layout_mode()
     }
 
     $layout = get_post_meta($product->get_id(), '_layout_product', true);
+    if(isset($_GET['layout']) && !empty($_GET['layout'])) {
+        $layout = sanitize_text_field($_GET['layout']);
+    }
     if (empty($layout)) {
         $layout = 'bottom-thumbnail';
     }

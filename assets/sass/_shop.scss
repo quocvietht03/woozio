@@ -2466,6 +2466,9 @@
         line-height: 1.5;
         text-transform: uppercase;
         font-family: $accent-font;
+        @media(max-width:$break-sm){
+          display: none;
+        }
         .bt-marquee {
           align-items: center;
           flex: 0 0 auto;
@@ -2522,6 +2525,9 @@
         justify-content: center;
         align-items: center;
         pointer-events: none;
+        @media(max-width:$break-sm){
+          display: none;
+        }
         .bt-countdown {
           display: flex;
           align-items: center;

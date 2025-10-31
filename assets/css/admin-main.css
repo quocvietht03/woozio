@@ -23,7 +23,7 @@ html :where(.editor-styles-wrapper) {
   transition: all 0.3s;
 }
 .widget a:hover, .widget a:focus {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget h1, .widget h2, .widget h3, .widget h4, .widget h5, .widget h6 {
   font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
@@ -438,12 +438,12 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker {
   display: flex;
   justify-content: space-between;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
   padding: 15px 0;
   margin: 0;
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker .xdsoft_label {
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker .xdsoft_label span {
   color: #fff;
@@ -466,7 +466,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   background: var(--e-global-color-secondary, #A2A4AB);
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current {
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker .xdsoft_prev,
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_mounthpicker .xdsoft_next {
@@ -499,7 +499,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   line-height: 24px;
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_calendar table tr td.xdsoft_today {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .xdsoft_datetimepicker .xdsoft_datepicker .xdsoft_calendar table tr td.xdsoft_current {
   background: var(--e-global-color-secondary, #A2A4AB) !important;
@@ -523,11 +523,11 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   height: 200px;
 }
 .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div.xdsoft_time_variant > div:hover {
-  background: var(--e-global-color-123123, #DF4242) !important;
+  background: var(--e-global-color-accent, #DF4242) !important;
   color: #fff !important;
 }
 .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div.xdsoft_time_variant > div.xdsoft_current {
-  background: var(--e-global-color-123123, #DF4242) !important;
+  background: var(--e-global-color-accent, #DF4242) !important;
   color: #fff !important;
   border: 1px solid var(--e-global-color-secondary, #A2A4AB) !important;
   opacity: 1;
@@ -572,7 +572,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   position: absolute;
   top: 50%;
   left: 50%;
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
   margin: -4px 0 0 -13px;
   transition: all 0.3s;
 }
@@ -591,7 +591,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 .select2-container--default .select2-results__option--highlighted[data-selected],
 .elementor-editor-active .select2-container--default .select2-results__option--highlighted[aria-selected],
 .elementor-editor-active .select2-container--default .select2-results__option--highlighted[data-selected] {
-  background-color: var(--e-global-color-123123, #DF4242);
+  background-color: var(--e-global-color-accent, #DF4242);
 }
 .select2-dropdown,
 .elementor-editor-active .select2-dropdown {
@@ -707,7 +707,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
   position: absolute;
   left: 0;
   top: 0;
@@ -750,7 +750,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 .__bt-button-style:hover, .__bt-button-outline-dark-style:hover, .__bt-button-outline-style:hover, .__bt-button-dark-style:hover, .widget button:hover, .widget input[type=submit]:hover, .__bt-button-style:focus, .__bt-button-outline-dark-style:focus, .__bt-button-outline-style:focus, .__bt-button-dark-style:focus, .widget button:focus, .widget input[type=submit]:focus {
   color: #ffffff;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
 }
 @media (max-width: 519.98px) {
   .__bt-button-style, .__bt-button-outline-dark-style, .__bt-button-outline-style, .__bt-button-dark-style, .widget button, .widget input[type=submit] {
@@ -768,12 +768,12 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 
 .__bt-button-outline-style {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
   background: #ffffff;
 }
 .__bt-button-outline-style:hover, .__bt-button-outline-style:focus {
   color: #ffffff;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
 }
 
 .__bt-button-outline-dark-style {
@@ -797,7 +797,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 .__scrollbar_style-x::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: var(--e-global-color-123123, #DF4242);
+  background-color: var(--e-global-color-accent, #DF4242);
   cursor: pointer;
 }
 .__scrollbar_style-x::-webkit-scrollbar-track {
@@ -1119,16 +1119,16 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   border: 1px solid #e4e4e4;
 }
 .__bt-pagination-style .page-numbers:not(.current, .dots):hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .__bt-pagination-style .page-numbers:not(.current, .dots):hover svg path {
-  fill: var(--e-global-color-123123, #DF4242);
+  fill: var(--e-global-color-accent, #DF4242);
 }
 .__bt-pagination-style .page-numbers.current {
   width: 40px;
   color: #ffffff;
-  background: var(--e-global-color-123123, #DF4242);
-  border-color: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
+  border-color: var(--e-global-color-accent, #DF4242);
 }
 .__bt-pagination-style .page-numbers.prev, .__bt-pagination-style .page-numbers.next {
   width: 40px;
@@ -1191,7 +1191,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 }
 .__instagram-posts-style .bt-ins-posts--head span, .bt-block-instagram-posts .bt-ins-posts--head span {
   font-family: var(--e-global-typography-secondary-font-family, "Outfit"), sans-serif;
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .__instagram-posts-style .bt-ins-posts--gallery, .bt-block-instagram-posts .bt-ins-posts--gallery {
   display: grid;
@@ -1220,7 +1220,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   font-weight: 500;
   line-height: 150%;
   text-decoration: underline;
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
   margin-top: 16px;
 }
 .__instagram-posts-style .bt-ins-posts--link svg, .bt-block-instagram-posts .bt-ins-posts--link svg {
@@ -1236,7 +1236,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   text-align: left !important;
   display: flex;
   border-radius: 8px;
-  border: 1px solid var(--e-global-color-123123, #DF4242);
+  border: 1px solid var(--e-global-color-accent, #DF4242);
   padding: 5px;
 }
 .__bt-newsletter-form-style form label {
@@ -1289,7 +1289,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   align-items: center;
   justify-content: center;
   margin: 0;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
   background-image: url("../images/arrow-up-right.svg");
   background-position: center right 20px;
   background-repeat: no-repeat;
@@ -1306,7 +1306,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   line-height: 1.5;
   color: #fff;
   border-radius: 4px;
-  background-color: var(--e-global-color-123123, #DF4242);
+  background-color: var(--e-global-color-accent, #DF4242);
   font-family: var(--e-global-typography-primary-font-family, "Outfit"), sans-serif;
   font-weight: 500;
   white-space: nowrap;
@@ -1424,7 +1424,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   height: 9px;
 }
 .bt-toast .bt-product-toast--close svg:hover path {
-  fill: var(--e-global-color-123123, #DF4242);
+  fill: var(--e-global-color-accent, #DF4242);
 }
 .bt-toast .bt-product-toast--content {
   display: flex;
@@ -1482,7 +1482,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   border-radius: 2px;
 }
 .bt-toast .bt-product-toast--button a:hover {
-  background-color: var(--e-global-color-123123, #DF4242);
+  background-color: var(--e-global-color-accent, #DF4242);
 }
 .bt-toast .bt-product-toast--button.bt-button-cart {
   padding-left: 70px;
@@ -1496,7 +1496,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .bt-toast .bt-product-toast--button.bt-button-cart a:first-child:hover {
-  background-color: var(--e-global-color-123123, #DF4242);
+  background-color: var(--e-global-color-accent, #DF4242);
   color: #fff;
 }
 
@@ -1640,7 +1640,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   margin-top: 15px;
 }
 .bt-newsletter-popup-info .bt-newsletter-note a {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
@@ -2167,7 +2167,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-latest-comments__comment-meta a:hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget .wp-block-latest-comments__comment-excerpt {
   margin-top: 8px;
@@ -2193,7 +2193,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-latest-posts__post-title:hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget .wp-block-latest-posts__post-excerpt {
   width: 100%;
@@ -2216,7 +2216,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-rss__item-title a:hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget .wp-block-rss__item-excerpt {
   width: 100%;
@@ -2232,7 +2232,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .widget.widget_rss ul li a:hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget.widget_rss ul li .rss-date,
 .widget.widget_rss ul li cite {
@@ -2244,7 +2244,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   color: var(--e-global-color-primary, #181818);
 }
 .widget .wp-block-loginout a:hover {
-  color: var(--e-global-color-123123, #DF4242);
+  color: var(--e-global-color-accent, #DF4242);
 }
 .widget .wp-block-search__label {
   color: var(--e-global-color-primary, #181818);
@@ -2314,7 +2314,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
   top: 0;
   height: 100%;
   color: #fff;
-  background: var(--e-global-color-123123, #DF4242);
+  background: var(--e-global-color-accent, #DF4242);
   margin: 0;
   border-radius: 0 10px 10px 0;
   border: none;
