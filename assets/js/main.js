@@ -2789,6 +2789,15 @@
 						} else {
 							WoozioshowToast(product_id, 'cart', 'add');
 						}
+					// Open mini cart on mobile
+					if ($(window).width() <= 1023) {
+						$('.bt-mini-cart-sidebar').addClass('active');
+						const scrollbarWidth = window.innerWidth - $(window).width();
+						$('body').css({
+							'overflow': 'hidden',
+							'padding-right': scrollbarWidth + 'px'
+						});
+					}
 						// Update mini cart after successful add to cart
 						$.ajax({
 							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),

@@ -1354,7 +1354,14 @@
 					WoozioshowToast(productId, 'cart', 'add');
 				}, idx * 300);
 			});
-
+			if ($(window).width() <= 1023) {
+				$('.bt-mini-cart-sidebar').addClass('active');
+				const scrollbarWidth = window.innerWidth - $(window).width();
+				$('body').css({
+					'overflow': 'hidden',
+					'padding-right': scrollbarWidth + 'px' // Prevent layout shift
+				});
+			}
 			if (productIds.length > 0) {
 				$.ajax({
 					type: 'POST',
@@ -2161,7 +2168,14 @@
 					WoozioshowToast(productId, 'cart', 'add');
 				}, idx * 300);
 			});
-
+			if ($(window).width() <= 1023) {
+				$('.bt-mini-cart-sidebar').addClass('active');
+				const scrollbarWidth = window.innerWidth - $(window).width();
+				$('body').css({
+					'overflow': 'hidden',
+					'padding-right': scrollbarWidth + 'px' // Prevent layout shift
+				});
+			}
 			$.ajax({
 				url: AJ_Options.ajax_url,
 				type: 'POST',

@@ -126,10 +126,6 @@ defined('ABSPATH') || exit;
         $field_name = __('Product Categories', 'woozio');
         $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
         woozio_product_field_radio_html('product_cat', $field_name, $field_value);
-
-        $field_name = __('Material', 'woozio');
-        $field_value = (isset($_GET['product_material'])) ? $_GET['product_material'] : '';
-        woozio_product_field_multiple_html('product_material', $field_name, $field_value);
     
         $field_name = __('Brand', 'woozio');
         $field_value = (isset($_GET['product_brand'])) ? $_GET['product_brand'] : '';

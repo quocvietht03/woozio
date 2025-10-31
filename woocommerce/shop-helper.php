@@ -51,7 +51,7 @@ function woozio_shop_categories_display()
         $display_type = get_option('woocommerce_category_archive_display', '');
     } else {
         $display_type = get_option('woocommerce_shop_page_display', '');
-        if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+        if (isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
             $display_type = 'subcategories';
         }
     }
@@ -92,7 +92,7 @@ add_action('woozio_shop_categories_display', 'woozio_shop_categories_display');
 function woozio_should_show_categories()
 {
     $shop_page_display = get_option('woocommerce_shop_page_display', '');
-    if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+    if (isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
         $shop_page_display = 'subcategories';
     }
     $category_display = get_option('woocommerce_category_archive_display', '');
@@ -108,7 +108,7 @@ function woozio_should_show_categories()
         } elseif (is_product_category()) {
             $current_category = get_queried_object();
         }
-        
+
         // Check if current category has children
         if ($current_category) {
             $children = get_terms(array(
@@ -116,13 +116,13 @@ function woozio_should_show_categories()
                 'parent' => $current_category->term_id,
                 'hide_empty' => false
             ));
-            
+
             // If no children, don't show categories
             if (empty($children)) {
                 return false;
             }
         }
-        
+
         // Category page: show categories if display is 'subcategories' or 'both'
         return in_array($category_display, ['subcategories', 'both']);
     } else {
@@ -134,7 +134,7 @@ function woozio_should_show_categories()
 function woozio_should_show_products()
 {
     $shop_page_display = get_option('woocommerce_shop_page_display', '');
-    if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+    if (isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
         $shop_page_display = 'subcategories';
     }
     $category_display = get_option('woocommerce_category_archive_display', '');
@@ -150,7 +150,7 @@ function woozio_should_show_products()
         } elseif (is_product_category()) {
             $current_category = get_queried_object();
         }
-        
+
         // Check if current category has no children
         if ($current_category) {
             $children = get_terms(array(
@@ -158,16 +158,15 @@ function woozio_should_show_products()
                 'parent' => $current_category->term_id,
                 'hide_empty' => false
             ));
-            
+
             // If no children, always show products
             if (empty($children)) {
                 return true;
             }
         }
-        
+
         // Category page: show products if display is '' (empty/products only) or 'both'
         return $category_display === '' || $category_display === 'both';
-        
     } else {
         // Shop page: show products if display is '' (empty/products only) or 'both'
         return $shop_page_display === '' || $shop_page_display === 'both';
@@ -175,36 +174,6 @@ function woozio_should_show_products()
     return true; // Default to showing products
 }
 
-function register_product_taxonomy()
-{
-    $labels = array(
-        'name' => _x('Materials', 'taxonomy general name', 'woozio'),
-        'singular_name' => _x('Material', 'taxonomy singular name', 'woozio'),
-        'search_items' => __('Search Materials', 'woozio'),
-        'all_items' => __('All Materials', 'woozio'),
-        'parent_item' => __('Parent Material', 'woozio'),
-        'parent_item_colon' => __('Parent Material:', 'woozio'),
-        'edit_item' => __('Edit Material', 'woozio'),
-        'update_item' => __('Update Material', 'woozio'),
-        'add_new_item' => __('Add New Material', 'woozio'),
-        'new_item_name' => __('New Material Name', 'woozio'),
-        'menu_name' => __('Materials', 'woozio'),
-    );
-
-    $args = array(
-        'hierarchical' => true,
-        'labels' => $labels,
-        'show_ui' => true,
-        'show_admin_column' => false,
-        'query_var' => true,
-        'show_in_rest' => true,
-        'publicly_queryable' => false,
-    );
-
-    register_taxonomy('product_material', array('product'), $args);
-}
-
-add_action('init', 'register_product_taxonomy');
 
 function woozio_woocommerce_single_product_meta()
 {
@@ -351,6 +320,136 @@ function woozio_redirect_after_add_to_cart()
         WC()->session->__unset('redirect_after_add_to_cart');
         wp_redirect(wc_get_cart_url());
         exit();
+    }
+}
+
+// Add sale marquee to product loop
+add_action('woozio_template_loop_product_countdown_and_sale', 'woozio_display_product_countdown_and_sale_marquee', 10);
+
+function woozio_display_product_countdown_and_sale_marquee()
+{
+    global $product;
+
+    // Check for countdown timer first (priority)
+    $enable_countdown = get_post_meta($product->get_id(), '_enable_loop_countdown', true);
+    $time = get_post_meta($product->get_id(), '_product_datetime', true);
+    $stock_status = $product->get_stock_status();
+    $has_countdown = ($enable_countdown === 'yes' && $time && $stock_status != 'outofstock');
+
+    if ($has_countdown) {
+        // Show countdown timer
+        $time = strtotime($time);
+        $time = date('Y-m-d H:i:s', $time);
+    ?>
+        <div class="bt-product-countdown-timer bt-countdown-product-sale">
+            <div class="bt-countdown bt-countdown-product-js"
+                data-idproduct="<?php echo esc_attr($product->get_id()); ?>"
+                data-time="<?php echo esc_attr($time); ?>">
+                <div class="bt-countdown--item">
+                    <span class="bt-countdown--digits bt-countdown-days">--</span>
+                    <span class="bt-countdown--label"><?php esc_html_e('Days', 'woozio'); ?></span>
+                </div>
+                <div class="bt-delimiter">:</div>
+                <div class="bt-countdown--item">
+                    <span class="bt-countdown--digits bt-countdown-hours">--</span>
+                    <span class="bt-countdown--label"><?php esc_html_e('Hours', 'woozio'); ?></span>
+                </div>
+                <div class="bt-delimiter">:</div>
+                <div class="bt-countdown--item">
+                    <span class="bt-countdown--digits bt-countdown-mins">--</span>
+                    <span class="bt-countdown--label"><?php esc_html_e('Mins', 'woozio'); ?></span>
+                </div>
+                <div class="bt-delimiter">:</div>
+                <div class="bt-countdown--item">
+                    <span class="bt-countdown--digits bt-countdown-secs">--</span>
+                    <span class="bt-countdown--label"><?php esc_html_e('Secs', 'woozio'); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php
+    } elseif ($product->is_on_sale()) {
+        // Show sale marquee if no countdown
+        $enable_sale_marquee = get_post_meta($product->get_id(), '_enable_loop_sale_marquee', true);
+
+        if ($enable_sale_marquee === 'yes') {
+            // Calculate percentage using the helper function logic
+            $percentage = '';
+
+            if ($product->is_type('variable')) {
+                $percentages = array();
+
+                // Get all variation prices
+                $prices = $product->get_variation_prices();
+
+                // Loop through variation prices
+                foreach ($prices['price'] as $key => $price) {
+                    // Only on sale variations
+                    if ($prices['regular_price'][$key] !== $price) {
+                        // Calculate and set in the array the percentage for each variation on sale
+                        $percentages[] = round(100 - ($prices['sale_price'][$key] / $prices['regular_price'][$key] * 100));
+                    }
+                }
+                // We keep the highest value
+                $percentage = !empty($percentages) ? max($percentages) : 0;
+            } elseif ($product->is_type('grouped')) {
+                $percentages = array();
+
+                $children = $product->get_children();
+                if (!empty($children)) {
+                    foreach ($children as $child_id) {
+                        $child = wc_get_product($child_id);
+                        if ($child && $child->get_sale_price()) {
+                            $regular_price = (float)$child->get_regular_price();
+                            $sale_price = (float)$child->get_sale_price();
+                            if ($regular_price > 0) {
+                                $percentages[] = round(100 - ($sale_price / $regular_price * 100));
+                            }
+                        }
+                    }
+                }
+
+                $percentage = !empty($percentages) ? max($percentages) : 0;
+            } else {
+                $regular_price = (float) $product->get_regular_price();
+                $sale_price = (float) $product->get_sale_price();
+
+                if ($regular_price > 0 && $sale_price > 0) {
+                    $percentage = round(100 - ($sale_price / $regular_price * 100));
+                }
+            }
+
+            if ($percentage > 0) {
+                $sale_text = sprintf(
+                    '%s <span class="on-sale">%s%%</span> %s',
+                    esc_html__('Hot Sale', 'woozio'),
+                    esc_html($percentage),
+                    esc_html__('off', 'woozio')
+                );
+
+                // Generate marquee items
+                $marquee_items = '';
+                for ($i = 0; $i < 5; $i++) {
+                    $marquee_items .= '<div class="bt-marquee-item">' . $sale_text . '</div>';
+                    $marquee_items .= '<div class="bt-marquee-separator"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="23" viewBox="0 0 17 23" fill="none">
+	  <path d="M16.2991 11.0156L5.79911 22.2656C5.68784 22.3844 5.54097 22.4637 5.38065 22.4917C5.22034 22.5196 5.05528 22.4947 4.91039 22.4206C4.7655 22.3465 4.64863 22.2273 4.57743 22.0809C4.50623 21.9346 4.48455 21.7691 4.51568 21.6094L5.89005 14.7347L0.487238 12.7059C0.371205 12.6625 0.267731 12.5911 0.186059 12.4979C0.104388 12.4048 0.0470632 12.2928 0.0192066 12.1721C-0.00865008 12.0514 -0.0061709 11.9257 0.0264224 11.8061C0.0590157 11.6866 0.120708 11.577 0.205988 11.4872L10.706 0.237181C10.8173 0.118433 10.9641 0.0390974 11.1244 0.0111465C11.2848 -0.0168043 11.4498 0.00814581 11.5947 0.082232C11.7396 0.156318 11.8565 0.27552 11.9277 0.421851C11.9989 0.568182 12.0205 0.7337 11.9894 0.893431L10.6113 7.77562L16.0141 9.80156C16.1293 9.84525 16.2319 9.91664 16.313 10.0094C16.394 10.1022 16.4509 10.2135 16.4787 10.3335C16.5065 10.4535 16.5044 10.5785 16.4724 10.6975C16.4404 10.8165 16.3796 10.9257 16.2954 11.0156H16.2991Z" fill="white"/>
+	</svg></div>';
+                }
+        ?>
+                <div class="bt-product-sale-marquee">
+                    <div class="bt-marquee">
+                        <div class="bt-marquee-items">
+                            <?php echo $marquee_items; ?>
+                        </div>
+                    </div>
+                    <div class="bt-marquee">
+                        <div class="bt-marquee-items">
+                            <?php echo $marquee_items; ?>
+                        </div>
+                    </div>
+                </div>
+    <?php
+            }
+        }
     }
 }
 
@@ -741,7 +840,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
                     }
                     ?>
 
-                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>"<?php } ?>>
+                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>" <?php } ?>>
                         <?php if ($is_checked) { ?>
                             <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
                         <?php } else { ?>
@@ -761,7 +860,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
                             <div class="bt-children-categories">
                                 <?php foreach ($children as $child) { ?>
                                     <?php $child_checked = ($child->slug == $field_value); ?>
-                                    <div class="item-radio item-radio-child" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>"<?php } ?>>
+                                    <div class="item-radio item-radio-child" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>" <?php } ?>>
                                         <?php if ($child_checked) { ?>
                                             <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
                                         <?php } else { ?>
@@ -1166,13 +1265,6 @@ function woozio_products_query_args($params = array(), $limit = 9)
             'taxonomy' => 'product_brand',
             'field' => 'slug',
             'terms' => explode(',', $params['product_brand'])
-        );
-    }
-    if (isset($params['product_material']) && $params['product_material'] != '') {
-        $query_tax[] = array(
-            'taxonomy' => 'product_material',
-            'field' => 'slug',
-            'terms' => explode(',', $params['product_material'])
         );
     }
     if (isset($params['pa_color']) && $params['pa_color'] != '') {

@@ -1068,7 +1068,7 @@
   }
   .bt-mini-cart-sidebar-body {
     padding-top: 20px;
-    padding-bottom: 240px;
+    padding-bottom: 120px;
     height: calc(100% - 63px);
     box-sizing: border-box;
     .widget_shopping_cart_content {
@@ -1213,7 +1213,7 @@
       bottom: 115px;
       padding: 15px 15px 0 15px;
       width: 100%;
-      background: #d4e7f6;
+      background: #e9f2f9;
       box-sizing: border-box;
       &.bt-hide {
         display: none !important;
@@ -1225,7 +1225,7 @@
           font-weight: 400;
           line-height: 26px;
           color: $color-primary;
-          margin: 0 0 25px 0;
+          margin: 0 0 20px 0;
           span {
             font-weight: 500;
           }
@@ -1235,8 +1235,8 @@
           font-style: normal;
           font-weight: 500;
           line-height: 26px;
-          color: $color-accent;
-          margin: 0 0 25px 0;
+          color: #4d8b7b;
+          margin: 0 0 20px 0;
         }
       }
       .bt-progress-container-cart {
@@ -1249,14 +1249,27 @@
         .bt-progress-bar {
           width: 0%;
           height: 100%;
-          background: $color-secondary;
-          transition: width 1s ease;
           position: relative;
           border-radius: 30px;
+          background: #4d8b7b;
+          transition: width 1s ease;
+          background-image: linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.3) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0.3) 75%,
+            transparent 75%,
+            transparent
+          );
+          background-size: 1rem 1rem;
+          animation: 1s linear 0s infinite normal none running progress-bar-stripes;
+          transition: width 0.8s ease;
           .bt-icon-shipping {
             width: 30px;
             height: 30px;
-            border: 2px solid $color-secondary;
+            border: 2px solid #4d8b7b;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1265,7 +1278,7 @@
             right: -8px;
             position: absolute;
             top: -11px;
-            color: $color-accent;
+            color: #4d8b7b;
           }
         }
       }
@@ -1340,6 +1353,11 @@
         line-height: 24px;
         text-transform: capitalize;
       }
+    }
+  }
+  &.bt-show-free-shipping {
+    .bt-mini-cart-sidebar-body {
+      padding-bottom: 230px;
     }
   }
 }

@@ -184,8 +184,24 @@ class Widget_MiniCart extends Widget_Base
 	 */
 	public function render_mini_cart_sidebar()
 	{
+		$free_shipping_threshold = woozio_get_free_shipping_minimum_amount();
+		$cart_total = WC()->cart->get_cart_contents_total();
+		$currency_symbol = get_woocommerce_currency_symbol();
+		if ($cart_total < $free_shipping_threshold) {
+			$amount_left = $free_shipping_threshold - $cart_total;
+
+			$percentage = ($cart_total / $free_shipping_threshold) * 100;
+			$message = sprintf(
+				__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>FREESHIP</span></p>', 'woozio'),
+				$currency_symbol,
+				$amount_left
+			);
+		} else {
+			$percentage = 100;
+			$message = __('<p class="bt-congratulation"> Congratulations! You have free shipping!</p>', 'woozio');
+		}
 ?>
-		<div class="bt-mini-cart-sidebar">
+		<div class="bt-mini-cart-sidebar <?php echo ($free_shipping_threshold > 0) ? 'bt-show-free-shipping' : ''; ?>">
 			<div class="bt-mini-cart-sidebar-overlay"></div>
 			<div class="bt-mini-cart-sidebar-content">
 				<div class="bt-mini-cart-sidebar-header">
@@ -202,22 +218,7 @@ class Widget_MiniCart extends Widget_Base
 						<?php woocommerce_mini_cart(); ?>
 					</div>
 					<?php
-					$free_shipping_threshold = woozio_get_free_shipping_minimum_amount();
-					$cart_total = WC()->cart->get_cart_contents_total();
-					$currency_symbol = get_woocommerce_currency_symbol();
-					if ($cart_total < $free_shipping_threshold) {
-						$amount_left = $free_shipping_threshold - $cart_total;
 
-						$percentage = ($cart_total / $free_shipping_threshold) * 100;
-						$message = sprintf(
-							__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>FREESHIP</span></p>', 'woozio'),
-							$currency_symbol,
-							$amount_left
-						);
-					} else {
-						$percentage = 100;
-						$message = __('<p class="bt-congratulation"> Congratulations! You have free shipping!</p>', 'woozio');
-					}
 					if ($free_shipping_threshold > 0) {
 					?>
 						<div class="bt-progress-content <?php echo (WC()->cart->is_empty()) ? 'bt-hide' : ''; ?>">
