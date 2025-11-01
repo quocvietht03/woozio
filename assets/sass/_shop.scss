@@ -4823,22 +4823,25 @@
         margin-bottom: 12px;
         flex-wrap: wrap;
         .woocommerce-product-label {
+          --label-color: #3dab25;
           padding: 0 8px;
           line-height: 24px;
-          background: #f03e3e;
+          background: var(--label-color);
           display: inline-block;
           font-size: 14px;
           font-style: normal;
           font-weight: 400;
           color: #ffff;
           text-transform: capitalize;
-          &.featured {
-            background: #3dab25;
-          }
-          &.new-arrival,
-          &.trending {
-            background: #f0a750;
-          }
+        &.hot-deal,
+        &.on-sale {
+          --label-color: #f03e3e;
+        }
+        &.pre-order,
+        &.top-rated,
+        &.featured {
+          --label-color: #f0a750;
+        }
         }
         .woocommerce-product-rating {
           display: flex;
