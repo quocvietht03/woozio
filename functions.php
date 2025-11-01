@@ -124,6 +124,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			}
 		}
 		$wishlist_toast = $compare_toast = $cart_toast = '';
+		$show_cart_mini = '';
 
 		if (function_exists('get_field')) {
 			$archive_shop = get_field('archive_shop', 'options');
@@ -135,6 +136,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 				$compare_toast_time = isset($archive_shop['time_show_compare']) ? $archive_shop['time_show_compare'] : 3000;
 				$cart_toast = isset($archive_shop['cart_toast']) ? $archive_shop['cart_toast'] : '';
 				$cart_toast_time = isset($archive_shop['time_show_cart']) ? $archive_shop['time_show_cart'] : 3000;
+				$show_cart_mini = isset($archive_shop['show_cart_mini']) ? $archive_shop['show_cart_mini'] : '';
 			}
 		}
 		/* Options to script */
@@ -145,6 +147,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			'wishlist_toast' => $wishlist_toast,
 			'compare_toast' => $compare_toast,
 			'cart_toast' => $cart_toast,
+			'show_cart_mini' => $show_cart_mini,
 			'wishlist_toast_time' => $wishlist_toast_time,
 			'compare_toast_time' => $compare_toast_time,
 			'cart_toast_time' => $cart_toast_time,
@@ -208,23 +211,6 @@ if (class_exists('Woocommerce')) {
 
 /* Product Extra Content */
 require_once get_template_directory() . '/framework/product-extra-content.php';
-
-if (function_exists('get_field')) {
-
-	function woozio_body_class($classes)
-	{
-		$effect_load_heading = get_field('effect_load_heading', 'options');
-		$button_hover = get_field('effect_button_hover', 'options');
-		if ($effect_load_heading) {
-			$classes[] = 'bt-effect-heading-enable';
-		}
-		if ($button_hover) {
-			$classes[] = 'bt-button-hover-enable';
-		}
-		return $classes;
-	}
-	add_filter('body_class', 'woozio_body_class');
-}
 
 /* Custom search posts */
 function bt_custom_search_filter($query)

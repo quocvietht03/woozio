@@ -338,13 +338,20 @@ function woozio_display_product_countdown_and_sale_marquee()
 
     if ($has_countdown) {
         // Show countdown timer
+        $timezone = new DateTimeZone(wp_timezone_string());
+        $current_time = new DateTime('now', $timezone);
+        $current_time = $current_time->format('Y-m-d H:i:s');
+        
         $time = strtotime($time);
         $time = date('Y-m-d H:i:s', $time);
+        if ($current_time > $time) {
+            return;
+        }
     ?>
         <div class="bt-product-countdown-timer bt-countdown-product-sale">
             <div class="bt-countdown bt-countdown-product-js"
                 data-idproduct="<?php echo esc_attr($product->get_id()); ?>"
-                data-time="<?php echo esc_attr($time); ?>">
+                data-time="<?php echo esc_attr($time); ?>" data-current-time="<?php echo esc_attr($current_time); ?>">
                 <div class="bt-countdown--item">
                     <span class="bt-countdown--digits bt-countdown-days">--</span>
                     <span class="bt-countdown--label"><?php esc_html_e('Days', 'woozio'); ?></span>
@@ -556,7 +563,8 @@ function woozio_woocommerce_related_products_args($args)
 function woozio_remove_after_single_product_summary()
 {
     if (function_exists('get_field')) {
-        $enable_related_product = get_field('enable_related_product', 'options');
+        $related_posts = get_field('product_related_posts', 'options');
+        $enable_related_product = $related_posts['enable_related_product'];
 
         if (!$enable_related_product) {
             remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
@@ -3006,8 +3014,12 @@ function woozio_check_sale_date_countdown()
     $disable_sale = get_post_meta($product->get_id(), '_disable_sale_price', true);
 
     if (!empty($sale_date)) {
+        // Get current time in site's timezone (same as countdown function)
+        $timezone = new DateTimeZone(wp_timezone_string());
+        $current_time = new DateTime('now', $timezone);
+        $current_timestamp = $current_time->getTimestamp();
+        
         $sale_timestamp = strtotime($sale_date);
-        $current_timestamp = current_time('timestamp');
         // If sale date has passed and disable sale is checked
         if ($current_timestamp > $sale_timestamp) {
             if ($disable_sale === 'yes') {
@@ -3050,16 +3062,22 @@ function woozio_woocommerce_single_product_countdown()
     global $product;
     $time = get_post_meta($product->get_id(), '_product_datetime', true);
     $stock_status = $product->get_stock_status();
-
+    // Get current time in site's timezone
+    $timezone = new DateTimeZone(wp_timezone_string());
+    $current_time = new DateTime('now', $timezone);
+    $current_time = $current_time->format('Y-m-d H:i:s');
     if ($time && $stock_status != 'outofstock') {
         $time = strtotime($time);
         $time = date('Y-m-d H:i:s', $time);
+        if ($current_time > $time) {
+            return;
+        }
         ?>
         <div class="bt-countdown-product-sale">
             <span class="bt-heading"><?php echo esc_html__('Hurry Up! Offer ends in:', 'woozio'); ?></span>
             <div class="bt-countdown bt-countdown-product-js"
                 data-idproduct="<?php echo esc_attr($product->get_id()); ?>"
-                data-time="<?php echo esc_attr($time); ?>">
+                data-time="<?php echo esc_attr($time); ?>" data-current-time="<?php echo esc_attr($current_time); ?>">
 
                 <div class="bt-countdown--item">
                     <span class="bt-countdown--digits bt-countdown-days">--</span>
