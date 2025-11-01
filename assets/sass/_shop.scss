@@ -2053,6 +2053,7 @@
         top: auto;
       }
       .woocommerce-product-label {
+        --label-color: #3dab25;
         height: 22px;
         text-transform: capitalize;
         display: inline-block;
@@ -2063,18 +2064,20 @@
         min-height: auto;
         min-width: 48px;
         width: auto;
-        background: #3dab25;
+        background: var(--label-color);
         box-sizing: border-box;
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
         line-height: 22px;
-        &.featured {
-          background: #f03e3e;
+        &.hot-deal,
+        &.on-sale {
+          --label-color: #f03e3e;
         }
-        &.new-arrival,
-        &.trending {
-          background: #f0a750;
+        &.pre-order,
+        &.top-rated,
+        &.featured {
+          --label-color: #f0a750;
         }
       }
       .bt-product-icon-btn {
@@ -2554,7 +2557,7 @@
             }
           }
           .bt-delimiter {
-            margin: 0 6px;
+            margin: 0 5px;
             font-size: 18px;
             font-style: normal;
             font-weight: 600;
