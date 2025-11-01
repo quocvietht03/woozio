@@ -165,6 +165,15 @@ class Widget_MiniWishlist extends Widget_Base
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
+		
+		// Check if wishlist should be shown
+		$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
+		$show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;
+		
+		if (!$show_wishlist) {
+			return;
+		}
+		
 		$icon_wishlist = !empty($settings['wishlist_mini_icon']['url']) ? $settings['wishlist_mini_icon']['url'] : '';
 
 		// Get wishlist page URL from ACF options

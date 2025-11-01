@@ -892,6 +892,69 @@
                     "save_options": 0
                 },
                 {
+                    "key": "field_69057c04e3ccc",
+                    "label": "Show Wishlist",
+                    "name": "show_wishlist",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "33",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "",
+                    "default_value": 1,
+                    "allow_in_bindings": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1
+                },
+                {
+                    "key": "field_69057c53e3ccd",
+                    "label": "Show Compare",
+                    "name": "show_compare",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "33",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "",
+                    "default_value": 1,
+                    "allow_in_bindings": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1
+                },
+                {
+                    "key": "field_69057c5ee3cce",
+                    "label": "Show QuickView",
+                    "name": "show_quickview",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "34",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "",
+                    "default_value": 1,
+                    "allow_in_bindings": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1
+                },
+                {
                     "key": "field_67f72e862aa34",
                     "label": "Wishlist Toast",
                     "name": "wishlist_toast",
@@ -899,7 +962,15 @@
                     "type": "true_false",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_69057c04e3ccc",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -920,7 +991,15 @@
                     "type": "number",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_69057c04e3ccc",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -943,7 +1022,15 @@
                     "type": "true_false",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_69057c53e3ccd",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -964,7 +1051,15 @@
                     "type": "number",
                     "instructions": "",
                     "required": 0,
-                    "conditional_logic": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_69057c53e3ccd",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
                     "wrapper": {
                         "width": "50",
                         "class": "",
@@ -1070,7 +1165,15 @@
             "type": "group",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_69057c04e3ccc",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "50",
                 "class": "",
@@ -1115,7 +1218,15 @@
             "type": "group",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_69057c53e3ccd",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "50",
                 "class": "",
@@ -2385,5 +2496,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1761899896
+    "modified": 1761969020
 }

@@ -117,6 +117,15 @@ class Widget_ProductWishlist extends Widget_Base
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
+		
+		// Check if wishlist should be shown
+		$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
+		$show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;
+		
+		if (!$show_wishlist) {
+			return;
+		}
+		
 		$productwishlist = '';
 		if (isset($_GET['datashare']) && !empty($_GET['datashare'])) {
 			$wishlist = sanitize_text_field($_GET['datashare']);

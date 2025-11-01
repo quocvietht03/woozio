@@ -117,6 +117,15 @@ class Widget_ProductCompare extends Widget_Base
 	protected function render()
 	{
 		$settings = $this->get_settings_for_display();
+		
+		// Check if compare should be shown
+		$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
+		$show_compare = isset($archive_shop['show_compare']) ? $archive_shop['show_compare'] : true;
+		
+		if (!$show_compare) {
+			return;
+		}
+		
 		$productcompare = '';
 		if (isset($_GET['datashare']) && !empty($_GET['datashare'])) {
 			$wishlist = sanitize_text_field($_GET['datashare']);

@@ -1061,6 +1061,11 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                         ?>
                     </div>
                     <?php if (!empty($settings['hotspot_items'])) : ?>
+                        <?php
+                        $archive_shop_hotspot = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
+                        $show_quickview_hotspot = isset($archive_shop_hotspot['show_quickview']) ? $archive_shop_hotspot['show_quickview'] : true;
+                        $show_quickview = ($settings['show_quick_view'] === 'yes' && $show_quickview_hotspot);
+                        ?>
                         <div class="bt-hotspot-points">
                             <?php foreach ($settings['hotspot_items'] as $index => $item) : ?>
                                 <?php
@@ -1074,7 +1079,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                                                 <?php echo esc_html($index + 1); ?>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="bt-hotspot-product-info <?php echo esc_attr($settings['show_quick_view'] === 'yes' ? 'bt-quick-view' : ''); ?>">
+                                        <div class="bt-hotspot-product-info <?php echo esc_attr($show_quickview ? 'bt-quick-view' : ''); ?>">
                                             <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                 <?php
                                                 if (has_post_thumbnail($item['id_product'])) {
@@ -1087,11 +1092,12 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                                             <div class="bt-product-content">
                                                 <h4><a href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo esc_html($product->get_name()); ?></a></h4>
                                                 <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
+                                                <?php if ($show_quickview) : ?>
                                                 <a class="btn bt-product-quick-view-btn" href="#" data-id="<?php echo esc_attr($item['id_product']); ?>">
                                                     <?php esc_html_e('Quick View', 'woozio'); ?>
                                                 </a>
+                                                <?php endif; ?>
                                             </div>
-
                                         </div>
                                     </div>
                                 <?php endif; ?>
