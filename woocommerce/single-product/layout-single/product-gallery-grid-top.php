@@ -99,7 +99,8 @@ global $product;
      * @hooked woocommerce_output_related_products - 20
      */
     if (function_exists('get_field')) {
-        $enable_related_product = get_field('enable_related_product', 'options');
+        $related_posts = get_field('product_related_posts', 'options');
+        $enable_related_product = $related_posts['enable_related_product'];
         if ($enable_related_product) {
             do_action('woozio_woocommerce_template_related_products');
         }

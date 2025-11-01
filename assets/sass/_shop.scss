@@ -2458,7 +2458,7 @@
         flex-direction: row;
         padding: 9px 0;
         position: absolute;
-        bottom: 0;
+        bottom: 0; 
         transition: all 0.45s ease;
         overflow-x: hidden;
         width: 100%;
@@ -4840,7 +4840,7 @@
         &.pre-order,
         &.top-rated,
         &.featured {
-          --label-color: #f0a750;
+          --label-color: #f0a750; 
         }
         }
         .woocommerce-product-rating {

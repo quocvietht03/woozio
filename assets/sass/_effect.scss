@@ -1,13 +1,13 @@
 @keyframes effectFlash {
-    50%,
-    from,
-    to {
-        opacity: 1;
-    }
-    25%,
-    75% {
-        opacity: 0;
-    }
+	50%,
+	from,
+	to {
+		opacity: 1;
+	}
+	25%,
+	75% {
+		opacity: 0;
+	}
 }
 
 @keyframes effectSpin {
@@ -22,7 +22,7 @@
 
 @keyframes effectRotateAnimation {
 	0% {
-		transform: translateX(-50%) rotate(0deg); 
+		transform: translateX(-50%) rotate(0deg);
 	}
 
 	100% {
@@ -91,7 +91,6 @@
 		transform: scale(1);
 	}
 }
-
 
 @keyframes effectMoveHorizontal {
 	0% {
@@ -260,31 +259,12 @@
 	}
 }
 /* button hover */
-.bt-button-hover-enable {
-	.bt-button-hover {
-		transition: all 0.3s ease;
-		&:hover {
-			background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-			background-size: 200% 100%;
-			animation: shimmer 1.5s infinite linear;
-		}
-	}
-	.bt-button-el-hover {
-		.elementor-button-wrapper {
-			.elementor-button {
-				transition: all 0.3s ease;
-				&:hover {
-					background-image: linear-gradient(
-						90deg,
-						transparent 25%,
-						rgba(233, 233, 233, 0.39) 50%,
-						transparent 75%
-					);
-					background-size: 200% 100%;
-					animation: shimmer 1.5s infinite linear;
-				}
-			}
-		}
+.bt-button-hover {
+	transition: all 0.3s ease;
+	&:hover {
+		background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+		background-size: 200% 100%;
+		animation: shimmer 1.5s infinite linear;
 	}
 }
 /* animation load card */

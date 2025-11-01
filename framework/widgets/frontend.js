@@ -262,6 +262,43 @@
 		});
 	}
 
+	/* Helper function to handle cart toast vs cart mini logic */
+	function WoozioHandleCartAction(productId) {
+		var cart_toast = AJ_Options.cart_toast || false;
+		var show_cart_mini = AJ_Options.show_cart_mini || false;
+		var isMobile = $(window).width() <= 1023;
+
+		// Logic: If both are enabled, prioritize cart_toast (desktop: toast, mobile: mini cart)
+		// If only show_cart_mini is enabled: show mini cart on both desktop and mobile
+		// If only cart_toast is enabled: desktop show toast, mobile show mini cart
+		// If both are disabled: do nothing
+
+		if (cart_toast) {
+			// cart_toast is enabled
+			if (!isMobile) {
+				// Desktop: show toast
+				WoozioshowToast(productId, 'cart', 'add');
+			} else {
+				// Mobile: show mini cart
+				WoozioOpenMiniCart();
+			}
+		} else if (show_cart_mini) {
+			// Only show_cart_mini is enabled: show mini cart on both desktop and mobile
+			WoozioOpenMiniCart();
+		}
+		// If both are false, do nothing
+	}
+
+	/* Helper function to open mini cart sidebar */
+	function WoozioOpenMiniCart() {
+		$('.bt-mini-cart-sidebar').addClass('active');
+		const scrollbarWidth = window.innerWidth - $(window).width();
+		$('body').css({
+			'overflow': 'hidden',
+			'padding-right': scrollbarWidth + 'px'
+		});
+	}
+
 	function WoozioshowToast(idproduct, tools = 'cart', status = 'add') {
 		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
 			// ajax load product toast
@@ -506,32 +543,55 @@
 
 	const countDownHandler = function ($scope) {
 		const countDown = $scope.find('.bt-countdown-js');
-		const countDownDate = new Date(countDown.data('time')).getTime();
 
-		if (isNaN(countDownDate)) {
-			console.error('Invalid countdown date');
-			return;
-		}
-		const timer = setInterval(() => {
-			const now = new Date().getTime();
-			const distance = countDownDate - now;
+		function initCountdown() {
+			const countDownDate = new Date(countDown.data('time')).getTime();
+			const serverCurrentTime = countDown.data('current-time');
 
-			if (distance < 0) {
-				clearInterval(timer);
-				countDown.html('<div class="bt-countdown-expired">EXPIRED</div>');
+			if (isNaN(countDownDate)) {
+				console.error('Invalid countdown date');
 				return;
 			}
 
-			const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
-			const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-			const mins = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-			const secs = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+			// Use server current time as baseline and track elapsed time
+			const serverInitTime = serverCurrentTime ? new Date(serverCurrentTime).getTime() : new Date().getTime();
+			const clientInitTime = Date.now();
 
-			countDown.find('.bt-countdown-days').text(days);
-			countDown.find('.bt-countdown-hours').text(hours);
-			countDown.find('.bt-countdown-mins').text(mins);
-			countDown.find('.bt-countdown-secs').text(secs);
-		}, 1000);
+			const timer = setInterval(() => {
+				// Calculate current server time: initial server time + elapsed time since initialization
+				const elapsed = Date.now() - clientInitTime;
+				const now = serverInitTime + elapsed;
+				const distance = countDownDate - now;
+
+				if (distance < 0) {
+					clearInterval(timer);
+					// Check if infinity mode is enabled
+					const isInfinity = countDown.data('infinity') === 'yes';
+					if (isInfinity) {
+						// Reload countdown data and restart for infinity mode
+						setTimeout(() => {
+							initCountdown();
+						}, 1000);
+					} else {
+						// Stop and show expired message for normal countdown
+						countDown.html('<div class="bt-countdown-expired">EXPIRED</div>');
+					}
+					return;
+				}
+
+				const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+				const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+				const mins = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+				const secs = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+				countDown.find('.bt-countdown-days').text(days);
+				countDown.find('.bt-countdown-hours').text(hours);
+				countDown.find('.bt-countdown-mins').text(mins);
+				countDown.find('.bt-countdown-secs').text(secs);
+			}, 1000);
+		}
+
+		initCountdown();
 	}
 	const NotificationSliderHandler = function ($scope) {
 		const $notificationWrapper = $scope.find('.bt-elwg-site-notification--default ');
@@ -1328,21 +1388,13 @@
 				productIds = [];
 			}
 
-			// Show toast for each product (with delay)
+			// Handle cart action for each product (with delay)
 			productIds.forEach((item, idx) => {
 				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
 				setTimeout(() => {
-					WoozioshowToast(productId, 'cart', 'add');
+					WoozioHandleCartAction(productId);
 				}, idx * 300);
 			});
-			if ($(window).width() <= 1023) {
-				$('.bt-mini-cart-sidebar').addClass('active');
-				const scrollbarWidth = window.innerWidth - $(window).width();
-				$('body').css({
-					'overflow': 'hidden',
-					'padding-right': scrollbarWidth + 'px' // Prevent layout shift
-				});
-			}
 			if (productIds.length > 0) {
 				$.ajax({
 					type: 'POST',
@@ -2140,23 +2192,13 @@
 			const originalText = $button.text();
 			$button.prop('disabled', true).addClass('loading');
 
-			// Show toast for each product
-
+			// Handle cart action for each product
 			productIds.forEach((item, idx) => {
-
 				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
 				setTimeout(() => {
-					WoozioshowToast(productId, 'cart', 'add');
+					WoozioHandleCartAction(productId);
 				}, idx * 300);
 			});
-			if ($(window).width() <= 1023) {
-				$('.bt-mini-cart-sidebar').addClass('active');
-				const scrollbarWidth = window.innerWidth - $(window).width();
-				$('body').css({
-					'overflow': 'hidden',
-					'padding-right': scrollbarWidth + 'px' // Prevent layout shift
-				});
-			}
 			$.ajax({
 				url: AJ_Options.ajax_url,
 				type: 'POST',
@@ -2170,7 +2212,7 @@
 						$(document.body).trigger('updated_wc_div');
 						WoozioFreeShippingMessage();
 						$button.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-						
+
 					} else {
 						alert('Failed to add products to cart.');
 						$button.prop('disabled', false).text(originalText);
@@ -2221,13 +2263,13 @@
 						if (response.success) {
 							$message.html(response.data.message).addClass('success');
 							if (response.data.html) {
-								$result.html(response.data.html).slideDown(400, function() {
+								$result.html(response.data.html).slideDown(400, function () {
 									// Smooth scroll to result
 									$('html, body').animate({
 										scrollTop: $result.offset().top - 100
 									}, 600);
 								});
-								
+
 								// Initialize tabs
 								initOrderTrackingTabs($result);
 							}
@@ -2253,13 +2295,13 @@
 			const $tabBtns = $container.find('.bt-tab-btn');
 			const $tabContents = $container.find('.bt-tab-content');
 
-			$tabBtns.on('click', function() {
+			$tabBtns.on('click', function () {
 				const targetTab = $(this).data('tab');
-				
+
 				// Update buttons
 				$tabBtns.removeClass('active');
 				$(this).addClass('active');
-				
+
 				// Update content
 				$tabContents.removeClass('active');
 				$container.find('#' + targetTab + '-tab').addClass('active');

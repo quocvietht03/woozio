@@ -1122,6 +1122,42 @@
 			$('body').append('<div class="bt-toast"></div>');
 		}
 	}
+	/* Helper function to handle cart toast vs cart mini logic */
+	function WoozioHandleCartAction(productId) {
+		var cart_toast = AJ_Options.cart_toast || false;
+		var show_cart_mini = AJ_Options.show_cart_mini || false;
+		var isMobile = $(window).width() <= 1023;
+		
+		// Logic: If both are enabled, prioritize cart_toast (desktop: toast, mobile: mini cart)
+		// If only show_cart_mini is enabled: show mini cart on both desktop and mobile
+		// If only cart_toast is enabled: desktop show toast, mobile show mini cart
+		// If both are disabled: do nothing
+		
+		if (cart_toast) {
+			// cart_toast is enabled
+			if (!isMobile) {
+				// Desktop: show toast
+				WoozioshowToast(productId, 'cart', 'add');
+			} else {
+				// Mobile: show mini cart
+				WoozioOpenMiniCart();
+			}
+		} else if (show_cart_mini) {
+			// Only show_cart_mini is enabled: show mini cart on both desktop and mobile
+			WoozioOpenMiniCart();
+		}
+		// If both are false, do nothing
+	}
+	
+	/* Helper function to open mini cart sidebar */
+	function WoozioOpenMiniCart() {
+		$('.bt-mini-cart-sidebar').addClass('active');
+		const scrollbarWidth = window.innerWidth - $(window).width();
+		$('body').css({
+			'overflow': 'hidden',
+			'padding-right': scrollbarWidth + 'px'
+		});
+	}
 	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
 		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
 			// ajax load product toast
@@ -2430,10 +2466,11 @@
 
 		if ($countdowns.length === 0) return;
 
-		$countdowns.each(function () {
-			const $countdown = $(this);
-			const countDownDate = new Date($countdown.data('time')).getTime();
-			const productId = $countdown.data('idproduct');
+	$countdowns.each(function () {
+		const $countdown = $(this);
+		const countDownDate = new Date($countdown.data('time')).getTime();
+		const productId = $countdown.data('idproduct');
+		const serverCurrentTime = $countdown.data('current-time');
 
 			$countdown.addClass('bt-countdown-initialized');
 
@@ -2442,10 +2479,17 @@
 				return;
 			}
 
-			// Create individual timer for each countdown
-			const timer = setInterval(() => {
-				const now = new Date().getTime();
-				const distance = countDownDate - now;
+		// Use server current time as baseline and track elapsed time
+		const serverInitTime = serverCurrentTime ? new Date(serverCurrentTime).getTime() : new Date().getTime();
+		const clientInitTime = Date.now();
+		
+		// Create individual timer for each countdown
+		const timer = setInterval(() => {
+			// Calculate current server time: initial server time + elapsed time since initialization
+			const elapsed = Date.now() - clientInitTime;
+			const now = serverInitTime + elapsed;
+		
+			const distance = countDownDate - now;
 
 				if (distance < 0) {
 					clearInterval(timer);
@@ -2453,7 +2497,8 @@
 					syncCountdownToClones(productId, '<div class="bt-countdown-expired">EXPIRED</div>');
 
 					if ($('body').hasClass('single-product')) {
-						setTimeout(() => window.location.reload(), 1000);
+						$countdown.closest('.bt-countdown-product-sale').fadeOut(300);
+						$('.bt-product-percentage-sold').fadeOut(300);
 					} else {
 						$countdown.closest('.bt-product-countdown-timer').fadeOut(300);
 						$(`.swiper-slide-duplicate .bt-countdown-product-js[data-idproduct="${productId}"]`)
@@ -2784,19 +2829,9 @@
 				success: function (response) {
 					if (response.success) {
 						$('.bt-js-add-to-cart-variable').removeClass('loading');
-						if (variation_id) {
-							WoozioshowToast(variation_id, 'cart', 'add');
-						} else {
-							WoozioshowToast(product_id, 'cart', 'add');
-						}
-						// Open mini cart on mobile
-						if ($(window).width() <= 1023) {
-							$('.bt-mini-cart-sidebar').addClass('active');
-							const scrollbarWidth = window.innerWidth - $(window).width();
-							$('body').css({
-								'overflow': 'hidden',
-								'padding-right': scrollbarWidth + 'px'
-							});
+						var productId = variation_id || product_id;
+						if (productId) {
+							WoozioHandleCartAction(productId);
 						}
 						
 						// Update mini cart after successful add to cart
@@ -3082,11 +3117,11 @@
 				},
 				success: function (response) {
 					if (response.success) {
-						// Show toast for each added product with sequential delay
-						if (AJ_Options.cart_toast && response.data.added) {
+						// Handle cart action for each added product with sequential delay
+						if (response.data.added && response.data.added.length > 0) {
 							response.data.added.forEach((productId, idx) => {
 								setTimeout(() => {
-									WoozioshowToast(productId, 'cart', 'add');
+									WoozioHandleCartAction(productId);
 								}, idx * 300);
 							});
 						}
@@ -3094,16 +3129,6 @@
 						// Trigger WooCommerce added_to_cart event
 						$(document.body).trigger('wc_fragment_refresh');
 						$addToCartBtn.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-
-						// Open mini cart on mobile
-						if ($(window).width() <= 1023) {
-							$('.bt-mini-cart-sidebar').addClass('active');
-							const scrollbarWidth = window.innerWidth - $(window).width();
-							$('body').css({
-								'overflow': 'hidden',
-								'padding-right': scrollbarWidth + 'px'
-							});
-						}
 					}
 
 					// Reset button
@@ -3180,17 +3205,7 @@
 				productId = $button.data('product_id');
 			}
 			if (productId) {
-				if (AJ_Options.cart_toast) {
-					WoozioshowToast(productId, 'cart', 'add');
-				}
-				if ($(window).width() <= 1023) {
-					$('.bt-mini-cart-sidebar').addClass('active');
-					const scrollbarWidth = window.innerWidth - $(window).width();
-					$('body').css({
-						'overflow': 'hidden',
-						'padding-right': scrollbarWidth + 'px' // Prevent layout shift
-					});
-				}
+				WoozioHandleCartAction(productId);
 			}
 		}
 	});

@@ -178,7 +178,8 @@ class Widget_CountDown extends Widget_Base
 	 * @param string $base_name Base option name
 	 * @return string
 	 */
-	protected function get_widget_option_name($base_name) {
+	protected function get_widget_option_name($base_name)
+	{
 		return sprintf('woozio_countdown_%s_%s', $this->get_id(), $base_name);
 	}
 
@@ -188,7 +189,8 @@ class Widget_CountDown extends Widget_Base
 	 * @param array $settings Widget settings
 	 * @return string Formatted date string
 	 */
-	protected function get_infinity_countdown_date($settings) {
+	protected function get_infinity_countdown_date($settings)
+	{
 		// Validate infinity date input
 		$infinity_days = absint($settings['infinity_date']);
 		if ($infinity_days < 1 || $infinity_days > 365) {
@@ -198,11 +200,11 @@ class Widget_CountDown extends Widget_Base
 		// Get current date in site's timezone
 		$timezone = new DateTimeZone(wp_timezone_string());
 		$current_date = new DateTime('now', $timezone);
-		
+
 		// Get option names for this widget instance
 		$countdown_option = $this->get_widget_option_name('date');
 		$days_option = $this->get_widget_option_name('days');
-		
+
 		// Get saved values
 		$last_countdown = get_option($countdown_option);
 		$last_days = absint(get_option($days_option));
@@ -222,11 +224,11 @@ class Widget_CountDown extends Widget_Base
 			// Calculate new date by adding days
 			$current_date->modify(sprintf('+%d days', $infinity_days));
 			$new_countdown = $current_date->format('Y-m-d H:i:s');
-			
+
 			// Save with autoload=no since this is widget-specific data
 			update_option($countdown_option, $new_countdown, 'no');
 			update_option($days_option, $infinity_days, 'no');
-			
+
 			return $new_countdown;
 		}
 
@@ -237,13 +239,16 @@ class Widget_CountDown extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 		$date_countdown = $settings['countdown_date'];
-
 		if ($settings['show_infinity_date'] === 'yes') {
 			$date_countdown = $this->get_infinity_countdown_date($settings);
 		}
+		// Get current date in site's timezone
+		$timezone = new DateTimeZone(wp_timezone_string());
+		$current_date = new DateTime('now', $timezone);
+		$current_date = $current_date->format('Y-m-d H:i:s');
 ?>
 		<div class="bt-elwg-countdown--default">
-			<div class="bt-countdown bt-countdown-js" data-time="<?php echo esc_attr($date_countdown); ?>">
+			<div class="bt-countdown bt-countdown-js" data-infinity="<?php echo esc_attr($settings['show_infinity_date']); ?>" data-time="<?php echo esc_attr($date_countdown); ?>" data-current-time="<?php echo esc_attr($current_date); ?>">
 				<div class="bt-countdown--item">
 					<span class="bt-countdown--digits bt-countdown-days">--</span>
 					<span class="bt-countdown--label"><?php _e('Days', 'woozio'); ?></span>
