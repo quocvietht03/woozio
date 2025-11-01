@@ -1388,13 +1388,7 @@
 				productIds = [];
 			}
 
-			// Handle cart action for each product (with delay)
-			productIds.forEach((item, idx) => {
-				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
-				setTimeout(() => {
-					WoozioHandleCartAction(productId);
-				}, idx * 300);
-			});
+
 			if (productIds.length > 0) {
 				$.ajax({
 					type: 'POST',
@@ -1414,6 +1408,13 @@
 							WoozioFreeShippingMessage();
 							$this.html('View Cart');
 							$this.addClass('bt-view-cart');
+							// Handle cart action for each product (with delay)
+							productIds.forEach((item, idx) => {
+								const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+								setTimeout(() => {
+									WoozioHandleCartAction(productId);
+								}, idx * 300);
+							});
 						}
 					},
 					error: function (jqXHR, textStatus, errorThrown) {
@@ -2192,13 +2193,7 @@
 			const originalText = $button.text();
 			$button.prop('disabled', true).addClass('loading');
 
-			// Handle cart action for each product
-			productIds.forEach((item, idx) => {
-				const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
-				setTimeout(() => {
-					WoozioHandleCartAction(productId);
-				}, idx * 300);
-			});
+
 			$.ajax({
 				url: AJ_Options.ajax_url,
 				type: 'POST',
@@ -2212,7 +2207,13 @@
 						$(document.body).trigger('updated_wc_div');
 						WoozioFreeShippingMessage();
 						$button.text('View Cart').prop('disabled', false).addClass('bt-view-cart');
-
+						// Handle cart action for each product
+						productIds.forEach((item, idx) => {
+							const productId = item.variation_id && item.variation_id !== 0 ? item.variation_id : item.product_id;
+							setTimeout(() => {
+								WoozioHandleCartAction(productId);
+							}, idx * 300);
+						});
 					} else {
 						alert('Failed to add products to cart.');
 						$button.prop('disabled', false).text(originalText);
