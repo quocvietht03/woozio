@@ -2482,6 +2482,9 @@
             width: 70%;
             gap: 15px;
             align-items: center;
+            padding-bottom: 0;
+            background: transparent;
+            animation: none;
             .bt-skeleton-image {
               height: 70px;
               width: 70px;
