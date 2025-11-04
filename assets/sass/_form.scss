@@ -142,11 +142,13 @@
           }
           &::before {
             content: "";
-            background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9Ikljb24vQXJyb3cvRG93biI+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xMy4zNTQgNi4zNTQwM0w4LjM1NDAzIDExLjM1NEM4LjMwNzU5IDExLjQwMDUgOC4yNTI0NSAxMS40Mzc0IDguMTkxNzUgMTEuNDYyNkM4LjEzMTA1IDExLjQ4NzcgOC4wNjU5OSAxMS41MDA3IDguMDAwMjggMTEuNTAwN0M3LjkzNDU3IDExLjUwMDcgNy44Njk1MSAxMS40ODc3IDcuODA4ODEgMTEuNDYyNkM3Ljc0ODExIDExLjQzNzQgNy42OTI5NiAxMS40MDA1IDcuNjQ2NTMgMTEuMzU0TDIuNjQ2NTMgNi4zNTQwM0MyLjU1MjcxIDYuMjYwMjEgMi41IDYuMTMyOTYgMi41IDYuMDAwMjhDMi41IDUuODY3NiAyLjU1MjcxIDUuNzQwMzUgMi42NDY1MyA1LjY0NjUzQzIuNzQwMzUgNS41NTI3MSAyLjg2NzYgNS41IDMuMDAwMjggNS41QzMuMTMyOTYgNS41IDMuMjYwMjEgNS41NTI3MSAzLjM1NDAzIDUuNjQ2NTNMOC4wMDAyOCAxMC4yOTM0TDEyLjY0NjUgNS42NDY1M0MxMi42OTMgNS42MDAwNyAxMi43NDgxIDUuNTYzMjIgMTIuODA4OCA1LjUzODA4QzEyLjg2OTUgNS41MTI5NCAxMi45MzQ2IDUuNSAxMy4wMDAzIDUuNUMxMy4wNjYgNS41IDEzLjEzMSA1LjUxMjk0IDEzLjE5MTcgNS41MzgwOEMxMy4yNTI0IDUuNTYzMjIgMTMuMzA3NiA1LjYwMDA3IDEzLjM1NCA1LjY0NjUzQzEzLjQwMDUgNS42OTI5OCAxMy40MzczIDUuNzQ4MTMgMTMuNDYyNSA1LjgwODgzQzEzLjQ4NzYgNS44Njk1MyAxMy41MDA2IDUuOTM0NTggMTMuNTAwNiA2LjAwMDI4QzEzLjUwMDYgNi4wNjU5OCAxMy40ODc2IDYuMTMxMDMgMTMuNDYyNSA2LjE5MTczQzEzLjQzNzMgNi4yNTI0MiAxMy40MDA1IDYuMzA3NTcgMTMuMzU0IDYuMzU0MDNaIiBmaWxsPSIjNjM2NjY2Ii8+CjwvZz4KPC9zdmc+Cg==");
+            background-image: url("../images/arrow-down-light.svg");
             width: 16px;
             height: 16px;
             display: block;
             transition: 0.3s all;
+            background-repeat: no-repeat;
+            background-position: center;
           }
         }
       }
@@ -550,7 +552,7 @@
             button[type="submit"] {
               color: transparent !important;
             }
-            &::after{
+            &::after {
               border: 2px #fff solid;
               border-top: 2px transparent solid;
               top: 15px;
@@ -586,7 +588,7 @@
             height: 56px;
             padding: 10px 20px 10px 20px;
             border-radius: 0;
-            background: rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: #fff;
             &::placeholder {
@@ -599,7 +601,7 @@
           top: auto;
           right: auto;
           input[type="submit"] {
-              color: $color-primary !important;
+            color: $color-primary !important;
             background-color: #fff !important;
             padding: 16px 32px !important;
             height: 56px !important;
@@ -612,7 +614,7 @@
             button[type="submit"] {
               color: transparent !important;
             }
-            &::after{
+            &::after {
               border: 2px $color-primary solid;
               border-top: 2px transparent solid;
               top: 15px;

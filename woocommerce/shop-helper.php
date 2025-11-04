@@ -210,6 +210,11 @@ function woozio_woocommerce_single_product_meta()
 // Size Guide Button - Display before quantity (for simple products or products without size)
 function woozio_size_guide_button_before_quantity()
 {
+    // Only show on single product pages
+    if (!is_product()) {
+        return;
+    }
+
     global $product;
 
     // Check if size guide is enabled for this product

@@ -245,7 +245,21 @@ class Widget_SearchProduct extends Widget_Base
 					'{{WRAPPER}} .bt-search--form' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 				'condition' => [
-					'layout_type' => 'layout-02',
+					'layout_type' => ['layout-02', 'layout-03'],
+				],
+			]
+		);
+		$this->add_control(
+			'input_padding',
+			[
+				'label' => __('Input Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-search--form input[type="search"]' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'condition' => [
+					'layout_type' => ['layout-02', 'layout-03'],
 				],
 			]
 		);
@@ -260,7 +274,7 @@ class Widget_SearchProduct extends Widget_Base
 					'{{WRAPPER}} .bt-search--form' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 				'condition' => [
-					'layout_type' => 'layout-02',
+					'layout_type' => ['layout-02', 'layout-03'],
 				],
 			]
 		);

@@ -77,13 +77,13 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 						<div class="bt-name"><?php echo wc_attribute_label($attribute_name) . ':'; ?></div>
 						<div class="bt-result"></div>
 						<?php 
-						// Display Size Guide button inline with Size label
-						if ($is_size_attr) {
+						// Display Size Guide button inline with Size label - only on single product pages
+						if ($is_size_attr && is_product()) {
 							// Check if size guide is enabled for this product
 							$enable_size_guide = get_post_meta($product->get_id(), '_enable_size_guide', true);
 							$size_guide = get_field('size_guide', 'option');
 							
-							if ($enable_size_guide === 'yes' && !empty($size_guide)) {
+							if ($enable_size_guide === 'yes' && !empty($size_guide) ) {
 								?>
 								<div class="bt-size-guide-wrapper bt-inline-position">
 									<a href="#bt-size-guide-popup" class="bt-size-guide-button bt-js-open-popup-link">
