@@ -654,7 +654,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 .bt-cover-image {
   position: relative;
   overflow: hidden;
-  background: #cdcdcd;
+  background-color: #F6F6F4;
   background-image: url(../images/placeholder-image.jpg);
   background-repeat: no-repeat;
   background-position: center;
@@ -672,7 +672,7 @@ div[data-name=more_information] .acf-editor-wrap.delay .wp-editor-area {
 .bt-cover-iframe {
   position: relative;
   overflow: hidden;
-  background: #cdcdcd;
+  background: #F6F6F4;
   padding-bottom: 46.5%;
 }
 .bt-ab-center {
