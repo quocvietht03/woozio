@@ -3146,6 +3146,68 @@
 		calculateTotal();
 	}
 
+	/* Elementor Slider Control - Button click to trigger slider arrows */
+	function WoozioElementorSliderControl() {
+		// Handle click on buttons with class bt-click-right-{name-slider} or bt-click-left-{name-slider}
+		$(document).on('click', '[class*="bt-click-right-"], [class*="bt-click-left-"]', function (e) {
+			e.preventDefault();
+			
+			var $button = $(this);
+			var buttonClasses = $button.attr('class').split(/\s+/);
+			var sliderName = '';
+			var direction = '';
+			
+			// Find the class that contains bt-click-right- or bt-click-left-
+			buttonClasses.forEach(function(className) {
+				if (className.indexOf('bt-click-right-') === 0) {
+					sliderName = className.replace('bt-click-right-', '');
+					direction = 'next';
+				} else if (className.indexOf('bt-click-left-') === 0) {
+					sliderName = className.replace('bt-click-left-', '');
+					direction = 'prev';
+				}
+			});
+			
+			// If we found a slider name and direction
+			if (sliderName && direction) {
+				// Find the slider with class {name-slider}
+				var $slider = $('.' + sliderName);
+				
+				if ($slider.length > 0) {
+					// Try to find Swiper instance on the slider
+					var sliderElement = $slider[0];
+					
+					// Check if it's a Swiper slider
+					if (sliderElement.swiper) {
+						// Use Swiper API to navigate
+						if (direction === 'next') {
+							sliderElement.swiper.slideNext();
+						} else {
+							sliderElement.swiper.slidePrev();
+						}
+					} else {
+						// Fallback: try to find and click the arrow buttons
+						var arrowSelector = direction === 'next' 
+							? '.swiper-button-next, .elementor-swiper-button-next, .slick-next, [class*="arrow-next"], [class*="button-next"]'
+							: '.swiper-button-prev, .elementor-swiper-button-prev, .slick-prev, [class*="arrow-prev"], [class*="button-prev"]';
+						
+						var $arrow = $slider.find(arrowSelector).first();
+						
+						if ($arrow.length > 0) {
+							$arrow.trigger('click');
+						} else {
+							// Try to find arrow buttons within the slider container
+							$arrow = $slider.closest('.elementor-widget-container, .elementor-container').find(arrowSelector).first();
+							if ($arrow.length > 0) {
+								$arrow.trigger('click');
+							}
+						}
+					}
+				}
+			}
+		});
+	}
+
 	jQuery(document).ready(function ($) {
 		WoozioSubmenuAuto();
 		WoozioToggleMenuMobile();
@@ -3187,6 +3249,7 @@
 		WoozioAddToCartVariable();
 		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
 		WoozioFrequentlyBoughtTogether();
+		WoozioElementorSliderControl(); // Elementor slider control via button clicks
 	});
 	// Block WooCommerce from changing images
 	jQuery(function ($) {

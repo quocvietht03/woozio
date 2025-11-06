@@ -103,7 +103,9 @@ class ElementorWidgets
 			'vertical-banner-slider',
 			'offers-slider',
 			'bundle-save',
-			'order-tracking'
+			'order-tracking',
+			'list-text-image-hover',
+			'flicker-collage'
 		);
 
 		return $this->widgets;
@@ -254,6 +256,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BundleSave\Widget_BundleSave());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OrderTracking\Widget_OrderTracking());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ListTextImageHover\Widget_ListTextImageHover());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\FlickerCollage\Widget_FlickerCollage());
 	}
 
 	/**

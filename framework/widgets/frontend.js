@@ -2310,6 +2310,210 @@
 		}
 	};
 
+	const FlickerCollageHandler = function ($scope, $) {
+		const $widget = $scope.find('.bt-elwg-flicker-collage');
+		if (!$widget.length) return;
+
+		// Don't run animation in Elementor editor
+		const isEditor = $widget.data('elementor-editor') === 'true' ||
+			$('body').hasClass('elementor-editor-active') ||
+			(typeof elementorFrontend !== 'undefined' && elementorFrontend.isEditMode && elementorFrontend.isEditMode());
+
+		if (isEditor) {
+			return;
+		}
+
+		const $block = $widget.find('.bt-flicker-collage--list-images');
+		if (!$block.length) return;
+
+		const $items = $block.find('.bt-flicker-collage_item');
+		if (!$items.length) return;
+
+		const items = $items.toArray();
+		let currentIndex = 0;
+		let animationInterval;
+
+		function getPositions() {
+			const currentWidth = window.innerWidth;
+			
+			// Get grid-positions data from block
+			const gridPositionsData = $block.data('grid-positions');
+			
+			if (!gridPositionsData || !gridPositionsData.breakpoints) {
+				return [];
+			}
+
+			let gridAreas = [];
+
+			// Get all breakpoint values (excluding 'default')
+			const breakpointValues = Object.keys(gridPositionsData.breakpoints)
+				.map(Number)
+				.filter(function(val) { return !isNaN(val); })
+				.sort(function(a, b) { return a - b; }); // Sort ascending (767, 1024, 1200, 1366)
+
+			// If currentWidth > largest breakpoint (1366), use default
+			if (breakpointValues.length > 0 && currentWidth > breakpointValues[breakpointValues.length - 1]) {
+				gridAreas = gridPositionsData.breakpoints.default || [];
+			} else {
+				// Find the smallest breakpoint that is >= currentWidth
+				let selectedBreakpoint = null;
+				for (let i = 0; i < breakpointValues.length; i++) {
+					if (currentWidth <= breakpointValues[i]) {
+						selectedBreakpoint = breakpointValues[i];
+						break;
+					}
+				}
+
+				// Use selected breakpoint or fallback to default
+				if (selectedBreakpoint !== null && gridPositionsData.breakpoints[selectedBreakpoint]) {
+					gridAreas = gridPositionsData.breakpoints[selectedBreakpoint];
+				} else {
+					gridAreas = gridPositionsData.breakpoints.default || [];
+				}
+			}
+
+			// Convert array of grid_area strings to array of objects with gridArea property
+			const positions = gridAreas.map(function(gridArea) {
+				// Trim whitespace from gridArea string
+				return { gridArea: String(gridArea).trim() };
+			});
+
+			return positions;
+		}
+
+		// Get random position from all items' positions
+		function getRandomPosition() {
+			const positions = getPositions();
+			return positions[Math.floor(Math.random() * positions.length)];
+		}
+
+		// Check if position overlaps with visible items
+		function isOverlapping(newPosition) {
+			return items.some(function(item) {
+				if (item.classList.contains('visible')) {
+					return window.getComputedStyle(item).gridArea === newPosition.gridArea;
+				}
+				return false;
+			});
+		}
+
+		// Get unique position that doesn't overlap
+		function getUniquePosition() {
+			let newPosition;
+			let tries = 0;
+			const maxTries = 10;
+
+			do {
+				newPosition = getRandomPosition();
+				tries++;
+			} while (isOverlapping(newPosition) && tries < maxTries);
+
+			return newPosition;
+		}
+
+		// Update visibility and positions
+		function updateVisibility() {
+			// Remove visible class from all items
+			items.forEach(function(item) {
+				item.classList.remove('visible');
+			});
+
+			// Add visible class to 2 items (current and next)
+			for (let i = 0; i < 2; i++) {
+				const index = (currentIndex + i) % items.length;
+				items[index].classList.add('visible');
+			}
+
+			// Move disappearing item to new position after delay
+			const disappearingIndex = (currentIndex + 3) % items.length;
+			const disappearingItem = items[disappearingIndex];
+
+			setTimeout(function() {
+				const newPosition = getUniquePosition();
+				disappearingItem.style.gridArea = newPosition.gridArea;
+				disappearingItem.classList.add('visible');
+			}, 1500);
+
+			// Update current index
+			currentIndex = (currentIndex + 1) % items.length;
+		}
+
+		// Start animation
+		function startAnimation() {
+			if (animationInterval) {
+				clearInterval(animationInterval);
+			}
+			animationInterval = setInterval(updateVisibility, 1500);
+		}
+
+		// Initialize
+		startAnimation();
+
+		// Handle window resize
+		let resizeTimer;
+		$(window).on('resize', function() {
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(function() {
+				// Reset visibility on resize
+				items.forEach(function(item) {
+					item.classList.remove('visible');
+				});
+				// Restart animation
+				startAnimation();
+			}, 250);
+		});
+	};
+
+	const ImageListWidgetHandler = function ($scope, $) {
+		const $widget = $scope.find('.bt-elwg-list-text-image-hover--default');
+		if (!$widget.length) return;
+
+		const $list = $widget.find('.list-text-image-hover--list');
+		const $items = $widget.find('.list-text-image-hover--item');
+		const $images = $widget.find('.list-text-image-hover--image');
+		const defaultActive = parseInt($widget.data('default-active')) || 0;
+
+		// Set active item by index
+		const setActive = (index) => {
+			$items.removeClass('active');
+			$images.removeClass('active');
+			$items.filter('[data-index="' + index + '"]').addClass('active');
+			$images.filter('[data-image-index="' + index + '"]').addClass('active');
+		};
+
+		// Get index of item being hovered
+		const getHoveredIndex = () => {
+			let index = null;
+			$items.each(function () {
+				const $item = $(this);
+				if ($item.is(':hover') || $item.find(':hover').length) {
+					index = parseInt($item.data('index'));
+					return false;
+				}
+			});
+			return index;
+		};
+
+		// Initialize: check hover first, then default
+		const init = () => {
+			const hovered = getHoveredIndex();
+			setActive(hovered !== null ? hovered : defaultActive);
+		};
+
+		// Initialize on load
+		init();
+		setTimeout(init, 100);
+
+		// Hover events
+		$items.on('mouseenter', function () {
+			setActive(parseInt($(this).data('index')));
+		});
+
+		$list.on('mouseleave', () => {
+			setActive(defaultActive);
+		});
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
@@ -2346,6 +2550,8 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-vertical-banner-slider.default', VerticalBannerSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-bundle-save.default', BundleSaveHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-order-tracking.default', OrderTrackingHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/list-text-image-hover.default', ImageListWidgetHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/flicker-collage.default', FlickerCollageHandler);
 	});
 
 })(jQuery);

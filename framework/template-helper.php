@@ -927,3 +927,96 @@ function bt_elwg_get_slider_settings($settings, $breakpoints)
 	}
 	return $slider_settings;
 }
+
+// Grid Area Positions for Flicker Collage
+function bt_elwg_get_grid_area_positions($collage_items, $breakpoints)
+{
+	$result = [
+		'breakpoints' => []
+	];
+
+	// Initialize breakpoints array with default
+	$result['breakpoints']['default'] = [];
+
+	// Initialize breakpoints for each breakpoint value
+	foreach ($breakpoints as $key => $breakpoint) {
+		$breakpoint_value = $breakpoint->get_value();
+		$result['breakpoints'][$breakpoint_value] = [];
+	}
+
+	// Process each item
+	foreach ($collage_items as $item) {
+		// Helper: validate and get grid_area value
+		$get_grid_area = function ($key, $default = '1 / 1 / 3 / 3') use ($item) {
+			if (isset($item[$key]) && !empty($item[$key]) && trim($item[$key]) !== '') {
+				$value = trim($item[$key]);
+				// Validate format: should be "num / num / num / num"
+				if (preg_match('/^\d+\s*\/\s*\d+\s*\/\s*\d+\s*\/\s*\d+$/', $value)) {
+					return $value;
+				}
+			}
+			return $default;
+		};
+
+		// Get default desktop grid area
+		$default_grid_area = $get_grid_area('grid_area', '1 / 1 / 3 / 3');
+		
+		// Add default grid area
+		$result['breakpoints']['default'][] = $default_grid_area;
+
+		// Helper: check if grid_area value exists and is set
+		$has_grid_area_value = function ($key) use ($item) {
+			return isset($item[$key]) && !empty($item[$key]) && trim($item[$key]) !== '';
+		};
+
+		// Helper: get grid area with fallback chain (fallback to larger breakpoints)
+		$get_grid_area_with_fallback = function ($key) use ($item, $get_grid_area, $default_grid_area, $has_grid_area_value) {
+			// Get current breakpoint key first
+			$current_key = match ($key) {
+				'mobile' => 'grid_area_mobile',
+				'mobile_extra' => 'grid_area_mobile_extra',
+				'tablet' => 'grid_area_tablet',
+				'tablet_extra' => 'grid_area_tablet_extra',
+				'laptop' => 'grid_area_laptop',
+				'desktop' => 'grid_area',
+				default => 'grid_area'
+			};
+
+			// Check if current breakpoint has value
+			if ($has_grid_area_value($current_key)) {
+				return $get_grid_area($current_key, $default_grid_area);
+			}
+
+			// Fallback chain: fallback to larger breakpoints (larger to smaller)
+			$fallback_chain = match ($key) {
+				'mobile' => ['grid_area_tablet', 'grid_area_tablet_extra', 'grid_area_laptop', 'grid_area'],
+				'mobile_extra' => ['grid_area_tablet', 'grid_area_tablet_extra', 'grid_area_laptop', 'grid_area'],
+				'tablet' => ['grid_area_tablet_extra', 'grid_area_laptop', 'grid_area'],
+				'tablet_extra' => ['grid_area_laptop', 'grid_area'],
+				'laptop' => ['grid_area'],
+				'desktop' => [], // Desktop already checked above
+				default => ['grid_area']
+			};
+
+			foreach ($fallback_chain as $fallback_key) {
+				if ($has_grid_area_value($fallback_key)) {
+					return $get_grid_area($fallback_key, $default_grid_area);
+				}
+			}
+
+			return $default_grid_area;
+		};
+
+		// Get grid area for each breakpoint
+		foreach ($breakpoints as $key => $breakpoint) {
+			$breakpoint_value = $breakpoint->get_value();
+			
+			// Get grid area for this breakpoint with proper fallback
+			$grid_area = $get_grid_area_with_fallback($key);
+
+			$result['breakpoints'][$breakpoint_value][] = $grid_area;
+		}
+	}
+
+	return $result;
+}
