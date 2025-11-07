@@ -843,6 +843,8 @@
 		// Function to update note button class based on localStorage
 		function updateNoteButtonClass() {
 			const $noteBtn = $sidebar.find('.bt-mini-cart-note-btn');
+			if (!$noteBtn.length) return; // Button not found, skip
+			
 			try {
 				const savedNote = localStorage.getItem('bt_cart_note');
 				if (savedNote && savedNote.trim() !== '') {
@@ -858,13 +860,16 @@
 		// Update note button class on init
 		updateNoteButtonClass();
 
+		// Update note button class on cart events
+		$('body').on('added_to_cart removed_from_cart wc_fragments_refreshed', function () {
+			setTimeout(updateNoteButtonClass, 100);
+		});
 
-		// Update when cart is updated
+		// Update padding when cart is updated
 		$('body').on('wc_fragment_refresh updated_wc_div wc_fragments_refreshed', function () {
 			// Use setTimeout to ensure DOM is updated
 			setTimeout(function () {
 				updateBottomCartPadding();
-				updateNoteButtonClass();
 			}, 100);
 		});
 

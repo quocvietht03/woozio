@@ -2849,6 +2849,8 @@
 									} else {
 										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
 									}
+									// Trigger fragments refreshed event to update note button class
+									$(document.body).trigger('wc_fragments_refreshed');
 								}
 							},
 							error: function () {

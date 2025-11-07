@@ -281,7 +281,7 @@
                     "name": "commitment",
                     "aria-label": "",
                     "type": "textarea",
-                    "instructions": "show mini cart",
+                    "instructions": "display in mini cart",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -2517,5 +2517,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1762503634
+    "modified": 1762506384
 }
