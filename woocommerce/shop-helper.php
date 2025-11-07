@@ -2653,6 +2653,23 @@ function woozio_products_add_to_cart_variable()
 add_action('wp_ajax_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
 add_action('wp_ajax_nopriv_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
 
+/* Ensure shipping is calculated before mini cart is rendered */
+function woozio_calculate_shipping_before_mini_cart() {
+    if (WC()->cart && !WC()->cart->is_empty() && WC()->cart->needs_shipping()) {
+        // Set constant to ensure WooCommerce processes cart correctly
+        wc_maybe_define_constant('WOOCOMMERCE_CART', true);
+        
+        // Calculate shipping if not already calculated
+        if (!WC()->cart->has_calculated_shipping()) {
+            WC()->cart->calculate_shipping();
+        }
+        
+        // Ensure totals are calculated
+        WC()->cart->calculate_totals();
+    }
+}
+add_action('woocommerce_before_mini_cart', 'woozio_calculate_shipping_before_mini_cart', 5);
+
 /* Product share */
 if (!function_exists('woozio_product_share_render')) {
     function woozio_product_share_render()

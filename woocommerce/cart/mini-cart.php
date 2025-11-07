@@ -165,28 +165,25 @@ do_action('woocommerce_before_mini_cart'); ?>
 		} else {
 			$site_infor = array();
 		}
-
-		if (!empty($site_infor['payment_icons'])) {
-		?>
+		if (!empty($site_infor['payment_icons'])) { ?>
 			<div class="bt-icon-payment--mini-cart">
-				<?php foreach ($site_infor['payment_icons'] as $image) : ?>
-					<?php
-					if (empty($image['url'])) {
-						continue;
-					}
-					?>
-					<?php
+				<?php foreach ($site_infor['payment_icons'] as $image) : 
+					if (empty($image['url'])) continue;
+					
 					if (!empty($image['id'])) {
 						echo wp_get_attachment_image($image['id'], 'thumbnail');
 					} else {
 						echo '<img src="' . esc_url('#') . '" alt="' . esc_html__('Awaiting payment icon', 'woozio') . '">';
 					}
-					?>
-				<?php endforeach; ?>
+				endforeach; ?>
 			</div>
-		<?php
-		}
-		?>
+		<?php }
+		
+		if (!empty($site_infor['commitment'])) { ?>
+			<div class="bt-mini-cart-commitment">
+				<p><?php echo esc_html($site_infor['commitment']); ?></p>
+			</div>
+		<?php } ?>
 	</div>
 <?php else : ?>
 	<div class="bt-cart-empty">

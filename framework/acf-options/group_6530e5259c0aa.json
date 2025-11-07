@@ -276,6 +276,27 @@
                     "preview_size": "thumbnail"
                 },
                 {
+                    "key": "field_690daae76c758",
+                    "label": "Commitment",
+                    "name": "commitment",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "show mini cart",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Guaranteed safe & secure checkout",
+                    "maxlength": "",
+                    "allow_in_bindings": 1,
+                    "rows": 2,
+                    "placeholder": "",
+                    "new_lines": ""
+                },
+                {
                     "key": "field_653c7d5153030",
                     "label": "Copyright",
                     "name": "site_copyright",
@@ -285,7 +306,7 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "50",
+                        "width": "",
                         "class": "",
                         "id": ""
                     },
@@ -2496,5 +2517,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1761969020
+    "modified": 1762503634
 }

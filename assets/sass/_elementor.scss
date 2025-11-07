@@ -1329,8 +1329,22 @@
           flex: 1;
           padding: 12px 10px;
           justify-content: center;
+          position: relative;
           &.bt-mini-cart-note-btn {
             border-right: 1px solid #e9e9e9;
+            &.have-notes {
+              &::after {
+                content: "";
+                position: relative;
+                margin-left: -4px;
+                top: -4px;
+                right: 0;
+                width: 6px;
+                height: 6px;
+                background: $color-accent;
+                border-radius: 50%;
+              }
+            }
           }
           svg {
             width: 20px;
@@ -1598,6 +1612,19 @@
           max-width: 32px;
         }
       }
+      .bt-mini-cart-commitment{
+        p{
+          color: $color-text;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 20px;
+          text-transform: capitalize;
+          text-align: center;
+          margin: 6px 0 0 0;
+          display: block;
+        }
+      }
       // Popup styles
       .bt-mini-cart-popup {
         position: absolute;
@@ -1728,7 +1755,7 @@
                   background: #f5f5f5;
                   border-radius: 4px;
                   margin-bottom: 8px;
-
+                  text-transform: uppercase;
                   span {
                     font-size: 14px;
                     color: $color-primary;

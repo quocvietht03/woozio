@@ -677,18 +677,18 @@
 	// Initialize mini cart popups
 	function initMiniCartPopups() {
 		const $sidebar = $('.bt-mini-cart-sidebar');
-		
+
 		// Open popup handlers
-		$sidebar.on('click', '.bt-mini-cart-action-btn:not(.bt-mini-cart-note-btn)', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-action-btn:not(.bt-mini-cart-note-btn)', function (e) {
 			e.preventDefault();
 			openPopup($(this).data('action'));
 		});
 
 		// Note button handler - load saved note
-		$sidebar.on('click', '.bt-mini-cart-note-btn', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-note-btn', function (e) {
 			e.preventDefault();
 			const $popup = openPopup($(this).data('action'));
-			
+
 			// Load saved note from localStorage
 			try {
 				const savedNote = localStorage.getItem('bt_cart_note');
@@ -701,23 +701,26 @@
 		});
 
 		// Close popup handlers
-		$sidebar.on('click', '.bt-mini-cart-popup-close', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-popup-close', function (e) {
 			e.preventDefault();
 			closePopup($(this).closest('.bt-mini-cart-popup'));
 		});
 
 		// Save note to localStorage
-		$sidebar.on('click', '.bt-mini-cart-popup-save', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-popup-save', function (e) {
 			e.preventDefault();
 			const $popup = $(this).closest('.bt-mini-cart-note-popup');
 			const noteText = $popup.find('#bt-mini-cart-note-text').val();
-			
+			const $noteBtn = $sidebar.find('.bt-mini-cart-note-btn');
+
 			// Save note to localStorage
 			try {
 				if (noteText && noteText.trim() !== '') {
 					localStorage.setItem('bt_cart_note', noteText);
+					$noteBtn.addClass('have-notes');
 				} else {
 					localStorage.removeItem('bt_cart_note');
+					$noteBtn.removeClass('have-notes');
 				}
 				closePopup($popup);
 				// Trigger cart update to refresh mini cart
@@ -729,12 +732,12 @@
 		});
 
 		// Apply coupon handler
-		$sidebar.on('click', '.bt-mini-cart-popup-apply', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-popup-apply', function (e) {
 			e.preventDefault();
 			const $popup = $(this).closest('.bt-mini-cart-coupon-popup');
 			const couponCode = $popup.find('#bt-mini-cart-coupon-code').val().trim();
 			const $messages = $popup.find('.bt-mini-cart-coupon-messages');
-			
+
 			if (!couponCode) {
 				$messages.html('<div class="woocommerce-error">Please enter a coupon code.</div>');
 				return;
@@ -746,7 +749,7 @@
 			}
 
 			const ajaxUrl = wc_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'apply_coupon');
-			
+
 			$.ajax({
 				url: ajaxUrl,
 				type: 'POST',
@@ -755,9 +758,9 @@
 					coupon_code: couponCode
 				},
 				dataType: 'html',
-				success: function(response) {
+				success: function (response) {
 					$messages.html(response);
-					
+
 					// If success, clear input and refresh cart
 					if (response.indexOf('woocommerce-error') === -1 && response.indexOf('is-error') === -1) {
 						$popup.find('#bt-mini-cart-coupon-code').val('');
@@ -765,24 +768,24 @@
 						setTimeout(() => closePopup($popup), 1000);
 					}
 				},
-				error: function() {
+				error: function () {
 					$messages.html('<div class="woocommerce-error">Error applying coupon. Please try again.</div>');
 				}
 			});
 		});
 
 		// Remove coupon handler
-		$sidebar.on('click', '.bt-mini-cart-remove-coupon', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-remove-coupon', function (e) {
 			e.preventDefault();
 			const couponCode = $(this).data('coupon');
-			
+
 			if (!couponCode || typeof wc_cart_params === 'undefined') {
 				alert('Error: Missing coupon code or cart parameters.');
 				return;
 			}
-			
+
 			const ajaxUrl = wc_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'remove_coupon');
-			
+
 			$.ajax({
 				url: ajaxUrl,
 				type: 'POST',
@@ -791,12 +794,12 @@
 					coupon: couponCode
 				},
 				dataType: 'html',
-				success: function() {
+				success: function () {
 					$('.woocommerce-error, .woocommerce-message, .woocommerce-info').remove();
 					$('body').trigger('wc_fragment_refresh');
 					$('body').trigger('removed_coupon', [couponCode]);
 				},
-				error: function() {
+				error: function () {
 					alert('Error removing coupon. Please try again.');
 				}
 			});
@@ -809,7 +812,7 @@
 			if ($activePopup.length) {
 				closePopup($activePopup);
 			}
-			
+
 			const $popup = $sidebar.find('.bt-mini-cart-popup[data-popup="' + action + '"]');
 			if ($popup.length) {
 				$popup.addClass('active');
@@ -827,7 +830,7 @@
 			}
 			updateBottomCartPadding();
 		}
-		
+
 		// Update padding-bottom based on bt-bottom-mini-cart height
 		function updateBottomCartPadding() {
 			const $bottomCart = $sidebar.find('.bt-bottom-mini-cart');
@@ -837,27 +840,46 @@
 				$sidebarBody.css('--padding-bottom', height + 'px');
 			}
 		}
-		
-		// Update padding when cart is updated
-		$('body').on('wc_fragment_refresh updated_wc_div wc_fragments_refreshed', function() {
+		// Function to update note button class based on localStorage
+		function updateNoteButtonClass() {
+			const $noteBtn = $sidebar.find('.bt-mini-cart-note-btn');
+			try {
+				const savedNote = localStorage.getItem('bt_cart_note');
+				if (savedNote && savedNote.trim() !== '') {
+					$noteBtn.addClass('have-notes');
+				} else {
+					$noteBtn.removeClass('have-notes');
+				}
+			} catch (error) {
+				console.error('Error checking note:', error);
+			}
+		}
+
+		// Update note button class on init
+		updateNoteButtonClass();
+
+
+		// Update when cart is updated
+		$('body').on('wc_fragment_refresh updated_wc_div wc_fragments_refreshed', function () {
 			// Use setTimeout to ensure DOM is updated
-			setTimeout(function() {
+			setTimeout(function () {
 				updateBottomCartPadding();
+				updateNoteButtonClass();
 			}, 100);
 		});
-		
+
 		// Initial update after a short delay to ensure DOM is ready
-		setTimeout(function() {
+		setTimeout(function () {
 			updateBottomCartPadding();
 		}, 200);
-		
+
 		// Update on window resize
-		$(window).on('resize', function() {
+		$(window).on('resize', function () {
 			updateBottomCartPadding();
 		});
-		
+
 		// Close popup with ESC key
-		$(document).on('keyup', function(e) {
+		$(document).on('keyup', function (e) {
 			if (e.key === "Escape" && $sidebar.hasClass('popup-active')) {
 				const $activePopup = $sidebar.find('.bt-mini-cart-popup.active');
 				if ($activePopup.length) {
@@ -865,9 +887,9 @@
 				}
 			}
 		});
-		
+
 		// Close popup when clicking outside
-		$sidebar.on('click', '.bt-mini-cart-popup', function(e) {
+		$sidebar.on('click', '.bt-mini-cart-popup', function (e) {
 			if ($(e.target).hasClass('bt-mini-cart-popup')) {
 				closePopup($(this));
 			}
@@ -2538,10 +2560,10 @@
 
 		function getPositions() {
 			const currentWidth = window.innerWidth;
-			
+
 			// Get grid-positions data from block
 			const gridPositionsData = $block.data('grid-positions');
-			
+
 			if (!gridPositionsData || !gridPositionsData.breakpoints) {
 				return [];
 			}
@@ -2551,8 +2573,8 @@
 			// Get all breakpoint values (excluding 'default')
 			const breakpointValues = Object.keys(gridPositionsData.breakpoints)
 				.map(Number)
-				.filter(function(val) { return !isNaN(val); })
-				.sort(function(a, b) { return a - b; }); // Sort ascending (767, 1024, 1200, 1366)
+				.filter(function (val) { return !isNaN(val); })
+				.sort(function (a, b) { return a - b; }); // Sort ascending (767, 1024, 1200, 1366)
 
 			// If currentWidth > largest breakpoint (1366), use default
 			if (breakpointValues.length > 0 && currentWidth > breakpointValues[breakpointValues.length - 1]) {
@@ -2576,7 +2598,7 @@
 			}
 
 			// Convert array of grid_area strings to array of objects with gridArea property
-			const positions = gridAreas.map(function(gridArea) {
+			const positions = gridAreas.map(function (gridArea) {
 				// Trim whitespace from gridArea string
 				return { gridArea: String(gridArea).trim() };
 			});
@@ -2592,7 +2614,7 @@
 
 		// Check if position overlaps with visible items
 		function isOverlapping(newPosition) {
-			return items.some(function(item) {
+			return items.some(function (item) {
 				if (item.classList.contains('visible')) {
 					return window.getComputedStyle(item).gridArea === newPosition.gridArea;
 				}
@@ -2617,7 +2639,7 @@
 		// Update visibility and positions
 		function updateVisibility() {
 			// Remove visible class from all items
-			items.forEach(function(item) {
+			items.forEach(function (item) {
 				item.classList.remove('visible');
 			});
 
@@ -2631,7 +2653,7 @@
 			const disappearingIndex = (currentIndex + 3) % items.length;
 			const disappearingItem = items[disappearingIndex];
 
-			setTimeout(function() {
+			setTimeout(function () {
 				const newPosition = getUniquePosition();
 				disappearingItem.style.gridArea = newPosition.gridArea;
 				disappearingItem.classList.add('visible');
@@ -2654,11 +2676,11 @@
 
 		// Handle window resize
 		let resizeTimer;
-		$(window).on('resize', function() {
+		$(window).on('resize', function () {
 			clearTimeout(resizeTimer);
-			resizeTimer = setTimeout(function() {
+			resizeTimer = setTimeout(function () {
 				// Reset visibility on resize
-				items.forEach(function(item) {
+				items.forEach(function (item) {
 					item.classList.remove('visible');
 				});
 				// Restart animation

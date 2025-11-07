@@ -156,6 +156,19 @@ if (!function_exists('woozio_enqueue_scripts')) {
 		);
 
 		wp_localize_script('woozio-main', 'AJ_Options', $js_options);
+		
+		// Create wc_cart_params object without enqueuing wc-cart script
+		if (class_exists('WooCommerce') && class_exists('WC_AJAX')) {
+			$wc_cart_params = array(
+				'ajax_url'                     => WC()->ajax_url(),
+				'wc_ajax_url'                  => WC_AJAX::get_endpoint('%%endpoint%%'),
+				'update_shipping_method_nonce' => wp_create_nonce('update-shipping-method'),
+				'apply_coupon_nonce'           => wp_create_nonce('apply-coupon'),
+				'remove_coupon_nonce'          => wp_create_nonce('remove-coupon'),
+			);
+			wp_localize_script('woozio-main', 'wc_cart_params', $wc_cart_params);
+		}
+		
 		wp_enqueue_script('woozio-main');
 	}
 	add_action('wp_enqueue_scripts', 'woozio_enqueue_scripts');
