@@ -79,7 +79,6 @@ if (!function_exists('woozio_enqueue_scripts')) {
 		}
 		if (class_exists('WooCommerce')) {
 			wp_enqueue_script('wc-cart-fragments');
-			wp_enqueue_script('wc-cart');
 			wp_enqueue_script('wc-add-to-cart-variation');
 			wp_enqueue_script('swiper-slider', get_template_directory_uri() . '/assets/libs/swiper/swiper.min.js', array('jquery'), '', true);
 			wp_enqueue_style('swiper-slider', get_template_directory_uri() . '/assets/libs/swiper/swiper.min.css', array(), false);

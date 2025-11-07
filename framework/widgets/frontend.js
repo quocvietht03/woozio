@@ -804,17 +804,57 @@
 
 		// Utility functions
 		function openPopup(action) {
+			// Close any other open popup first
+			const $activePopup = $sidebar.find('.bt-mini-cart-popup.active');
+			if ($activePopup.length) {
+				closePopup($activePopup);
+			}
+			
 			const $popup = $sidebar.find('.bt-mini-cart-popup[data-popup="' + action + '"]');
-			$popup.addClass('active');
-			$sidebar.addClass('popup-active');
+			if ($popup.length) {
+				$popup.addClass('active');
+				$sidebar.addClass('popup-active');
+				updateBottomCartPadding();
+			}
 			return $popup;
 		}
 
 		// Close popup function
 		function closePopup($popup) {
 			$popup.removeClass('active');
-			$sidebar.removeClass('popup-active');
+			if (!$sidebar.find('.bt-mini-cart-popup.active').length) {
+				$sidebar.removeClass('popup-active');
+			}
+			updateBottomCartPadding();
 		}
+		
+		// Update padding-bottom based on bt-bottom-mini-cart height
+		function updateBottomCartPadding() {
+			const $bottomCart = $sidebar.find('.bt-bottom-mini-cart');
+			const $sidebarBody = $sidebar.find('.bt-mini-cart-sidebar-body');
+			if ($bottomCart.length && $sidebarBody.length) {
+				const height = $bottomCart.outerHeight(true); // Include margin
+				$sidebarBody.css('--padding-bottom', height + 'px');
+			}
+		}
+		
+		// Update padding when cart is updated
+		$('body').on('wc_fragment_refresh updated_wc_div wc_fragments_refreshed', function() {
+			// Use setTimeout to ensure DOM is updated
+			setTimeout(function() {
+				updateBottomCartPadding();
+			}, 100);
+		});
+		
+		// Initial update after a short delay to ensure DOM is ready
+		setTimeout(function() {
+			updateBottomCartPadding();
+		}, 200);
+		
+		// Update on window resize
+		$(window).on('resize', function() {
+			updateBottomCartPadding();
+		});
 		
 		// Close popup with ESC key
 		$(document).on('keyup', function(e) {
