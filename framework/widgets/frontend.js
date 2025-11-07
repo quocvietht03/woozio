@@ -669,6 +669,169 @@
 				'padding-right': '0' // Reset padding-right
 			});
 		}
+
+		// Mini Cart Note and Coupon Popups
+		initMiniCartPopups();
+	}
+
+	// Initialize mini cart popups
+	function initMiniCartPopups() {
+		const $sidebar = $('.bt-mini-cart-sidebar');
+		
+		// Open popup handlers
+		$sidebar.on('click', '.bt-mini-cart-action-btn:not(.bt-mini-cart-note-btn)', function(e) {
+			e.preventDefault();
+			openPopup($(this).data('action'));
+		});
+
+		// Note button handler - load saved note
+		$sidebar.on('click', '.bt-mini-cart-note-btn', function(e) {
+			e.preventDefault();
+			const $popup = openPopup($(this).data('action'));
+			
+			// Load saved note from localStorage
+			try {
+				const savedNote = localStorage.getItem('bt_cart_note');
+				if (savedNote) {
+					$popup.find('#bt-mini-cart-note-text').val(savedNote);
+				}
+			} catch (error) {
+				console.error('Error loading note:', error);
+			}
+		});
+
+		// Close popup handlers
+		$sidebar.on('click', '.bt-mini-cart-popup-close', function(e) {
+			e.preventDefault();
+			closePopup($(this).closest('.bt-mini-cart-popup'));
+		});
+
+		// Save note to localStorage
+		$sidebar.on('click', '.bt-mini-cart-popup-save', function(e) {
+			e.preventDefault();
+			const $popup = $(this).closest('.bt-mini-cart-note-popup');
+			const noteText = $popup.find('#bt-mini-cart-note-text').val();
+			
+			// Save note to localStorage
+			try {
+				if (noteText && noteText.trim() !== '') {
+					localStorage.setItem('bt_cart_note', noteText);
+				} else {
+					localStorage.removeItem('bt_cart_note');
+				}
+				closePopup($popup);
+				// Trigger cart update to refresh mini cart
+				$('body').trigger('wc_fragment_refresh');
+			} catch (error) {
+				console.error('Error saving note to localStorage:', error);
+				alert('Error saving note. Please try again.');
+			}
+		});
+
+		// Apply coupon handler
+		$sidebar.on('click', '.bt-mini-cart-popup-apply', function(e) {
+			e.preventDefault();
+			const $popup = $(this).closest('.bt-mini-cart-coupon-popup');
+			const couponCode = $popup.find('#bt-mini-cart-coupon-code').val().trim();
+			const $messages = $popup.find('.bt-mini-cart-coupon-messages');
+			
+			if (!couponCode) {
+				$messages.html('<div class="woocommerce-error">Please enter a coupon code.</div>');
+				return;
+			}
+
+			if (typeof wc_cart_params === 'undefined') {
+				$messages.html('<div class="woocommerce-error">Cart parameters not loaded. Please refresh the page.</div>');
+				return;
+			}
+
+			const ajaxUrl = wc_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'apply_coupon');
+			
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				data: {
+					security: wc_cart_params.apply_coupon_nonce,
+					coupon_code: couponCode
+				},
+				dataType: 'html',
+				success: function(response) {
+					$messages.html(response);
+					
+					// If success, clear input and refresh cart
+					if (response.indexOf('woocommerce-error') === -1 && response.indexOf('is-error') === -1) {
+						$popup.find('#bt-mini-cart-coupon-code').val('');
+						$('body').trigger('wc_fragment_refresh');
+						setTimeout(() => closePopup($popup), 1000);
+					}
+				},
+				error: function() {
+					$messages.html('<div class="woocommerce-error">Error applying coupon. Please try again.</div>');
+				}
+			});
+		});
+
+		// Remove coupon handler
+		$sidebar.on('click', '.bt-mini-cart-remove-coupon', function(e) {
+			e.preventDefault();
+			const couponCode = $(this).data('coupon');
+			
+			if (!couponCode || typeof wc_cart_params === 'undefined') {
+				alert('Error: Missing coupon code or cart parameters.');
+				return;
+			}
+			
+			const ajaxUrl = wc_cart_params.wc_ajax_url.toString().replace('%%endpoint%%', 'remove_coupon');
+			
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				data: {
+					security: wc_cart_params.remove_coupon_nonce,
+					coupon: couponCode
+				},
+				dataType: 'html',
+				success: function() {
+					$('.woocommerce-error, .woocommerce-message, .woocommerce-info').remove();
+					$('body').trigger('wc_fragment_refresh');
+					$('body').trigger('removed_coupon', [couponCode]);
+				},
+				error: function() {
+					alert('Error removing coupon. Please try again.');
+				}
+			});
+		});
+
+		// Utility functions
+		function openPopup(action) {
+			const $popup = $sidebar.find('.bt-mini-cart-popup[data-popup="' + action + '"]');
+			$popup.addClass('active');
+			$sidebar.addClass('popup-active');
+			return $popup;
+		}
+
+		// Close popup function
+		function closePopup($popup) {
+			$popup.removeClass('active');
+			$sidebar.removeClass('popup-active');
+		}
+		
+		// Close popup with ESC key
+		$(document).on('keyup', function(e) {
+			if (e.key === "Escape" && $sidebar.hasClass('popup-active')) {
+				const $activePopup = $sidebar.find('.bt-mini-cart-popup.active');
+				if ($activePopup.length) {
+					closePopup($activePopup);
+				}
+			}
+		});
+		
+		// Close popup when clicking outside
+		$sidebar.on('click', '.bt-mini-cart-popup', function(e) {
+			if ($(e.target).hasClass('bt-mini-cart-popup')) {
+				closePopup($(this));
+			}
+		});
 	}
 	const SwitcherHandler = function ($scope, $) {
 		const $switcher = $scope.find('.js-switcher-dropdown');

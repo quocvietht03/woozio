@@ -192,7 +192,7 @@ class Widget_MiniCart extends Widget_Base
 
 			$percentage = ($cart_total / $free_shipping_threshold) * 100;
 			$message = sprintf(
-				__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>FREESHIP</span></p>', 'woozio'),
+				__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>Free Shipping</span></p>', 'woozio'),
 				$currency_symbol,
 				$amount_left
 			);
@@ -213,40 +213,40 @@ class Widget_MiniCart extends Widget_Base
 						</svg>
 					</button>
 				</div>
+			
 				<div class="bt-mini-cart-sidebar-body">
-					<div class="widget_shopping_cart_content">
-						<?php woocommerce_mini_cart(); ?>
-					</div>
-					<?php
-
-					if ($free_shipping_threshold > 0) {
-					?>
-						<div class="bt-progress-content <?php echo (WC()->cart->is_empty()) ? 'bt-hide' : ''; ?>">
-							<?php echo '<div id="bt-free-shipping-message">' . $message . '</div>'; ?>
-							<div class="bt-progress-container-cart">
-								<div class="bt-progress-bar" data-width="<?php echo esc_attr($percentage) ?>">
-									<div class="bt-icon-shipping">
-										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-											<g clip-path="url(#clip0_2134_37062)">
-												<path d="M14.375 6.25H17.7016C17.8261 6.24994 17.9478 6.28709 18.0511 6.35669C18.1544 6.42629 18.2345 6.52517 18.2812 6.64063L19.375 9.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M1.875 11.25H14.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M15 16.875C16.0355 16.875 16.875 16.0355 16.875 15C16.875 13.9645 16.0355 13.125 15 13.125C13.9645 13.125 13.125 13.9645 13.125 15C13.125 16.0355 13.9645 16.875 15 16.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M6.25 16.875C7.28553 16.875 8.125 16.0355 8.125 15C8.125 13.9645 7.28553 13.125 6.25 13.125C5.21447 13.125 4.375 13.9645 4.375 15C4.375 16.0355 5.21447 16.875 6.25 16.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M13.125 15H8.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M14.375 9.375H19.375V14.375C19.375 14.5408 19.3092 14.6997 19.1919 14.8169C19.0747 14.9342 18.9158 15 18.75 15H16.875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-												<path d="M4.375 15H2.5C2.33424 15 2.17527 14.9342 2.05806 14.8169C1.94085 14.6997 1.875 14.5408 1.875 14.375V5.625C1.875 5.45924 1.94085 5.30027 2.05806 5.18306C2.17527 5.06585 2.33424 5 2.5 5H14.375V13.232" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-											</g>
-											<defs>
-												<clipPath id="clip0_2134_37062">
-													<rect width="20" height="20" fill="white" />
-												</clipPath>
-											</defs>
-										</svg>
-									</div>
+				<?php if ($free_shipping_threshold > 0) {
+				?>
+					<div class="bt-progress-content <?php echo (WC()->cart->is_empty()) ? 'bt-hide' : ''; ?>">
+						<?php echo '<div id="bt-free-shipping-message">' . $message . '</div>'; ?>
+						<div class="bt-progress-container-cart">
+							<div class="bt-progress-bar" data-width="<?php echo esc_attr($percentage) ?>">
+								<div class="bt-icon-shipping">
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+										<g clip-path="url(#clip0_2134_37062)">
+											<path d="M14.375 6.25H17.7016C17.8261 6.24994 17.9478 6.28709 18.0511 6.35669C18.1544 6.42629 18.2345 6.52517 18.2812 6.64063L19.375 9.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M1.875 11.25H14.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M15 16.875C16.0355 16.875 16.875 16.0355 16.875 15C16.875 13.9645 16.0355 13.125 15 13.125C13.9645 13.125 13.125 13.9645 13.125 15C13.125 16.0355 13.9645 16.875 15 16.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M6.25 16.875C7.28553 16.875 8.125 16.0355 8.125 15C8.125 13.9645 7.28553 13.125 6.25 13.125C5.21447 13.125 4.375 13.9645 4.375 15C4.375 16.0355 5.21447 16.875 6.25 16.875Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M13.125 15H8.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M14.375 9.375H19.375V14.375C19.375 14.5408 19.3092 14.6997 19.1919 14.8169C19.0747 14.9342 18.9158 15 18.75 15H16.875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+											<path d="M4.375 15H2.5C2.33424 15 2.17527 14.9342 2.05806 14.8169C1.94085 14.6997 1.875 14.5408 1.875 14.375V5.625C1.875 5.45924 1.94085 5.30027 2.05806 5.18306C2.17527 5.06585 2.33424 5 2.5 5H14.375V13.232" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+										</g>
+										<defs>
+											<clipPath id="clip0_2134_37062">
+												<rect width="20" height="20" fill="white" />
+											</clipPath>
+										</defs>
+									</svg>
 								</div>
 							</div>
 						</div>
-					<?php } ?>
+					</div>
+				<?php } ?>
+					<div class="widget_shopping_cart_content">
+						<?php woocommerce_mini_cart(); ?>
+					</div>
+					
 				</div>
 			</div>
 		</div>

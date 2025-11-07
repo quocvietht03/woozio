@@ -79,6 +79,70 @@ do_action('woocommerce_before_mini_cart'); ?>
 		?>
 	</ul>
 	<div class="bt-bottom-mini-cart">
+		<div class="bt-bottom-mini-cart-actions">
+			<button type="button" class="bt-mini-cart-action-btn bt-mini-cart-note-btn" data-action="note">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256">
+					<path d="M229.66,58.34l-32-32a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,88,128v32a8,8,0,0,0,8,8h32a8,8,0,0,0,5.66-2.34l96-96A8,8,0,0,0,229.66,58.34ZM124.69,152H104V131.31l64-64L188.69,88ZM200,76.69,179.31,56,192,43.31,212.69,64ZM224,128v80a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h80a8,8,0,0,1,0,16H48V208H208V128a8,8,0,0,1,16,0Z"></path>
+				</svg>
+				<span><?php esc_html_e('Note', 'woozio'); ?></span>
+			</button>
+			<button type="button" class="bt-mini-cart-action-btn bt-mini-cart-coupon-btn" data-action="coupon">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256">
+					<path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"></path>
+				</svg>
+				<span><?php esc_html_e('Coupon', 'woozio'); ?></span>
+			</button>
+		</div>
+
+		<!-- Note Popup -->
+		<div class="bt-mini-cart-popup bt-mini-cart-note-popup" data-popup="note">
+			<div class="bt-mini-cart-popup-header">
+				<h4><?php esc_html_e('Note', 'woozio'); ?></h4>
+				<button type="button" class="bt-mini-cart-popup-close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="#181818" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
+					</svg>
+				</button>
+			</div>
+			<div class="bt-mini-cart-popup-content">
+				<textarea id="bt-mini-cart-note-text" class="bt-mini-cart-note-textarea" placeholder="<?php esc_attr_e('Add a note to your order...', 'woozio'); ?>"></textarea>
+			</div>
+			<div class="bt-mini-cart-popup-footer">
+				<button type="button" class="bt-mini-cart-popup-btn bt-mini-cart-popup-save"><?php esc_html_e('SAVE', 'woozio'); ?></button>
+			</div>
+		</div>
+
+		<!-- Coupon Popup -->
+		<div class="bt-mini-cart-popup bt-mini-cart-coupon-popup" data-popup="coupon">
+			<div class="bt-mini-cart-popup-header">
+				<h4><?php esc_html_e('Coupon', 'woozio'); ?></h4>
+				<button type="button" class="bt-mini-cart-popup-close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="#181818" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
+					</svg>
+				</button>
+			</div>
+			<div class="bt-mini-cart-popup-content">
+				<div class="bt-mini-cart-coupon-form">
+					<input type="text" id="bt-mini-cart-coupon-code" class="bt-mini-cart-coupon-input" placeholder="<?php esc_attr_e('Enter coupon code', 'woozio'); ?>" />
+					<div class="bt-mini-cart-coupon-messages"></div>
+					<?php if (WC()->cart->get_applied_coupons()) : ?>
+						<div class="bt-mini-cart-applied-coupons">
+							<p><?php esc_html_e('Applied coupons:', 'woozio'); ?></p>
+							<ul>
+								<?php foreach (WC()->cart->get_applied_coupons() as $coupon_code) : ?>
+									<li>
+										<span><?php echo esc_html($coupon_code); ?></span>
+										<button type="button" class="bt-mini-cart-remove-coupon" data-coupon="<?php echo esc_attr($coupon_code); ?>">&times;</button>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endif; ?>
+				</div>
+			</div>
+			<div class="bt-mini-cart-popup-footer">
+				<button type="button" class="bt-mini-cart-popup-btn bt-mini-cart-popup-apply"><?php esc_html_e('APPLY', 'woozio'); ?></button>
+			</div>
+		</div>
 		<p class="woocommerce-mini-cart__total total">
 			<?php
 			/**
@@ -86,7 +150,7 @@ do_action('woocommerce_before_mini_cart'); ?>
 			 *
 			 * @hooked woocommerce_widget_shopping_cart_subtotal - 10
 			 */
-			do_action('woocommerce_widget_shopping_cart_total');
+			do_action('woocommerce_cart_collaterals');
 			?>
 		</p>
 
@@ -95,6 +159,34 @@ do_action('woocommerce_before_mini_cart'); ?>
 		<p class="woocommerce-mini-cart__buttons buttons"><?php do_action('woocommerce_widget_shopping_cart_buttons'); ?></p>
 
 		<?php do_action('woocommerce_widget_shopping_cart_after_buttons'); ?>
+		<?php
+		if (function_exists('get_field')) {
+			$site_infor = get_field('site_information', 'options');
+		} else {
+			$site_infor = array();
+		}
+
+		if (!empty($site_infor['payment_icons'])) {
+		?>
+			<div class="bt-icon-payment--mini-cart">
+				<?php foreach ($site_infor['payment_icons'] as $image) : ?>
+					<?php
+					if (empty($image['url'])) {
+						continue;
+					}
+					?>
+					<?php
+					if (!empty($image['id'])) {
+						echo wp_get_attachment_image($image['id'], 'thumbnail');
+					} else {
+						echo '<img src="' . esc_url('#') . '" alt="' . esc_html__('Awaiting payment icon', 'woozio') . '">';
+					}
+					?>
+				<?php endforeach; ?>
+			</div>
+		<?php
+		}
+		?>
 	</div>
 <?php else : ?>
 	<div class="bt-cart-empty">

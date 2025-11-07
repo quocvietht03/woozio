@@ -445,80 +445,76 @@ class Widget_FlickerCollage extends Widget_Base
         $has_link = !empty($button_link['url']);
         $target = $has_link && $button_link['is_external'] ? ' target="_blank"' : '';
         $nofollow = $has_link && $button_link['nofollow'] ? ' rel="nofollow"' : '';
-        
+
         // Check if Elementor editor mode
         $is_editor = Plugin::$instance->editor->is_edit_mode();
 ?>
         <div class="bt-elwg-flicker-collage" data-elementor-editor="<?php echo $is_editor ? 'true' : 'false'; ?>">
             <div class="bt-flicker-collage">
-                <div class="bt-flicker-collage-box">
-                    <div class="bt-flicker-collage-wrapper">
+                <div class="bt-flicker-collage-wrapper">
+                    <div class="bt-flicker-collage-content">
+                        <?php if (!empty($sub_heading)) : ?>
+                            <span class="bt-flicker-collage--sub-heading">
+                                <?php echo esc_html($sub_heading); ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php if (!empty($heading)) : ?>
+                            <h2 class="bt-flicker-collage--heading">
+                                <?php echo esc_html($heading); ?>
+                            </h2>
+                        <?php endif; ?>
 
-                        <div class="bt-flicker-collage-content">
-                            <?php if (!empty($sub_heading)) : ?>
-                                <span class="bt-flicker-collage--sub-heading">
-                                    <?php echo esc_html($sub_heading); ?>
-                                </span>
-                            <?php endif; ?>
-                            <?php if (!empty($heading)) : ?>
-                                <h2 class="bt-flicker-collage--heading">
-                                    <?php echo esc_html($heading); ?>
-                                </h2>
-                            <?php endif; ?>
-
-                            <?php if (!empty($description)) : ?>
-                                <div class="bt-flicker-collage--desc">
-                                    <p><?php echo wp_kses_post($description); ?></p>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($button_text) && $has_link) : ?>
-                                <a href="<?php echo esc_url($button_link['url']); ?>" class="bt-flicker-collage--button"<?php echo $target . $nofollow; ?>>
-                                    <?php echo esc_html($button_text); ?>
-                                </a>
-                            <?php endif; ?>
-                        </div>
-
-                        <?php if (!empty($collage_items)) : 
-                            $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
-                              // Get responsive grid area positions
-                              $grid_positions = bt_elwg_get_grid_area_positions($collage_items, $breakpoints);
-                        ?>
-                            <div class="bt-flicker-collage--list-images" data-grid-positions="<?php echo esc_attr(json_encode($grid_positions)); ?>">
-                                <?php
-                                foreach ($collage_items as $index => $item) :
-                                    $image = $item['image'];
-                                                          
-                                    $data_id = 'item_' . $index . '_' . uniqid();
-                                    
-                                    // In editor mode, show all items, otherwise let JS handle visibility
-                                    $visible_class = $is_editor ? ' visible' : '';
-                                ?>
-                                    <div class="bt-flicker-collage_item<?php echo $visible_class; ?> elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>" 
-                                         data-id="<?php echo esc_attr($data_id); ?>" 
-                                         data-index="<?php echo esc_attr($index); ?>" 
-                                        >
-                                        <div class="bt-flicker-collage_img">
-                                            <?php
-                                            if (!empty($image['id'])) {
-                                                $image_html = wp_get_attachment_image($image['id'], $settings['thumbnail_size']);
-                                                // Add loading and sizes attributes
-                                                $image_html = str_replace('<img ', '<img loading="lazy" sizes="100vw" ', $image_html);
-                                                echo $image_html;
-                                            } else {
-                                                if (!empty($image['url'])) {
-                                                    echo '<img src="' . esc_url($image['url']) . '" alt="" loading="lazy" sizes="100vw">';
-                                                } else {
-                                                    echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="" loading="lazy" sizes="100vw">';
-                                                }
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                        <?php if (!empty($description)) : ?>
+                            <div class="bt-flicker-collage--desc">
+                                <p><?php echo wp_kses_post($description); ?></p>
                             </div>
                         <?php endif; ?>
+
+                        <?php if (!empty($button_text) && $has_link) : ?>
+                            <a href="<?php echo esc_url($button_link['url']); ?>" class="bt-flicker-collage--button" <?php echo $target . $nofollow; ?>>
+                                <?php echo esc_html($button_text); ?>
+                            </a>
+                        <?php endif; ?>
                     </div>
+
+                    <?php if (!empty($collage_items)) :
+                        $breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
+                        // Get responsive grid area positions
+                        $grid_positions = bt_elwg_get_grid_area_positions($collage_items, $breakpoints);
+                    ?>
+                        <div class="bt-flicker-collage--list-images" data-grid-positions="<?php echo esc_attr(json_encode($grid_positions)); ?>">
+                            <?php
+                            foreach ($collage_items as $index => $item) :
+                                $image = $item['image'];
+
+                                $data_id = 'item_' . $index . '_' . uniqid();
+
+                                // In editor mode, show all items, otherwise let JS handle visibility
+                                $visible_class = $is_editor ? ' visible' : '';
+                            ?>
+                                <div class="bt-flicker-collage_item<?php echo $visible_class; ?> elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
+                                    data-id="<?php echo esc_attr($data_id); ?>"
+                                    data-index="<?php echo esc_attr($index); ?>">
+                                    <div class="bt-flicker-collage_img">
+                                        <?php
+                                        if (!empty($image['id'])) {
+                                            $image_html = wp_get_attachment_image($image['id'], $settings['thumbnail_size']);
+                                            // Add loading and sizes attributes
+                                            $image_html = str_replace('<img ', '<img loading="lazy" sizes="100vw" ', $image_html);
+                                            echo $image_html;
+                                        } else {
+                                            if (!empty($image['url'])) {
+                                                echo '<img src="' . esc_url($image['url']) . '" alt="" loading="lazy" sizes="100vw">';
+                                            } else {
+                                                echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="" loading="lazy" sizes="100vw">';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

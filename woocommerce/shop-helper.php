@@ -1972,7 +1972,7 @@ function woozio_get_free_shipping()
         $amount_left = $free_shipping_threshold - $cart_total;
         $output['percentage'] = ($cart_total / $free_shipping_threshold) * 100;
         $output['message'] = sprintf(
-            __('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>Freeship</span></p>', 'woozio'),
+            __('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>Free Shipping</span></p>', 'woozio'),
             $currency_symbol,
             $amount_left
         );

@@ -1127,12 +1127,12 @@
 		var cart_toast = AJ_Options.cart_toast || false;
 		var show_cart_mini = AJ_Options.show_cart_mini || false;
 		var isMobile = $(window).width() <= 1023;
-		
+
 		// Logic: If both are enabled, prioritize cart_toast (desktop: toast, mobile: mini cart)
 		// If only show_cart_mini is enabled: show mini cart on both desktop and mobile
 		// If only cart_toast is enabled: desktop show toast, mobile show mini cart
 		// If both are disabled: do nothing
-		
+
 		if (cart_toast) {
 			// cart_toast is enabled
 			if (!isMobile) {
@@ -1148,7 +1148,7 @@
 		}
 		// If both are false, do nothing
 	}
-	
+
 	/* Helper function to open mini cart sidebar */
 	function WoozioOpenMiniCart() {
 		$('.bt-mini-cart-sidebar').addClass('active');
@@ -2466,11 +2466,11 @@
 
 		if ($countdowns.length === 0) return;
 
-	$countdowns.each(function () {
-		const $countdown = $(this);
-		const countDownDate = new Date($countdown.data('time')).getTime();
-		const productId = $countdown.data('idproduct');
-		const serverCurrentTime = $countdown.data('current-time');
+		$countdowns.each(function () {
+			const $countdown = $(this);
+			const countDownDate = new Date($countdown.data('time')).getTime();
+			const productId = $countdown.data('idproduct');
+			const serverCurrentTime = $countdown.data('current-time');
 
 			$countdown.addClass('bt-countdown-initialized');
 
@@ -2479,17 +2479,17 @@
 				return;
 			}
 
-		// Use server current time as baseline and track elapsed time
-		const serverInitTime = serverCurrentTime ? new Date(serverCurrentTime).getTime() : new Date().getTime();
-		const clientInitTime = Date.now();
-		
-		// Create individual timer for each countdown
-		const timer = setInterval(() => {
-			// Calculate current server time: initial server time + elapsed time since initialization
-			const elapsed = Date.now() - clientInitTime;
-			const now = serverInitTime + elapsed;
-		
-			const distance = countDownDate - now;
+			// Use server current time as baseline and track elapsed time
+			const serverInitTime = serverCurrentTime ? new Date(serverCurrentTime).getTime() : new Date().getTime();
+			const clientInitTime = Date.now();
+
+			// Create individual timer for each countdown
+			const timer = setInterval(() => {
+				// Calculate current server time: initial server time + elapsed time since initialization
+				const elapsed = Date.now() - clientInitTime;
+				const now = serverInitTime + elapsed;
+
+				const distance = countDownDate - now;
 
 				if (distance < 0) {
 					clearInterval(timer);
@@ -2833,7 +2833,7 @@
 						if (productId) {
 							WoozioHandleCartAction(productId);
 						}
-						
+
 						// Update mini cart after successful add to cart
 						$.ajax({
 							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
@@ -3151,14 +3151,14 @@
 		// Handle click on buttons with class bt-click-right-{name-slider} or bt-click-left-{name-slider}
 		$(document).on('click', '[class*="bt-click-right-"], [class*="bt-click-left-"]', function (e) {
 			e.preventDefault();
-			
+
 			var $button = $(this);
 			var buttonClasses = $button.attr('class').split(/\s+/);
 			var sliderName = '';
 			var direction = '';
-			
+
 			// Find the class that contains bt-click-right- or bt-click-left-
-			buttonClasses.forEach(function(className) {
+			buttonClasses.forEach(function (className) {
 				if (className.indexOf('bt-click-right-') === 0) {
 					sliderName = className.replace('bt-click-right-', '');
 					direction = 'next';
@@ -3167,16 +3167,16 @@
 					direction = 'prev';
 				}
 			});
-			
+
 			// If we found a slider name and direction
 			if (sliderName && direction) {
 				// Find the slider with class {name-slider}
 				var $slider = $('.' + sliderName);
-				
+
 				if ($slider.length > 0) {
 					// Try to find Swiper instance on the slider
 					var sliderElement = $slider[0];
-					
+
 					// Check if it's a Swiper slider
 					if (sliderElement.swiper) {
 						// Use Swiper API to navigate
@@ -3187,12 +3187,12 @@
 						}
 					} else {
 						// Fallback: try to find and click the arrow buttons
-						var arrowSelector = direction === 'next' 
+						var arrowSelector = direction === 'next'
 							? '.swiper-button-next, .elementor-swiper-button-next, .slick-next, [class*="arrow-next"], [class*="button-next"]'
 							: '.swiper-button-prev, .elementor-swiper-button-prev, .slick-prev, [class*="arrow-prev"], [class*="button-prev"]';
-						
+
 						var $arrow = $slider.find(arrowSelector).first();
-						
+
 						if ($arrow.length > 0) {
 							$arrow.trigger('click');
 						} else {
@@ -3206,6 +3206,55 @@
 				}
 			}
 		});
+	}
+	/* Mini Cart Note Handler */
+	function WoozioMiniCartNoteHandler() {
+		// Fill order_comments field with note from localStorage
+		function fillOrderComments() {
+			try {
+				const savedNote = localStorage.getItem('bt_cart_note');
+				if (savedNote) {
+					const $orderComments = $('#order_comments');
+					if ($orderComments.length && !$orderComments.val()) {
+						$orderComments.val(savedNote);
+						// Trigger change event to ensure WooCommerce picks it up
+						$orderComments.trigger('change');
+					}
+				}
+			} catch (error) {
+				console.error('Error loading note from localStorage:', error);
+			}
+		}
+
+		// Clear localStorage after successful checkout
+		function clearCartNote() {
+			try {
+				localStorage.removeItem('bt_cart_note');
+			} catch (error) {
+				console.error('Error clearing note from localStorage:', error);
+			}
+		}
+
+		// Fill order_comments on checkout page
+		if ($('body').hasClass('woocommerce-checkout')) {
+			// Fill on page load
+			fillOrderComments();
+
+			// Also fill after checkout form updates (for AJAX updates)
+			$('body').on('updated_checkout', function () {
+				fillOrderComments();
+			});
+		}
+
+		// Clear localStorage after successful order
+		$('body').on('woocommerce_thankyou', function (event, orderId) {
+			clearCartNote();
+		});
+
+		// Also clear on order received page
+		if ($('body').hasClass('woocommerce-order-received')) {
+			clearCartNote();
+		}
 	}
 
 	jQuery(document).ready(function ($) {
@@ -3250,6 +3299,7 @@
 		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
 		WoozioFrequentlyBoughtTogether();
 		WoozioElementorSliderControl(); // Elementor slider control via button clicks
+		WoozioMiniCartNoteHandler();	// Initialize Mini Cart Note Handler
 	});
 	// Block WooCommerce from changing images
 	jQuery(function ($) {
@@ -3296,5 +3346,7 @@
 	jQuery(window).on('scroll', function () {
 
 	});
+
+
 
 })(jQuery);

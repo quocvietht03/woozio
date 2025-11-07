@@ -40,7 +40,7 @@ do_action('woocommerce_before_cart');
 
 		$percentage = ($cart_total / $free_shipping_threshold) * 100;
 		$message = sprintf(
-			__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>FREESHIP</span></p>', 'woozio'),
+			__('<p class="bt-buy-more">Buy <span>%1$s%2$.2f</span> more to get <span>Free Shipping</span></p>', 'woozio'),
 			$currency_symbol,
 			$amount_left
 		);
