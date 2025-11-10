@@ -489,9 +489,8 @@
           align-items: center;
           cursor: pointer;
           svg {
-            path {
-              fill: $color-primary;
-            }
+            width: 18px;
+            height: auto;
           }
           span {
             margin-left: 8px;
@@ -6148,7 +6147,7 @@
                   }
                   svg {
                     path {
-                      fill: $color-accent;
+                      fill: $color-rating;
                     }
                   }
                   .bt-bar-percent {
@@ -6393,12 +6392,12 @@
 
                 p.stars:hover a::before {
                   content: "\e020";
-                  color: $color-accent;
+                  color: $color-rating;
                 }
 
                 p.stars.selected a.active::before {
                   content: "\e020";
-                  color: $color-accent;
+                  color: $color-rating;
                 }
 
                 p.stars.selected a.active ~ a::before {
@@ -6815,7 +6814,7 @@
                           width: 16px;
                           height: 16px;
                           path {
-                            fill: $color-accent;
+                            fill: $color-rating;
                           }
                         }
                         .bt-bar-percent {
