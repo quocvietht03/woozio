@@ -1251,7 +1251,7 @@
         margin: 0;
         text-align: center;
         padding: 10px;
-        background: #f6f6f6;
+        background: #F6F6F4;
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
@@ -1661,7 +1661,7 @@
         margin: 0;
         text-align: center;
         padding: 10px;
-        background: #f6f6f6;
+        background: #F6F6F4;
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
@@ -2128,7 +2128,7 @@
           position: relative;
           color: $color-primary;
           &:hover {
-            background: #f6f6f6;
+            background: #F6F6F4;
           }
           &::after {
             content: "";
@@ -2597,7 +2597,7 @@
         font-size: 14px;
         height: 16px;
         width: 83px;
-        color: $color-accent;
+        color: $color-rating;
         letter-spacing: 2px;
       }
       &--count {
@@ -3306,7 +3306,7 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            background-color: #f6f6f6;
+            background-color: #F6F6F4;
             font-size: 16px;
             color: $color-text;
             transition: all 0.3s ease-in-out;
@@ -4013,7 +4013,7 @@
                 position: relative;
                 color: $color-primary;
                 &:hover {
-                  background: #f6f6f6;
+                  background: #F6F6F4;
                 }
                 &::after {
                   content: "";
@@ -4864,7 +4864,7 @@
           display: flex;
           align-items: center;
           .star-rating {
-            color: $color-accent;
+            color: $color-rating;
           }
           .woocommerce-review-link {
             font-size: 0;
@@ -6096,7 +6096,7 @@
                   height: 26px;
                   width: 132px;
                   letter-spacing: 1px;
-                  color: $color-accent;
+                  color: $color-rating;
                   display: block;
                   float: none;
                 }
@@ -6286,7 +6286,7 @@
                       height: 13px;
                       width: 68px;
                       letter-spacing: 1px;
-                      color: $color-accent;
+                      color: $color-rating;
                       display: block;
                       float: none;
                     }
@@ -7248,7 +7248,7 @@
       .bt-time-promotion {
         border-radius: 4px;
         padding: 10px 20px;
-        background: #f6f6f6;
+        background: #F6F6F4;
         color: $color-primary;
         font-size: 16px;
         font-style: normal;
@@ -7684,7 +7684,7 @@
       border-radius: 12px;
       padding: 24px;
       box-sizing: border-box;
-      background: #f6f6f6;
+      background: #F6F6F4;
       h2 {
         font-size: 24px;
         font-style: normal;
@@ -7903,7 +7903,7 @@
   .woocommerce-form-coupon-toggle,
   .woocommerce-form-login-toggle {
     .woocommerce-info {
-      background: #f6f6f6;
+      background: #F6F6F4;
       padding-top: 11px;
       padding-bottom: 11px;
       font-size: 16px;
@@ -8645,8 +8645,8 @@
           }
           &:has(input:checked) {
             padding: 20px;
-            background: #f6f6f6;
-            border-color: #f6f6f6;
+            background: #F6F6F4;
+            border-color: #F6F6F4;
           }
         }
       }

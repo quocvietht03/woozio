@@ -2695,7 +2695,7 @@
         align-items: center;
         justify-content: space-between;
         border-radius: 4px 0px 0px 4px;
-        background: #f6f6f6;
+        background: #F6F6F4;
         flex: 1;
         flex-direction: row;
         padding: 8px 12px;
@@ -2868,7 +2868,7 @@
                   border: 1px solid #e9e9e9;
                   background: #fff;
                   &:hover {
-                    background: #f6f6f6;
+                    background: #F6F6F4;
                   }
                   &::before {
                     width: 20px;
@@ -2899,7 +2899,7 @@
                 border: 1px solid #e9e9e9;
                 background: #fff;
                 &:hover {
-                  background: #f6f6f6;
+                  background: #F6F6F4;
                 }
                 &::before {
                   width: 20px;
@@ -5268,7 +5268,7 @@
             white-space: nowrap;
             border-bottom: 1px solid #e9e9e9;
             &:hover {
-              background: #f6f6f6;
+              background: #F6F6F4;
             }
             &.active {
               background: #e9e9e9;
