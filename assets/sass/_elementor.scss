@@ -10652,7 +10652,7 @@
 /* Title Nav With Slider */
 .bt-elwg-title-nav-with-slider--default {
   --height-slider: 700px;
-  --offset-slider: 80px;
+  --slider-offset-height: 80px;
   --spacing: 80px;
   .bt-title-nav-with-slider {
     display: flex;
@@ -10714,7 +10714,7 @@
       width: 65%;
       position: relative;
       overflow: hidden;
-      padding: var(--offset-slider, 80px) 0;
+      padding: var(--slider-offset-height, 80px) 0;
       .bt-content-slider {
         height: 100%;
         width: 100%;
@@ -10746,8 +10746,8 @@
         display: flex;
         align-items: center;
         width: 100%;
-        height: calc(var(--height-slider, 700px) - var(--offset-slider, 0px) * 2);
-        max-height: calc(var(--height-slider, 700px) - var(--offset-slider, 0px) * 2);
+        height: calc(var(--height-slider, 700px) - var(--slider-offset-height, 0px) * 2);
+        max-height: calc(var(--height-slider, 700px) - var(--slider-offset-height, 0px) * 2);
         overflow: hidden;
         cursor: pointer;
         .bt-content-image {

@@ -102,7 +102,7 @@ class Widget_PostLoopItemStyle2 extends Widget_Base
 				'type' => Controls_Manager::DIMENSIONS,
 				'size_units' => ['px', 'em', '%'],
 				'selectors' => [
-					'{{WRAPPER}}' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .bt-post' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -112,28 +112,7 @@ class Widget_PostLoopItemStyle2 extends Widget_Base
 			[
 				'name' => 'item_border',
 				'label' => __('Border', 'woozio'),
-				'selector' => '{{WRAPPER}}',
-			]
-		);
-
-		$this->add_control(
-			'item_border_radius',
-			[
-				'label' => __('Border Radius', 'woozio'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%'],
-				'selectors' => [
-					'{{WRAPPER}}' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Box_Shadow::get_type(),
-			[
-				'name' => 'item_box_shadow',
-				'label' => __('Box Shadow', 'woozio'),
-				'selector' => '{{WRAPPER}}',
+				'selector' => '{{WRAPPER}} .bt-post',
 			]
 		);
 		$this->end_controls_section();

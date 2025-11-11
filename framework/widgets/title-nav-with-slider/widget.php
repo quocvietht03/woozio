@@ -198,7 +198,7 @@ class Widget_TitleNavWithSlider extends Widget_Base
                     'size' => 80,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--offset-slider: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--slider-offset-height: {{SIZE}}{{UNIT}};',
                 ],
                 'devices' => ['desktop', 'laptop', 'tablet_extra'],
             ]

@@ -261,20 +261,38 @@ body {
                             }
                         }
                     }
-                    &:after{
+                    &:after {
                         border-color: $color-primary !important;
                     }
                 }
             }
         }
     }
-    &.bt-section-about-studio{
-        @media(max-width:1530px) and (min-width:1367px){
-            > .elementor-element{
-               &:last-child{
-                --padding-left: 40px;
-                --column-gap: 40px;
-               }
+    &.bt-section-about-studio {
+        @media (max-width: 1530px) and (min-width: 1367px) {
+            > .elementor-element {
+                &:last-child {
+                    --padding-left: 40px;
+                    --column-gap: 40px;
+                }
+            }
+        }
+    }
+    &.bt-grid-blog-line-bottom {
+        @media (min-width: $break-tl) {
+            .e-loop-item:nth-last-child(-n + 2) {
+                .bt-post {
+                    padding-bottom: 0 !important;
+                    border-bottom: 0 !important;
+                }
+            }
+        }
+        @media (max-width: $break-tl) {
+            .e-loop-item:nth-last-child(1) {
+                .bt-post {
+                    padding-bottom: 0 !important;
+                    border-bottom: 0 !important;
+                }
             }
         }
     }
