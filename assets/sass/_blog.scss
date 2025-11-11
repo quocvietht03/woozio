@@ -361,11 +361,11 @@
       align-items: center;
     }
     &--content {
-      width: 53%;
+      width: calc(100% - var(--width-image, 47%));
       padding: 0 0 0 24px;
     }
     &--featured {
-      width: 47%;
+      width: var(--width-image, 47%);
       .bt-cover-image {
         border-radius: 20px;
       }

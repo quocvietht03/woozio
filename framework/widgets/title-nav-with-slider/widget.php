@@ -158,29 +158,6 @@ class Widget_TitleNavWithSlider extends Widget_Base
             ]
         );
         $this->add_responsive_control(
-            'slider_offset_height',
-            [
-                'label' => __('Offset Height', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 0,
-                        'max' => 1000,
-                        'step' => 1,
-                    ],
-                ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 80,
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--offset-slider: {{SIZE}}{{UNIT}};',
-                ],
-                'devices' => [ 'desktop', 'laptop' , 'tablet_extra'],
-            ]
-        );
-        $this->add_responsive_control(
             'slider_offset_width',
             [
                 'label' => __('Offset Width', 'woozio'),
@@ -200,8 +177,30 @@ class Widget_TitleNavWithSlider extends Widget_Base
                     '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--slider-offset-width: {{SIZE}}{{UNIT}};',
                 ],
                 'render_type' => 'ui',
-                
-                'devices' => [ 'tablet', 'mobile_extra' , 'mobile'],
+                'description' => __('Note: This control only applies to tablet and mobile devices.', 'woozio'),
+            ]
+        );
+        $this->add_responsive_control(
+            'slider_offset_height',
+            [
+                'label' => __('Offset Height', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 1000,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 80,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--offset-slider: {{SIZE}}{{UNIT}};',
+                ],
+                'devices' => ['desktop', 'laptop', 'tablet_extra'],
             ]
         );
         $this->add_responsive_control(
@@ -246,7 +245,7 @@ class Widget_TitleNavWithSlider extends Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .bt-elwg-title-nav-with-slider--default' => '--spacing: {{SIZE}}{{UNIT}};',
                 ],
-              
+
             ]
         );
         $this->end_controls_section();

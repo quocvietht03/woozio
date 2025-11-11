@@ -86,6 +86,8 @@ class Widget_CountDown extends Widget_Base
 			]
 		);
 
+	
+
 		$this->end_controls_section();
 	}
 
@@ -96,6 +98,28 @@ class Widget_CountDown extends Widget_Base
 			[
 				'label' => esc_html__('Content', 'woozio'),
 				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+		$this->add_control(
+			'item_background_color',
+			[
+				'label' => __('Item Background Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-countdown--item' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'item_padding',
+			[
+				'label' => __('Item Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-countdown--item' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
 			]
 		);
 		$this->add_control(
@@ -246,8 +270,8 @@ class Widget_CountDown extends Widget_Base
 		$timezone = new DateTimeZone(wp_timezone_string());
 		$current_date = new DateTime('now', $timezone);
 		$current_date = $current_date->format('Y-m-d H:i:s');
-?>
-		<div class="bt-elwg-countdown--default">
+		?>
+		<div class="bt-elwg-countdown--default ">
 			<div class="bt-countdown bt-countdown-js" data-infinity="<?php echo esc_attr($settings['show_infinity_date']); ?>" data-time="<?php echo esc_attr($date_countdown); ?>" data-current-time="<?php echo esc_attr($current_date); ?>">
 				<div class="bt-countdown--item">
 					<span class="bt-countdown--digits bt-countdown-days">--</span>

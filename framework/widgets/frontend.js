@@ -460,6 +460,185 @@
 			}
 		}
 	};
+	const TheStoryHandler = function ($scope) {
+		const $TheStory = $scope.find('.bt-elwg-the-story--default');
+		const $itemsSlider = $TheStory.find('.js-story-items-slider');
+		const $imageSlider = $TheStory.find('.js-story-image-slider');
+		const $items = $TheStory.find('.bt-the-story--item');
+
+		if ($itemsSlider.length > 0 && $imageSlider.length > 0) {
+			const $sliderSettings = $TheStory.data('slider-settings');
+			const sliderSpeed = $sliderSettings.speed || 1000;
+			const autoplay = $sliderSettings.autoplay || false;
+			const autoplayDelay = $sliderSettings.autoplay_delay || 5000;
+			
+			// Initialize the items slider (thumbs)
+			var itemsSwiper = new Swiper($itemsSlider[0], {
+				spaceBetween: $sliderSettings.spaceBetween || 30,
+				slidesPerView: $sliderSettings.slidesPerView || 4,
+				freeMode: true,
+				watchSlidesProgress: true,
+				loop: false,
+				speed: sliderSpeed,
+				breakpoints: $sliderSettings.breakpoints || {}
+			});
+			
+			// Initialize the image slider (main)
+			var imageSwiper = new Swiper($imageSlider[0], {
+				spaceBetween: 0,
+				loop: false,
+				speed: sliderSpeed,
+				allowTouchMove: true,
+				centeredSlides: false,
+				// Disable Swiper autoplay - we'll control it with progress animation
+				autoplay: false,
+				thumbs: {
+					swiper: itemsSwiper,
+				},
+			}); 
+
+			// Progress animation manager
+			const ProgressManager = {
+				animation: null,
+				startTime: null,
+				currentItem: null,
+				swiperInstance: null,
+
+				// Set swiper instance for triggering slide change
+				setSwiper(swiper) {
+					this.swiperInstance = swiper;
+				},
+
+				// Reset progress line to 0%
+				reset(item) {
+					if (!item) return;
+					const progressLine = item.querySelector('.bt-the-story--progress-line');
+					if (progressLine) {
+						progressLine.style.width = '0%';
+						progressLine.style.transition = 'none';
+					}
+				},
+
+				// Stop current animation
+				stop() {
+					if (this.animation) {
+						cancelAnimationFrame(this.animation);
+						this.animation = null;
+					}
+					this.startTime = null;
+					this.currentItem = null;
+				},
+
+				// Set progress line to 100% (when autoplay is off)
+				setFull(item) {
+					if (!item) return;
+					const progressLine = item.querySelector('.bt-the-story--progress-line');
+					if (progressLine) {
+						progressLine.style.width = '100%';
+						progressLine.style.transition = 'none';
+					}
+				},
+
+				// Start progress animation or set full (based on autoplay)
+				start(item) {
+					if (!item) return;
+
+					this.stop(); // Stop any existing animation
+					
+					const progressLine = item.querySelector('.bt-the-story--progress-line');
+					if (!progressLine) return;
+
+					// If autoplay is off, just set progress line to 100% (color handled by CSS)
+					if (!autoplay) {
+						this.setFull(item);
+						return;
+					}
+
+					// If autoplay is on, start animation
+					// Setup progress line (color handled by CSS)
+					this.reset(item);
+					
+					this.currentItem = item;
+					this.startTime = performance.now();
+
+					// Animation loop
+					const animate = (currentTime) => {
+						if (!this.startTime) this.startTime = currentTime;
+
+						const elapsed = currentTime - this.startTime;
+						const progress = Math.min((elapsed / autoplayDelay) * 100, 100);
+
+						if (progressLine && progressLine.parentElement) {
+							progressLine.style.width = progress + '%';
+						}
+
+						if (progress < 100) {
+							this.animation = requestAnimationFrame(animate);
+						} else {
+							this.stop();
+							// Trigger slide next when progress reaches 100%
+							if (this.swiperInstance) {
+								// If not at end, go to next slide, otherwise go to first slide
+								if (!this.swiperInstance.isEnd) {
+									this.swiperInstance.slideNext();
+								} else {
+									// If at end, go to first slide
+									this.swiperInstance.slideTo(0);
+								}
+							}
+						}
+					};
+
+					this.animation = requestAnimationFrame(animate);
+				}
+			};
+
+			// Set swiper instance to ProgressManager
+			ProgressManager.setSwiper(imageSwiper);
+
+			// Find active item by slide index
+			const findActiveItem = (slideIndex) => {
+				let activeItem = null;
+				
+				$items.each(function() {
+					const itemIndex = parseInt(this.getAttribute('data-slide-index'), 10);
+					if (itemIndex === slideIndex) {
+						activeItem = this;
+						return false; // break
+					}
+				});
+				
+				return activeItem || $items.eq(slideIndex)[0];
+			};
+
+			// Handle slide change
+			imageSwiper.on('slideChange', () => {
+				const activeItem = findActiveItem(imageSwiper.realIndex);
+				if (activeItem) {
+					// Reset all progress lines
+					$items.each(function() {
+						ProgressManager.reset(this);
+					});
+					
+					// Start progress for active item (or set full if autoplay is off)
+					ProgressManager.start(activeItem);
+				}
+			});
+
+			// No need for autoplay events since we control it with progress animation
+
+			// Initialize progress for first slide on load
+			const firstActiveItem = findActiveItem(imageSwiper.realIndex);
+			if (firstActiveItem) {
+				// Reset all progress lines first
+				$items.each(function() {
+					ProgressManager.reset(this);
+				});
+				// Start progress for first active item (or set full if autoplay is off)
+				ProgressManager.start(firstActiveItem);
+			}
+		}
+	};
 	const TestimonialSliderHandler = function ($scope) {
 		const $TestimonialSlider = $scope.find('.js-data-testimonial-slider');
 		if ($TestimonialSlider.length > 0) {
@@ -1994,6 +2173,81 @@
 		}
 	};
 
+	const ProductHotspotOverlayStyle1Handler = function ($scope) {
+		const $productHotspotOverlayStyle1 = $scope.find('.bt-elwg-product-overlay-hotspot-style-1--default');
+
+		if ($productHotspotOverlayStyle1.length > 0) {
+			const $shopPanel = $productHotspotOverlayStyle1.find('.bt-shop-the-look-panel');
+			const $shopPanelHeader = $shopPanel.find('.bt-shop-panel-header');
+			const $shopPanelContent = $shopPanel.find('.bt-shop-panel-content');
+			const $shopPanelClose = $shopPanelHeader.find('.bt-shop-panel-close');
+			const $hotspotPoints = $productHotspotOverlayStyle1.find('.bt-hotspot-point');
+
+			// Function to check and update responsive class
+			const checkResponsive = function () {
+				const panelWidth = $shopPanel.outerWidth();
+				if (panelWidth < 350) {
+					$shopPanel.addClass('bt-responsive-panel');
+				} else {
+					$shopPanel.removeClass('bt-responsive-panel');
+				}
+			};
+
+			// Check on load and resize
+			checkResponsive();
+			$(window).on('resize', function () {
+				checkResponsive();
+			});
+
+			// Function to open panel
+			const openPanel = function () {
+				if (!$shopPanel.hasClass('bt-panel-open')) {
+					$shopPanel.addClass('bt-panel-open');
+					$shopPanelContent.slideDown(300);
+					// Recheck responsive after opening
+					setTimeout(checkResponsive, 300);
+				}
+			};
+
+			// Function to close panel
+			const closePanel = function () {
+				$shopPanel.removeClass('bt-panel-open');
+				$shopPanelContent.slideUp(300);
+			};
+
+			// Handle click on "SHOP THE LOOK" header to toggle panel
+			$shopPanelHeader.on('click', function (e) {
+				e.preventDefault();
+				// Don't toggle if clicking the close button
+				if ($(e.target).closest('.bt-shop-panel-close').length) {
+					return;
+				}
+				const isOpen = $shopPanel.hasClass('bt-panel-open');
+				if (isOpen) {
+					closePanel();
+				} else {
+					openPanel();
+				}
+			});
+
+			// Handle click on hotspot points to open panel
+			$hotspotPoints.on('click', function (e) {
+				e.preventDefault();
+				openPanel();
+			});
+
+			// Handle click on close button in header
+			$shopPanelClose.on('click', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				closePanel();
+			});
+
+			// Initialize add to cart functionality
+			WoozioProductHotspotAddSetCart($productHotspotOverlayStyle1);
+		}
+	};
+
 	const StoreLocationsHandler = function ($scope) {
 		const $storeLocationsSlider = $scope.find('.bt-elwg-store-locations-slider');
 
@@ -2756,6 +3010,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-offers-slider.default', OffersSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-tooltip-hotspot.default', ProductTooltipHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-the-story.default', TheStoryHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonial-slider.default', TestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonials-staggered-slider.default', TestimonialsStaggeredSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-countdown.default', countDownHandler);
@@ -2767,6 +3022,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-title-nav-with-slider.default', TitleNavWithSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-collection-banner.default', CollectionBannerHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot.default', ProductHotspotOverlayHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-overlay-hotspot-style-1.default', ProductHotspotOverlayStyle1Handler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-text-slider.default', TextSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase.default', ProductShowcaseHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-showcase-style-1.default', ProductShowcaseHandler);

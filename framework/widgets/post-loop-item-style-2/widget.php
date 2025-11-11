@@ -1,4 +1,5 @@
 <?php
+
 namespace WoozioElementorWidgets\Widgets\PostLoopItemStyle2;
 
 use Elementor\Widget_Base;
@@ -9,30 +10,36 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 
-class Widget_PostLoopItemStyle2 extends Widget_Base {
+class Widget_PostLoopItemStyle2 extends Widget_Base
+{
 
 
-	public function get_name() {
+	public function get_name()
+	{
 		return 'bt-post-loop-item-style-2';
 	}
 
-	public function get_title() {
-		return __( 'Post Loop Item Style 2', 'woozio' );
+	public function get_title()
+	{
+		return __('Post Loop Item Style 2', 'woozio');
 	}
 
-	public function get_icon() {
+	public function get_icon()
+	{
 		return 'eicon-posts-ticker';
 	}
 
-	public function get_categories() {
-		return [ 'woozio' ];
+	public function get_categories()
+	{
+		return ['woozio'];
 	}
 
-	protected function register_layout_section_controls() {
+	protected function register_layout_section_controls()
+	{
 		$this->start_controls_section(
 			'section_content',
 			[
-				'label' => __( 'Content', 'woozio' ),
+				'label' => __('Content', 'woozio'),
 			]
 		);
 
@@ -40,16 +47,17 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 			Group_Control_Image_Size::get_type(),
 			[
 				'name' => 'thumbnail',
-				'label' => __( 'Image Size', 'woozio' ),
+				'label' => __('Image Size', 'woozio'),
 				'show_label' => true,
 				'default' => 'medium_large',
-				'exclude' => [ 'custom' ],
+				'exclude' => ['custom'],
 			]
 		);
 
 		$this->add_responsive_control(
-			'image_ratio',[
-				'label' => __( 'Image Ratio', 'woozio' ),
+			'image_ratio',
+			[
+				'label' => __('Image Ratio', 'woozio'),
 				'type' => Controls_Manager::SLIDER,
 				'range' => [
 					'px' => [
@@ -63,42 +71,122 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 				],
 			]
 		);
+		$this->add_control(
+			'show_excerpt',
+			[
+				'label' => esc_html__('Show Excerpt', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Show', 'woozio'),
+				'label_off' => esc_html__('Hide', 'woozio'),
+				'default' => 'yes',
+			]
+		);
 
 		$this->end_controls_section();
 	}
 
-	protected function register_style_section_controls() {
+	protected function register_style_section_controls()
+	{
+		$this->start_controls_section(
+			'section_style_item',
+			[
+				'label' => esc_html__('Item Style', 'woozio'),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_responsive_control(
+			'item_padding',
+			[
+				'label' => __('Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}}' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'item_border',
+				'label' => __('Border', 'woozio'),
+				'selector' => '{{WRAPPER}}',
+			]
+		);
+
+		$this->add_control(
+			'item_border_radius',
+			[
+				'label' => __('Border Radius', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%'],
+				'selectors' => [
+					'{{WRAPPER}}' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'item_box_shadow',
+				'label' => __('Box Shadow', 'woozio'),
+				'selector' => '{{WRAPPER}}',
+			]
+		);
+		$this->end_controls_section();
 
 		$this->start_controls_section(
 			'section_style_image',
 			[
-				'label' => esc_html__( 'Image', 'woozio' ),
+				'label' => esc_html__('Image', 'woozio'),
 				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+		$this->add_responsive_control(
+			'image_width',
+			[
+				'label' => __('Width', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['%'],
+				'range' => [
+					'%' => [
+						'min' => 0,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-post--inner' => '--width-image: {{SIZE}}%;',
+				],
 			]
 		);
 
 		$this->add_control(
 			'img_border_radius',
 			[
-				'label' => __( 'Border Radius', 'woozio' ),
+				'label' => __('Border Radius', 'woozio'),
 				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => [ 'px', '%' ],
+				'size_units' => ['px', '%'],
 				'selectors' => [
 					'{{WRAPPER}} .bt-post--featured .bt-cover-image' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
 
-		$this->start_controls_tabs( 'thumbnail_effects_tabs' );
+		$this->start_controls_tabs('thumbnail_effects_tabs');
 
-		$this->start_controls_tab( 'thumbnail_tab_normal',
+		$this->start_controls_tab(
+			'thumbnail_tab_normal',
 			[
-				'label' => __( 'Normal', 'woozio' ),
+				'label' => __('Normal', 'woozio'),
 			]
 		);
 
 		$this->add_group_control(
-			Group_Control_Css_Filter::get_type(),[
+			Group_Control_Css_Filter::get_type(),
+			[
 				'name' => 'thumbnail_filters',
 				'selector' => '{{WRAPPER}} .bt-post--featured img',
 			]
@@ -106,13 +194,16 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 
 		$this->end_controls_tab();
 
-		$this->start_controls_tab( 'thumbnail_tab_hover',[
-				'label' => __( 'Hover', 'woozio' ),
+		$this->start_controls_tab(
+			'thumbnail_tab_hover',
+			[
+				'label' => __('Hover', 'woozio'),
 			]
 		);
 
 		$this->add_group_control(
-			Group_Control_Css_Filter::get_type(),[
+			Group_Control_Css_Filter::get_type(),
+			[
 				'name'     => 'thumbnail_hover_filters',
 				'selector' => '{{WRAPPER}} .bt-post:hover .bt-post--featured img',
 			]
@@ -125,9 +216,21 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'section_style_content',[
-				'label' => esc_html__( 'Content', 'woozio' ),
+			'section_style_content',
+			[
+				'label' => esc_html__('Content', 'woozio'),
 				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+		$this->add_responsive_control(
+			'content_padding',
+			[
+				'label' => esc_html__('Padding', 'woozio'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .bt-post--content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
 			]
 		);
 
@@ -160,69 +263,6 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 				],
 			]
 		);
-		// Post Category
-		$this->add_control(
-			'post_category_heading',
-			[
-				'label' => esc_html__('Category', 'woozio'),
-				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			[
-				'name' => 'category_typography',
-				'label' => esc_html__('Typography', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-post--category, {{WRAPPER}} .bt-post--category a',
-			]
-		);
-
-		$this->start_controls_tabs('category_color_tabs');
-
-		$this->start_controls_tab(
-			'category_color_normal',
-			[
-				'label' => esc_html__('Normal', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'category_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--category a' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->start_controls_tab(
-			'category_color_hover',
-			[
-				'label' => esc_html__('Hover', 'woozio'),
-			]
-		);
-
-		$this->add_control(
-			'category_hover_color',
-			[
-				'label' => esc_html__('Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-post--category a:hover' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->end_controls_tab();
-
-		$this->end_controls_tabs();
-
 		// Post Title
 		$this->add_control(
 			'post_title_heading',
@@ -286,26 +326,63 @@ class Widget_PostLoopItemStyle2 extends Widget_Base {
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
+		// Post Excerpt
+		$this->add_control(
+			'post_excerpt_heading',
+			[
+				'label' => esc_html__('Excerpt', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'excerpt_typography',
+				'label' => esc_html__('Typography', 'woozio'),
+				'selector' => '{{WRAPPER}} .bt-post--excerpt',
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'excerpt_color',
+			[
+				'label' => esc_html__('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .bt-post--excerpt' => 'color: {{VALUE}};',
+				],
+				'condition' => [
+					'show_excerpt' => 'yes',
+				],
+			]
+		);
 
 		$this->end_controls_section();
-
 	}
 
-	protected function register_controls() {
+	protected function register_controls()
+	{
 		$this->register_layout_section_controls();
 		$this->register_style_section_controls();
 	}
 
-	protected function render() {
+	protected function render()
+	{
 		$settings = $this->get_settings_for_display();
-		?>
-			<div class="bt-elwg-post-loop-item--style2">
-				<?php get_template_part( 'framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'])); ?>
-	    	</div>
-		<?php
+?>
+		<div class="bt-elwg-post-loop-item--style2">
+			<?php get_template_part('framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'], 'excerpt' => $settings['show_excerpt'])); ?>
+		</div>
+<?php
 	}
 
-	protected function content_template() {
-
-	}
+	protected function content_template() {}
 }

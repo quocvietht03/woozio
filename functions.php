@@ -125,7 +125,9 @@ if (!function_exists('woozio_enqueue_scripts')) {
 		}
 		$wishlist_toast = $compare_toast = $cart_toast = '';
 		$show_cart_mini = '';
-
+		$wishlist_toast_time = 3000;
+		$compare_toast_time = 3000;
+		$cart_toast_time = 3000;
 		if (function_exists('get_field')) {
 			$archive_shop = get_field('archive_shop', 'options');
 
