@@ -4648,8 +4648,8 @@
       .bt-skeleton-gallery {
         flex-direction: row;
       }
-      @media (max-width: $break-sm) {
-        .bt-skeleton-main-image:last-child {
+      @media (max-width: $break-md) {
+        .bt-skeleton-main-image:not(:first-child) {
           display: none;
         }
       }
