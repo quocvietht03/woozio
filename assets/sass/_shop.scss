@@ -4469,8 +4469,13 @@
     }
 
     &.bt-gallery-one-column {
-      .bt-skeleton-main-image:nth-child(n + 4) {
-        display: none;
+      .bt-skeleton-main-image,
+      div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
+        @media (max-width: $break-md) {
+          &:not(:first-child) {
+            display: none !important;
+          }
+        }
       }
     }
     &.bt-gallery-two-columns {
@@ -4481,7 +4486,14 @@
       .bt-skeleton-main-image,
       div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(50% - 10px);
+        @media (max-width: $break-md) {
+          width: 100%;
+          &:not(:first-child) {
+            display: none !important;
+          }
+        }
       }
+      
     }
 
     &.bt-gallery-stacked {
@@ -4497,11 +4509,21 @@
         &:last-child {
           display: none;
         }
+        @media (max-width: $break-md) {
+          &:not(:first-child) {
+            display: none !important;
+          }
+        }
       }
       div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(50% - 10px);
         &:first-child {
           width: 100%;
+        }
+        @media (max-width: $break-md) {
+          &:not(:first-child) {
+            display: none !important;
+          }
         }
       }
     }
@@ -4510,8 +4532,11 @@
       .bt-skeleton-main-image,
       div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(33.33% - 13.34px);
-        @media (max-width: $break-xs) {
-          width: calc(50% - 10px);
+        @media (max-width: $break-md) {
+          width: 100%;
+          &:not(:first-child) {
+            display: none !important;
+          }
         }
       }
     }
@@ -4520,11 +4545,24 @@
       .bt-skeleton-main-image,
       div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(25% - 15px);
-        @media (max-width: $break-sm) {
-          width: calc(33.33% - 13.34px);
+        @media (max-width: $break-md) {
+          width: 100%;
+          &:not(:first-child) {
+            display: none !important;
+          }
         }
-        @media (max-width: $break-xs) {
-          width: calc(50% - 10px);
+      }
+    }
+
+    &.bt-gallery-four-columns {
+      .bt-skeleton-main-image,
+      div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
+        width: calc(25% - 15px);
+        @media (max-width: $break-md) {
+          width: 100%;
+          &:not(:first-child) {
+            display: none !important;
+          }
         }
       }
     }
@@ -4535,18 +4573,19 @@
         width: calc(100vw - 40px);
         position: relative;
         left: calc(50% - 50vw + 20px);
+        @media (max-width: $break-md) {
+          left: 0;
+          width: 100%;
+        }
       }
       .bt-skeleton-main-image,
       div.images.bt-gallery-grid-products .bt-gallery-grid-product__item {
         width: calc(20% - 16px);
         @media (max-width: $break-md) {
-          width: calc(25% - 15px);
-        }
-        @media (max-width: $break-sm) {
-          width: calc(33.33% - 13.34px);
-        }
-        @media (max-width: $break-xs) {
-          width: calc(50% - 10px);
+          width: 100%;
+          &:not(:first-child) {
+            display: none !important;
+          }
         }
       }
     }
@@ -4772,6 +4811,22 @@
           text-decoration: underline;
           text-decoration-skip-ink: none;
           text-underline-offset: 3px;
+          @media (max-width: $break-md) {
+            display: none !important;
+          }
+        }
+        .bt-show-gallery-lightbox {
+          display: none;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          color: $color-primary;
+          background: rgba(255, 255, 255, 0.3);
+          line-height: 0;
+          padding: 8px;
+          @media (max-width: $break-md) {
+            display: inline-block;
+          }
         }
       }
       &.loading {
@@ -4968,11 +5023,17 @@
         font-weight: 400;
         line-height: 26px;
         color: $color-text;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e9e9e9;
         > *:first-child {
           margin-top: 0;
         }
         > *:last-child {
           margin-bottom: 0;
+        }
+        @media(max-width: $break-sm) {
+          display: none;
         }
       }
       .bt-countdown-product-sale {
@@ -5126,9 +5187,6 @@
       }
       form.cart {
         margin: 0;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #e9e9e9;
         display: flex;
         flex-wrap: wrap;
         position: relative;

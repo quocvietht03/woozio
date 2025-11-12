@@ -101,6 +101,11 @@
 				}
 			}
 		});
+
+		$('.bt-show-gallery-lightbox').on('click', function () {
+			$('.bt-gallery-lightbox').magnificPopup('open');
+		});
+
 	}
 
 	function WoozioSliderThumbs(container) {
@@ -180,9 +185,9 @@
 			},
 			breakpoints: {
 				0: {
-					slidesPerView: 2,
+					slidesPerView: 1,
 				},
-				768: {
+				992: {
 					slidesPerView: 3,
 				}
 			}

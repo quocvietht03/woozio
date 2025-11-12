@@ -61,7 +61,7 @@ global $product;
                     </div>
                     <div class="bt-product-excerpt-add-to-cart">
                         <?php
-                        do_action('woozio_woocommerce_template_single_excerpt');
+                        // do_action('woozio_woocommerce_template_single_excerpt');
                         do_action('woozio_woocommerce_template_single_countdown'); 
                         do_action('woozio_woocommerce_template_single_add_to_cart');
                         ?>
