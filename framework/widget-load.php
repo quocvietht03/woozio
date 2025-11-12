@@ -84,8 +84,10 @@ class ElementorWidgets
 			'product-tooltip-hotspot',
 			'product-list-hotspot',
 			'product-overlay-hotspot',
+			'product-overlay-hotspot-style-1',
 			'product-slider-bottom-hotspot',
 			'product-testimonial',
+			'the-story',
 			'testimonial-slider',
 			'testimonials-staggered-slider',
 			'countdown',
@@ -234,6 +236,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductListHotspot\Widget_ProductListHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductSliderBottomHotspot\Widget_ProductSliderBottomHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonial\Widget_ProductTestimonial());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TheStory\Widget_TheStory());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialSlider\Widget_TestimonialSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialsStaggeredSlider\Widget_TestimonialsStaggeredSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountDown\Widget_CountDown());
@@ -245,6 +248,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TitleNavWithSlider\Widget_TitleNavWithSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CollectionBanner\Widget_CollectionBanner());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductOverlayHotspot\Widget_ProductOverlayHotspot());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductOverlayHotspotStyle1\Widget_ProductOverlayHotspotStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\IconPayment\Widget_IconPayment());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TextSlider\Woozio_TextSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcase\Widget_ProductShowcase());

@@ -41,6 +41,10 @@ class Widget_BundleSave extends Widget_Base
     public function get_supported_products()
     {
         $supported_products = [];
+        // Check if WooCommerce is active
+        if (!class_exists('WooCommerce')) {
+            return $supported_products;
+        }
 
         $args = array(
             'post_type' => 'product',

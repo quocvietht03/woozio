@@ -37,12 +37,15 @@ defined('ABSPATH') || exit;
 					<td class="product-name">
 						<a href="<?php echo esc_url($_product->get_permalink()); ?>">
 							<?php echo wp_kses_post($_product->get_image('thumbnail'));  ?>
-							<div class="bt-title-product">
-							<?php echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key)); ?>
-							</div>
+						
 							
 						</a>
-						<?php echo wc_get_formatted_cart_item_data($cart_item);  ?>
+						<div class="bt-product-infor">
+							<div class="bt-title-product">
+								<?php echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key)); ?>
+								</div>
+							<?php echo wc_get_formatted_cart_item_data($cart_item);  ?>
+						</div>
 					</td>
 					<td class="product-total">
 				

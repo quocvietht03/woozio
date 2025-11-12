@@ -861,8 +861,8 @@ function bt_elwg_get_slider_settings($settings, $breakpoints)
 	};
 
 	$slider_settings = [
-		'autoplay' => $settings['slider_autoplay'] === 'yes',
-		'loop' => $settings['slider_loop'] === 'yes',
+		'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',
+		'loop' => isset($settings['slider_loop']) && $settings['slider_loop'] === 'yes',
 		'speed' => (int) $settings['slider_speed'],
 		'slidesPerView' => !empty($settings['slides_to_show_mobile']) ? (int)$settings['slides_to_show_mobile'] : 1,
 		'spaceBetween' => $get_first_nonempty([
