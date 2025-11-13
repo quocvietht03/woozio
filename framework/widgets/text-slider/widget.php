@@ -117,6 +117,55 @@ class Woozio_TextSlider extends Widget_Base
                 ]
             ]
         );
+        $this->add_control(
+            'enable_blur',
+            [
+                'label' => __('Enable Blur', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+                'separator' => 'before',
+            ]
+        );
+        $this->add_responsive_control(
+            'blur_width',
+            [
+                'label' => __('Blur Width', 'woozio'),
+                'type' => Controls_Manager::SLIDER,
+                'size_units' => ['px','em', 'rem'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 1000,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => '',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-blur-enabled' => '--width-blur: {{SIZE}}{{UNIT}};',
+                ],
+                'condition' => [
+                    'enable_blur' => 'yes'
+                ],
+            ]
+        );
+        $this->add_control(
+            'blur_background_color',
+            [
+                'label' => __('Blur Background Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .bt-blur-enabled' => '--background-color-blur: {{VALUE}};',
+                ],
+                'condition' => [
+                    'enable_blur' => 'yes'
+                ],
+            ]
+        );
         $this->end_controls_section();
 
         $this->start_controls_section(
@@ -292,6 +341,54 @@ class Woozio_TextSlider extends Widget_Base
                 ],
             ]
         );
+        $this->add_control(
+            'enable_staggered_style',
+            [
+                'label' => __('Enable Staggered Style', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+                'separator' => 'before',
+            ]
+        );
+        $this->add_control(
+            'staggered_text_color',
+            [
+                'label' => __('Staggered Text Color', 'woozio'),
+                'type' => Controls_Manager::COLOR,
+                'default' => '#111111',
+                'selectors' => [
+                    '{{WRAPPER}} .bt-staggered-enabled .bt-text--item:nth-child(odd) span' => 'color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'enable_staggered_style' => 'yes'
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name' => 'staggered_typography',
+                'label' => __('Staggered Typography', 'woozio'),
+                'selector' => '{{WRAPPER}} .bt-staggered-enabled .bt-text--item:nth-child(odd) span',
+                'condition' => [
+                    'enable_staggered_style' => 'yes'
+                ],
+            ]
+        );
+        $this->add_group_control(
+            Group_Control_Text_Stroke::get_type(),
+            [
+                'name' => 'staggered_text_stroke',
+                'label' => __('Staggered Text Stroke', 'woozio'),
+                'selector' => '{{WRAPPER}} .bt-staggered-enabled .bt-text--item:nth-child(odd) span',
+                'condition' => [
+                    'enable_staggered_style' => 'yes'
+                ],
+            ]
+        );
+  
         $this->end_controls_section();
     }
 
@@ -315,8 +412,25 @@ class Woozio_TextSlider extends Widget_Base
 
         $slider_speed = $settings['slider_speed'];
         $slider_space_between = $settings['slider_spacebetween'];
+        
+        // Get custom class
+        $custom_class = !empty($settings['custom_class']) ? esc_attr($settings['custom_class']) : '';
+        $wrapper_class = 'bt-elwg-text-slider--default swiper';
+        if (!empty($custom_class)) {
+            $wrapper_class .= ' ' . $custom_class;
+        }
+        
+        // Add blur class if enabled
+        if (!empty($settings['enable_blur']) && $settings['enable_blur'] === 'yes') {
+            $wrapper_class .= ' bt-blur-enabled';
+        }
+        
+        // Add staggered style class if enabled
+        if (!empty($settings['enable_staggered_style']) && $settings['enable_staggered_style'] === 'yes') {
+            $wrapper_class .= ' bt-staggered-enabled';
+        }
 ?>
-        <div class="bt-elwg-text-slider--default swiper" data-direction="<?php echo esc_attr($slider_direction) ?>" data-speed="<?php echo esc_attr($slider_speed) ?>" data-spacebetween="<?php echo esc_attr($slider_space_between) ?>">
+        <div class="<?php echo $wrapper_class; ?>" data-direction="<?php echo esc_attr($slider_direction) ?>" data-speed="<?php echo esc_attr($slider_speed) ?>" data-spacebetween="<?php echo esc_attr($slider_space_between) ?>">
             <ul class="bt-text-slider swiper-wrapper">
                 <?php foreach ($settings['list'] as $index => $item): ?>
                     <li class="bt-text--item swiper-slide">
