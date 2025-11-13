@@ -4653,6 +4653,25 @@
           display: none;
         }
       }
+      .bt-swiper-pagination {
+        display: none;
+        bottom: 12px !important;
+        .swiper-pagination-bullet {
+          background-color: #ffffff;
+        }
+        .swiper-pagination-bullet-active {
+          background-color: $color-accent;
+        }
+        @media (max-width: $break-md) {
+          display: flex;
+        }
+      }
+      .swiper-button-prev, 
+      .swiper-button-next {
+        @media (max-width: $break-md) {
+          display: none;
+        }
+      }
       .bt-product-inner {
         flex-direction: column;
       }
