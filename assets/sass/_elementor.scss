@@ -1493,6 +1493,14 @@
               }
             }
           }
+          .woocommerce-cart-no-shipping-available-html{
+            &.e-checkout-message{
+              font-size: 14px;
+              strong{
+               display: none;
+              }
+            }
+          }
           .cart-discount {
             .woocommerce-remove-coupon {
               display: none;

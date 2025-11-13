@@ -83,12 +83,13 @@
         &:not(:last-child) {
           margin-bottom: 12px;
         }
-        &:has(> input:checked) {
-          label {
+        // Only active if direct child input is checked and no nested children are checked
+        &:has(> input:checked):not(:has(.bt-children-categories > .item-radio > input:checked)) {
+          > label {
             font-weight: 500;
             color: $color-accent;
           }
-          span {
+          >span {
             font-weight: 500;
             color: $color-accent;
           }
@@ -157,11 +158,7 @@
               }
             }
 
-            &.open {
-              .bt-toggle-children svg {
-                transform: rotate(180deg);
-              }
-            }
+
           }
 
           // Subcategories container
@@ -181,14 +178,48 @@
                 margin-bottom: 12px;
               }
 
-              &:has(input:checked) {
-                label {
+              // Only active if direct child input is checked and no nested children are checked
+              &:has(> input:checked):not(:has(.bt-children-categories > .item-radio > input:checked)) {
+                > label {
                   font-weight: 500;
                   color: $color-accent;
                 }
-                span {
+                > span {
                   font-weight: 500;
                   color: $color-accent;
+                }
+              }
+
+              // Toggle icon for nested subcategories
+              &.has-children {
+                justify-content: flex-start;
+                gap: 4px;
+                flex-wrap: wrap;
+
+                .bt-toggle-children {
+                  position: absolute;
+                  right: 0;
+                  top: 0px;
+                  width: 26px;
+                  height: 26px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  cursor: pointer;
+                  z-index: 10;
+                  transition: transform 0.3s ease;
+
+                  svg {
+                    width: 14px;
+                    height: 14px;
+                    transition: transform 0.3s ease;
+                  }
+                }
+
+                &.open {
+                  > .bt-toggle-children svg {
+                    transform: rotate(180deg);
+                  }
                 }
               }
 
@@ -740,6 +771,11 @@
   }
   /* filter popup no sidebar */
   &.bt-template-nosidebar-popup {
+    &.bt-template-taxonomy {
+      .bt-product-filter-toggle {
+        display: none !important ;
+      }
+    }
     .bt-products-sidebar {
       .bt-product-sidebar {
         @extend .__bt-product-filter-form;

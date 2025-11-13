@@ -1268,6 +1268,22 @@
 				}
 			}
 
+			// Check if we're on a category page or taxonomy page and get info from data attributes
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+			var taxonomyType = $sidebar.data('taxonomy-type') || '';
+			
+			// Remove product_cat from params when on category page
+			if (isCategoryPage) {
+				params.delete('product_cat');
+			}
+			
+			// Remove taxonomy from params when on taxonomy page
+			if (isTaxonomyPage && taxonomyType) {
+				params.delete(taxonomyType);
+			}
+
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1283,6 +1299,10 @@
 				  <path d="M14.6431 7.17815L11.8306 9.60502L12.6875 13.2344C12.7347 13.4314 12.7226 13.638 12.6525 13.8281C12.5824 14.0182 12.4575 14.1833 12.2937 14.3025C12.1298 14.4217 11.9343 14.4896 11.7319 14.4977C11.5294 14.5059 11.3291 14.4538 11.1562 14.3481L7.99996 12.4056L4.84184 14.3481C4.66898 14.4532 4.4689 14.5048 4.2668 14.4963C4.06469 14.4879 3.8696 14.4199 3.70609 14.3008C3.54257 14.1817 3.41795 14.0169 3.3479 13.8272C3.27786 13.6374 3.26553 13.4312 3.31246 13.2344L4.17246 9.60502L1.35996 7.17815C1.20702 7.04597 1.09641 6.87166 1.04195 6.67699C0.987486 6.48232 0.99158 6.27592 1.05372 6.08356C1.11586 5.89121 1.23329 5.72142 1.39135 5.59541C1.54941 5.4694 1.7411 5.39274 1.94246 5.37502L5.62996 5.07752L7.05246 1.63502C7.12946 1.44741 7.26051 1.28693 7.42894 1.17398C7.59738 1.06104 7.7956 1.00073 7.9984 1.00073C8.2012 1.00073 8.39942 1.06104 8.56785 1.17398C8.73629 1.28693 8.86734 1.44741 8.94434 1.63502L10.3662 5.07752L14.0537 5.37502C14.2555 5.39209 14.4477 5.46831 14.6064 5.59415C14.765 5.71999 14.883 5.88984 14.9455 6.08243C15.008 6.27502 15.0123 6.48178 14.9579 6.6768C14.9034 6.87183 14.7926 7.04644 14.6393 7.17877L14.6431 7.17815Z" fill="#FDCC0D"></path>
 				</svg>`;
 				params.forEach((value, key) => {
+					// Skip taxonomy if on taxonomy page
+					if (isTaxonomyPage && key === taxonomyType) {
+						return;
+					}
 					const tags = value.split(/[,; ]+/); // Split value by comma, semicolon, or space
 					console.log(tags);
 					tags.forEach(tag => {
@@ -1347,6 +1367,7 @@
 					}
 				}
 			} else {
+				// No params - hide filter tags
 				$('.bt-list-tag-filter').removeClass('active');
 				$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
 			}
@@ -1575,20 +1596,36 @@
 				e.stopPropagation();
 
 				var $parent = $(this).closest('.item-radio');
-				var $children = $parent.find('.bt-children-categories');
+				// Only get direct children, not nested ones
+				var $children = $parent.children('.bt-children-categories').first();
 
 				if ($parent.hasClass('open')) {
 					$parent.removeClass('open');
 					$children.slideUp(300);
+					// Close all nested children when closing parent
+					$children.find('.item-radio.has-children').removeClass('open');
+					$children.find('.bt-children-categories').slideUp(300);
 				} else {
 					$parent.addClass('open');
 					$children.slideDown(300);
 				}
 			});
 
-			// Auto open subcategories if a child is selected
-			$('.bt-field-type-radio .item-radio-child input:checked').each(function () {
-				$(this).closest('.item-radio.has-children').addClass('open').find('.bt-children-categories').show();
+			// Auto open subcategories if a child is selected (recursively open all parent levels)
+			$('.bt-field-type-radio input:checked').each(function () {
+				var $checkedItem = $(this).closest('.item-radio');
+				// If this is a child item, open all parent categories to show the selected item
+				if ($checkedItem.hasClass('item-radio-child')) {
+					// Find all parent .bt-children-categories containers and open them
+					// This opens all parent levels to show the selected item
+					$checkedItem.parents('.bt-children-categories').each(function() {
+						var $parent = $(this).closest('.item-radio.has-children');
+						if ($parent.length) {
+							$parent.addClass('open');
+							$(this).show();
+						}
+					});
+				}
 			});
 		}
 
@@ -1644,7 +1681,10 @@
 			$('.bt-product-filter-form').submit();
 		});
 		// Filter reset
-		if (window.location.href.includes('?')) {
+		var $sidebar = $('.bt-product-sidebar');
+		var isCategoryPage = $sidebar.data('is-category-page') === 1;
+		var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+		if (window.location.href.includes('?') || isCategoryPage || isTaxonomyPage) {
 			$('.bt-product-filter-form .bt-reset-filter-product-btn').removeClass('disable');
 		}
 
@@ -1656,6 +1696,18 @@
 			}
 			$('.bt-list-tag-filter').removeClass('active');
 			$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
+
+			// Check if we're on a category page or taxonomy page
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+			
+			if (isCategoryPage || isTaxonomyPage) {
+				// On category/taxonomy page: redirect to current page URL (remove all query params)
+				var currentPageUrl = window.location.pathname;
+				window.location.href = currentPageUrl;
+				return;
+			}
 
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
@@ -1690,17 +1742,90 @@
 		});
 		// Ajax filter
 		$('.bt-product-filter-form').submit(function () {
+			// Check if we're on a category page or taxonomy page
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+			var taxonomyType = $sidebar.data('taxonomy-type') || '';
+			var taxonomySlug = $sidebar.data('taxonomy-slug') || '';
+			
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
+			
+			// Remove product_cat from URL params if on category page
+			if (isCategoryPage) {
+				urlParams.delete('product_cat');
+			}
+			
+			// Remove taxonomy from URL params if on taxonomy page
+			if (isTaxonomyPage && taxonomyType) {
+				urlParams.delete(taxonomyType);
+			}
+			
 			// NOTE: jQuery serialize() omits unchecked radio groups entirely.
 			// To ensure radio group names always exist (even when nothing is checked),
 			// build params from serializeArray() and then append empty entries for
 			// any radio groups with no selection.
 			var dataArr = $(this).serializeArray();
 
+			// Get category slug from form before removing it (for ajax request)
+			var categorySlug = '';
+			if (isCategoryPage) {
+				// Try to get from data attribute first (most reliable)
+				categorySlug = $sidebar.data('category-slug') || '';
+				if (!categorySlug) {
+					// Fallback: get from serializeArray
+					var productCatItem = dataArr.find(function(item) {
+						return item.name === 'product_cat';
+					});
+					if (productCatItem && productCatItem.value) {
+						categorySlug = productCatItem.value;
+					} else {
+						// Last fallback: get from checked radio input
+						var productCatInput = $(this).find('input[name="product_cat"]:checked');
+						if (productCatInput.length > 0) {
+							categorySlug = productCatInput.val();
+						}
+					}
+				}
+			}
+
+			// Get taxonomy slug from data attribute (for ajax request)
+			if (isTaxonomyPage && !taxonomySlug) {
+				// Fallback: try to get from serializeArray
+				var taxonomyItem = dataArr.find(function(item) {
+					return item.name === taxonomyType;
+				});
+				if (taxonomyItem && taxonomyItem.value) {
+					taxonomySlug = taxonomyItem.value;
+				}
+			}
+
+			// Remove product_cat from form data if on category page
+			if (isCategoryPage) {
+				dataArr = dataArr.filter(function(item) {
+					return item.name !== 'product_cat';
+				});
+			}
+
+			// Remove taxonomy from form data if on taxonomy page
+			if (isTaxonomyPage && taxonomyType) {
+				dataArr = dataArr.filter(function(item) {
+					return item.name !== taxonomyType;
+				});
+			}
+
 			// Add empty values for unchecked radio groups
 			$(this).find('input[type="radio"][name]').each(function () {
 				var radioName = this.name;
+				// Skip product_cat if on category page
+				if (isCategoryPage && radioName === 'product_cat') {
+					return;
+				}
+				// Skip taxonomy if on taxonomy page
+				if (isTaxonomyPage && radioName === taxonomyType) {
+					return;
+				}
 				var hasValue = dataArr.some(item => item.name === radioName);
 				if (!hasValue) {
 					dataArr.push({ name: radioName, value: '' });
@@ -1714,6 +1839,16 @@
 			var param_ajax = {
 				action: 'woozio_products_filter',
 			};
+
+			// Add category slug to ajax params if on category page (but not to URL)
+			if (isCategoryPage && categorySlug) {
+				param_ajax['product_cat'] = categorySlug.replace(/%2C/g, ',');
+			}
+
+			// Add taxonomy slug to ajax params if on taxonomy page (but not to URL)
+			if (isTaxonomyPage && taxonomyType && taxonomySlug) {
+				param_ajax[taxonomyType] = taxonomySlug.replace(/%2C/g, ',');
+			}
 
 			// Get pagination type
 			var paginationType = $('.bt-product-layout').data('pagination-type');

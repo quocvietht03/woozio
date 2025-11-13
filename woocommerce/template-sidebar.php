@@ -6,10 +6,31 @@
 global $wp_query;
 $rows = intval(get_option('woocommerce_catalog_rows', 2));
 $columns = intval(get_option('woocommerce_catalog_columns', 4));
+
 $rows = $rows > 0 ? $rows : 1;
 $columns = $columns > 0 ? $columns : 1;
 $limit = $rows * $columns;
-$query_args = woozio_products_query_args($_GET, $limit);
+// Prepare query params - include category slug if on category page
+$query_params = $_GET;
+if (woozio_is_category_archive_page()) {
+	// Remove product_cat from params when on category page (it's already in URL)
+	unset($query_params['product_cat']);
+	$current_category = get_queried_object();
+	if ($current_category && !empty($current_category->slug)) {
+		// Pass category slug to query function for filtering
+		$query_params['product_cat'] = $current_category->slug;
+	}
+}
+$is_category_page = woozio_is_category_archive_page();
+if ($is_category_page) {
+	$display_type = get_option('woocommerce_category_archive_display', '');
+} else {
+	$display_type = get_option('woocommerce_shop_page_display', '');
+	if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+		$display_type = 'subcategories';
+	}
+}
+$query_args = woozio_products_query_args($query_params, $limit);
 $wp_query = new \WP_Query($query_args);
 $current_page = isset($_GET['current_page']) && $_GET['current_page'] != '' ? absint($_GET['current_page']) : 1;
 $total_page = $wp_query->max_num_pages;
@@ -29,15 +50,7 @@ if (isset($_GET['sidebar_position']) && !empty($_GET['sidebar_position'])) {
 }
 get_header('shop');
 get_template_part('framework/templates/shop', 'titlebar');
-$is_category_page = isset($_GET['product_cat']);
-if ($is_category_page) {
-	$display_type = get_option('woocommerce_category_archive_display', '');
-} else {
-	$display_type = get_option('woocommerce_shop_page_display', '');
-	if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
-		$display_type = 'subcategories';
-	}
-}
+
 ?>
 <?php if (woozio_should_show_categories()) { ?>
 	<div class="bt-category-wrapper bt-display-<?php echo esc_attr($display_type); ?>">
@@ -86,13 +99,32 @@ if ($is_category_page) {
 										</div>
 									</div>
 								</div>
-								<div class="bt-product-view-type">
-									<?php
-									$type_active = 'grid-3';
-									if (isset($_GET['view_type'])) {
-										$type_active = $_GET['view_type'];
+							<div class="bt-product-view-type">
+								<?php
+								// Determine $type_active from $rows if $_GET['view_type'] is not set
+								if (isset($_GET['view_type'])) {
+									$type_active = $_GET['view_type'];
+								} else {
+									// Map from $rows to $type_active
+									switch ($rows) {
+										case 1:
+											$type_active = 'list';
+											break;
+										case 2:
+											$type_active = 'grid-2';
+											break;
+										case 3:
+											$type_active = 'grid-3';
+											break;
+										case 4:
+											$type_active = 'grid-4';
+											break;
+										default:
+											$type_active = 'grid-3';
+											break;
 									}
-									?>
+								}
+								?>
 									<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
 										<div class="bt-icon">
 											<span class="bt-dot"></span>
@@ -185,7 +217,7 @@ if ($is_category_page) {
 									</a>
 								</div>
 							</div>
-							<div class="bt-product-layout" data-view="<?php echo isset($_GET['view_type']) && $_GET['view_type'] != '' ? $_GET['view_type'] : '' ?>" data-pagination-type="<?php echo esc_attr($pagination_type); ?>">
+							<div class="bt-product-layout" data-view="<?php echo esc_attr($type_active); ?>" data-pagination-type="<?php echo esc_attr($pagination_type); ?>">
 								<span class="bt-loading-wave"></span>
 								<?php
 								if ($wp_query->have_posts()) {

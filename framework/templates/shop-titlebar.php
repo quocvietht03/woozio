@@ -78,12 +78,21 @@ if ($enable_description) {
     $description_shop = isset($shop_title_bar['description_shop']) ? $shop_title_bar['description_shop'] : '';
 }
 
-// Check if product_cat is set in URL - override title and description
+// Check if product_cat is set in URL or we're on category archive page - override title and description
 $page_title = woozio_page_title();
 $category_term = null;
-if (isset($_GET['product_cat']) && !empty($_GET['product_cat'])) {
-    $cat_slug = sanitize_text_field($_GET['product_cat']);
-    $category_term = get_term_by('slug', $cat_slug, 'product_cat');
+
+// Check if we're on a category page (either via URL param or category archive)
+$is_category_page = isset($_GET['product_cat']) || woozio_is_category_archive_page();
+
+if ($is_category_page) {
+    // Get category term
+    if (isset($_GET['product_cat']) && !empty($_GET['product_cat'])) {
+        $cat_slug = sanitize_text_field($_GET['product_cat']);
+        $category_term = get_term_by('slug', $cat_slug, 'product_cat');
+    } elseif (woozio_is_category_archive_page()) {
+        $category_term = get_queried_object();
+    }
 
     if ($category_term && !is_wp_error($category_term)) {
         // Override title with category name

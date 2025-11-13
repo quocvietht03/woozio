@@ -1478,7 +1478,8 @@
                                 "brand": "Brand",
                                 "price": "Price",
                                 "colors": "Colors",
-                                "customer_rating": "Customer Rating"
+                                "customer_rating": "Customer Rating",
+                                "text_editor": "Text Editor"
                             },
                             "default_value": false,
                             "return_format": "value",
@@ -1490,6 +1491,36 @@
                             "placeholder": "",
                             "create_options": 0,
                             "save_options": 0,
+                            "parent_repeater": "field_68f5e8c0ec75e"
+                        },
+                        {
+                            "key": "field_6913e4777f017",
+                            "label": "Custom Editor",
+                            "name": "custom_editor",
+                            "aria-label": "",
+                            "type": "wysiwyg",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_68f5e9b6ea2f3",
+                                        "operator": "==",
+                                        "value": "text_editor"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "allow_in_bindings": 0,
+                            "tabs": "all",
+                            "toolbar": "full",
+                            "media_upload": 1,
+                            "delay": 0,
                             "parent_repeater": "field_68f5e8c0ec75e"
                         }
                     ]
@@ -2517,5 +2548,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1762506384
+    "modified": 1762911402
 }
