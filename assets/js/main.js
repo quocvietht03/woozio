@@ -59,7 +59,7 @@
 	}
 	/* Shop */
 	function WoozioImageZoomable() {
-		if ($('.bt-gallery-zoomable').length == 0) {
+		if ($('.bt-gallery-zoomable').length == 0 || window.innerWidth < 1025) {
 			return
 		}
 
