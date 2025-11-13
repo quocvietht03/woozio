@@ -48,6 +48,9 @@ global $product;
                 ?>
             </div>
             <?php
+            echo '<button class="bt-show-gallery-lightbox"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"></path>
+                </svg></button>';
             echo '<button class="bt-show-more">' . esc_html__('Show More', 'woozio') . '</button>';
             ?>
         </div>
@@ -70,7 +73,7 @@ global $product;
                     </div>
                     <div class="bt-product-excerpt-add-to-cart">
                         <?php
-                        do_action('woozio_woocommerce_template_single_excerpt');
+                        // do_action('woozio_woocommerce_template_single_excerpt');
                         do_action('woozio_woocommerce_template_single_countdown'); 
                         do_action('woozio_woocommerce_template_single_add_to_cart');
                         ?>

@@ -59,7 +59,7 @@
 	}
 	/* Shop */
 	function WoozioImageZoomable() {
-		if ($('.bt-gallery-zoomable').length == 0) {
+		if ($('.bt-gallery-zoomable').length == 0 || window.innerWidth < 1025) {
 			return
 		}
 
@@ -101,6 +101,11 @@
 				}
 			}
 		});
+
+		$('.bt-show-gallery-lightbox').on('click', function () {
+			$('.bt-gallery-lightbox').magnificPopup('open');
+		});
+
 	}
 
 	function WoozioSliderThumbs(container) {
@@ -178,11 +183,15 @@
 				nextEl: '.swiper-button-next',
 				prevEl: '.swiper-button-prev',
 			},
+			pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+			},
 			breakpoints: {
 				0: {
-					slidesPerView: 2,
+					slidesPerView: 1,
 				},
-				768: {
+				992: {
 					slidesPerView: 3,
 				}
 			}

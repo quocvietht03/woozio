@@ -36,21 +36,13 @@ class Zoomable {
     }
 
     _addEventListeners() {
-        this.element.addEventListener("mouseover", () =>
-            this._handleMouseover()
-        );
-        this.element.addEventListener("mousemove", (evt) =>
-            this._handleMousemove(evt)
-        );
+        this.element.addEventListener("mouseover", () => this._handleMouseover());
+        this.element.addEventListener("mousemove", (evt) => this._handleMousemove(evt));
         this.element.addEventListener("mouseout", () => this._handleMouseout());
+        
         // this.element.addEventListener("wheel", (evt) => this._handleWheel(evt));
-
-        // this.element.addEventListener("touchstart", (evt) =>
-        //     this._handleTouchstart(evt)
-        // );
-        // this.element.addEventListener("touchmove", (evt) =>
-        //     this._handleTouchmove(evt)
-        // );
+        // this.element.addEventListener("touchstart", (evt) => this._handleTouchstart(evt));
+        // this.element.addEventListener("touchmove", (evt) => this._handleTouchmove(evt));
         // this.element.addEventListener("touchend", () => this._handleTouchend());
     }
 
