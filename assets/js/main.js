@@ -1706,18 +1706,6 @@
 			$('.bt-list-tag-filter').removeClass('active');
 			$('.bt-list-tag-filter').children().not('.bt-reset-filter-product-btn').remove();
 
-			// Check if we're on a category page or taxonomy page
-			var $sidebar = $('.bt-product-sidebar');
-			var isCategoryPage = $sidebar.data('is-category-page') === 1;
-			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
-			
-			if (isCategoryPage || isTaxonomyPage) {
-				// On category/taxonomy page: redirect to current page URL (remove all query params)
-				var currentPageUrl = window.location.pathname;
-				window.location.href = currentPageUrl;
-				return;
-			}
-
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
 
@@ -1741,9 +1729,24 @@
 				window.history.replaceState(null, null, window.location.pathname);
 			}
 
-			$('.bt-product-filter-form input').not('[type="radio"]').val('');
-			$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
-			$('.bt-product-filter-form .bt-field-item').removeClass('checked');
+			// Check if we're on a category page
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			
+			if (isCategoryPage) {
+				// Reset all inputs except product_cat on category page
+				$('.bt-product-filter-form input').not('[type="radio"]').not('[name="product_cat"]').val('');
+				$('.bt-product-filter-form input[type="radio"]').not('[name="product_cat"]').prop('checked', false);
+				$('.bt-product-filter-form input[type="checkbox"]').not('[name="product_cat"]').prop('checked', false);
+				$('.bt-product-filter-form .bt-field-item').not('.bt-form-field[data-name="product_cat"] .bt-field-item').removeClass('checked');
+			} else {
+				// Reset all inputs including product_cat on other pages
+				$('.bt-product-filter-form input').not('[type="radio"]').val('');
+				$('.bt-product-filter-form input[type="radio"]').prop('checked', false);
+				$('.bt-product-filter-form input[type="checkbox"]').prop('checked', false);
+				$('.bt-product-filter-form .bt-field-item').removeClass('checked');
+			}
+			
 			$('.bt-product-filter-form select').select2().val('').trigger('change');
 			$(this).addClass('disable')
 

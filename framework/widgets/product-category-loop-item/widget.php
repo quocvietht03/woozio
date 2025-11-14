@@ -62,6 +62,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     'style-4' => __('Style 4', 'woozio'),
                     'style-5' => __('Style 5', 'woozio'),
                     'style-6' => __('Style 6', 'woozio'),
+                    'style-7' => __('Style 7', 'woozio'),
                 ],
             ]
         );
@@ -108,7 +109,33 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'return_value' => 'yes',
                 'default' => 'no',
                 'condition' => [
-                    'layout_style!' => ['style-6'],
+                    'layout_style!' => ['style-6', 'style-7'],
+                ],
+            ]
+        );
+        $this->add_control(
+            'show_custom_button',
+            [
+                'label' => __('Show Custom Button', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Show', 'woozio'),
+                'label_off' => __('Hide', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+                'condition' => [
+                    'layout_style' => ['style-6', 'style-7'],
+                ],
+            ]
+        );
+        $this->add_control(
+            'custom_button_text',
+            [
+                'label' => __('Custom Button Text', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('Shop Now', 'woozio'),
+                'condition' => [
+                    'layout_style' => ['style-6', 'style-7'],
+                    'show_custom_button' => 'yes',
                 ],
             ]
         );
@@ -357,7 +384,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'type' => Controls_Manager::HEADING,
                 'separator' => 'before',
                 'condition' => [
-                    'layout_style' => ['style-6'],
+                    'layout_style' => ['style-6', 'style-7'],
                 ],
             ]
         );
@@ -372,7 +399,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     '{{WRAPPER}} .bt-product-category--view-more' => 'color: {{VALUE}};',
                 ],
                 'condition' => [
-                    'layout_style' => ['style-6'],
+                    'layout_style' => ['style-6', 'style-7'],
                 ],
             ]
         );
@@ -387,7 +414,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                     '{{WRAPPER}} .bt-product-category--item:hover .bt-product-category--view-more' => 'color: {{VALUE}};',
                 ],
                 'condition' => [
-                    'layout_style' => ['style-6'],
+                    'layout_style' => ['style-6', 'style-7'],
                 ],
             ]
         );
@@ -400,7 +427,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'default' => '',
                 'selector' => '{{WRAPPER}} .bt-product-category--view-more',
                 'condition' => [
-                    'layout_style' => ['style-6'],
+                    'layout_style' => ['style-6', 'style-7'],
                 ],
             ]
         );
@@ -647,6 +674,8 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'layout' => $settings['layout_style'],
                 'show_count' => $settings['show_count'],
                 'category' => $wp_query->loop_term,
+                'custom_button_text' => $settings['custom_button_text'],
+                'show_custom_button' => $settings['show_custom_button'],
             ));
             ?>
 

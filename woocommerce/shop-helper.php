@@ -790,6 +790,19 @@ function woozio_get_products_by_rating($rating)
         ],
     ];
 
+    // Check if we're on a product category page
+    if (woozio_is_category_archive_page()) {
+        $current_category = get_queried_object();
+        if ($current_category && isset($current_category->term_id)) {
+            $args['tax_query'] = [
+                [
+                    'taxonomy' => 'product_cat',
+                    'field' => 'term_id',
+                    'terms' => $current_category->term_id,
+                ],
+            ];
+        }
+    }
     $query = new WP_Query($args);
     return '(' . $query->found_posts . ')';
 }
