@@ -86,6 +86,7 @@ class Widget_PostGrid extends Widget_Base
 				'options' => [
 					'default' => __('Default', 'woozio'),
 					'layout-01' => __('Layout 01', 'woozio'),
+					'layout-02' => __('Layout 02', 'woozio'),
 				],
 			]
 		);
@@ -400,7 +401,6 @@ class Widget_PostGrid extends Widget_Base
 			[
 				'label' => __('Title', 'woozio'),
 				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
 			]
 		);
 
@@ -437,7 +437,44 @@ class Widget_PostGrid extends Widget_Base
 				'selector' => '{{WRAPPER}} .bt-post--title a',
 			]
 		);
+		$this->add_control(
+			'excerpt_style',
+			[
+				'label' => __('Excerpt', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
 
+		$this->add_control(
+			'excerpt_color',
+			[
+				'label' => __('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-post--excerpt' => 'color: {{VALUE}};',
+				],
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'excerpt_typography',
+				'label' => __('Typography', 'woozio'),
+				'default' => '',
+				'selector' => '{{WRAPPER}} .bt-post--excerpt',
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
 		$this->add_control(
 			'first_post_title_style',
 			[
@@ -486,7 +523,6 @@ class Widget_PostGrid extends Widget_Base
 			[
 				'label' => __('First Post Date', 'woozio'),
 				'type' => Controls_Manager::HEADING,
-				'separator' => 'before',
 			]
 		);
 
@@ -511,6 +547,46 @@ class Widget_PostGrid extends Widget_Base
 				'selector' => '{{WRAPPER}} .bt-post:first-child .bt-post--publish',
 			]
 		);
+
+		$this->add_control(
+			'first_post_excerpt_style',
+			[
+				'label' => __('First Post Excerpt', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
+
+		$this->add_control(
+			'first_post_excerpt_color',
+			[
+				'label' => __('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-post:first-child .bt-post--excerpt' => 'color: {{VALUE}};',
+				],
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'first_post_excerpt_typography',
+				'label' => __('Typography', 'woozio'),
+				'default' => '',
+				'selector' => '{{WRAPPER}} .bt-post:first-child .bt-post--excerpt',
+				'condition' => [
+					'layout' => 'layout-02',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -685,6 +761,10 @@ class Widget_PostGrid extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 		$query = $this->query_posts();
+		$excerpt = 'no';
+		if ($settings['layout'] == 'layout-02') {
+			$excerpt = 'yes';
+		} 
 
 ?>
 		<div class="bt-elwg-post-grid--<?php echo $settings['layout']; ?>">
@@ -694,7 +774,7 @@ class Widget_PostGrid extends Widget_Base
 				<div class="bt-post-grid">
 					<?php
 					while ($query->have_posts()) : $query->the_post();
-						get_template_part('framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size']));
+						get_template_part('framework/templates/post', 'style', array('image-size' => $settings['thumbnail_size'], 'excerpt' => $excerpt));
 					endwhile;
 					?>
 				</div>
