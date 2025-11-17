@@ -107,7 +107,8 @@ class ElementorWidgets
 			'bundle-save',
 			'order-tracking',
 			'list-text-image-hover',
-			'flicker-collage'
+			'flicker-collage',
+			'product-banner-scroll-hotspot'
 		);
 
 		return $this->widgets;
@@ -262,6 +263,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OrderTracking\Widget_OrderTracking());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ListTextImageHover\Widget_ListTextImageHover());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\FlickerCollage\Widget_FlickerCollage());
+
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductBannerScrollHotspot\Widget_ProductBannerScrollHotspot());
 	}
 
 	/**

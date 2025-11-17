@@ -2787,6 +2787,9 @@
 		if ($('.bt-product-extra-content').length) {
 			$('.bt-product-extra-content').css('--width-body', widthBody + 'px');
 		}
+		if ($('.bt-carousel-full-width').length) {
+			$('.bt-carousel-full-width .elementor-loop-container').css('--width-body', widthBody + 'px');
+		}
 	}
 	/* add to cart ajax product variable */
 	function WoozioAddToCartVariable() {

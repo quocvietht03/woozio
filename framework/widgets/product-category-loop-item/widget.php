@@ -268,6 +268,10 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                         'title' => esc_html__('Right', 'woozio'),
                         'icon'  => 'eicon-text-align-right',
                     ],
+                    'space-between' => [
+                        'title' => esc_html__('Space Between', 'woozio'),
+                        'icon'  => 'eicon-text-align-justify',
+                    ],
                 ],
                 'default' => 'left',
                 'toggle' => true,
