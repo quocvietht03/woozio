@@ -100,7 +100,7 @@ class Widget_CountDown extends Widget_Base
 				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
-		$this->add_control(
+		$this->add_responsive_control(
 			'item_background_color',
 			[
 				'label' => __('Item Background Color', 'woozio'),

@@ -18,6 +18,16 @@
 
 defined('ABSPATH') || exit;
 
+// Check if on shop page or category page
+$is_shop_page = is_shop();
+$is_category_page = woozio_is_category_archive_page();
+
+// If not shop or category page, force no sidebar
+if (!$is_shop_page && !$is_category_page) {
+	get_template_part('woocommerce/template','nosidebar-popup');
+	return;
+}
+
 $archive_shop = get_field('archive_shop', 'options');
 $sidebar_shop = isset($archive_shop['sidebar_shop']) ? $archive_shop['sidebar_shop'] : 'sidebar';
 $filter_shop = isset($archive_shop['filter_shop']) ? $archive_shop['filter_shop'] : 'filter-dropdown';

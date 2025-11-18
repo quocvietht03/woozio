@@ -2997,6 +2997,47 @@
 			setActive(defaultActive);
 		});
 	};
+	const ProductTestimonialSliderHandler = function ($scope) {
+		const $ProductTestimonialSlider = $scope.find('.js-data-product-testimonial-slider');
+		if ($ProductTestimonialSlider.length > 0) {
+			const $sliderSettings = $ProductTestimonialSlider.data('slider-settings') || {};
+			// Initialize the testimonial slider
+			const testimonialSlider = new Swiper($ProductTestimonialSlider.find('.js-testimonial-slider')[0], {
+				slidesPerView: $sliderSettings.slidesPerView,
+				spaceBetween: $sliderSettings.spaceBetween,
+				loop: $sliderSettings.loop,
+				speed: $sliderSettings.speed,
+				autoplay: $sliderSettings.autoplay ? {
+					delay: $sliderSettings.autoplay_delay,
+					disableOnInteraction: false
+				} : false,
+				navigation: {
+					nextEl: $ProductTestimonialSlider.find('.bt-button-next')[0],
+					prevEl: $ProductTestimonialSlider.find('.bt-button-prev')[0],
+				},
+				pagination: {
+					el: $ProductTestimonialSlider.find('.bt-swiper-pagination')[0],
+					clickable: true,
+					type: 'bullets',
+					renderBullet: function (index, className) {
+						return '<span class="' + className + '"></span>';
+					},
+				},
+				breakpoints: $sliderSettings.breakpoints,
+			});
+
+			// Pause autoplay on hover if autoplay is enabled
+			if ($sliderSettings.autoplay) {
+				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseenter', () => {
+					testimonialSlider.autoplay.stop();
+				});
+
+				$ProductTestimonialSlider.find('.js-testimonial-slider')[0].addEventListener('mouseleave', () => {
+					testimonialSlider.autoplay.start();
+				});
+			}
+		}
+	};
 
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
@@ -3010,6 +3051,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-offers-slider.default', OffersSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-tooltip-hotspot.default', ProductTooltipHotspotHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial.default', ProductTestimonialHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-testimonial-slider.default', ProductTestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-the-story.default', TheStoryHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonial-slider.default', TestimonialSliderHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-testimonials-staggered-slider.default', TestimonialsStaggeredSliderHandler);

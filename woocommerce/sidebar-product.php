@@ -7,9 +7,41 @@
  */
 
 defined('ABSPATH') || exit;
-
+$current_category = null;
+$category_slug = '';
+$category_name = '';
+if (woozio_is_category_archive_page()) {
+	$current_category = get_queried_object();
+	if ($current_category && isset($current_category->taxonomy) && $current_category->taxonomy === 'product_cat') {
+		$category_slug = !empty($current_category->slug) ? $current_category->slug : '';
+		$category_name = !empty($current_category->name) ? $current_category->name : '';
+	}
+}
+$current_category = get_queried_object();
+// Get taxonomy info for taxonomy pages (not shop or category)
+$is_category_page = woozio_is_category_archive_page();
+$is_taxonomy_page = !$is_category_page && (is_product_taxonomy() || is_tax());
+$current_taxonomy = null;
+$taxonomy_slug = '';
+$taxonomy_name = '';
+$taxonomy_type = '';
+if ($is_taxonomy_page) {
+	$current_taxonomy = get_queried_object();
+	if ($current_taxonomy && isset($current_taxonomy->taxonomy) && $current_taxonomy->taxonomy !== 'product_cat') {
+		$taxonomy_slug = !empty($current_taxonomy->slug) ? $current_taxonomy->slug : '';
+		$taxonomy_name = !empty($current_taxonomy->name) ? $current_taxonomy->name : '';
+		$taxonomy_type = $current_taxonomy->taxonomy;
+	}
+}
 ?>
-<div class="bt-product-sidebar">
+<div class="bt-product-sidebar" 
+	<?php if (woozio_is_category_archive_page()) { ?>data-is-category-page="1"<?php } ?>
+	<?php if ($category_slug) { ?>data-category-slug="<?php echo esc_attr($category_slug); ?>"<?php } ?>
+	<?php if ($category_name) { ?>data-category-name="<?php echo esc_attr($category_name); ?>"<?php } ?>
+	<?php if ($is_taxonomy_page) { ?>data-is-taxonomy-page="1"<?php } ?>
+	<?php if ($taxonomy_slug) { ?>data-taxonomy-slug="<?php echo esc_attr($taxonomy_slug); ?>"<?php } ?>
+	<?php if ($taxonomy_name) { ?>data-taxonomy-name="<?php echo esc_attr($taxonomy_name); ?>"<?php } ?>
+	<?php if ($taxonomy_type) { ?>data-taxonomy-type="<?php echo esc_attr($taxonomy_type); ?>"<?php } ?>>
   <form class="bt-product-filter-form" action="" method="get">
     <div class="bt-form-action">
       <h2 class="bt-form-title">
@@ -81,7 +113,13 @@ defined('ABSPATH') || exit;
 
             case 'categories':
               $field_name = __('Product Categories', 'woozio');
-              $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
+              // Check if we're on a product category page
+              if (woozio_is_category_archive_page()) {
+                $current_category = get_queried_object();
+                $field_value = !empty($current_category->slug) ? $current_category->slug : '';
+              } else {
+                $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
+              }
               woozio_product_field_radio_html('product_cat', $field_name, $field_value );
               break;
 
@@ -109,6 +147,17 @@ defined('ABSPATH') || exit;
               $field_value = (isset($_GET['product_rating'])) ? $_GET['product_rating'] : '';
               woozio_product_field_rating('product_rating', $field_name, $field_value);
               break;
+
+            case 'text_editor':
+              $custom_editor_content = !empty($filter['custom_editor']) ? $filter['custom_editor'] : '';
+              if (!empty($custom_editor_content)) {
+                ?>
+                <div class="bt-form-field bt-field-type-text-editor">
+                  <?php echo apply_filters('the_content', $custom_editor_content); ?>
+                </div>
+                <?php
+              }
+              break;
           }
         }
       } else {
@@ -124,7 +173,13 @@ defined('ABSPATH') || exit;
         </div>
         <?php
         $field_name = __('Product Categories', 'woozio');
-        $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
+        // Check if we're on a product category page
+        if (woozio_is_category_archive_page()) {
+          $current_category = get_queried_object();
+          $field_value = !empty($current_category->slug) ? $current_category->slug : '';
+        } else {
+          $field_value = (isset($_GET['product_cat'])) ? $_GET['product_cat'] : '';
+        }
         woozio_product_field_radio_html('product_cat', $field_name, $field_value);
     
         $field_name = __('Brand', 'woozio');

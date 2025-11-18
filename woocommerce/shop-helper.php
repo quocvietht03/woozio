@@ -36,6 +36,34 @@ add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_dis
 // Remove categories from product loop
 remove_filter('woocommerce_product_loop_start', 'woocommerce_maybe_show_product_subcategories');
 
+/**
+ * Prevent product_brand query param from being treated as taxonomy archive
+ * Remove from query vars when it's just a filter parameter
+ */
+function woozio_remove_brand_from_query_vars($query_vars)
+{
+    if (!is_admin() && isset($_GET['product_brand']) && isset($query_vars['product_brand'])) {
+        unset($query_vars['product_brand']);
+    }
+    return $query_vars;
+}
+add_filter('request', 'woozio_remove_brand_from_query_vars', 1, 1);
+
+/**
+ * Check if we're on a product category archive page (not shop page with query params)
+ * Uses queried object to check taxonomy
+ * 
+ * @return bool True if on category archive page (not shop page)
+ */
+function woozio_is_category_archive_page()
+{
+    $current_category = get_queried_object();
+    $is_category_page = $current_category && isset($current_category->taxonomy) && $current_category->taxonomy === 'product_cat' && !isset($_GET['product_cat']);
+
+    // Also verify we're not on shop page (shop page with product_cat query param)
+    return $is_category_page;
+}
+
 // Display categories in sidebar template
 function woozio_shop_categories_display()
 {
@@ -45,7 +73,7 @@ function woozio_shop_categories_display()
     }
 
     // Determine if we're on shop page or category page to get correct display mode
-    $is_category_page = isset($_GET['product_cat']);
+    $is_category_page = isset($_GET['product_cat']) || woozio_is_category_archive_page();
 
     if ($is_category_page) {
         $display_type = get_option('woocommerce_category_archive_display', '');
@@ -62,27 +90,12 @@ function woozio_shop_categories_display()
         ob_start();
         woocommerce_output_product_categories(
             array(
-                'parent_id' => is_product_category() ? get_queried_object_id() : 0,
+                'parent_id' => woozio_is_category_archive_page() ? get_queried_object_id() : 0,
             )
         );
         $category_output = ob_get_clean();
 
-        // Modify category links to use ?product_cat={slug} format
-        $category_output = preg_replace_callback(
-            '/href="([^"]*)"/',
-            function ($matches) {
-                $url = $matches[1];
-                // Extract the last category slug from URL, supporting nested paths like /product-category/parent/child/
-                if (preg_match('/\/product-category\/(?:.+\/)?([^\/]+)\/?/', $url, $slug_matches)) {
-                    $category_slug = $slug_matches[1];
-                    // Get the base shop URL
-                    $shop_url = wc_get_page_permalink('shop');
-                    return 'href="' . $shop_url . '?product_cat=' . $category_slug . '"';
-                }
-                return $matches[0];
-            },
-            $category_output
-        );
+        // Keep original category permalink links (no modification needed)
     }
 
     echo wp_kses_post($category_output);
@@ -98,14 +111,14 @@ function woozio_should_show_categories()
     $category_display = get_option('woocommerce_category_archive_display', '');
 
     // Check if we're on category page
-    $is_category_page = isset($_GET['product_cat']) || is_product_category();
+    $is_category_page = isset($_GET['product_cat']) || woozio_is_category_archive_page();
 
     if ($is_category_page) {
         // Get current category
         $current_category = null;
         if (isset($_GET['product_cat'])) {
             $current_category = get_term_by('slug', $_GET['product_cat'], 'product_cat');
-        } elseif (is_product_category()) {
+        } elseif (woozio_is_category_archive_page()) {
             $current_category = get_queried_object();
         }
 
@@ -140,14 +153,14 @@ function woozio_should_show_products()
     $category_display = get_option('woocommerce_category_archive_display', '');
 
     // Check if we're on category page
-    $is_category_page = isset($_GET['product_cat']) || is_product_category();
+    $is_category_page = isset($_GET['product_cat']) || woozio_is_category_archive_page();
 
     if ($is_category_page) {
         // Get current category
         $current_category = null;
         if (isset($_GET['product_cat'])) {
             $current_category = get_term_by('slug', $_GET['product_cat'], 'product_cat');
-        } elseif (is_product_category()) {
+        } elseif (woozio_is_category_archive_page()) {
             $current_category = get_queried_object();
         }
 
@@ -200,7 +213,10 @@ function woozio_woocommerce_single_product_meta()
     if ($terms && !is_wp_error($terms)) {
         $cat_links = array();
         foreach ($terms as $term) {
-            $cat_links[] = '<a href="' . esc_url(add_query_arg('product_cat', $term->slug, home_url('/shop'))) . '">' . esc_html($term->name) . '</a>';
+            $term_link = get_term_link($term->term_id, 'product_cat');
+            if (!is_wp_error($term_link)) {
+                $cat_links[] = '<a href="' . esc_url($term_link) . '">' . esc_html($term->name) . '</a>';
+            }
         }
         echo '<li class="categories"><span>Categories:</span> ' . implode(', ', $cat_links) . '</li>';
     }
@@ -346,7 +362,7 @@ function woozio_display_product_countdown_and_sale_marquee()
         $timezone = new DateTimeZone(wp_timezone_string());
         $current_time = new DateTime('now', $timezone);
         $current_time = $current_time->format('Y-m-d H:i:s');
-        
+
         $time = strtotime($time);
         $time = date('Y-m-d H:i:s', $time);
         if ($current_time > $time) {
@@ -774,8 +790,123 @@ function woozio_get_products_by_rating($rating)
         ],
     ];
 
+    // Check if we're on a product category page
+    if (woozio_is_category_archive_page()) {
+        $current_category = get_queried_object();
+        if ($current_category && isset($current_category->term_id)) {
+            $args['tax_query'] = [
+                [
+                    'taxonomy' => 'product_cat',
+                    'field' => 'term_id',
+                    'terms' => $current_category->term_id,
+                ],
+            ];
+        }
+    }
     $query = new WP_Query($args);
     return '(' . $query->found_posts . ')';
+}
+
+/* Helper function to recursively get all nested children */
+function woozio_get_nested_category_children($parent_id, $taxonomy, $all_terms = null)
+{
+    if ($all_terms === null) {
+        $all_terms = get_terms(array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => true,
+        ));
+
+        if (is_wp_error($all_terms) || empty($all_terms)) {
+            return array();
+        }
+    }
+
+    $children = array();
+    foreach ($all_terms as $term) {
+        if (isset($term->parent) && intval($term->parent) === intval($parent_id)) {
+            $children[] = $term;
+            // Recursively get children of this child
+            $grandchildren = woozio_get_nested_category_children($term->term_id, $taxonomy, $all_terms);
+            if (!empty($grandchildren)) {
+                $term->children = $grandchildren;
+            }
+        }
+    }
+
+    return $children;
+}
+
+/* Helper function to recursively render nested categories */
+function woozio_render_nested_category($term, $slug, $field_value, $parent_url = '', $level = 0)
+{
+    $is_checked = ($term->slug == $field_value);
+    $has_children = !empty($term->children);
+    $url_category = '';
+
+    if ($slug === 'product_cat') {
+        // If on category page, always create URL for all categories to redirect
+        if (woozio_is_category_archive_page()) {
+            // Use category permalink for redirect
+            $url_category = get_term_link($term->term_id, 'product_cat');
+            if (is_wp_error($url_category)) {
+                $url_category = '';
+            }
+        } else {
+            // On shop page, use category permalink
+            $is_category_page = isset($_GET['product_cat']);
+            if ($is_category_page) {
+                $category_display = get_option('woocommerce_category_archive_display', '');
+                if ($category_display == 'both') {
+                    $term_link = get_term_link($term->term_id, 'product_cat');
+                    if (!is_wp_error($term_link)) {
+                        $url_category = $term_link;
+                    }
+                }
+            } else {
+                $shop_page_display = get_option('woocommerce_shop_page_display', '');
+                if ($shop_page_display == 'both') {
+                    $term_link = get_term_link($term->term_id, 'product_cat');
+                    if (!is_wp_error($term_link)) {
+                        $url_category = $term_link;
+                    }
+                }
+            }
+        }
+    }
+
+    $item_class = 'item-radio';
+    if ($level > 0) {
+        $item_class .= ' item-radio-child';
+    }
+    if ($has_children) {
+        $item_class .= ' has-children';
+    }
+    ?>
+    <div class="<?php echo esc_attr($item_class); ?>" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>" <?php } ?>>
+        <?php if ($is_checked) { ?>
+            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
+        <?php } else { ?>
+            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>">
+        <?php } ?>
+        <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>">
+            <?php echo esc_html($term->name); ?>
+        </label>
+        <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
+
+        <?php if ($has_children) { ?>
+            <span class="bt-toggle-children">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </span>
+            <div class="bt-children-categories">
+                <?php foreach ($term->children as $child) {
+                    woozio_render_nested_category($child, $slug, $field_value, $url_category, $level + 1);
+                } ?>
+            </div>
+        <?php } ?>
+    </div>
+    <?php
 }
 
 /* Field Product */
@@ -816,83 +947,78 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
     $field_title_default = !empty($field_title) ? $field_title : 'Choose';
 
     if (!empty($terms) && !is_wp_error($terms)) {
+        // If mode is 'parent', get nested children for all terms
+        if ($slug === 'product_cat' && $category_mode === 'parent') {
+            // Get all terms to build nested structure
+            $all_terms = get_terms(array(
+                'taxonomy' => $slug,
+                'hide_empty' => true,
+            ));
+
+            // Only proceed if we got valid terms
+            if (!is_wp_error($all_terms) && !empty($all_terms)) {
+                // Build nested structure for each parent term
+                foreach ($terms as $term) {
+                    $term->children = woozio_get_nested_category_children($term->term_id, $slug, $all_terms);
+                }
+            }
+        }
     ?>
         <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?> bt-field-mode-<?php echo $category_mode; ?>" data-name="<?php echo esc_attr($slug); ?>">
             <div class="bt-field-title"><?php echo esc_html($field_title_default) ?></div>
             <div class="bt-field-list">
-                <?php foreach ($terms as $term) { ?>
-                    <?php
-                    $is_checked = ($term->slug == $field_value);
-                    $has_children = false;
-                    $children = array();
-                    $url_category = '';
-                    if ($slug === 'product_cat') {
-                        $is_category_page = isset($_GET['product_cat']);
-                        $shop_url = wc_get_page_permalink('shop');
-                        if ($is_category_page) {
-                            $category_display = get_option('woocommerce_category_archive_display', '');
-                            if ($category_display == 'both') {
-                                $url_category = $shop_url . '?product_cat=' . $term->slug;
-                            }
-                        } else {
-                            $shop_page_display = get_option('woocommerce_shop_page_display', '');
-                            if ($shop_page_display == 'both') {
-                                $url_category = $shop_url . '?product_cat=' . $term->slug;
-                            }
-                        }
-                    }
-
-                    // Check for subcategories if mode is 'parent'
-                    if ($slug === 'product_cat' && $category_mode === 'parent') {
-                        $children = get_terms(array(
-                            'taxonomy' => $slug,
-                            'hide_empty' => true,
-                            'parent' => $term->term_id
-                        ));
-                        $has_children = !empty($children) && !is_wp_error($children);
-                    }
-                    ?>
-
-                    <div class="item-radio <?php echo $has_children ? 'has-children' : ''; ?>" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>" <?php } ?>>
-                        <?php if ($is_checked) { ?>
-                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>" checked>
-                        <?php } else { ?>
-                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($term->slug); ?>" value="<?php echo esc_attr($term->slug); ?>">
-                        <?php } ?>
-                        <label for="<?php echo esc_attr($term->slug); ?>" data-slug="<?php echo esc_attr($term->slug); ?>">
-                            <?php echo esc_html($term->name); ?>
-                        </label>
-                        <span class="bt-count"><?php echo '(' . $term->count . ')'; ?></span>
-
-                        <?php if ($has_children) { ?>
-                            <span class="bt-toggle-children">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </span>
-                            <div class="bt-children-categories">
-                                <?php foreach ($children as $child) { ?>
-                                    <?php $child_checked = ($child->slug == $field_value); ?>
-                                    <div class="item-radio item-radio-child" <?php if (!empty($url_category)) { ?>data-url="<?php echo esc_attr($url_category); ?>" <?php } ?>>
-                                        <?php if ($child_checked) { ?>
-                                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>" checked>
-                                        <?php } else { ?>
-                                            <input type="radio" name="<?php echo esc_attr($slug); ?>" id="<?php echo esc_attr($child->slug); ?>" value="<?php echo esc_attr($child->slug); ?>">
-                                        <?php } ?>
-                                        <label for="<?php echo esc_attr($child->slug); ?>" data-slug="<?php echo esc_attr($child->slug); ?>">
-                                            <?php echo esc_html($child->name); ?>
-                                        </label>
-                                        <span class="bt-count"><?php echo '(' . $child->count . ')'; ?></span>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        <?php } ?>
-                    </div>
-                <?php } ?>
+                <?php foreach ($terms as $term) {
+                    woozio_render_nested_category($term, $slug, $field_value, '', 0);
+                } ?>
             </div>
         </div>
     <?php
     }
+}
+
+/**
+ * Get product count for a term within current category (if on category page)
+ * 
+ * @param object $term Term object
+ * @param string $taxonomy Taxonomy name
+ * @return int Product count
+ */
+function woozio_get_term_count_in_category($term, $taxonomy)
+{
+    // If not on category page, return default count
+    if (!woozio_is_category_archive_page()) {
+        return $term->count;
+    }
+
+    // Get current category
+    $current_category = get_queried_object();
+    if (!$current_category || empty($current_category->slug)) {
+        return $term->count;
+    }
+
+    // Query products in category with this term
+    $args = array(
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'tax_query' => array(
+            'relation' => 'AND',
+            array(
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => $current_category->slug,
+            ),
+            array(
+                'taxonomy' => $taxonomy,
+                'field' => 'term_id',
+                'terms' => $term->term_id,
+            ),
+        ),
+    );
+
+    $query = new WP_Query($args);
+    return $query->found_posts;
 }
 
 function woozio_product_field_multiple_html($slug = '', $field_title = '', $field_value = '')
@@ -905,8 +1031,26 @@ function woozio_product_field_multiple_html($slug = '', $field_title = '', $fiel
         'taxonomy' => $slug,
         'hide_empty' => true
     ));
+    
 
     if (!empty($terms) && !is_wp_error($terms)) {
+        // First, check if there's at least one term with count > 0
+        $has_valid_terms = false;
+        
+        foreach ($terms as $term) {
+            // Calculate count - if on category page, count products in that category
+            $term_count = woozio_get_term_count_in_category($term, $slug);
+            // Check if count > 0
+            if ($term_count > 0) {
+                $has_valid_terms = true;
+                break;
+            }
+        }
+        
+        // If no terms have count > 0, don't show the field
+        if (!$has_valid_terms) {
+            return;
+        }
     ?>
         <div class="bt-form-field bt-field-type-multi" data-name="<?php echo esc_attr($slug); ?>">
             <?php
@@ -916,7 +1060,14 @@ function woozio_product_field_multiple_html($slug = '', $field_title = '', $fiel
             ?>
 
             <div class="bt-field-list">
-                <?php foreach ($terms as $term) { ?>
+                <?php foreach ($terms as $term) {
+                    // Calculate count - if on category page, count products in that category
+                    $term_count = woozio_get_term_count_in_category($term, $slug);
+                    // Only show if count > 0
+                    if ($term_count <= 0) {
+                        continue;
+                    }
+                ?>
                     <div class="<?php echo (str_contains($field_value, $term->slug)) ? 'bt-field-item checked' : 'bt-field-item' ?>">
                         <a href="#" data-slug="<?php echo esc_attr($term->slug); ?>">
                             <span>
@@ -925,7 +1076,7 @@ function woozio_product_field_multiple_html($slug = '', $field_title = '', $fiel
                                 </svg>
                             </span>
                             <?php echo esc_html($term->name); ?>
-                            <div class="bt-count"><?php echo '(' . $term->count . ')'; ?></div>
+                            <div class="bt-count"><?php echo '(' . $term_count . ')'; ?></div>
                         </a>
                     </div>
                 <?php } ?>
@@ -949,6 +1100,23 @@ function woozio_product_field_multiple_color_html($slug = '', $field_title = '',
     ));
 
     if (!empty($terms) && !is_wp_error($terms)) {
+        // First, check if there's at least one term with count > 0
+        $has_valid_terms = false;
+        
+        foreach ($terms as $term) {
+            // Calculate count - if on category page, count products in that category
+            $term_count = woozio_get_term_count_in_category($term, $slug);
+            // Check if count > 0
+            if ($term_count > 0) {
+                $has_valid_terms = true;
+                break;
+            }
+        }
+        
+        // If no terms have count > 0, don't show the field
+        if (!$has_valid_terms) {
+            return;
+        }
     ?>
         <div class="bt-form-field bt-field-type-multi bt-field-color" data-name="<?php echo esc_attr($slug); ?>">
             <?php
@@ -960,6 +1128,13 @@ function woozio_product_field_multiple_color_html($slug = '', $field_title = '',
             <div class="bt-field-list">
                 <?php
                 foreach ($terms as $term) {
+                    // Calculate count - if on category page, count products in that category
+                    $term_count = woozio_get_term_count_in_category($term, $slug);
+                    // Only show if count > 0
+                    if ($term_count <= 0) {
+                        continue;
+                    }
+                    
                     $term_id = $term->term_id;
                     $color = get_field('color', 'pa_color_' . $term_id);
                     if (!$color) {
@@ -971,6 +1146,7 @@ function woozio_product_field_multiple_color_html($slug = '', $field_title = '',
                             <span style="background:<?php echo esc_attr($color); ?>">
                             </span>
                             <?php echo esc_html($term->name); ?>
+                            <div class="bt-count"><?php echo '(' . $term_count . ')'; ?></div>
                         </a>
                     </div>
                 <?php } ?>
@@ -1266,11 +1442,23 @@ function woozio_products_query_args($params = array(), $limit = 9)
 
     $query_tax = array();
 
+    // Check for product category - from params or current category page
+    $product_cat = '';
     if (isset($params['product_cat']) && $params['product_cat'] != '') {
+        $product_cat = $params['product_cat'];
+    } elseif (woozio_is_category_archive_page()) {
+        // If on category page and no product_cat in params, get from queried object
+        $current_category = get_queried_object();
+        if ($current_category && !empty($current_category->slug)) {
+            $product_cat = $current_category->slug;
+        }
+    }
+
+    if ($product_cat != '') {
         $query_tax[] = array(
             'taxonomy' => 'product_cat',
             'field' => 'slug',
-            'terms' => explode(',', $params['product_cat'])
+            'terms' => explode(',', $product_cat)
         );
     }
     if (isset($params['product_brand']) && $params['product_brand'] != '') {
@@ -1278,6 +1466,13 @@ function woozio_products_query_args($params = array(), $limit = 9)
             'taxonomy' => 'product_brand',
             'field' => 'slug',
             'terms' => explode(',', $params['product_brand'])
+        );
+    }
+    if (isset($params['product_tag']) && $params['product_tag'] != '') {
+        $query_tax[] = array(
+            'taxonomy' => 'product_tag',
+            'field' => 'slug',
+            'terms' => explode(',', $params['product_tag'])
         );
     }
     if (isset($params['pa_color']) && $params['pa_color'] != '') {
@@ -2015,25 +2210,25 @@ function woozio_display_button_wishlist_compare()
     $archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
     $show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;
     $show_compare = isset($archive_shop['show_compare']) ? $archive_shop['show_compare'] : true;
-    
+
     if (!$show_wishlist && !$show_compare) {
         return;
     }
 ?>
     <div class="bt-product-icon-btn">
         <?php if ($show_compare) : ?>
-        <a class="bt-icon-btn bt-product-compare-btn" href="#" data-id="<?php echo esc_attr($product->get_id()); ?>">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10.5 14.2504C10.3011 14.2504 10.1103 14.3295 9.96968 14.4701C9.82903 14.6108 9.75001 14.8015 9.75001 15.0004V17.6901L7.09876 15.0379C6.7493 14.6907 6.47224 14.2776 6.28364 13.8224C6.09503 13.3673 5.99862 12.8793 6.00001 12.3867V8.90669C6.707 8.72415 7.32315 8.29002 7.73296 7.68568C8.14277 7.08135 8.3181 6.3483 8.2261 5.62394C8.13409 4.89958 7.78106 4.23364 7.23318 3.75095C6.6853 3.26826 5.98019 3.00195 5.25001 3.00195C4.51983 3.00195 3.81471 3.26826 3.26683 3.75095C2.71895 4.23364 2.36592 4.89958 2.27392 5.62394C2.18191 6.3483 2.35725 7.08135 2.76706 7.68568C3.17687 8.29002 3.79301 8.72415 4.50001 8.90669V12.3876C4.49826 13.0773 4.63324 13.7606 4.89715 14.3978C5.16105 15.035 5.54864 15.6136 6.03751 16.1001L8.6897 18.7504H6.00001C5.8011 18.7504 5.61033 18.8295 5.46968 18.9701C5.32903 19.1108 5.25001 19.3015 5.25001 19.5004C5.25001 19.6994 5.32903 19.8901 5.46968 20.0308C5.61033 20.1714 5.8011 20.2504 6.00001 20.2504H10.5C10.6989 20.2504 10.8897 20.1714 11.0303 20.0308C11.171 19.8901 11.25 19.6994 11.25 19.5004V15.0004C11.25 14.8015 11.171 14.6108 11.0303 14.4701C10.8897 14.3295 10.6989 14.2504 10.5 14.2504ZM3.75001 6.00044C3.75001 5.70377 3.83798 5.41376 4.0028 5.16709C4.16763 4.92041 4.40189 4.72815 4.67598 4.61462C4.95007 4.50109 5.25167 4.47138 5.54264 4.52926C5.83361 4.58714 6.10089 4.73 6.31067 4.93978C6.52045 5.14956 6.66331 5.41683 6.72119 5.70781C6.77906 5.99878 6.74936 6.30038 6.63583 6.57447C6.5223 6.84855 6.33004 7.08282 6.08336 7.24764C5.83669 7.41247 5.54668 7.50044 5.25001 7.50044C4.85218 7.50044 4.47065 7.3424 4.18935 7.0611C3.90804 6.7798 3.75001 6.39827 3.75001 6.00044ZM19.5 15.0942V11.6142C19.5018 10.9245 19.3668 10.2413 19.1029 9.60404C18.839 8.96681 18.4514 8.38822 17.9625 7.90169L15.3103 5.25044H18C18.1989 5.25044 18.3897 5.17142 18.5303 5.03077C18.671 4.89012 18.75 4.69935 18.75 4.50044C18.75 4.30153 18.671 4.11076 18.5303 3.97011C18.3897 3.82946 18.1989 3.75044 18 3.75044H13.5C13.3011 3.75044 13.1103 3.82946 12.9697 3.97011C12.829 4.11076 12.75 4.30153 12.75 4.50044V9.00044C12.75 9.19935 12.829 9.39012 12.9697 9.53077C13.1103 9.67142 13.3011 9.75044 13.5 9.75044C13.6989 9.75044 13.8897 9.67142 14.0303 9.53077C14.171 9.39012 14.25 9.19935 14.25 9.00044V6.31075L16.9013 8.96294C17.2507 9.31018 17.5278 9.72333 17.7164 10.1784C17.905 10.6335 18.0014 11.1216 18 11.6142V15.0942C17.293 15.2767 16.6769 15.7109 16.2671 16.3152C15.8572 16.9195 15.6819 17.6526 15.7739 18.3769C15.8659 19.1013 16.219 19.7672 16.7668 20.2499C17.3147 20.7326 18.0198 20.9989 18.75 20.9989C19.4802 20.9989 20.1853 20.7326 20.7332 20.2499C21.2811 19.7672 21.6341 19.1013 21.7261 18.3769C21.8181 17.6526 21.6428 16.9195 21.233 16.3152C20.8232 15.7109 20.207 15.2767 19.5 15.0942ZM18.75 19.5004C18.4533 19.5004 18.1633 19.4125 17.9167 19.2476C17.67 19.0828 17.4777 18.8486 17.3642 18.5745C17.2507 18.3004 17.221 17.9988 17.2788 17.7078C17.3367 17.4168 17.4796 17.1496 17.6893 16.9398C17.8991 16.73 18.1664 16.5871 18.4574 16.5293C18.7483 16.4714 19.0499 16.5011 19.324 16.6146C19.5981 16.7282 19.8324 16.9204 19.9972 17.1671C20.162 17.4138 20.25 17.7038 20.25 18.0004C20.25 18.3983 20.092 18.7798 19.8107 19.0611C19.5294 19.3424 19.1478 19.5004 18.75 19.5004Z" />
-            </svg>
-        </a>
+            <a class="bt-icon-btn bt-product-compare-btn" href="#" data-id="<?php echo esc_attr($product->get_id()); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10.5 14.2504C10.3011 14.2504 10.1103 14.3295 9.96968 14.4701C9.82903 14.6108 9.75001 14.8015 9.75001 15.0004V17.6901L7.09876 15.0379C6.7493 14.6907 6.47224 14.2776 6.28364 13.8224C6.09503 13.3673 5.99862 12.8793 6.00001 12.3867V8.90669C6.707 8.72415 7.32315 8.29002 7.73296 7.68568C8.14277 7.08135 8.3181 6.3483 8.2261 5.62394C8.13409 4.89958 7.78106 4.23364 7.23318 3.75095C6.6853 3.26826 5.98019 3.00195 5.25001 3.00195C4.51983 3.00195 3.81471 3.26826 3.26683 3.75095C2.71895 4.23364 2.36592 4.89958 2.27392 5.62394C2.18191 6.3483 2.35725 7.08135 2.76706 7.68568C3.17687 8.29002 3.79301 8.72415 4.50001 8.90669V12.3876C4.49826 13.0773 4.63324 13.7606 4.89715 14.3978C5.16105 15.035 5.54864 15.6136 6.03751 16.1001L8.6897 18.7504H6.00001C5.8011 18.7504 5.61033 18.8295 5.46968 18.9701C5.32903 19.1108 5.25001 19.3015 5.25001 19.5004C5.25001 19.6994 5.32903 19.8901 5.46968 20.0308C5.61033 20.1714 5.8011 20.2504 6.00001 20.2504H10.5C10.6989 20.2504 10.8897 20.1714 11.0303 20.0308C11.171 19.8901 11.25 19.6994 11.25 19.5004V15.0004C11.25 14.8015 11.171 14.6108 11.0303 14.4701C10.8897 14.3295 10.6989 14.2504 10.5 14.2504ZM3.75001 6.00044C3.75001 5.70377 3.83798 5.41376 4.0028 5.16709C4.16763 4.92041 4.40189 4.72815 4.67598 4.61462C4.95007 4.50109 5.25167 4.47138 5.54264 4.52926C5.83361 4.58714 6.10089 4.73 6.31067 4.93978C6.52045 5.14956 6.66331 5.41683 6.72119 5.70781C6.77906 5.99878 6.74936 6.30038 6.63583 6.57447C6.5223 6.84855 6.33004 7.08282 6.08336 7.24764C5.83669 7.41247 5.54668 7.50044 5.25001 7.50044C4.85218 7.50044 4.47065 7.3424 4.18935 7.0611C3.90804 6.7798 3.75001 6.39827 3.75001 6.00044ZM19.5 15.0942V11.6142C19.5018 10.9245 19.3668 10.2413 19.1029 9.60404C18.839 8.96681 18.4514 8.38822 17.9625 7.90169L15.3103 5.25044H18C18.1989 5.25044 18.3897 5.17142 18.5303 5.03077C18.671 4.89012 18.75 4.69935 18.75 4.50044C18.75 4.30153 18.671 4.11076 18.5303 3.97011C18.3897 3.82946 18.1989 3.75044 18 3.75044H13.5C13.3011 3.75044 13.1103 3.82946 12.9697 3.97011C12.829 4.11076 12.75 4.30153 12.75 4.50044V9.00044C12.75 9.19935 12.829 9.39012 12.9697 9.53077C13.1103 9.67142 13.3011 9.75044 13.5 9.75044C13.6989 9.75044 13.8897 9.67142 14.0303 9.53077C14.171 9.39012 14.25 9.19935 14.25 9.00044V6.31075L16.9013 8.96294C17.2507 9.31018 17.5278 9.72333 17.7164 10.1784C17.905 10.6335 18.0014 11.1216 18 11.6142V15.0942C17.293 15.2767 16.6769 15.7109 16.2671 16.3152C15.8572 16.9195 15.6819 17.6526 15.7739 18.3769C15.8659 19.1013 16.219 19.7672 16.7668 20.2499C17.3147 20.7326 18.0198 20.9989 18.75 20.9989C19.4802 20.9989 20.1853 20.7326 20.7332 20.2499C21.2811 19.7672 21.6341 19.1013 21.7261 18.3769C21.8181 17.6526 21.6428 16.9195 21.233 16.3152C20.8232 15.7109 20.207 15.2767 19.5 15.0942ZM18.75 19.5004C18.4533 19.5004 18.1633 19.4125 17.9167 19.2476C17.67 19.0828 17.4777 18.8486 17.3642 18.5745C17.2507 18.3004 17.221 17.9988 17.2788 17.7078C17.3367 17.4168 17.4796 17.1496 17.6893 16.9398C17.8991 16.73 18.1664 16.5871 18.4574 16.5293C18.7483 16.4714 19.0499 16.5011 19.324 16.6146C19.5981 16.7282 19.8324 16.9204 19.9972 17.1671C20.162 17.4138 20.25 17.7038 20.25 18.0004C20.25 18.3983 20.092 18.7798 19.8107 19.0611C19.5294 19.3424 19.1478 19.5004 18.75 19.5004Z" />
+                </svg>
+            </a>
         <?php endif; ?>
         <?php if ($show_wishlist) : ?>
-        <a class="bt-icon-btn bt-product-wishlist-btn" href="#" data-id="<?php echo esc_attr($product->get_id()); ?>">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16.6875 3C14.7516 3 13.0566 3.8325 12 5.23969C10.9434 3.8325 9.24844 3 7.3125 3C5.77146 3.00174 4.29404 3.61468 3.20436 4.70436C2.11468 5.79404 1.50174 7.27146 1.5 8.8125C1.5 15.375 11.2303 20.6869 11.6447 20.9062C11.7539 20.965 11.876 20.9958 12 20.9958C12.124 20.9958 12.2461 20.965 12.3553 20.9062C12.7697 20.6869 22.5 15.375 22.5 8.8125C22.4983 7.27146 21.8853 5.79404 20.7956 4.70436C19.706 3.61468 18.2285 3.00174 16.6875 3ZM12 19.3875C10.2881 18.39 3 13.8459 3 8.8125C3.00149 7.66921 3.45632 6.57317 4.26475 5.76475C5.07317 4.95632 6.16921 4.50149 7.3125 4.5C9.13594 4.5 10.6669 5.47125 11.3062 7.03125C11.3628 7.16881 11.4589 7.28646 11.5824 7.36926C11.7059 7.45207 11.8513 7.49627 12 7.49627C12.1487 7.49627 12.2941 7.45207 12.4176 7.36926C12.5411 7.28646 12.6372 7.16881 12.6937 7.03125C13.3331 5.46844 14.8641 4.5 16.6875 4.5C17.8308 4.50149 18.9268 4.95632 19.7353 5.76475C20.5437 6.57317 20.9985 7.66921 21 8.8125C21 13.8384 13.71 18.3891 12 19.3875Z" />
-            </svg>
-        </a>
+            <a class="bt-icon-btn bt-product-wishlist-btn" href="#" data-id="<?php echo esc_attr($product->get_id()); ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16.6875 3C14.7516 3 13.0566 3.8325 12 5.23969C10.9434 3.8325 9.24844 3 7.3125 3C5.77146 3.00174 4.29404 3.61468 3.20436 4.70436C2.11468 5.79404 1.50174 7.27146 1.5 8.8125C1.5 15.375 11.2303 20.6869 11.6447 20.9062C11.7539 20.965 11.876 20.9958 12 20.9958C12.124 20.9958 12.2461 20.965 12.3553 20.9062C12.7697 20.6869 22.5 15.375 22.5 8.8125C22.4983 7.27146 21.8853 5.79404 20.7956 4.70436C19.706 3.61468 18.2285 3.00174 16.6875 3ZM12 19.3875C10.2881 18.39 3 13.8459 3 8.8125C3.00149 7.66921 3.45632 6.57317 4.26475 5.76475C5.07317 4.95632 6.16921 4.50149 7.3125 4.5C9.13594 4.5 10.6669 5.47125 11.3062 7.03125C11.3628 7.16881 11.4589 7.28646 11.5824 7.36926C11.7059 7.45207 11.8513 7.49627 12 7.49627C12.1487 7.49627 12.2941 7.45207 12.4176 7.36926C12.5411 7.28646 12.6372 7.16881 12.6937 7.03125C13.3331 5.46844 14.8641 4.5 16.6875 4.5C17.8308 4.50149 18.9268 4.95632 19.7353 5.76475C20.5437 6.57317 20.9985 7.66921 21 8.8125C21 13.8384 13.71 18.3891 12 19.3875Z" />
+                </svg>
+            </a>
         <?php endif; ?>
     </div>
 <?php
@@ -2654,16 +2849,17 @@ add_action('wp_ajax_woozio_products_add_to_cart_variable', 'woozio_products_add_
 add_action('wp_ajax_nopriv_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
 
 /* Ensure shipping is calculated before mini cart is rendered */
-function woozio_calculate_shipping_before_mini_cart() {
+function woozio_calculate_shipping_before_mini_cart()
+{
     if (WC()->cart && !WC()->cart->is_empty() && WC()->cart->needs_shipping()) {
         // Set constant to ensure WooCommerce processes cart correctly
         wc_maybe_define_constant('WOOCOMMERCE_CART', true);
-        
+
         // Calculate shipping if not already calculated
         if (!WC()->cart->has_calculated_shipping()) {
             WC()->cart->calculate_shipping();
         }
-        
+
         // Ensure totals are calculated
         WC()->cart->calculate_totals();
     }
@@ -3051,7 +3247,7 @@ function woozio_check_sale_date_countdown()
         $timezone = new DateTimeZone(wp_timezone_string());
         $current_time = new DateTime('now', $timezone);
         $current_timestamp = $current_time->getTimestamp();
-        
+
         $sale_timestamp = strtotime($sale_date);
         // If sale date has passed and disable sale is checked
         if ($current_timestamp > $sale_timestamp) {
@@ -3326,7 +3522,7 @@ function woozio_handle_thumbnail_layout_mode()
     }
 
     $layout = get_post_meta($product->get_id(), '_layout_product', true);
-    if(isset($_GET['layout']) && !empty($_GET['layout'])) {
+    if (isset($_GET['layout']) && !empty($_GET['layout'])) {
         $layout = sanitize_text_field($_GET['layout']);
     }
     if (empty($layout)) {
@@ -3337,7 +3533,7 @@ function woozio_handle_thumbnail_layout_mode()
 
     // Get display mode
     $display_mode = get_post_meta($product->get_id(), '_product_info_display_mode', true);
-    
+
     // If layout is not thumbnail layout, force toggle mode only if display mode is not set or if layout is changed via $_GET
     if (!in_array($layout, $thumbnail_layouts)) {
         if (empty($display_mode) || (isset($_GET['layout']) && !empty($_GET['layout']))) {
@@ -3349,13 +3545,13 @@ function woozio_handle_thumbnail_layout_mode()
             $display_mode = 'tab';
         }
     }
-    
+
     if ($display_mode === 'tab') {
         // Do nothing here, classes added via woozio_add_tab_position_body_class filter
     } elseif ($display_mode === 'toggle') {
         // Toggle mode: Remove default tabs, add toggle
         remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
-        
+
         // If layout is not thumbnail layout, add to woozio_woocommerce_template_single_toggle
         if (!in_array($layout, $thumbnail_layouts)) {
             add_action('woozio_woocommerce_template_single_toggle', 'woozio_render_product_info_toggle', 10);

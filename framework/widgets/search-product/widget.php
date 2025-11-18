@@ -292,8 +292,16 @@ class Widget_SearchProduct extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 
-		// Get current category from URL
-		$current_cat = isset($_GET['product_cat']) ? sanitize_text_field($_GET['product_cat']) : '';
+		// Get current category from URL or category page
+		$current_cat = '';
+		if (isset($_GET['product_cat'])) {
+			$current_cat = sanitize_text_field($_GET['product_cat']);
+		} elseif (woozio_is_category_archive_page()) {
+			$current_category = get_queried_object();
+			if ($current_category && isset($current_category->slug)) {
+				$current_cat = $current_category->slug;
+			}
+		}
 
 ?>
 		<div class="bt-elwg-search-product <?php echo esc_attr($settings['layout_type']); ?>">

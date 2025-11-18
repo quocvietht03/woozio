@@ -192,11 +192,14 @@ if (!function_exists('woozio_page_breadcrumb')) {
 					$terms = get_the_terms(get_the_ID(), 'product_cat', '', '');
 					if (!empty($terms) && !is_wp_error($terms)) {
 						//the_terms(get_the_ID(), 'product_cat', '', ', ');
-						$shop_page_url = get_permalink(wc_get_page_id('shop'));
 						$first_term = reset($terms); // Get first term
-						$category_url = $shop_page_url . '?product_cat=' . $first_term->slug;
-						echo '<a href="' . esc_url($category_url) . '">' . esc_html($first_term->name) . '</a>';
-						echo ' <span class="bt-deli">' . $delimiter . '</span> ' . '<span class="current">' . get_the_title() . '</span>';
+						$category_url = get_term_link($first_term->term_id, 'product_cat');
+						if (!is_wp_error($category_url)) {
+							echo '<a href="' . esc_url($category_url) . '">' . esc_html($first_term->name) . '</a>';
+							echo ' <span class="bt-deli">' . $delimiter . '</span> ' . '<span class="current">' . get_the_title() . '</span>';
+						} else {
+							echo '<span class="current">' . get_the_title() . '</span>';
+						}
 					} else {
 						echo '<span class="current">' . get_the_title() . '</span>';
 					}
