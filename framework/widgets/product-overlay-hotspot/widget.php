@@ -219,7 +219,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Product Background Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -228,7 +228,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
             [
                 'name' => 'product_title_typography',
                 'label' => __('Title Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-title',
+                'selector' => '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-title',
             ]
         );
 
@@ -238,7 +238,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Title Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-title' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-title' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -248,7 +248,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
             [
                 'name' => 'product_price_typography',
                 'label' => __('Price Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-price .woocommerce-Price-amount',
+                'selector' => '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-price .woocommerce-Price-amount',
             ]
         );
 
@@ -258,8 +258,8 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Price Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-price .woocommerce-Price-amount' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-price' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-price .woocommerce-Price-amount' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-price' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -270,7 +270,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Regular Price Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-price del .woocommerce-Price-amount' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-price del .woocommerce-Price-amount' => 'color: {{VALUE}};',
                 ],
             ]
         );
@@ -281,7 +281,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Add to Cart Button Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-add-to-cart a' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-add-to-cart a' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -292,7 +292,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                 'label' => __('Add to Cart Button Hover Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-content .bt-hotspot-product-item .bt-product-add-to-cart a:hover' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-hotspot-product-display .bt-product-item-minimal .bt-product-add-to-cart a:hover' => 'background-color: {{VALUE}};',
                 ],
             ]
         );

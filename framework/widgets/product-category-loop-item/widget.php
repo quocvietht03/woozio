@@ -9,6 +9,7 @@ use Elementor\Group_Control_Css_Filter;
 use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
+use Elementor\Plugin;
 
 class Widget_ProductCategoryLoopItem extends Widget_Base
 {
@@ -136,6 +137,32 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'condition' => [
                     'layout_style' => ['style-6', 'style-7'],
                     'show_custom_button' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'show_custom_count',
+            [
+                'label' => __('Show Custom Count Text', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Show', 'woozio'),
+                'label_off' => __('Hide', 'woozio'),
+                'return_value' => 'yes',
+                'default' => 'no',
+                'condition' => [
+                    'show_count' => 'yes',
+                ],
+            ]
+        );
+        $this->add_control(
+            'custom_count_text',
+            [
+                'label' => __('Custom Count Text', 'woozio'),
+                'type' => Controls_Manager::TEXT,
+                'default' => __('Products', 'woozio'),
+                'condition' => [
+                    'show_count' => 'yes',
+                    'show_custom_count' => 'yes',
                 ],
             ]
         );
@@ -667,8 +694,31 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
     {
         $settings = $this->get_settings_for_display();
         global $wp_query;
-        if (!isset($wp_query->loop_term) || !is_a($wp_query->loop_term, 'WP_Term')) {
-            return;
+        
+        // Check if we're in Elementor editor mode
+        if (Plugin::$instance->editor->is_edit_mode() || Plugin::$instance->preview->is_preview_mode()) {
+            // In editor mode, get a sample product category for preview
+            $args = array(
+                'taxonomy' => 'product_cat',
+                'number' => 1,
+                'hide_empty' => false,
+            );
+            $categories = get_terms($args);
+            
+            if (!empty($categories) && !is_wp_error($categories)) {
+                $preview_term = $categories[0];
+            } else {
+                echo '<div class="elementor-alert elementor-alert-warning">' . 
+                     __('Please add some product categories to see the preview.', 'woozio') . 
+                     '</div>';
+                return;
+            }
+        } else {
+            // In frontend mode, use the loop term
+            if (!isset($wp_query->loop_term) || !is_a($wp_query->loop_term, 'WP_Term')) {
+                return;
+            }
+            $preview_term = $wp_query->loop_term;
         }
 ?>
         <div class="bt-elwg-product-category-loop-item bt-elwg-product-category-loop--<?php echo esc_attr($settings['layout_style']); ?>">
@@ -677,9 +727,11 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'image-size' => $settings['thumbnail_size'],
                 'layout' => $settings['layout_style'],
                 'show_count' => $settings['show_count'],
-                'category' => $wp_query->loop_term,
+                'category' => $preview_term,
                 'custom_button_text' => $settings['custom_button_text'],
                 'show_custom_button' => $settings['show_custom_button'],
+                'show_custom_count' => $settings['show_custom_count'],
+                'custom_count_text' => $settings['custom_count_text'],
             ));
             ?>
 

@@ -4149,6 +4149,12 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
     padding: 14px 15px !important;
   }
 }
+.bt-form-newsletter--style6.text-white .bt-form-newsletter_wrapper .bt-form-newsletter .gform-body input[type=email] {
+  color: #fff;
+}
+.bt-form-newsletter--style6.text-white .bt-form-newsletter_wrapper .bt-form-newsletter .gform-body input[type=email]::placeholder {
+  color: #fff;
+}
 
 .bt-form-rating {
   display: flex;

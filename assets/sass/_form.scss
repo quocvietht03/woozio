@@ -638,5 +638,19 @@
         }
       }
     }
+    &.text-white {
+      .bt-form-newsletter_wrapper {
+        .bt-form-newsletter {
+          .gform-body {
+            input[type="email"] {
+              color: #fff;
+              &::placeholder {
+                color: #fff; 
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
