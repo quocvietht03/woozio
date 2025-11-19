@@ -12928,13 +12928,12 @@
                   flex-direction: row-reverse;
                   justify-content: flex-end;
                   gap: 8px;
-                  align-items: center;
+                  align-items: baseline;
                   color: $color-primary;
                   margin: 0;
                   &.bt-product-variable {
                     flex-direction: row !important;
                     justify-content: flex-start !important;
-                    line-height: 1.62;
                     del {
                       order: 1;
                     }
@@ -12945,10 +12944,6 @@
                     font-weight: 400;
                     line-height: 1.62;
                     color: $color-primary;
-                    @media (max-width: $break-sm) {
-                      font-size: 14px;
-                      line-height: 1.1;
-                    }
                   }
                   ins {
                     text-decoration: none;
@@ -12956,26 +12951,14 @@
                     line-height: 1;
                   }
                   del {
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 1.57;
-                    @media (max-width: $break-sm) {
-                      font-size: 13px;
-                    }
+                    line-height: 1;
                     .woocommerce-Price-amount {
                       font-size: 14px;
                       font-style: normal;
                       font-weight: 400;
                       line-height: 1.57;
                       color: $color-text;
-                      @media (max-width: $break-sm) {
-                        font-size: 13px;
-                      }
                     }
-                  }
-                  @media (max-width: $break-xs) {
-                    gap: 4px;
                   }
                 }
               }
