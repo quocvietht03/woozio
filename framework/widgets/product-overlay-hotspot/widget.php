@@ -118,7 +118,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                     'size' => 50,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}%;',
                 ],
             ]
         );
@@ -140,7 +140,7 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                     'size' => 50,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}%;',
                 ],
             ]
         );

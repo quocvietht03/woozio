@@ -296,4 +296,11 @@ body {
             }
         }
     }
+    &.bt-carousel-full-width {
+        .elementor-loop-container {
+            width: var(--width-body);
+            position: relative;
+            left: calc(50% - var(--width-body) / 2);
+        }
+    }
 }

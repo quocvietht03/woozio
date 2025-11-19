@@ -512,35 +512,6 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 		]
 	);
 	$element->add_control(
-		'pagination_progress_left_position_horizontal',
-		[
-			'label' => esc_html__('Left Position Horizontal', 'woozio'),
-			'type' => \Elementor\Controls_Manager::SLIDER,
-			'size_units' => ['px', '%', 'custom'],
-			'range' => [
-				'px' => [
-					'min' => -100,
-					'max' => 100,
-				],
-				'%' => [
-					'min' => -100,
-					'max' => 100,
-					'step' => 1,
-				],
-			],
-			'default' => [
-				'size' => 0,
-				'unit' => 'px',
-			],
-			'selectors' => [
-				'{{WRAPPER}}.pagination-progress-position-horizontal-center .swiper-pagination-progressbar' => 'left: calc( 50% + {{SIZE}}{{UNIT}} );',
-			],
-			'condition' => [
-				'pagination_progress_position_horizontal' => 'center',
-			],
-		]
-	);
-	$element->add_control(
 		'pagination_progress_position_vertical',
 		[
 			'label' => esc_html__('Position Vertical', 'woozio'),

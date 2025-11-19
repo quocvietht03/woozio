@@ -8,8 +8,7 @@ use Elementor\Repeater;
 use Elementor\Utils;
 use Elementor\Group_Control_Image_Size;
 use Elementor\Group_Control_Typography;
-use Elementor\Group_Control_Background;
-use Elementor\Group_Control_Border;
+
 class Widget_ProductBannerScrollHotspot extends Widget_Base
 {
 
@@ -74,6 +73,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
             [
                 'label' => __('Image', 'woozio'),
                 'type' => Controls_Manager::MEDIA,
+                'description' => __('Upload an image for the hotspot banner. For optimal display, we recommend using images with a height equal to 80% of the screen height.', 'woozio'),
                 'default' => [
                     'url' => Utils::get_placeholder_image_src(),
                 ],
@@ -158,24 +158,30 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                 'multiple' => false,
             ]
         );
+
+        $repeater->add_control(
+            'hotspot_point_heading',
+            [
+                'label' => __('Hotspot Point Settings', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
         $repeater->add_responsive_control(
             'hotspot_position_x',
             [
                 'label' => __('Hotspot X Position', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['%', 'px'],
+                'size_units' => ['%'],
                 'range' => [
                     '%' => [
                         'min' => 0,
                         'max' => 100,
                     ],
                 ],
-                'default' => [
-                    'unit' => '%',
-                    'size' => 50,
-                ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'left: {{SIZE}}%;',
                 ],
             ]
         );
@@ -184,40 +190,42 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
             [
                 'label' => __('Hotspot Y Position', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['%', 'px'],
+                'size_units' => ['%'],
                 'range' => [
                     '%' => [
                         'min' => 0,
                         'max' => 100,
                     ],
                 ],
-                'default' => [
-                    'unit' => '%',
-                    'size' => 50,
-                ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-point' => 'top: {{SIZE}}%;',
                 ],
             ]
         );
+
+        $repeater->add_control(
+            'product_position_heading',
+            [
+                'label' => __('Product Position Settings', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
         $repeater->add_responsive_control(
             'hotspot_product_position_x',
             [
                 'label' => __('Product X Position', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px','%','custom'],
+                'size_units' => ['%'],
                 'range' => [
                     '%' => [
                         'min' => 0,
                         'max' => 100,
                     ],
                 ],
-                'default' => [
-                    'unit' => '%',
-                    'size' => 50,
-                ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-product-item' => 'left: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-product-item' => 'left: {{SIZE}}%;',
                 ],
                 'devices' => ['desktop', 'laptop', 'tablet_extra', 'mobile_extra'],
             ]
@@ -227,19 +235,15 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
             [
                 'label' => __('Product Y Position', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px','%','custom'],
+                'size_units' => ['%'],
                 'range' => [
                     '%' => [
                         'min' => 0,
                         'max' => 100,
                     ],
                 ],
-                'default' => [
-                    'unit' => '%',
-                    'size' => 50,
-                ],
                 'selectors' => [
-                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-product-item' => 'top: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} {{CURRENT_ITEM}}.bt-hotspot-product-item' => 'top: {{SIZE}}%;',
                 ],
                 'devices' => ['desktop', 'laptop', 'tablet_extra', 'mobile_extra'],
             ]
@@ -312,6 +316,16 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                 ],
             ]
         );
+        $this->add_group_control(
+            Group_Control_Image_Size::get_type(),
+            [
+                'name' => 'thumbnail',
+                'label' => __('Image Size', 'woozio'),
+                'show_label' => true,
+                'default' => 'medium_large',
+                'exclude' => ['custom'],
+            ]
+        );
         $this->end_controls_section();
     }
     protected function register_style_content_section_controls()
@@ -343,7 +357,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
         $this->start_controls_section(
             'section_style',
             [
-                'label' => __('Style', 'woozio'),
+                'label' => __('Style Content', 'woozio'),
                 'tab' => Controls_Manager::TAB_STYLE,
             ]
         );
@@ -366,10 +380,6 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                         'step' => 1,
                     ],
                 ],
-                'default' => [
-                    'unit' => 'px',
-                    'size' => 0,
-                ],
                 'selectors' => [
                     '{{WRAPPER}} .bt-product-banner-scroll-hotspot--item:not(:last-child)' => 'margin-bottom: {{SIZE}}{{UNIT}};',
                 ],
@@ -386,13 +396,19 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                 ],
             ]
         );
-
+        $this->add_control(
+            'heading_style',
+            [
+                'label' => __('Heading', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
         $this->add_responsive_control(
             'heading_color',
             [
                 'label' => __('Heading Color', 'woozio'),
                 'type' => Controls_Manager::COLOR,
-                'separator' => 'before',
                 'selectors' => [
                     '{{WRAPPER}} .bt-heading' => 'color: {{VALUE}};',
                 ],
@@ -407,7 +423,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
             ]
         );
         $this->add_control(
-            'button_heading',
+            'button_style',
             [
                 'label' => __('Button', 'woozio'),
                 'type' => Controls_Manager::HEADING,
@@ -457,7 +473,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                 ],
             ]
         );
-        
+
 
         $this->add_responsive_control(
             'button_border_width',
@@ -597,7 +613,6 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
         );
 
         $this->end_controls_section();
-
     }
 
     protected function register_controls()
@@ -611,15 +626,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
         $settings = $this->get_settings_for_display();
 
         $hotspot_items = $settings['hotspot_items'];
-
-        ?>
-        <style>
-            @media (max-width: 767.98px) {
-                .bt-elwg-product-banner-scroll-hotspot--default .bt-product-banner-scroll-hotspot--item-content.bt-no-content-mobile {
-                    display: none;
-                }
-            }
-        </style>
+?>
         <div class="bt-elwg-product-banner-scroll-hotspot--default">
             <div class="bt-product-banner-scroll-hotspot">
                 <?php foreach ($hotspot_items as $item): ?>
@@ -628,16 +635,16 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                             <div class="bt-product-banner-scroll-hotspot--item-image <?php echo esc_attr($item['show_mobile_image'] === 'yes' ? 'bt-mobile-image' : ''); ?>">
 
                                 <div class="bt-product-banner-scroll-hotspot--item-image-inner">
-                                    <?php 
+                                    <?php
                                     if (!empty($item['hotspot_image']['id'])) {
-                                        echo wp_get_attachment_image($item['hotspot_image']['id'], 'full', false, ['class' => 'bt-hotspot-image']);
+                                        echo wp_get_attachment_image($item['hotspot_image']['id'], $settings['thumbnail_size'], false, ['class' => 'bt-hotspot-image']);
                                     } else {
                                         echo '<img src="' . esc_url($item['hotspot_image']['url']) . '" alt="" class="bt-hotspot-image">';
                                     }
 
                                     if ($item['show_mobile_image'] === 'yes') {
                                         if (!empty($item['hotspot_image_mobile']['id'])) {
-                                            echo wp_get_attachment_image($item['hotspot_image_mobile']['id'], 'full', false, ['class' => 'bt-mobile-image-mobile']);
+                                            echo wp_get_attachment_image($item['hotspot_image_mobile']['id'], $settings['thumbnail_size'], false, ['class' => 'bt-mobile-image-mobile']);
                                         } else {
                                             echo '<img src="' . esc_url($item['hotspot_image_mobile']['url']) . '" alt="" class="bt-mobile-image-mobile">';
                                         }
@@ -668,7 +675,7 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                                 $product = wc_get_product($product_id);
 
                                 if ($product) {
-                                    ?>
+                                ?>
                                     <div class="bt-hotspot-product-item elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>">
                                         <a class="bt-hotspot-product-thumbnail"
                                             href="<?php echo esc_url($product->get_permalink()); ?>">
@@ -692,41 +699,32 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                                                     do_action('woozio_woocommerce_template_single_add_to_cart');
                                                 }
                                                 ?>
-                                                <p
-                                                    class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+                                                <div class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
                                                     <?php echo $product->get_price_html(); ?>
-                                                </p>
+                                                </div>
                                             </div>
                                             <div class="bt-product-add-to-cart">
-                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()): ?>
-                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>"
-                                                        aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>"
-                                                        data-quantity="1"
-                                                        class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover"
-                                                        data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku=""
-                                                        rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
-                                                <?php else: ?>
-                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>"
-                                                        class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
+                                                <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
+                                                    <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>
+                                                <?php else : ?>
+                                                    <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-button bt-view-product"><?php echo esc_html__('View Product', 'woozio'); ?></a>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
-                                    <?php
+                                <?php
                                 }
                                 ?>
 
                             </div>
-                            
+
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
-        <?php
+<?php
     }
 
-    protected function content_template()
-    {
-    }
+    protected function content_template() {}
 }
