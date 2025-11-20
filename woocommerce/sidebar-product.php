@@ -20,7 +20,8 @@ if (woozio_is_category_archive_page()) {
 $current_category = get_queried_object();
 // Get taxonomy info for taxonomy pages (not shop or category)
 $is_category_page = woozio_is_category_archive_page();
-$is_taxonomy_page = !$is_category_page && (is_product_taxonomy() || is_tax());
+// Only consider it a taxonomy page if there's no query string (not a filter URL)
+$is_taxonomy_page = !$is_category_page && (is_product_taxonomy() || is_tax()) && empty($_SERVER['QUERY_STRING']);
 $current_taxonomy = null;
 $taxonomy_slug = '';
 $taxonomy_name = '';

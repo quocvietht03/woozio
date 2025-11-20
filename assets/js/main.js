@@ -329,7 +329,7 @@
 				var attributeName = attributesItem.data('attribute-name');
 				attributesItem.find('.bt-js-item').removeClass('active'); // Remove active class only from items in the same attribute group
 				$(this).addClass('active'); // Add active class to clicked item
-				var colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+				var colorTaxonomy = AJ_Options.color_taxonomy;
 				var nameItem = (attributeName == colorTaxonomy) ? $(this).find('label').text() : $(this).text();
 				attributesItem.find('.bt-result').text(nameItem);
 				$(this).closest('.variations_form').find('select#' + attributeName).val(valueItem).trigger('change');
@@ -1295,7 +1295,7 @@
 			if (isTaxonomyPage && taxonomyType) {
 				params.delete(taxonomyType);
 			}
-
+			console.log(params);
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1348,7 +1348,8 @@
 							return $(this).data('slug') === tag.trim();
 						});
 						if (matchingLink.length) {
-							const colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+							const colorTaxonomy = AJ_Options.color_taxonomy;
+							console.log(colorTaxonomy);
 							if (key == colorTaxonomy) {
 								const colortag = matchingLink.prop('outerHTML');
 								//	console.log(colortag);
@@ -1970,6 +1971,7 @@
 							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
 							WoozioCountdownProductSale();
+							WoozioProductColorVariationsLoadImage();
 							// Trigger event for infinite scroll to re-initialize
 							$(document).trigger('filter-products-complete');
 						}, 500);
@@ -2058,6 +2060,7 @@
 						WoozioProductButtonStatus();
 						WoozioProductVariationHandler();
 						WoozioLoadDefaultActiveVariations();
+						WoozioProductColorVariationsLoadImage();
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
@@ -2185,6 +2188,7 @@
 						WoozioProductButtonStatus();
 						WoozioProductVariationHandler();
 						WoozioLoadDefaultActiveVariations();
+						WoozioProductColorVariationsLoadImage();
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
@@ -3047,7 +3051,7 @@
 					var $item = $(this);
 					var $attrItem = $item.closest('.bt-attributes--item');
 					var attrName = $attrItem.data('attribute-name');
-					var colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+					var colorTaxonomy = AJ_Options.color_taxonomy;
 					var name = (attrName == colorTaxonomy) ? $item.find('label').text() : $item.text();
 					$attrItem.find('.bt-result').text(name);
 				});
