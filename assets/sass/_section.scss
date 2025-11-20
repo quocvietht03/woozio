@@ -303,4 +303,18 @@ body {
             left: calc(50% - var(--width-body) / 2);
         }
     }
+    &.bt-testimonial-slider-center{
+        .swiper-wrapper{
+            .swiper-slide{
+                &:not(.swiper-slide-active){
+                    opacity: 0.3;
+                }
+            }
+        }
+        @media(max-width: 1630px) and (min-width: 1367px){
+            &.elementor-widget-n-carousel{
+                --e-n-carousel-swiper-offset-size: 300px !important;
+            }
+        }
+    }
 }

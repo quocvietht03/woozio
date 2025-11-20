@@ -232,6 +232,9 @@
       @media (max-width: $break-xs) {
         a {
           font-size: 20px;
+          line-height: 30px;
+          display: block;
+          background: transparent;
         }
       }
     }
@@ -277,6 +280,11 @@
       margin-top: -40px;
       background: #fff;
       left: -1px;
+      @media(max-width:$break-md){
+        width: calc(100% - 30px);
+        padding: 20px 20px 0 1px;
+        margin-top: -30px;
+      }
     }
     &--featured {
       a {
@@ -336,10 +344,15 @@
           transition-delay: 0.2s;
         }
       }
+      @media(max-width:$break-md){
+        margin: 8px 0 0 0;
+      }
       @media (max-width: $break-xs) {
         a {
           font-size: 20px;
-          line-height: 27px;
+          line-height: 30px;
+          display: block;
+          background: transparent;
         }
       }
     }
@@ -402,6 +415,14 @@
         &:hover {
           background-size: 100% 100%;
           transition-delay: 0.2s;
+        }
+      }
+      @media (max-width: $break-xs) {
+        a {
+          font-size: 20px;
+          line-height: 30px;
+          display: block;
+          background: transparent;
         }
       }
     }
@@ -564,6 +585,12 @@
         @media (max-width: $break-md) {
           font-size: 22px;
           line-height: 28px;
+        }
+        @media (max-width: $break-xs) {
+          font-size: 20px;
+          line-height: 30px;
+          display: block;
+          background: transparent;
         }
       }
     }
