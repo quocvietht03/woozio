@@ -2367,6 +2367,11 @@
             .bt-attributes--item {
               max-width: calc(100% - 50px);
               overflow-x: auto;
+              // Dynamic color attribute class - works with any color taxonomy
+              &.bt-is-color-attribute {
+                overflow: initial; 
+              }
+              // Fallback for backward compatibility
               &[data-attribute-name="pa_color"] {
                 overflow: initial;
               }

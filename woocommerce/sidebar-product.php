@@ -137,9 +137,12 @@ if ($is_taxonomy_page) {
               break;
 
             case 'colors':
-              $field_name = __('Colors', 'woozio');
-              $field_value = (isset($_GET['pa_color'])) ? $_GET['pa_color'] : '';
-              woozio_product_field_multiple_color_html('pa_color', $field_name, $field_value);
+              $color_taxonomy = woozio_get_color_taxonomy();
+              if ($color_taxonomy) {
+                $field_name = __('Colors', 'woozio');
+                $field_value = (isset($_GET[$color_taxonomy])) ? $_GET[$color_taxonomy] : '';
+                woozio_product_field_multiple_color_html($color_taxonomy, $field_name, $field_value);
+              }
               break;
 
             case 'customer_rating':
@@ -191,9 +194,12 @@ if ($is_taxonomy_page) {
         $field_max_value = (isset($_GET['max_price'])) ? $_GET['max_price'] : '';
         woozio_product_field_price_slider($field_title, $field_min_value, $field_max_value);
 
-        $field_name = __('Colors', 'woozio');
-        $field_value = (isset($_GET['pa_color'])) ? $_GET['pa_color'] : '';
-        woozio_product_field_multiple_color_html('pa_color', $field_name, $field_value);
+        $color_taxonomy = woozio_get_color_taxonomy();
+        if ($color_taxonomy) {
+          $field_name = __('Colors', 'woozio');
+          $field_value = (isset($_GET[$color_taxonomy])) ? $_GET[$color_taxonomy] : '';
+          woozio_product_field_multiple_color_html($color_taxonomy, $field_name, $field_value);
+        }
 
         $field_name = __('Customer Rating', 'woozio');
         $field_value = (isset($_GET['product_rating'])) ? $_GET['product_rating'] : '';

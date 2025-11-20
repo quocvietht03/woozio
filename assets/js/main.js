@@ -329,7 +329,8 @@
 				var attributeName = attributesItem.data('attribute-name');
 				attributesItem.find('.bt-js-item').removeClass('active'); // Remove active class only from items in the same attribute group
 				$(this).addClass('active'); // Add active class to clicked item
-				var nameItem = (attributeName == 'pa_color') ? $(this).find('label').text() : $(this).text();
+				var colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+				var nameItem = (attributeName == colorTaxonomy) ? $(this).find('label').text() : $(this).text();
 				attributesItem.find('.bt-result').text(nameItem);
 				$(this).closest('.variations_form').find('select#' + attributeName).val(valueItem).trigger('change');
 				var gallerylayout = '';
@@ -1343,19 +1344,20 @@
 							tagElement.text(product_rating).append(svgStar).append(svgElement).addClass('bt-rating-tag');;
 							tagsContainer.append(tagElement);
 						} else {
-							const matchingLink = $(`.bt-form-field[data-name="${key}"] .bt-field-list a`).filter(function () {
-								return $(this).data('slug') === tag.trim();
-							});
-							if (matchingLink.length) {
-								if (key == 'pa_color') {
-									const colortag = matchingLink.prop('outerHTML');
-									//	console.log(colortag);
-									tagElement.html(colortag).append(svgElement).addClass('bt-color-tag');
-								} else {
-									const textTag = matchingLink.text().trim();
-									const nameTag = textTag.replace(/\(\d+\)$/g, '').trim();
-									tagElement.text(nameTag).append(svgElement);
-								}
+						const matchingLink = $(`.bt-form-field[data-name="${key}"] .bt-field-list a`).filter(function () {
+							return $(this).data('slug') === tag.trim();
+						});
+						if (matchingLink.length) {
+							const colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+							if (key == colorTaxonomy) {
+								const colortag = matchingLink.prop('outerHTML');
+								//	console.log(colortag);
+								tagElement.html(colortag).append(svgElement).addClass('bt-color-tag');
+							} else {
+								const textTag = matchingLink.text().trim();
+								const nameTag = textTag.replace(/\(\d+\)$/g, '').trim();
+								tagElement.text(nameTag).append(svgElement);
+							}
 								tagsContainer.append(tagElement);
 							} else {
 								if (tag != '') {
@@ -3041,13 +3043,14 @@
 				$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
 					if (!variation) return;
 
-					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
-						var $item = $(this);
-						var $attrItem = $item.closest('.bt-attributes--item');
-						var attrName = $attrItem.data('attribute-name');
-						var name = (attrName == 'pa_color') ? $item.find('label').text() : $item.text();
-						$attrItem.find('.bt-result').text(name);
-					});
+				$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
+					var $item = $(this);
+					var $attrItem = $item.closest('.bt-attributes--item');
+					var attrName = $attrItem.data('attribute-name');
+					var colorTaxonomy = (typeof AJ_Options !== 'undefined' && AJ_Options.color_taxonomy) ? AJ_Options.color_taxonomy : 'pa_color';
+					var name = (attrName == colorTaxonomy) ? $item.find('label').text() : $item.text();
+					$attrItem.find('.bt-result').text(name);
+				});
 				});
 
 				var $activeItems = $form.find('.bt-attributes-wrap .bt-js-item.active');

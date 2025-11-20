@@ -28,6 +28,59 @@ add_action('woozio_woocommerce_template_single_meta', 'woozio_woocommerce_single
 add_action('woozio_woocommerce_template_related_products', 'woocommerce_output_related_products', 20);
 remove_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display');
 
+/**
+ * Get the color taxonomy dynamically by checking which attribute has color_tax_attributes field
+ * 
+ * @return string|false The color taxonomy name or false if not found
+ */
+if (!function_exists('woozio_get_color_taxonomy')) {
+    function woozio_get_color_taxonomy() {
+        static $color_taxonomy = null;
+        
+        // Return cached result if available
+        if ($color_taxonomy !== null) {
+            return $color_taxonomy;
+        }
+        
+        // Auto-detect color taxonomy from ACF field group location rules
+        $color_taxonomy = 'pa_color';
+        
+        // Get all ACF field groups
+        $field_groups = acf_get_field_groups();
+        if (!empty($field_groups)) {
+            foreach ($field_groups as $group) {
+                // Get fields in this group
+                $fields = acf_get_fields($group['key']);
+                
+                // Check if this group has the color_tax_attributes field
+                $has_color_field = false;
+                if (!empty($fields)) {
+                    foreach ($fields as $field) {
+                        if ($field['name'] === 'color_tax_attributes') {
+                            $has_color_field = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // If found, get the taxonomy from location rules
+                if ($has_color_field && !empty($group['location'])) {
+                    foreach ($group['location'] as $location_group) {
+                        foreach ($location_group as $rule) {
+                            if ($rule['param'] === 'taxonomy' && $rule['operator'] === '==') {
+                                $color_taxonomy = $rule['value'];
+                                break 3; // Exit all loops once we find it
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $color_taxonomy;
+    }
+}
+
 remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15);
 
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
@@ -1136,7 +1189,7 @@ function woozio_product_field_multiple_color_html($slug = '', $field_title = '',
                     }
                     
                     $term_id = $term->term_id;
-                    $color = get_field('color', 'pa_color_' . $term_id);
+                    $color = get_field('color_tax_attributes', $slug . '_' . $term_id);
                     if (!$color) {
                         $color = $term->slug;
                     }
@@ -1475,11 +1528,13 @@ function woozio_products_query_args($params = array(), $limit = 9)
             'terms' => explode(',', $params['product_tag'])
         );
     }
-    if (isset($params['pa_color']) && $params['pa_color'] != '') {
+    // Handle color taxonomy dynamically
+    $color_taxonomy = woozio_get_color_taxonomy();
+    if ($color_taxonomy && isset($params[$color_taxonomy]) && $params[$color_taxonomy] != '') {
         $query_tax[] = array(
-            'taxonomy' => 'pa_color',
+            'taxonomy' => $color_taxonomy,
             'field' => 'slug',
-            'terms' => explode(',', $params['pa_color'])
+            'terms' => explode(',', $params[$color_taxonomy])
         );
     }
     if (!empty($query_tax)) {
@@ -1792,15 +1847,18 @@ function woozio_products_compare()
                                             <?php echo '<p>' . wc_format_dimensions($product->get_dimensions(false)) . '</p>'; ?>
                                         </div>
                                     <?php } ?>
-                                    <?php if (in_array('color', $fields_show_compare)) { ?>
+                                    <?php if (in_array('color', $fields_show_compare)) { 
+                                        $color_taxonomy = woozio_get_color_taxonomy();
+                                        if ($color_taxonomy) {
+                                    ?>
                                         <div class="bt-table--col bt-color">
                                             <?php
-                                            $colors = wp_get_post_terms($id, 'pa_color', ['fields' => 'ids']);
+                                            $colors = wp_get_post_terms($id, $color_taxonomy, ['fields' => 'ids']);
                                             $count = 0;
                                             foreach ($colors as $color_id) {
                                                 if ($count >= 6) break; // Only show max 6 colors
-                                                $color_value = get_field('color', 'pa_color_' . $color_id);
-                                                $color = get_term($color_id, 'pa_color');
+                                                $color_value = get_field('color_tax_attributes', $color_taxonomy . '_' . $color_id);
+                                                $color = get_term($color_id, $color_taxonomy);
                                                 if (!$color_value) {
                                                     $color_value = $color->slug;
                                                 }
@@ -1809,7 +1867,9 @@ function woozio_products_compare()
                                             }
                                             ?>
                                         </div>
-                                    <?php } ?>
+                                    <?php 
+                                        }
+                                    } ?>
                                     <?php if (in_array('size', $fields_show_compare)) { ?>
                                         <div class="bt-table--col bt-size">
                                             <?php
@@ -4110,6 +4170,9 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
         $available_variations = $product->get_available_variations();
         $color_variations_data = array();
 
+        // Get the color taxonomy dynamically
+        $color_taxonomy = woozio_get_color_taxonomy();
+        $color_attribute_key = $color_taxonomy ? str_replace('pa_', '', $color_taxonomy) : '';
 
         foreach ($available_variations as $variation_data) {
             $variation_id = $variation_data['variation_id'];
@@ -4120,10 +4183,10 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
 
             // Check if this variation has color attribute
             $color_value = '';
-            if (isset($attributes['pa_color'])) {
-                $color_value = $attributes['pa_color'];
-            } elseif (isset($attributes['color'])) {
-                $color_value = $attributes['color'];
+            if ($color_taxonomy && isset($attributes[$color_taxonomy])) {
+                $color_value = $attributes[$color_taxonomy];
+            } elseif ($color_attribute_key && isset($attributes[$color_attribute_key])) {
+                $color_value = $attributes[$color_attribute_key];
             }
 
             // Only process if color is found and not already processed
@@ -4158,13 +4221,13 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                 }
 
                 // Get color term info for display
-                $color_term = get_term_by('slug', $color_value, 'pa_color');
+                $color_term = $color_taxonomy ? get_term_by('slug', $color_value, $color_taxonomy) : null;
                 $color_name = $color_term ? $color_term->name : $color_value;
 
                 // Get color hex value from ACF if available
                 $color_hex = '';
-                if ($color_term) {
-                    $color_hex = get_field('color', 'pa_color_' . $color_term->term_id);
+                if ($color_term && $color_taxonomy) {
+                    $color_hex = get_field('color_tax_attributes', $color_taxonomy . '_' . $color_term->term_id);
                 }
                 if (empty($color_hex)) {
                     $color_hex = $color_value; // fallback to slug

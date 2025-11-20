@@ -155,10 +155,11 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			'cart_toast_time' => $cart_toast_time,
 			'user_info' => wp_get_current_user(),
 			'order_tracking_nonce' => wp_create_nonce('woozio_order_tracking_nonce'),
+			'color_taxonomy' => function_exists('woozio_get_color_taxonomy') ? woozio_get_color_taxonomy() : 'pa_color',
 		);
 
 		wp_localize_script('woozio-main', 'AJ_Options', $js_options);
-		
+
 		// Create wc_cart_params object without enqueuing wc-cart script
 		if (class_exists('WooCommerce') && class_exists('WC_AJAX')) {
 			$wc_cart_params = array(
@@ -170,7 +171,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			);
 			wp_localize_script('woozio-main', 'wc_cart_params', $wc_cart_params);
 		}
-		
+
 		wp_enqueue_script('woozio-main');
 	}
 	add_action('wp_enqueue_scripts', 'woozio_enqueue_scripts');
@@ -182,7 +183,7 @@ if (!function_exists('woozio_enqueue_admin_scripts')) {
 		wp_enqueue_style('woozio-fonts', get_template_directory_uri() . '/assets/css/fonts.css',  array(), false);
 		wp_enqueue_script('woozio-admin-main', get_template_directory_uri() . '/assets/js/admin-main.js', array('jquery'), '', true);
 		wp_enqueue_style('woozio-admin-main', get_template_directory_uri() . '/assets/css/admin-main.css', array(), false);
-		
+
 		// Localize script for Product Extra Content (in admin-main.js)
 		$screen = get_current_screen();
 		if ($screen && ($screen->post_type === 'product' || $screen->post_type === 'extra_content_prod')) {
@@ -237,4 +238,3 @@ function bt_custom_search_filter($query)
 	}
 }
 add_action('pre_get_posts', 'bt_custom_search_filter');
-

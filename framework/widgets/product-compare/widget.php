@@ -282,26 +282,31 @@ class Widget_ProductCompare extends Widget_Base
 														<?php echo '<p>' . wc_format_dimensions($product->get_dimensions(false)) . '</p>'; ?>
 													</div>
 												<?php } ?>
-												<?php if (in_array('color', $fields_show_compare)) { ?>
-													<div class="bt-table--col bt-color">
-														<?php
-														$colors = wp_get_post_terms($id, 'pa_color', ['fields' => 'ids']);
-														$count = 0;
-														foreach ($colors as $color_id) {
-															if ($count >= 6) break; // Only show max 6 colors
+											<?php if (in_array('color', $fields_show_compare)) {
+												$color_taxonomy = woozio_get_color_taxonomy();
+												if ($color_taxonomy) {
+											?>
+												<div class="bt-table--col bt-color">
+													<?php
+													$colors = wp_get_post_terms($id, $color_taxonomy, ['fields' => 'ids']);
+													$count = 0;
+													foreach ($colors as $color_id) {
+														if ($count >= 6) break; // Only show max 6 colors
 
-															$color_value = get_field('color', 'pa_color_' . $color_id);
-															$color = get_term($color_id, 'pa_color');
-															if (!$color_value) {
-																$color_value = $color->slug;
-															}
-															echo '<div class="bt-item-color"><span style="background-color: ' . esc_attr($color_value) . ';"></span>' . esc_html($color->name) . '</div>';
-
-															$count++;
+														$color_value = get_field('color_tax_attributes', $color_taxonomy . '_' . $color_id);
+														$color = get_term($color_id, $color_taxonomy);
+														if (!$color_value) {
+															$color_value = $color->slug;
 														}
-														?>
-													</div>
-												<?php } ?>
+														echo '<div class="bt-item-color"><span style="background-color: ' . esc_attr($color_value) . ';"></span>' . esc_html($color->name) . '</div>';
+
+														$count++;
+													}
+													?>
+												</div>
+											<?php 
+												}
+											} ?>
 												<?php if (in_array('size', $fields_show_compare)) { ?>
 													<div class="bt-table--col bt-size">
 														<?php

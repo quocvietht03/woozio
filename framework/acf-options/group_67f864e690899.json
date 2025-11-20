@@ -5,7 +5,7 @@
         {
             "key": "field_67f864e685bf6",
             "label": "Color",
-            "name": "color",
+            "name": "color_tax_attributes",
             "aria-label": "",
             "type": "color_picker",
             "instructions": "",
@@ -40,5 +40,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1744332789
+    "modified": 1763627459
 }

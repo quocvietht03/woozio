@@ -62,47 +62,54 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 			</tbody>
 		</table>
 
-		<div class="bt-attributes-wrap" >
+		<div class="bt-attributes-wrap">
 			<?php
 			foreach ($attributes as $attribute_name => $options) :
 				$data_attribute = strtolower($attribute_name);
 				$data_attribute_slug = sanitize_title($attribute_name);
 				$selected_value = isset($_REQUEST['attribute_' . $data_attribute_slug]) ? wc_clean(wp_unslash($_REQUEST['attribute_' . $data_attribute_slug])) : $product->get_variation_default_attribute($attribute_name);
-				
+
 				// Check if this is size attribute for Size Guide button
 				$is_size_attr = (strpos(strtolower($attribute_name), 'size') !== false);
-				?>
-				<div class="bt-attributes--item" data-attribute-name="<?php echo esc_attr($data_attribute_slug); ?>">
+
+				// Check if this is color attribute and add dynamic class
+				$color_taxonomy = woozio_get_color_taxonomy();
+				$is_color_attr = $color_taxonomy && ($attribute_name === $color_taxonomy);
+				$color_class = $is_color_attr ? ' bt-is-color-attribute' : '';
+			?>
+				<div class="bt-attributes--item<?php echo esc_attr($color_class); ?>" data-attribute-name="<?php echo esc_attr($data_attribute_slug); ?>">
 					<div class="bt-attributes--name">
 						<div class="bt-name"><?php echo wc_attribute_label($attribute_name) . ':'; ?></div>
 						<div class="bt-result"></div>
-						<?php 
+						<?php
 						// Display Size Guide button inline with Size label - only on single product pages
 						if ($is_size_attr && is_product()) {
 							// Check if size guide is enabled for this product
 							$enable_size_guide = get_post_meta($product->get_id(), '_enable_size_guide', true);
 							$size_guide = get_field('size_guide', 'option');
-							
-							if ($enable_size_guide === 'yes' && !empty($size_guide) ) {
-								?>
+
+							if ($enable_size_guide === 'yes' && !empty($size_guide)) {
+						?>
 								<div class="bt-size-guide-wrapper bt-inline-position">
 									<a href="#bt-size-guide-popup" class="bt-size-guide-button bt-js-open-popup-link">
 										<?php echo esc_html__('Size Guide', 'woozio'); ?>
 									</a>
 								</div>
-								<?php
+						<?php
 							}
 						}
 						?>
 					</div>
-					<?php if ($attribute_name == 'pa_color') { ?>
+					<?php
+					// Use the previously checked color attribute status
+					if ($is_color_attr) { ?>
 						<div class="bt-attributes--value bt-value-color">
 							<?php
 							$reversed_options = array_reverse($options);
 							foreach ($reversed_options as $option) :
 								$term = get_term_by('slug', $option, $attribute_name);
 								$term_id = $term ? $term->term_id : '';
-								$color = $term_id ? get_field('color', 'pa_color_' . $term_id) : '';
+								$color = $term_id ? get_field('color_tax_attributes', $attribute_name . '_' . $term_id) : '';
 								if (!$color) {
 									$color = $option;
 								}
