@@ -81,6 +81,59 @@ if (!function_exists('woozio_get_color_taxonomy')) {
     }
 }
 
+/**
+ * Get the image taxonomy dynamically by checking which attribute has image_tax_attributes field
+ * 
+ * @return string|false The image taxonomy name or false if not found
+ */
+if (!function_exists('woozio_get_image_taxonomy')) {
+    function woozio_get_image_taxonomy() {
+        static $image_taxonomy = null;
+        
+        // Return cached result if available
+        if ($image_taxonomy !== null) {
+            return $image_taxonomy;
+        }
+        
+        // Auto-detect image taxonomy from ACF field group location rules
+        $image_taxonomy = false;
+        
+        // Get all ACF field groups
+        $field_groups = acf_get_field_groups();
+        if (!empty($field_groups)) {
+            foreach ($field_groups as $group) {
+                // Get fields in this group
+                $fields = acf_get_fields($group['key']);
+                
+                // Check if this group has the image_tax_attributes field
+                $has_image_field = false;
+                if (!empty($fields)) {
+                    foreach ($fields as $field) {
+                        if ($field['name'] === 'image_tax_attributes') {
+                            $has_image_field = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // If found, get the taxonomy from location rules
+                if ($has_image_field && !empty($group['location'])) {
+                    foreach ($group['location'] as $location_group) {
+                        foreach ($location_group as $rule) {
+                            if ($rule['param'] === 'taxonomy' && $rule['operator'] === '==') {
+                                $image_taxonomy = $rule['value'];
+                                break 3; // Exit all loops once we find it
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $image_taxonomy;
+    }
+}
+
 remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15);
 
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
@@ -4168,11 +4221,57 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
     if ($product->is_type('variable')) {
         // Get all available variations
         $available_variations = $product->get_available_variations();
-        $color_variations_data = array();
+        $variations_data = array();
 
-        // Get the color taxonomy dynamically
+        // Get the color and image taxonomies dynamically
         $color_taxonomy = woozio_get_color_taxonomy();
-        $color_attribute_key = $color_taxonomy ? str_replace('pa_', '', $color_taxonomy) : '';
+        $image_taxonomy = woozio_get_image_taxonomy();
+        
+        // Get product attributes to check what this specific product has
+        $product_attributes = $product->get_variation_attributes();
+        $product_attribute_names = array_keys($product_attributes);
+        
+        // Check if this product has image attribute
+        $has_image_attr = false;
+        if ($image_taxonomy) {
+            foreach ($product_attribute_names as $attr_name) {
+                $attr_name_clean = str_replace('attribute_', '', strtolower($attr_name));
+                $image_taxonomy_clean = str_replace('pa_', '', strtolower($image_taxonomy));
+                if ($attr_name_clean === $image_taxonomy_clean || $attr_name_clean === strtolower($image_taxonomy)) {
+                    $has_image_attr = true;
+                    break;
+                }
+            }
+        }
+        
+        // Check if this product has color attribute
+        $has_color_attr = false;
+        if ($color_taxonomy) {
+            foreach ($product_attribute_names as $attr_name) {
+                $attr_name_clean = str_replace('attribute_', '', strtolower($attr_name));
+                $color_taxonomy_clean = str_replace('pa_', '', strtolower($color_taxonomy));
+                if ($attr_name_clean === $color_taxonomy_clean || $attr_name_clean === strtolower($color_taxonomy)) {
+                    $has_color_attr = true;
+                    break;
+                }
+            }
+        }
+        
+        // Determine which attribute to use (prioritize image over color)
+        $primary_taxonomy = null;
+        $is_image_attribute = false;
+        
+        if ($has_image_attr) {
+            // If product has image attribute, use it
+            $primary_taxonomy = $image_taxonomy;
+            $is_image_attribute = true;
+        } elseif ($has_color_attr) {
+            // If product only has color attribute, use color
+            $primary_taxonomy = $color_taxonomy;
+            $is_image_attribute = false;
+        }
+        
+        $primary_attribute_key = $primary_taxonomy ? str_replace('pa_', '', $primary_taxonomy) : '';
 
         foreach ($available_variations as $variation_data) {
             $variation_id = $variation_data['variation_id'];
@@ -4181,16 +4280,16 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
             // Get variation attributes
             $attributes = $variation->get_attributes();
 
-            // Check if this variation has color attribute
-            $color_value = '';
-            if ($color_taxonomy && isset($attributes[$color_taxonomy])) {
-                $color_value = $attributes[$color_taxonomy];
-            } elseif ($color_attribute_key && isset($attributes[$color_attribute_key])) {
-                $color_value = $attributes[$color_attribute_key];
+            // Check if this variation has the primary attribute (image or color)
+            $attr_value = '';
+            if ($primary_taxonomy && isset($attributes[$primary_taxonomy])) {
+                $attr_value = $attributes[$primary_taxonomy];
+            } elseif ($primary_attribute_key && isset($attributes[$primary_attribute_key])) {
+                $attr_value = $attributes[$primary_attribute_key];
             }
 
-            // Only process if color is found and not already processed
-            if (!empty($color_value) && !isset($color_variations_data[$color_value])) {
+            // Only process if attribute is found and not already processed
+            if (!empty($attr_value) && !isset($variations_data[$attr_value])) {
                 $post_thumbnail_id = $variation->get_image_id();
 
                 if ($post_thumbnail_id) {
@@ -4220,34 +4319,53 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                     $variable_image_html = apply_filters('woocommerce_loop_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
                 }
 
-                // Get color term info for display
-                $color_term = $color_taxonomy ? get_term_by('slug', $color_value, $color_taxonomy) : null;
-                $color_name = $color_term ? $color_term->name : $color_value;
+                // Get term info for display
+                $term = $primary_taxonomy ? get_term_by('slug', $attr_value, $primary_taxonomy) : null;
+                $attr_name = $term ? $term->name : $attr_value;
 
-                // Get color hex value from ACF if available
-                $color_hex = '';
-                if ($color_term && $color_taxonomy) {
-                    $color_hex = get_field('color_tax_attributes', $color_taxonomy . '_' . $color_term->term_id);
+                // Get attribute display value from ACF if available
+                $attr_display = '';
+                if ($term && $primary_taxonomy) {
+                    if ($is_image_attribute) {
+                        // Get image URL from ACF (handle different return formats)
+                        $image_data = get_field('image_tax_attributes', $primary_taxonomy . '_' . $term->term_id);
+                        if ($image_data) {
+                            if (is_array($image_data)) {
+                                // If image is returned as array, get the url
+                                $attr_display = isset($image_data['url']) ? $image_data['url'] : '';
+                            } elseif (is_numeric($image_data)) {
+                                // If image is returned as ID, get the url
+                                $attr_display = wp_get_attachment_image_url($image_data, 'thumbnail');
+                            } else {
+                                // If image is returned as URL string
+                                $attr_display = $image_data;
+                            }
+                        }
+                    } else {
+                        // Get color hex from ACF
+                        $attr_display = get_field('color_tax_attributes', $primary_taxonomy . '_' . $term->term_id);
+                    }
                 }
-                if (empty($color_hex)) {
-                    $color_hex = $color_value; // fallback to slug
+                if (empty($attr_display)) {
+                    $attr_display = $attr_value; // fallback to slug
                 }
 
-                // Store color variation data
-                $color_variations_data[$color_value] = array(
+                // Store variation data
+                $variations_data[$attr_value] = array(
                     'variation_id' => $variation_id,
-                    'color_name' => $color_name,
-                    'color_hex' => $color_hex,
+                    'attr_name' => $attr_name,
+                    'attr_display' => $attr_display,
+                    'attr_type' => $is_image_attribute ? 'image' : 'color',
                     'variable_image_html' => $variable_image_html,
                     'has_gallery' => !empty($variable_image_html)
                 );
             }
         }
 
-        // Convert color variations data to JSON for JavaScript
-        $color_variations_json = !empty($color_variations_data) ? json_encode($color_variations_data) : '{}';
+        // Convert variations data to JSON for JavaScript
+        $variations_json = !empty($variations_data) ? json_encode($variations_data) : '{}';
 
-        echo '<div class="bt-product-add-to-cart-variable" data-color-variations="' . esc_attr($color_variations_json) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
+        echo '<div class="bt-product-add-to-cart-variable" data-attribute-variations="' . esc_attr($variations_json) . '" data-product-id="' . esc_attr($product->get_id()) . '">';
 
         do_action('woozio_woocommerce_template_single_add_to_cart');
 

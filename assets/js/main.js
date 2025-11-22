@@ -1971,7 +1971,7 @@
 							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
 							WoozioCountdownProductSale();
-							WoozioProductColorVariationsLoadImage();
+							WoozioProductAttributeVariationSwitch();
 							// Trigger event for infinite scroll to re-initialize
 							$(document).trigger('filter-products-complete');
 						}, 500);
@@ -2060,7 +2060,7 @@
 						WoozioProductButtonStatus();
 						WoozioProductVariationHandler();
 						WoozioLoadDefaultActiveVariations();
-						WoozioProductColorVariationsLoadImage();
+						WoozioProductAttributeVariationSwitch();
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
@@ -2188,7 +2188,7 @@
 						WoozioProductButtonStatus();
 						WoozioProductVariationHandler();
 						WoozioLoadDefaultActiveVariations();
-						WoozioProductColorVariationsLoadImage();
+						WoozioProductAttributeVariationSwitch();
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
@@ -2574,7 +2574,7 @@
 				success: function (response) {
 					if (response.success) {
 						$('.recently-viewed-products').html(response.data);
-						WoozioProductColorVariationsLoadImage();
+						WoozioProductAttributeVariationSwitch();
 						WoozioLoadDefaultActiveVariations();
 					}
 				}
@@ -2909,30 +2909,31 @@
 			}
 		}
 	}
-	function WoozioProductColorVariationsLoadImage() {
+	function WoozioProductAttributeVariationSwitch() {
 		if ($('.bt-product-add-to-cart-variable').length > 0) {
-			$(document).on('click', '.bt-product-add-to-cart-variable .bt-value-color .bt-item-color', function (e) {
-				var valueColor = $(this).data('value');
+			// Handle both color and image attribute clicks to switch product images
+			$(document).on('click', '.bt-product-add-to-cart-variable .bt-value-color .bt-item-color, .bt-product-add-to-cart-variable .bt-value-image .bt-item-image', function (e) {
+				var attributeValue = $(this).data('value');
 
 				const productContainer = $(this).closest('.woocommerce-loop-product');
-				const colorVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
-				const colorVariations = colorVariationsContainer.data('color-variations');
+				const attributeVariationsContainer = $(this).closest('.bt-product-add-to-cart-variable');
+				const attributeVariations = attributeVariationsContainer.data('attribute-variations');
 
-				// Check if colorVariations exists and is an object
-				if (colorVariations && typeof colorVariations === 'object') {
-					// Find the matching color variation
-					const matchingColor = Object.keys(colorVariations).find(colorSlug => {
-						return colorSlug === valueColor;
+				// Check if attribute variations exists and is an object
+				if (attributeVariations && typeof attributeVariations === 'object') {
+					// Find the matching attribute variation
+					const matchingAttribute = Object.keys(attributeVariations).find(slug => {
+						return slug === attributeValue;
 					});
 
-					if (matchingColor && colorVariations[matchingColor]) {
-						const colorData = colorVariations[matchingColor];
-						productContainer.find('.bt-product-images-wrapper').html(colorData.variable_image_html);
+					if (matchingAttribute && attributeVariations[matchingAttribute]) {
+						const attributeData = attributeVariations[matchingAttribute];
+						productContainer.find('.bt-product-images-wrapper').html(attributeData.variable_image_html);
 					} else {
-						console.log('No matching color found for:', valueColor);
+						console.log('No matching attribute found for:', attributeValue);
 					}
 				} else {
-					console.log('Color variations data not found or invalid');
+					console.log('Attribute variations data not found or invalid');
 				}
 			});
 		}
@@ -3461,7 +3462,7 @@
 		WoozioCustomizeProductToggle();
 		WoozioCustomizeGroupedProduct();
 		WoozioPopupNewsletter();
-		WoozioProductColorVariationsLoadImage();
+		WoozioProductAttributeVariationSwitch();
 		WoozioUpdateBodyWidthVariable();
 		WoozioAddToCartVariable();
 		WoozioLoadDefaultActiveVariations(); // Load data for default active variations
