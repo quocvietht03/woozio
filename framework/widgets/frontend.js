@@ -1941,6 +1941,20 @@
 						swiper.slideTo(slideIndex);
 					}
 				}
+
+				// Scroll page so slider bottom is 20px from bottom of screen
+				setTimeout(function() {
+					const sliderBottom = $productSliderBottomHotspot.offset().top + $productSliderBottomHotspot.outerHeight();
+					const windowHeight = $(window).height();
+					const currentScroll = $(window).scrollTop();
+					const targetScroll = sliderBottom - windowHeight + 20;
+					
+					if (targetScroll > currentScroll) {
+						$('html, body').animate({
+							scrollTop: targetScroll
+						}, 600);
+					}
+				}, 100);
 			});
 			WoozioProductHotspotAddSetCart($productSliderBottomHotspot);
 		}

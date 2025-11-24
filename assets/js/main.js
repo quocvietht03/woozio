@@ -1673,6 +1673,15 @@
 				$('.bt-product-filter-form').submit();
 			});
 		}
+		// Filter field toggle (expand/collapse)
+		if ($('.bt-field-title').length > 0) {
+			$('.bt-field-title').on('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				var $formField = $(this).closest('.bt-form-field');
+				$formField.toggleClass('bt-field-collapsed');
+			});
+		}
 		// Filter Product Tag remove
 		$(document).on('click', '.bt-filter-tag .bt-close', function (e) {
 			e.preventDefault();
@@ -1873,6 +1882,12 @@
 				param_ajax[taxonomyType] = taxonomySlug.replace(/%2C/g, ',');
 			}
 
+			// Add layout parameters from URL if present (for demo/customize mode)
+			const currentUrlParams = new URLSearchParams(window.location.search);
+			if (currentUrlParams.has('layout-pagination')) {
+				param_ajax['layout-pagination'] = currentUrlParams.get('layout-pagination');
+			}
+
 			// Get pagination type
 			var paginationType = $('.bt-product-layout').data('pagination-type');
 			param_in.forEach(function (param) {
@@ -1966,7 +1981,6 @@
 								$('.bt-product-pagination-wrap').attr('data-pagination-type', response.data.pagination_meta.pagination_type);
 							}
 
-							//	$('.bt-product-layout').removeClass('loading');
 							WoozioProductButtonStatus();
 							WoozioProductVariationHandler();
 							WoozioLoadDefaultActiveVariations();
@@ -2020,6 +2034,12 @@
 					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
 				}
 			});
+
+			// Add layout parameters from URL if present (for demo/customize mode)
+			const currentUrlParams = new URLSearchParams(window.location.search);
+			if (currentUrlParams.has('layout-pagination')) {
+				param_ajax['layout-pagination'] = currentUrlParams.get('layout-pagination');
+			}
 
 			// AJAX call
 			$.ajax({
@@ -2143,6 +2163,12 @@
 				}
 			});
 
+			// Add layout parameters from URL if present (for demo/customize mode)
+			const currentUrlParams = new URLSearchParams(window.location.search);
+			if (currentUrlParams.has('layout-pagination')) {
+				param_ajax['layout-pagination'] = currentUrlParams.get('layout-pagination');
+			}
+
 			// AJAX call
 			$.ajax({
 				type: 'POST',
@@ -2231,6 +2257,7 @@
 	}
 	function WoozioAttachTooltip(targetSelector, tooltipText) {
 		var timeout;
+		var mediaQuery = window.matchMedia('(min-width: 767px)');
 
 		function hideTooltip(element) {
 			timeout = setTimeout(function () {
@@ -2241,6 +2268,11 @@
 		}
 
 		$(document).on('mouseenter', targetSelector, function () {
+			// Only show tooltip on screens 767px and above
+			if (!mediaQuery.matches) {
+				return;
+			}
+			
 			clearTimeout(timeout);
 			if (!$(this).find('.tooltip').length) {
 				var tooltip = $('<span class="tooltip"></span>').text(tooltipText);
@@ -2251,6 +2283,15 @@
 
 		$(document).on('mouseleave', targetSelector, function () {
 			hideTooltip($(this));
+		});
+		
+		// Automatically remove tooltips when resizing to mobile
+		mediaQuery.addListener(function(e) {
+			if (!e.matches) {
+				$('.tooltip').fadeOut(200, function() {
+					$(this).remove();
+				});
+			}
 		});
 	}
 	function WoozioAttachTooltips() {

@@ -70,7 +70,6 @@
         @extend .__scrollbar_style;
         display: flex;
         flex-wrap: wrap;
-        max-height: 335px;
         margin-right: -8px;
         padding-right: 8px;
       }
@@ -269,6 +268,59 @@
       line-height: 28px;
       color: $color-primary;
       margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      width: 100%;
+      box-sizing: border-box;
+      .bt-field-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .bt-field-list,
+    .bt-field-price-slider-wrapper,
+    .bt-field-rating-wrapper {
+      max-height: 220px;
+      opacity: 1;
+      overflow: hidden;
+      transition:
+        max-height 0.4s ease,
+        opacity 0.3s ease,
+        margin 0.3s ease;
+    }
+
+    &.bt-field-collapsed {
+      .bt-field-title {
+        .bt-field-toggle {
+          transform: rotate(-90deg);
+        }
+      }
+
+      .bt-field-list,
+      .bt-field-price-slider-wrapper,
+      .bt-field-rating-wrapper {
+        max-height: 0 !important;
+        opacity: 0;
+        margin: 0 !important;
+        overflow: hidden;
+      }
+      + .bt-form-field {
+        margin-top: 4px;
+      }
     }
     &.bt-field-type-search {
       display: flex;
@@ -316,7 +368,6 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
-        max-height: 230px;
         margin-right: -8px;
         padding-right: 8px;
       }
@@ -402,15 +453,19 @@
       }
     }
     &.bt-field-price {
+      .bt-field-price-slider-wrapper {
+        display: block;
+      }
       #bt-price-slider {
         height: 4px;
         border: none;
         background: #e4e4e4;
         border-radius: 0;
         box-shadow: none;
-        width: calc(100% - 15px);
-        margin-top: 22px;
+        width: calc(100% - 16px);
+        margin-top: 8px;
         cursor: pointer;
+        margin-left: 1px;
         .noUi-connect {
           background: $color-accent;
         }
@@ -481,6 +536,9 @@
       }
     }
     &.bt-field-type-rating {
+      .bt-field-rating-wrapper {
+        display: block;
+      }
       .item-rating {
         display: flex;
         position: relative;
@@ -902,10 +960,10 @@
 
         .bt-product-filter-fields {
           display: flex;
-          gap: 50px;
+          gap: 40px;
           flex-wrap: wrap;
           .bt-form-field {
-            width: calc(25% - 37.5px);
+            width: calc(20% - 32px);
             display: flex;
             flex-direction: column;
             margin-top: 0;
@@ -919,7 +977,7 @@
             }
             &.bt-field-type-radio {
               .bt-field-list {
-                max-height: 230px;
+                max-height: 220px;
               }
             }
           }
@@ -940,6 +998,12 @@
             .bt-product-results-btn {
               width: auto;
               display: inline-block;
+            }
+          }
+          @media (max-width: $break-lg) and (min-width: $break-tl) {
+            gap: 20px;
+            .bt-form-field {
+              width: calc(20% - 16px);
             }
           }
         }
@@ -3415,6 +3479,33 @@
         margin: 24px auto 32px;
         padding: 24px;
         background: #fff;
+        &.bt-store-location__popup {
+          .bt-store-location__content {
+            &.bt-has-map {
+              display: grid;
+              grid-template-columns: 1fr;
+              gap: 30px;
+              @media (min-width: 1024px) {
+                grid-template-columns: 1fr 1fr;
+              }
+            }
+            .bt-store-location__text {
+              > * {
+                &:first-child {
+                  margin-top: 0;
+                }
+                &:last-child {
+                  margin-bottom: 0;
+                }
+              }
+            }
+            .bt-store-location__map {
+              iframe {
+                height: 320px;
+              }
+            }
+          }
+        }
       }
       &__inner {
         font-size: 16px;
@@ -3852,6 +3943,11 @@
         }
         .select2-dropdown {
           border: none;
+        }
+        .select2-results {
+          > .select2-results__options {
+            max-height: 232px;
+          }
         }
         .select2-selection--single {
           border: 1px solid #e4e4e4;
@@ -6013,6 +6109,7 @@
             }
           }
         }
+
         .bt-policy-share {
           display: flex;
           flex-wrap: wrap;

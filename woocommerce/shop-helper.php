@@ -1071,7 +1071,14 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
         }
     ?>
         <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?> bt-field-mode-<?php echo $category_mode; ?>" data-name="<?php echo esc_attr($slug); ?>">
-            <div class="bt-field-title"><?php echo esc_html($field_title_default) ?></div>
+            <div class="bt-field-title">
+                <?php echo esc_html($field_title_default) ?>
+                <span class="bt-field-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M13.5326 6.52927L8.53255 11.5293C8.46287 11.5992 8.38008 11.6547 8.28892 11.6925C8.19775 11.7304 8.10001 11.7499 8.0013 11.7499C7.90259 11.7499 7.80485 11.7304 7.71369 11.6925C7.62252 11.6547 7.53973 11.5992 7.47005 11.5293L2.47005 6.52927C2.32915 6.38837 2.25 6.19728 2.25 5.99802C2.25 5.79876 2.32915 5.60767 2.47005 5.46677C2.61095 5.32587 2.80204 5.24672 3.0013 5.24672C3.20056 5.24672 3.39165 5.32587 3.53255 5.46677L8.00193 9.93614L12.4713 5.46615C12.6122 5.32525 12.8033 5.24609 13.0026 5.24609C13.2018 5.24609 13.3929 5.32525 13.5338 5.46615C13.6747 5.60704 13.7539 5.79814 13.7539 5.9974C13.7539 6.19665 13.6747 6.38775 13.5338 6.52865L13.5326 6.52927Z" fill="#181818"/>
+                    </svg>
+                </span>
+            </div>
             <div class="bt-field-list">
                 <?php foreach ($terms as $term) {
                     woozio_render_nested_category($term, $slug, $field_value, '', 0);
@@ -1161,7 +1168,7 @@ function woozio_product_field_multiple_html($slug = '', $field_title = '', $fiel
         <div class="bt-form-field bt-field-type-multi" data-name="<?php echo esc_attr($slug); ?>">
             <?php
             if (!empty($field_title)) {
-                echo '<div class="bt-field-title">' . $field_title . '</div>';
+                echo '<div class="bt-field-title">' . $field_title . '<span class="bt-field-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5326 6.52927L8.53255 11.5293C8.46287 11.5992 8.38008 11.6547 8.28892 11.6925C8.19775 11.7304 8.10001 11.7499 8.0013 11.7499C7.90259 11.7499 7.80485 11.7304 7.71369 11.6925C7.62252 11.6547 7.53973 11.5992 7.47005 11.5293L2.47005 6.52927C2.32915 6.38837 2.25 6.19728 2.25 5.99802C2.25 5.79876 2.32915 5.60767 2.47005 5.46677C2.61095 5.32587 2.80204 5.24672 3.0013 5.24672C3.20056 5.24672 3.39165 5.32587 3.53255 5.46677L8.00193 9.93614L12.4713 5.46615C12.6122 5.32525 12.8033 5.24609 13.0026 5.24609C13.2018 5.24609 13.3929 5.32525 13.5338 5.46615C13.6747 5.60704 13.7539 5.79814 13.7539 5.9974C13.7539 6.19665 13.6747 6.38775 13.5338 6.52865L13.5326 6.52927Z" fill="#181818"/></svg></span></div>';
             }
             ?>
 
@@ -1227,7 +1234,7 @@ function woozio_product_field_multiple_color_html($slug = '', $field_title = '',
         <div class="bt-form-field bt-field-type-multi bt-field-color" data-name="<?php echo esc_attr($slug); ?>">
             <?php
             if (!empty($field_title)) {
-                echo '<div class="bt-field-title">' . $field_title . '</div>';
+                echo '<div class="bt-field-title">' . $field_title . '<span class="bt-field-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5326 6.52927L8.53255 11.5293C8.46287 11.5992 8.38008 11.6547 8.28892 11.6925C8.19775 11.7304 8.10001 11.7499 8.0013 11.7499C7.90259 11.7499 7.80485 11.7304 7.71369 11.6925C7.62252 11.6547 7.53973 11.5992 7.47005 11.5293L2.47005 6.52927C2.32915 6.38837 2.25 6.19728 2.25 5.99802C2.25 5.79876 2.32915 5.60767 2.47005 5.46677C2.61095 5.32587 2.80204 5.24672 3.0013 5.24672C3.20056 5.24672 3.39165 5.32587 3.53255 5.46677L8.00193 9.93614L12.4713 5.46615C12.6122 5.32525 12.8033 5.24609 13.0026 5.24609C13.2018 5.24609 13.3929 5.32525 13.5338 5.46615C13.6747 5.60704 13.7539 5.79814 13.7539 5.9974C13.7539 6.19665 13.6747 6.38775 13.5338 6.52865L13.5326 6.52927Z" fill="#181818"/></svg></span></div>';
             }
             ?>
 
@@ -1279,20 +1286,22 @@ function woozio_product_field_price_slider($field_title = '', $field_min_value =
     <div class="bt-form-field bt-field-price" data-name="product_price">
         <?php
         if (!empty($field_title)) {
-            echo '<div class="bt-field-title">' . $field_title . '</div>';
+            echo '<div class="bt-field-title">' . $field_title . '<span class="bt-field-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5326 6.52927L8.53255 11.5293C8.46287 11.5992 8.38008 11.6547 8.28892 11.6925C8.19775 11.7304 8.10001 11.7499 8.0013 11.7499C7.90259 11.7499 7.80485 11.7304 7.71369 11.6925C7.62252 11.6547 7.53973 11.5992 7.47005 11.5293L2.47005 6.52927C2.32915 6.38837 2.25 6.19728 2.25 5.99802C2.25 5.79876 2.32915 5.60767 2.47005 5.46677C2.61095 5.32587 2.80204 5.24672 3.0013 5.24672C3.20056 5.24672 3.39165 5.32587 3.53255 5.46677L8.00193 9.93614L12.4713 5.46615C12.6122 5.32525 12.8033 5.24609 13.0026 5.24609C13.2018 5.24609 13.3929 5.32525 13.5338 5.46615C13.6747 5.60704 13.7539 5.79814 13.7539 5.9974C13.7539 6.19665 13.6747 6.38775 13.5338 6.52865L13.5326 6.52927Z" fill="#181818"/></svg></span></div>';
         }
         ?>
-        <div id="bt-price-slider" data-range-min="<?php echo intval($prices['lowest_price']); ?>" data-range-max="<?php echo intval($prices['highest_price']); ?>" data-start-min="<?php echo intval($start_min_value); ?>" data-start-max="<?php echo intval($start_max_value); ?>"></div>
-        <div class="bt-field-price-options">
-            <div class="bt-field-min-price">
-                <label for="bt-min-price"><?php esc_html_e('Min price', 'woozio') ?></label>
-                <input type="number" id="bt-min-price" name="min_price" value="" placeholder="<?php echo esc_attr($start_min_value); ?>">
-                <span class="bt-currency"><?php echo esc_html($currency_symbol); ?></span>
-            </div>
-            <div class="bt-field-max-price">
-                <label for="bt-max-price"><?php esc_html_e('Max price', 'woozio') ?></label>
-                <input type="number" id="bt-max-price" name="max_price" value="" placeholder="<?php echo esc_attr($start_max_value); ?>">
-                <span class="bt-currency"><?php echo esc_html($currency_symbol); ?></span>
+        <div class="bt-field-price-slider-wrapper">
+            <div id="bt-price-slider" data-range-min="<?php echo intval($prices['lowest_price']); ?>" data-range-max="<?php echo intval($prices['highest_price']); ?>" data-start-min="<?php echo intval($start_min_value); ?>" data-start-max="<?php echo intval($start_max_value); ?>"></div>
+            <div class="bt-field-price-options">
+                <div class="bt-field-min-price">
+                    <label for="bt-min-price"><?php esc_html_e('Min price', 'woozio') ?></label>
+                    <input type="number" id="bt-min-price" name="min_price" value="" placeholder="<?php echo esc_attr($start_min_value); ?>">
+                    <span class="bt-currency"><?php echo esc_html($currency_symbol); ?></span>
+                </div>
+                <div class="bt-field-max-price">
+                    <label for="bt-max-price"><?php esc_html_e('Max price', 'woozio') ?></label>
+                    <input type="number" id="bt-max-price" name="max_price" value="" placeholder="<?php echo esc_attr($start_max_value); ?>">
+                    <span class="bt-currency"><?php echo esc_html($currency_symbol); ?></span>
+                </div>
             </div>
         </div>
     </div>
@@ -1308,7 +1317,15 @@ function woozio_product_field_rating($slug = '', $field_title = '', $field_value
     $field_title_default = !empty($field_title) ? $field_title : 'Choose';
 ?>
     <div class="bt-form-field bt-field-type-rating <?php echo 'bt-field-' . $slug; ?>" data-name="<?php echo esc_attr($slug); ?>">
-        <div class="bt-field-title"><?php echo esc_html($field_title_default) ?></div>
+        <div class="bt-field-title">
+            <?php echo esc_html($field_title_default) ?>
+            <span class="bt-field-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.5326 6.52927L8.53255 11.5293C8.46287 11.5992 8.38008 11.6547 8.28892 11.6925C8.19775 11.7304 8.10001 11.7499 8.0013 11.7499C7.90259 11.7499 7.80485 11.7304 7.71369 11.6925C7.62252 11.6547 7.53973 11.5992 7.47005 11.5293L2.47005 6.52927C2.32915 6.38837 2.25 6.19728 2.25 5.99802C2.25 5.79876 2.32915 5.60767 2.47005 5.46677C2.61095 5.32587 2.80204 5.24672 3.0013 5.24672C3.20056 5.24672 3.39165 5.32587 3.53255 5.46677L8.00193 9.93614L12.4713 5.46615C12.6122 5.32525 12.8033 5.24609 13.0026 5.24609C13.2018 5.24609 13.3929 5.32525 13.5338 5.46615C13.6747 5.60704 13.7539 5.79814 13.7539 5.9974C13.7539 6.19665 13.6747 6.38775 13.5338 6.52865L13.5326 6.52927Z" fill="#181818"/>
+                </svg>
+            </span>
+        </div>
+        <div class="bt-field-rating-wrapper">
         <?php
         for ($rating = 5; $rating >= 1; $rating--) {
             $stars = str_repeat('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -1337,6 +1354,7 @@ function woozio_product_field_rating($slug = '', $field_title = '', $field_value
                 </div>
             <?php } ?>
         <?php } ?>
+        </div>
     </div>
 <?php
 }
@@ -1647,7 +1665,10 @@ function woozio_products_filter()
     // Get pagination type from ACF option
     $archive_shop = get_field('archive_shop', 'option');
     $pagination_type = isset($archive_shop['shop_pagination']) ? $archive_shop['shop_pagination'] : 'default';
-    if (isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
+    // Check both GET (for normal page load) and POST (for AJAX requests)
+    if (isset($_POST['layout-pagination']) && !empty($_POST['layout-pagination'])) {
+        $pagination_type = sanitize_text_field($_POST['layout-pagination']);
+    } elseif (isset($_GET['layout-pagination']) && !empty($_GET['layout-pagination'])) {
         $pagination_type = sanitize_text_field($_GET['layout-pagination']);
     }
     // Update Results Block
@@ -3520,10 +3541,75 @@ function woozio_woocommerce_single_product_more_information()
             </div>
         <?php } ?>
 
-        <?php if ($store_location) { ?>
+        <?php if ($store_location) { 
+            // Detect Google Maps link in store location content
+            $google_maps_url = '';
+            $has_google_maps = false;
+            
+            // Check for iframe embed code first
+            if (preg_match('/<iframe[^>]+src=["\']([^"\']*google\.com\/maps\/embed[^"\']*)["\'][^>]*>/i', $store_location, $iframe_matches)) {
+                $google_maps_url = $iframe_matches[1];
+                $has_google_maps = true;
+            }
+            // Check for Google Maps URL in href attribute
+            elseif (preg_match('/href=["\']([^"\']*(?:www\.)?google\.com\/maps[^"\']*)["\']?/i', $store_location, $href_matches)) {
+                $google_maps_url = $href_matches[1];
+                $has_google_maps = true;
+            }
+            // Check for various Google Maps URL formats (not in href)
+            elseif (preg_match('/https?:\/\/(www\.)?google\.com\/maps[\/?][^\s<>"]+/i', $store_location, $matches) ||
+                    preg_match('/https?:\/\/maps\.google\.com\/[^\s<>"]+/i', $store_location, $matches) ||
+                    preg_match('/https?:\/\/goo\.gl\/maps\/[^\s<>"]+/i', $store_location, $matches)) {
+                $google_maps_url = $matches[0];
+                $has_google_maps = true;
+            }
+            
+            // Convert regular Google Maps URL to embed URL
+            if ($has_google_maps && strpos($google_maps_url, '/embed') === false) {
+                // Clean up HTML entities
+                $google_maps_url = html_entity_decode($google_maps_url);
+                
+                // Priority 1: Extract coordinates from 'll' parameter (most accurate)
+                if (preg_match('/[?&]ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/', $google_maps_url, $ll_match)) {
+                    $google_maps_url = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000!2d' . $ll_match[2] . '!3d' . $ll_match[1] . '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s';
+                }
+                // Priority 2: Extract coordinates from @ parameter
+                elseif (preg_match('/@(-?\d+\.?\d*),(-?\d+\.?\d*)/', $google_maps_url, $coords)) {
+                    $google_maps_url = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000!2d' . $coords[2] . '!3d' . $coords[1] . '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s';
+                }
+                // Priority 3: Extract query parameter 'q' for address (fallback, works without API key using pb format)
+                elseif (preg_match('/[?&]q=([^&]+)/', $google_maps_url, $q_match)) {
+                    $address = urldecode($q_match[1]);
+                    // Use a simplified embed URL that works without API key
+                    $google_maps_url = 'https://maps.google.com/maps?q=' . urlencode($address) . '&output=embed';
+                }
+                // Priority 4: Extract place name from /place/ path
+                elseif (preg_match('/\/place\/([^\/\?]+)/', $google_maps_url, $place)) {
+                    $place_name = urldecode(str_replace('+', ' ', $place[1]));
+                    $google_maps_url = 'https://maps.google.com/maps?q=' . urlencode($place_name) . '&output=embed';
+                }
+            }
+        ?>
             <div class="bt-store-location">
                 <div id="bt_store_location" class="bt-store-location__popup mfp-content__popup mfp-hide">
-                    <?php echo '<div class="bt-store-location__content mfp-content__inner">' . $store_location . '</div>'; ?>
+                    <div class="bt-store-location__content mfp-content__inner <?php echo $has_google_maps ? 'bt-has-map' : ''; ?>">
+                        <div class="bt-store-location__text">
+                            <?php echo $store_location; ?>
+                        </div>
+                        <?php if ($has_google_maps && !empty($google_maps_url)) { ?>
+                            <div class="bt-store-location__map">
+                                <iframe 
+                                    src="<?php echo esc_url($google_maps_url); ?>" 
+                                    width="100%" 
+                                    height="450" 
+                                    style="border:0;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        <?php } ?>
+                    </div>
                 </div>
                 <a href="#bt_store_location" class="bt-store-location__link bt-js-open-popup-link">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -4327,20 +4413,18 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
                 $attr_display = '';
                 if ($term && $primary_taxonomy) {
                     if ($is_image_attribute) {
-                        // Get image URL from ACF (handle different return formats)
+                        // Get image ID from ACF field
                         $image_data = get_field('image_tax_attributes', $primary_taxonomy . '_' . $term->term_id);
+                        $image_id = 0;
                         if ($image_data) {
-                            if (is_array($image_data)) {
-                                // If image is returned as array, get the url
-                                $attr_display = isset($image_data['url']) ? $image_data['url'] : '';
+                            if (is_array($image_data) && isset($image_data['ID'])) {
+                                $image_id = $image_data['ID'];
                             } elseif (is_numeric($image_data)) {
-                                // If image is returned as ID, get the url
-                                $attr_display = wp_get_attachment_image_url($image_data, 'thumbnail');
-                            } else {
-                                // If image is returned as URL string
-                                $attr_display = $image_data;
+                                $image_id = $image_data;
                             }
                         }
+                        // Get image URL
+                        $attr_display = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
                     } else {
                         // Get color hex from ACF
                         $attr_display = get_field('color_tax_attributes', $primary_taxonomy . '_' . $term->term_id);

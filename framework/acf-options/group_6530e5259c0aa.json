@@ -1453,7 +1453,7 @@
                     "layout": "table",
                     "pagination": 0,
                     "min": 1,
-                    "max": 6,
+                    "max": 10,
                     "collapsed": "field_68f5e9b6ea2f3",
                     "button_label": "Add Row",
                     "rows_per_page": 20,
@@ -2548,5 +2548,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1762911402
+    "modified": 1763949495
 }
