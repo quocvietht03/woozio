@@ -89,7 +89,7 @@
             font-weight: 500;
             color: $color-accent;
           }
-          >span {
+          > span {
             font-weight: 500;
             color: $color-accent;
           }
@@ -157,8 +157,6 @@
                 transition: transform 0.3s ease;
               }
             }
-
-
           }
 
           // Subcategories container
@@ -1286,7 +1284,7 @@
         margin: 0;
         text-align: center;
         padding: 10px;
-        background: #F6F6F4;
+        background: #f6f6f4;
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
@@ -1608,9 +1606,11 @@
           font-weight: 500;
           white-space: nowrap;
           border-radius: 4px;
-          &:hover {
-            color: #fff;
-            background-color: $color-primary;
+          @media (min-width: $break-sm) {
+            &:hover {
+              color: #fff;
+              background-color: $color-primary;
+            }
           }
           &.added {
             display: none;
@@ -1696,7 +1696,7 @@
         margin: 0;
         text-align: center;
         padding: 10px;
-        background: #F6F6F4;
+        background: #f6f6f4;
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
@@ -2026,17 +2026,19 @@
     &__thumbnail {
       position: relative;
       overflow: hidden;
-      &:hover {
-        .woocommerce-product-gallery__image {
-          &:last-child {
-            opacity: 1;
-            transform: scale(1.1, 1.1) translateZ(0);
-          }
-          img {
-            transition:
-              opacity 0.3s,
-              transform 2s cubic-bezier(0, 0, 0.44, 1.18);
-            transform: translateZ(0);
+      @media (min-width: $break-sm) {
+        &:hover {
+          .woocommerce-product-gallery__image {
+            &:last-child {
+              opacity: 1;
+              transform: scale(1.1, 1.1) translateZ(0);
+            }
+            img {
+              transition:
+                opacity 0.3s,
+                transform 2s cubic-bezier(0, 0, 0.44, 1.18);
+              transform: translateZ(0);
+            }
           }
         }
       }
@@ -2177,8 +2179,10 @@
             transform 0.5s ease;
           position: relative;
           color: $color-primary;
-          &:hover {
-            background: #F6F6F4;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background: #f6f6f4;
+            }
           }
           &::after {
             content: "";
@@ -2381,7 +2385,7 @@
               overflow-x: auto;
               // Dynamic color attribute class - works with any color taxonomy
               &.bt-is-color-attribute {
-                overflow: initial; 
+                overflow: initial;
               }
               &.bt-is-image-attribute {
                 overflow: initial;
@@ -2495,10 +2499,12 @@
                     &.disabled {
                       pointer-events: none;
                     }
-                    &:hover {
-                      label {
-                        opacity: 1;
-                        visibility: visible;
+                    @media (min-width: $break-sm) {
+                      &:hover {
+                        label {
+                          opacity: 1;
+                          visibility: visible;
+                        }
                       }
                     }
                     &.active {
@@ -2567,10 +2573,12 @@
                     &.disabled {
                       pointer-events: none;
                     }
-                    &:hover {
-                      label {
-                        opacity: 1;
-                        visibility: visible;
+                    @media (min-width: $break-sm) {
+                      &:hover {
+                        label {
+                          opacity: 1;
+                          visibility: visible;
+                        }
                       }
                     }
                     &.active {
@@ -2751,8 +2759,10 @@
       margin: 0;
       display: block;
       text-align: left;
-      &:hover {
-        color: $color-accent;
+      @media (min-width: $break-sm) {
+        &:hover {
+          color: $color-accent;
+        }
       }
     }
     span.price {
@@ -2786,33 +2796,35 @@
         }
       }
     }
-    &:hover {
-      .woocommerce-loop-product__thumbnail {
-        .bt-product-icon-btn {
-          .bt-icon-btn {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(0);
-            &.bt-product-wishlist-btn {
-              transition-delay: 0.1s;
-            }
-            &.bt-product-compare-btn {
-              transition-delay: 0.2s;
-            }
-            &.bt-product-quick-view-btn {
-              transition-delay: 0.3s;
+    @media (min-width: $break-sm) {
+      &:hover {
+        .woocommerce-loop-product__thumbnail {
+          .bt-product-icon-btn {
+            .bt-icon-btn {
+              opacity: 1;
+              visibility: visible;
+              transform: translateX(0);
+              &.bt-product-wishlist-btn {
+                transition-delay: 0.1s;
+              }
+              &.bt-product-compare-btn {
+                transition-delay: 0.2s;
+              }
+              &.bt-product-quick-view-btn {
+                transition-delay: 0.3s;
+              }
             }
           }
-        }
-        .bt-add-to-cart {
-          opacity: 1;
-          visibility: visible;
-        }
-        .bt-product-sale-marquee,
-        .bt-product-countdown-timer {
-          opacity: 0;
-          visibility: hidden;
-          transform: translateY(100%);
+          .bt-add-to-cart {
+            opacity: 1;
+            visibility: visible;
+          }
+          .bt-product-sale-marquee,
+          .bt-product-countdown-timer {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(100%);
+          }
         }
       }
     }
@@ -3033,17 +3045,19 @@
             }
           }
         }
-        &:hover {
-          border-color: $color-primary;
-          .bt-product-content {
-            .bt-product-add-to-cart {
-              a {
-                font-size: 16px;
-                width: 155px;
-                &.bt-view-product,
-                &.product_type_grouped,
-                &.product_type_external {
-                  width: 168px;
+        @media (min-width: $break-sm) {
+          &:hover {
+            border-color: $color-primary;
+            .bt-product-content {
+              .bt-product-add-to-cart {
+                a {
+                  font-size: 16px;
+                  width: 155px;
+                  &.bt-view-product,
+                  &.product_type_grouped,
+                  &.product_type_external {
+                    width: 168px;
+                  }
                 }
               }
             }
@@ -3078,16 +3092,18 @@
               }
             }
           }
-          &:hover {
-            .bt-product-content {
-              .bt-product-add-to-cart {
-                a {
-                  font-size: 14px;
-                  width: 140px;
-                  &.bt-view-product,
-                  &.product_type_grouped,
-                  &.product_type_external {
-                    width: 150px;
+          @media (min-width: $break-sm) {
+            &:hover {
+              .bt-product-content {
+                .bt-product-add-to-cart {
+                  a {
+                    font-size: 14px;
+                    width: 140px;
+                    &.bt-view-product,
+                    &.product_type_grouped,
+                    &.product_type_external {
+                      width: 150px;
+                    }
                   }
                 }
               }
@@ -3369,9 +3385,11 @@
           background-size: 0 100%;
           -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
-          &:hover {
-            background-size: 100% 100%;
-            transition-delay: 0.2s;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background-size: 100% 100%;
+              transition-delay: 0.2s;
+            }
           }
         }
       }
@@ -3411,8 +3429,10 @@
         a {
           text-decoration: underline;
           color: $color-primary;
-          &:hover {
-            color: $color-primary;
+          @media (min-width: $break-sm) {
+            &:hover {
+              color: $color-primary;
+            }
           }
         }
         .gform_title {
@@ -3433,7 +3453,7 @@
             justify-content: center;
             width: 40px;
             height: 40px;
-            background-color: #F6F6F4;
+            background-color: #f6f6f4;
             font-size: 16px;
             color: $color-text;
             transition: all 0.3s ease-in-out;
@@ -3442,9 +3462,11 @@
               height: 16px;
               fill: currentColor;
             }
-            &:hover {
-              background-color: $color-accent;
-              color: #fff;
+            @media (min-width: $break-sm) {
+              &:hover {
+                background-color: $color-accent;
+                color: #fff;
+              }
             }
           }
         }
@@ -3555,10 +3577,12 @@
           }
           a {
             display: flex;
-            &:hover {
-              svg {
-                path {
-                  fill: $color-accent;
+            @media (min-width: $break-sm) {
+              &:hover {
+                svg {
+                  path {
+                    fill: $color-accent;
+                  }
                 }
               }
             }
@@ -3737,10 +3761,12 @@
               width: 13px;
             }
           }
-          &:hover {
-            .bt-dot {
-              background-color: $color-primary;
-              box-shadow: 0 0 10px rgba(12, 44, 72, 0.6);
+          @media (min-width: $break-sm) {
+            &:hover {
+              .bt-dot {
+                background-color: $color-primary;
+                box-shadow: 0 0 10px rgba(12, 44, 72, 0.6);
+              }
             }
           }
         }
@@ -3912,9 +3938,11 @@
       .bt-close {
         cursor: pointer;
         transition: 0.3s all;
-        &:hover {
-          color: #5b86a8;
-          transform: scale(1.2);
+        @media (min-width: $break-sm) {
+          &:hover {
+            color: #5b86a8;
+            transform: scale(1.2);
+          }
         }
       }
     }
@@ -4139,8 +4167,10 @@
                   transform 0.5s ease;
                 position: relative;
                 color: $color-primary;
-                &:hover {
-                  background: #F6F6F4;
+                @media (min-width: $break-sm) {
+                  &:hover {
+                    background: #f6f6f4;
+                  }
                 }
                 &::after {
                   content: "";
@@ -4392,9 +4422,11 @@
         transition: all 0.3s ease;
         min-width: 200px;
 
-        &:hover {
-          background-color: transparent;
-          color: $color-primary;
+        @media (min-width: $break-sm) {
+          &:hover {
+            background-color: transparent;
+            color: $color-primary;
+          }
         }
 
         &.loading {
@@ -4618,7 +4650,6 @@
           }
         }
       }
-      
     }
 
     &.bt-gallery-stacked {
@@ -4791,7 +4822,7 @@
           display: flex;
         }
       }
-      .swiper-button-prev, 
+      .swiper-button-prev,
       .swiper-button-next {
         @media (max-width: $break-md) {
           display: none;
@@ -5176,7 +5207,7 @@
         > *:last-child {
           margin-bottom: 0;
         }
-        @media(max-width: $break-sm) {
+        @media (max-width: $break-sm) {
           display: none;
         }
       }
@@ -5379,10 +5410,12 @@
           ins {
             text-decoration: none;
           }
-          &:hover {
-            color: #fff;
-            background: $color-accent;
-            border-color: $color-accent;
+          @media (min-width: $break-sm) {
+            &:hover {
+              color: #fff;
+              background: $color-accent;
+              border-color: $color-accent;
+            }
           }
           @media (max-width: $break-xs) {
             margin: 15px 0 0 0;
@@ -5723,9 +5756,11 @@
             &.disabled {
               background: #f03e3e !important;
             }
-            &:hover {
-              background: $color-accent;
-              color: #fff;
+            @media (min-width: $break-sm) {
+              &:hover {
+                background: $color-accent;
+                color: #fff;
+              }
             }
           }
         }
@@ -5972,8 +6007,10 @@
           svg {
             color: inherit;
           }
-          &:hover {
-            color: $color-accent;
+          @media (min-width: $break-sm) {
+            &:hover {
+              color: $color-accent;
+            }
           }
         }
         .bt-policy-share {
@@ -5989,8 +6026,10 @@
               align-items: center;
               gap: 8px;
               color: $color-primary;
-              &:hover {
-                color: $color-accent;
+              @media (min-width: $break-sm) {
+                &:hover {
+                  color: $color-accent;
+                }
               }
             }
           }
@@ -6015,8 +6054,10 @@
             margin-right: 2px;
           }
           a {
-            &:hover {
-              color: $color-accent;
+            @media (min-width: $break-sm) {
+              &:hover {
+                color: $color-accent;
+              }
             }
           }
         }
@@ -6452,16 +6493,18 @@
                     font-size: 14px;
                     line-height: 1.3;
                   }
-                  &:hover {
-                    background: $color-primary;
-                    background-image: linear-gradient(
-                      90deg,
-                      transparent 25%,
-                      rgba(233, 233, 233, 0.39) 50%,
-                      transparent 75%
-                    );
-                    background-size: 200% 100%;
-                    animation: shimmer 1.5s infinite linear;
+                  @media (min-width: $break-sm) {
+                    &:hover {
+                      background: $color-primary;
+                      background-image: linear-gradient(
+                        90deg,
+                        transparent 25%,
+                        rgba(233, 233, 233, 0.39) 50%,
+                        transparent 75%
+                      );
+                      background-size: 200% 100%;
+                      animation: shimmer 1.5s infinite linear;
+                    }
                   }
                 }
               }
@@ -6639,14 +6682,18 @@
                     }
                   }
                 }
-                p.stars a:hover ~ a::before {
-                  content: "\e021";
-                  color: rgb(233, 233, 233);
+                @media (min-width: $break-sm) {
+                  p.stars a:hover ~ a::before {
+                    content: "\e021";
+                    color: rgb(233, 233, 233);
+                  }
                 }
 
-                p.stars:hover a::before {
-                  content: "\e020";
-                  color: $color-rating;
+                @media (min-width: $break-sm) {
+                  p.stars:hover a::before {
+                    content: "\e020";
+                    color: $color-rating;
+                  }
                 }
 
                 p.stars.selected a.active::before {
@@ -6784,16 +6831,18 @@
                   text-transform: uppercase;
                   padding: 11px 24px;
                   background: $color-accent;
-                  &:hover {
-                    background: $color-primary;
-                    background-image: linear-gradient(
-                      90deg,
-                      transparent 25%,
-                      rgba(233, 233, 233, 0.39) 50%,
-                      transparent 75%
-                    );
-                    background-size: 200% 100%;
-                    animation: shimmer 1.5s infinite linear;
+                  @media (min-width: $break-sm) {
+                    &:hover {
+                      background: $color-primary;
+                      background-image: linear-gradient(
+                        90deg,
+                        transparent 25%,
+                        rgba(233, 233, 233, 0.39) 50%,
+                        transparent 75%
+                      );
+                      background-size: 200% 100%;
+                      animation: shimmer 1.5s infinite linear;
+                    }
                   }
                 }
               }
@@ -7275,10 +7324,12 @@
                   transition: width 450ms ease-in-out;
                 }
               }
-              &:hover {
-                a {
-                  &:before {
-                    width: 100%;
+              @media (min-width: $break-sm) {
+                &:hover {
+                  a {
+                    &:before {
+                      width: 100%;
+                    }
                   }
                 }
               }
@@ -7356,10 +7407,12 @@
                   transition: width 450ms ease-in-out;
                 }
               }
-              &:hover {
-                a {
-                  &:before {
-                    width: 100%;
+              @media (min-width: $break-sm) {
+                &:hover {
+                  a {
+                    &:before {
+                      width: 100%;
+                    }
                   }
                 }
               }
@@ -7457,9 +7510,11 @@
       font-weight: 500;
       white-space: nowrap;
       text-transform: uppercase;
-      &:hover {
-        background-color: $color-accent;
-        color: #fff;
+      @media (min-width: $break-sm) {
+        &:hover {
+          background-color: $color-accent;
+          color: #fff;
+        }
       }
     }
   }
@@ -7501,7 +7556,7 @@
       .bt-time-promotion {
         border-radius: 4px;
         padding: 10px 20px;
-        background: #F6F6F4;
+        background: #f6f6f4;
         color: $color-primary;
         font-size: 16px;
         font-style: normal;
@@ -7726,11 +7781,13 @@
           border: 1px solid #c72929;
           align-items: center;
           justify-content: center;
-          &:hover {
-            background: #c72929;
-            svg {
-              path {
-                fill: #fff;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background: #c72929;
+              svg {
+                path {
+                  fill: #fff;
+                }
               }
             }
           }
@@ -7766,8 +7823,10 @@
               text-transform: capitalize;
               color: $color-primary;
               @extend .__bt-max-line-ellipsis;
-              &:hover {
-                color: $color-accent;
+              @media (min-width: $break-sm) {
+                &:hover {
+                  color: $color-accent;
+                }
               }
             }
             dl {
@@ -7843,9 +7902,11 @@
                 width: auto;
                 min-height: auto;
                 height: 40px;
-                &:hover {
-                  background: $color-accent;
-                  color: #fff;
+                @media (min-width: $break-sm) {
+                  &:hover {
+                    background: $color-accent;
+                    color: #fff;
+                  }
                 }
               }
               @media (max-width: 360px) {
@@ -7937,7 +7998,7 @@
       border-radius: 12px;
       padding: 24px;
       box-sizing: border-box;
-      background: #F6F6F4;
+      background: #f6f6f4;
       h2 {
         font-size: 24px;
         font-style: normal;
@@ -8072,8 +8133,10 @@
         }
         .cart-discount {
           .woocommerce-remove-coupon {
-            &:hover {
-              color: $color-accent;
+            @media (min-width: $break-sm) {
+              &:hover {
+                color: $color-accent;
+              }
             }
           }
         }
@@ -8109,9 +8172,11 @@
           text-transform: uppercase;
           color: #ffffff;
           margin-bottom: 12px;
-          &:hover {
-            background: $color-accent;
-            color: #fff;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background: $color-accent;
+              color: #fff;
+            }
           }
         }
         a.bt-backtoshop {
@@ -8121,13 +8186,15 @@
           font-weight: 500;
           line-height: 26px; /* 162.5% */
           text-transform: uppercase;
-          &:hover {
-            text-decoration-line: underline;
-            text-decoration-style: solid;
-            text-decoration-skip-ink: none;
-            text-decoration-thickness: auto;
-            text-underline-offset: auto;
-            text-underline-position: from-font;
+          @media (min-width: $break-sm) {
+            &:hover {
+              text-decoration-line: underline;
+              text-decoration-style: solid;
+              text-decoration-skip-ink: none;
+              text-decoration-thickness: auto;
+              text-underline-offset: auto;
+              text-underline-position: from-font;
+            }
           }
         }
       }
@@ -8156,7 +8223,7 @@
   .woocommerce-form-coupon-toggle,
   .woocommerce-form-login-toggle {
     .woocommerce-info {
-      background: #F6F6F4;
+      background: #f6f6f4;
       padding-top: 11px;
       padding-bottom: 11px;
       font-size: 16px;
@@ -8257,11 +8324,13 @@
         display: inline-block;
         min-width: auto;
         color: #fff;
-        &:hover {
-          background: $color-primary;
-          background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite linear;
+        @media (min-width: $break-sm) {
+          &:hover {
+            background: $color-primary;
+            background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+          }
         }
       }
       @media (max-width: 420px) {
@@ -8302,11 +8371,13 @@
       }
       .button {
         padding: 11px 32px;
-        &:hover {
-          background: $color-primary;
-          background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite linear;
+        @media (min-width: $break-sm) {
+          &:hover {
+            background: $color-primary;
+            background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+          }
         }
       }
       .woocommerce-form-login__rememberme {
@@ -8529,7 +8600,9 @@
             @media (max-width: $break-xs) {
               font-size: 13px;
             }
-            dl,dt,dd{
+            dl,
+            dt,
+            dd {
               font-weight: 400;
               line-height: 1.4;
               display: flex;
@@ -8913,8 +8986,8 @@
           }
           &:has(input:checked) {
             padding: 20px;
-            background: #F6F6F4;
-            border-color: #F6F6F4;
+            background: #f6f6f4;
+            border-color: #f6f6f4;
           }
         }
       }
@@ -8952,11 +9025,13 @@
           text-transform: uppercase;
           width: 100%;
           margin-bottom: 0;
-          &:hover {
-            background: $color-primary;
-            background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite linear;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background: $color-primary;
+              background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+              background-size: 200% 100%;
+              animation: shimmer 1.5s infinite linear;
+            }
           }
         }
       }
@@ -9122,8 +9197,10 @@
           text-transform: uppercase;
           margin: 0;
           display: inline-block;
-          &:hover {
-            background-color: $color-primary;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background-color: $color-primary;
+            }
           }
         }
       }
@@ -9276,11 +9353,13 @@
       line-height: 24px;
       text-transform: uppercase;
       margin: 0;
-      &:hover {
-        background-color: $color-primary !important;
-        background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite linear;
+      @media (min-width: $break-sm) {
+        &:hover {
+          background-color: $color-primary !important;
+          background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite linear;
+        }
       }
     }
     .woocommerce-password-strength {
@@ -9527,12 +9606,14 @@
   padding: 10px 30px;
   font-size: 16px;
   line-height: 24px;
-  &:hover {
-    background: $color-primary;
-    color: #fff;
-    background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite linear;
+  @media (min-width: $break-sm) {
+    &:hover {
+      background: $color-primary;
+      color: #fff;
+      background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
   }
 }
 .product-type-grouped,
@@ -9577,17 +9658,19 @@
       flex-shrink: 0;
     }
 
-    &:hover {
-      background: $color-accent;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      svg {
-        circle {
-          stroke: #fff;
-          fill: #fff;
-        }
-        path {
-          fill: $color-accent;
-          stroke: $color-accent;
+    @media (min-width: $break-sm) {
+      &:hover {
+        background: $color-accent;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        svg {
+          circle {
+            stroke: #fff;
+            fill: #fff;
+          }
+          path {
+            fill: $color-accent;
+            stroke: $color-accent;
+          }
         }
       }
     }
@@ -9642,14 +9725,16 @@
       flex-shrink: 0;
     }
 
-    &:hover {
-      background: $color-accent;
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    @media (min-width: $break-sm) {
+      &:hover {
+        background: $color-accent;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
-      svg {
-        path {
-          stroke: #fff;
+        svg {
+          path {
+            stroke: #fff;
+          }
         }
       }
     }
@@ -9940,8 +10025,10 @@
             color: $color-primary;
           }
 
-          tr:hover {
-            background: #f9f9f9;
+          @media (min-width: $break-sm) {
+            tr:hover {
+              background: #f9f9f9;
+            }
           }
         }
 
@@ -10107,8 +10194,10 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
 
-            &:hover {
-              opacity: 0.8;
+            @media (min-width: $break-sm) {
+              &:hover {
+                opacity: 0.8;
+              }
             }
           }
         }
@@ -10207,8 +10296,10 @@
       transition: all 0.3s ease;
       white-space: nowrap;
 
-      &:hover:not(:disabled) {
-        background-color: $color-accent;
+      @media (min-width: $break-sm) {
+        &:hover:not(:disabled) {
+          background-color: $color-accent;
+        }
       }
 
       &:disabled,

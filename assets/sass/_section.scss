@@ -45,14 +45,16 @@ body {
         }
         .elementor-image-box-content {
             .elementor-image-box-title {
-                &:hover {
-                    text-decoration-line: underline;
-                    text-decoration-style: solid;
-                    text-decoration-skip-ink: auto;
-                    text-decoration-thickness: 2px;
-                    text-underline-offset: 2px;
-                    text-underline-position: from-font;
-                    text-decoration-color: var(--color-primary);
+                @media (min-width: $break-sm) {
+                    &:hover {
+                        text-decoration-line: underline;
+                        text-decoration-style: solid;
+                        text-decoration-skip-ink: auto;
+                        text-decoration-thickness: 2px;
+                        text-underline-offset: 2px;
+                        text-underline-position: from-font;
+                        text-decoration-color: var(--color-primary);
+                    }
                 }
             }
         }
@@ -182,14 +184,16 @@ body {
                                 }
                             }
                         }
-                        &:hover {
-                            .bt-product-content {
-                                .bt-product-add-to-cart {
-                                    a {
-                                        font-size: 14px;
-                                        width: 140px;
-                                        &.bt-view-product {
-                                            width: 150px;
+                        @media (min-width: $break-sm) {
+                            &:hover {
+                                .bt-product-content {
+                                    .bt-product-add-to-cart {
+                                        a {
+                                            font-size: 14px;
+                                            width: 140px;
+                                            &.bt-view-product {
+                                                width: 150px;
+                                            }
                                         }
                                     }
                                 }
@@ -252,17 +256,19 @@ body {
                 .elementor-icon-list-text {
                     padding: 0;
                 }
-                &:hover {
-                    a {
-                        > * {
-                            color: $color-primary;
-                            svg {
-                                fill: $color-primary;
+                @media (min-width: $break-sm) {
+                    &:hover {
+                        a {
+                            > * {
+                                color: $color-primary;
+                                svg {
+                                    fill: $color-primary;
+                                }
                             }
                         }
-                    }
-                    &:after {
-                        border-color: $color-primary !important;
+                        &:after {
+                            border-color: $color-primary !important;
+                        }
                     }
                 }
             }

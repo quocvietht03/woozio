@@ -39,12 +39,14 @@
     }
     &--inner {
       position: relative;
-      &:hover {
-        .bt-post {
-          &--featured {
-            .bt-cover-image {
-              img {
-                transform: scale(1.1, 1.1) translateZ(0);
+      @media (min-width: $break-sm) {
+        &:hover {
+          .bt-post {
+            &--featured {
+              .bt-cover-image {
+                img {
+                  transform: scale(1.1, 1.1) translateZ(0);
+                }
               }
             }
           }
@@ -115,11 +117,13 @@
         font-weight: 500;
         line-height: 42px;
         @extend .__bt-max-line-ellipsis;
-        &:hover {
-          text-decoration: underline;
-          text-decoration-skip-ink: none;
-          text-underline-offset: 3px;
-          text-decoration-thickness: 0.5px;
+        @media (min-width: $break-sm) {
+          &:hover {
+            text-decoration: underline;
+            text-decoration-skip-ink: none;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 0.5px;
+          }
         }
       }
       @media (max-width: $break-xs) {
@@ -168,12 +172,14 @@
     }
     &--inner {
       position: relative;
-      &:hover {
-        .bt-post {
-          &--featured {
-            .bt-cover-image {
-              img {
-                transform: scale(1.1, 1.1) translateZ(0);
+      @media (min-width: $break-sm) {
+        &:hover {
+          .bt-post {
+            &--featured {
+              .bt-cover-image {
+                img {
+                  transform: scale(1.1, 1.1) translateZ(0);
+                }
               }
             }
           }
@@ -297,10 +303,12 @@
           transition: all 3s cubic-bezier(0.11, 0.52, 0.53, 0.79) 0s;
         }
       }
-      &:hover {
-        .bt-cover-image {
-          img {
-            transform: scale(1.1);
+      @media (min-width: $break-sm) {
+        &:hover {
+          .bt-cover-image {
+            img {
+              transform: scale(1.1);
+            }
           }
         }
       }
@@ -471,12 +479,14 @@
       @media (max-width: 650px) {
         flex-direction: column;
       }
-      &:hover {
-        .bt-post {
-          &--featured {
-            .bt-cover-image {
-              img {
-                transform: scale(1.1, 1.1) translateZ(0);
+      @media (min-width: $break-sm) {
+        &:hover {
+          .bt-post {
+            &--featured {
+              .bt-cover-image {
+                img {
+                  transform: scale(1.1, 1.1) translateZ(0);
+                }
               }
             }
           }
@@ -789,9 +799,11 @@
           @media (max-width: $break-lg) and (min-width: $break-md) {
             font-size: 22px;
           }
-          &:hover {
-            background-size: 100% 100%;
-            transition-delay: 0.2s;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background-size: 100% 100%;
+              transition-delay: 0.2s;
+            }
           }
         }
         @media (max-width: $break-xs) {
@@ -1091,9 +1103,11 @@
           background-size: 0 100%;
           -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
-          &:hover {
-            background-size: 100% 100%;
-            transition-delay: 0.2s;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background-size: 100% 100%;
+              transition-delay: 0.2s;
+            }
           }
         }
         @media (max-width: 1550px) and (min-width: $break-lg) {
@@ -1491,9 +1505,11 @@
     font-family: $primary-font;
     color: $color-text;
     text-transform: capitalize;
-    &:hover {
-      background-color: $color-primary;
-      color: #fff;
+    @media (min-width: $break-sm) {
+      &:hover {
+        background-color: $color-primary;
+        color: #fff;
+      }
     }
   }
   @media (max-width: 600px) {

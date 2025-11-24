@@ -336,12 +336,14 @@
         font-weight: 500;
         line-height: 26px;
         text-transform: uppercase;
-        &:hover {
-          background: $color-primary;
-          color: #fff;
-          background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
-          background-size: 200% 100%;
-          animation: shimmer 1.5s infinite linear;
+        @media (min-width: $break-sm) {
+          &:hover {
+            background: $color-primary;
+            color: #fff;
+            background-image: linear-gradient(90deg, transparent 25%, rgba(233, 233, 233, 0.39) 50%, transparent 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+          }
         }
       }
     }
