@@ -1386,6 +1386,9 @@
       .cart_totals {
         width: 100%;
         float: none;
+        #ppcp-recaptcha-v2-container{
+          display: none;
+        }
         h2 {
           display: none;
         }
