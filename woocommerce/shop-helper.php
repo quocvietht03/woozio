@@ -3517,6 +3517,7 @@ function woozio_woocommerce_single_product_more_information()
     $estimated_delivery = !empty($more_information['estimated_delivery']) ? $more_information['estimated_delivery'] : false;
     $product_return = !empty($more_information['product_return']) ? $more_information['product_return'] : false;
     $store_location = !empty($more_information['store_location']) ? $more_information['store_location'] : false;
+    $maps_store_location = !empty($more_information['maps_store_location']) ? $more_information['maps_store_location'] : false;
     $delivery_return = !empty($more_information['delivery_return']) ? $more_information['delivery_return'] : false;
     $ask_a_question = !empty($more_information['ask_a_question']) ? $more_information['ask_a_question'] : false;
     $product_share = !empty($more_information['product_share']) ? $more_information['product_share'] : false;
@@ -3541,72 +3542,16 @@ function woozio_woocommerce_single_product_more_information()
             </div>
         <?php } ?>
 
-        <?php if ($store_location) { 
-            // Detect Google Maps link in store location content
-            $google_maps_url = '';
-            $has_google_maps = false;
-            
-            // Check for iframe embed code first
-            if (preg_match('/<iframe[^>]+src=["\']([^"\']*google\.com\/maps\/embed[^"\']*)["\'][^>]*>/i', $store_location, $iframe_matches)) {
-                $google_maps_url = $iframe_matches[1];
-                $has_google_maps = true;
-            }
-            // Check for Google Maps URL in href attribute
-            elseif (preg_match('/href=["\']([^"\']*(?:www\.)?google\.com\/maps[^"\']*)["\']?/i', $store_location, $href_matches)) {
-                $google_maps_url = $href_matches[1];
-                $has_google_maps = true;
-            }
-            // Check for various Google Maps URL formats (not in href)
-            elseif (preg_match('/https?:\/\/(www\.)?google\.com\/maps[\/?][^\s<>"]+/i', $store_location, $matches) ||
-                    preg_match('/https?:\/\/maps\.google\.com\/[^\s<>"]+/i', $store_location, $matches) ||
-                    preg_match('/https?:\/\/goo\.gl\/maps\/[^\s<>"]+/i', $store_location, $matches)) {
-                $google_maps_url = $matches[0];
-                $has_google_maps = true;
-            }
-            
-            // Convert regular Google Maps URL to embed URL
-            if ($has_google_maps && strpos($google_maps_url, '/embed') === false) {
-                // Clean up HTML entities
-                $google_maps_url = html_entity_decode($google_maps_url);
-                
-                // Priority 1: Extract coordinates from 'll' parameter (most accurate)
-                if (preg_match('/[?&]ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/', $google_maps_url, $ll_match)) {
-                    $google_maps_url = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000!2d' . $ll_match[2] . '!3d' . $ll_match[1] . '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s';
-                }
-                // Priority 2: Extract coordinates from @ parameter
-                elseif (preg_match('/@(-?\d+\.?\d*),(-?\d+\.?\d*)/', $google_maps_url, $coords)) {
-                    $google_maps_url = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000!2d' . $coords[2] . '!3d' . $coords[1] . '!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s';
-                }
-                // Priority 3: Extract query parameter 'q' for address (fallback, works without API key using pb format)
-                elseif (preg_match('/[?&]q=([^&]+)/', $google_maps_url, $q_match)) {
-                    $address = urldecode($q_match[1]);
-                    // Use a simplified embed URL that works without API key
-                    $google_maps_url = 'https://maps.google.com/maps?q=' . urlencode($address) . '&output=embed';
-                }
-                // Priority 4: Extract place name from /place/ path
-                elseif (preg_match('/\/place\/([^\/\?]+)/', $google_maps_url, $place)) {
-                    $place_name = urldecode(str_replace('+', ' ', $place[1]));
-                    $google_maps_url = 'https://maps.google.com/maps?q=' . urlencode($place_name) . '&output=embed';
-                }
-            }
-        ?>
+        <?php if ($store_location) { ?>
             <div class="bt-store-location">
                 <div id="bt_store_location" class="bt-store-location__popup mfp-content__popup mfp-hide">
-                    <div class="bt-store-location__content mfp-content__inner <?php echo $has_google_maps ? 'bt-has-map' : ''; ?>">
+                    <div class="bt-store-location__content mfp-content__inner <?php echo $maps_store_location ? 'bt-has-map' : ''; ?>">
                         <div class="bt-store-location__text">
                             <?php echo $store_location; ?>
                         </div>
-                        <?php if ($has_google_maps && !empty($google_maps_url)) { ?>
+                        <?php if ($maps_store_location) { ?>
                             <div class="bt-store-location__map">
-                                <iframe 
-                                    src="<?php echo esc_url($google_maps_url); ?>" 
-                                    width="100%" 
-                                    height="450" 
-                                    style="border:0;" 
-                                    allowfullscreen="" 
-                                    loading="lazy" 
-                                    referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
+                                <?php echo $maps_store_location; ?>
                             </div>
                         <?php } ?>
                     </div>

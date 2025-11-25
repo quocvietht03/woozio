@@ -2773,7 +2773,12 @@
 				}
 
 				// Open clicked toggle
-				$clickedContent.slideDown(300);
+				$clickedContent.slideDown(300, function() {
+					// Scroll to the toggle container after opening
+					$('html, body').animate({
+						scrollTop: $toggleContainer.offset().top - 100
+					}, 500);
+				});
 				$clickedTitle.addClass('active');
 			}
 		});

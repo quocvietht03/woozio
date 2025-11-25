@@ -3483,10 +3483,24 @@
           .bt-store-location__content {
             &.bt-has-map {
               display: grid;
-              grid-template-columns: 1fr;
+              grid-template-columns: 1fr 1fr;
               gap: 30px;
-              @media (min-width: 1024px) {
-                grid-template-columns: 1fr 1fr;
+              @media (max-width: $break-tl) {
+                grid-template-columns: 1fr;
+                .bt-store-location__map {
+                  iframe {
+                    margin: 0 -24px -24px -24px;
+                    display: block;
+                    width: calc(100% + 48px);
+                  }
+                }
+              }
+              @media (max-width: $break-xs) {
+                .bt-store-location__map {
+                  iframe {
+                    height: 300px;
+                  }
+                }
               }
             }
             .bt-store-location__text {
@@ -3500,8 +3514,15 @@
               }
             }
             .bt-store-location__map {
+              p{
+                margin: 0;
+                padding: 0;
+              }
               iframe {
-                height: 320px;
+                height: 350px;
+                margin: -24px -24px -24px 0;
+                display: block;
+                width: calc(100% + 24px);
               }
             }
           }
@@ -6805,7 +6826,7 @@
 
                 p.stars.selected a:not(.active)::before {
                   content: "\e020";
-                  color: $color-accent;
+                  color: $color-rating;
                 }
               }
               p {

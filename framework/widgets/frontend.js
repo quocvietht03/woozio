@@ -1856,6 +1856,16 @@
 
 				// Show corresponding product
 				$productItems.filter(`[data-product-id="${productId}"]`).addClass('active');
+
+				// Scroll to product list on mobile/tablet (<=991px)
+				if ($(window).width() <= 991) {
+					const $productList = $hotspotProductNormal.find('.bt-hotspot-product-list');
+					if ($productList.length > 0) {
+						$('html, body').animate({
+							scrollTop: $productList.offset().top - 100
+						}, 500);
+					}
+				}
 			});
 			WoozioProductHotspotAddSetCart($hotspotProductNormal);
 		}
