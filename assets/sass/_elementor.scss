@@ -1881,6 +1881,7 @@
     @media (max-width: $break-sm) {
       padding-top: 12px;
       height: calc(100% - 49px);
+      padding-bottom: var(--padding-bottom, 233px);
       .bt-progress-content {
         padding: 10px 12px 0 12px;
       }
