@@ -3719,6 +3719,17 @@ function woozio_add_tab_position_body_class($classes)
 
         if ($post && isset($post->ID)) {
             $display_mode = get_post_meta($post->ID, '_product_info_display_mode', true);
+            
+            // Get layout
+            $layout = get_post_meta($post->ID, '_layout_product', true);
+            if (isset($_GET['layout']) && !empty($_GET['layout'])) {
+                $layout = sanitize_text_field($_GET['layout']);
+            }
+            if (empty($layout)) {
+                $layout = 'bottom-thumbnail';
+            }
+            
+            $thumbnail_layouts = array('bottom-thumbnail', 'left-thumbnail', 'right-thumbnail');
 
             // Only add tab position class if display mode is 'tab'
             if ($display_mode === 'tab') {
@@ -3728,6 +3739,11 @@ function woozio_add_tab_position_body_class($classes)
                 }
 
                 $classes[] = 'bt-tabs-position-' . $tab_position;
+            }
+            
+            // Add class if layout is thumbnail layout and display mode is toggle
+            if (in_array($layout, $thumbnail_layouts) && $display_mode === 'toggle') {
+                $classes[] = 'bt-thumbnail-toggle-mode';
             }
         }
     }
