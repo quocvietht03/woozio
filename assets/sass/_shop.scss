@@ -2935,7 +2935,7 @@
 }
 
 .woocommerce-loop-product {
-  .woocommerce-product-sale-label {
+  .woocommerce-product-sale-label:not(.hidden) {
     + p.stock {
       top: 46px;
     }

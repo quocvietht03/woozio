@@ -9985,13 +9985,13 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   display: none;
 }
 
-.woocommerce-loop-product .woocommerce-product-sale-label + p.stock {
+.woocommerce-loop-product .woocommerce-product-sale-label:not(.hidden) + p.stock {
   top: 46px;
 }
-.woocommerce-loop-product .woocommerce-product-sale-label + .bt-add-to-cart p.stock {
+.woocommerce-loop-product .woocommerce-product-sale-label:not(.hidden) + .bt-add-to-cart p.stock {
   top: 46px;
 }
-.woocommerce-loop-product .woocommerce-product-sale-label + .bt-add-to-cart p.stock .bt-btn-add-to-cart-variable {
+.woocommerce-loop-product .woocommerce-product-sale-label:not(.hidden) + .bt-add-to-cart p.stock .bt-btn-add-to-cart-variable {
   bottom: 34px;
 }
 .woocommerce-loop-product p.stock {

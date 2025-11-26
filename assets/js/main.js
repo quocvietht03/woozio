@@ -3019,6 +3019,14 @@
 	}
 	/* add to cart ajax product variable */
 	function WoozioAddToCartVariable() {
+		$('.woocommerce-product-sale-label').each(function () {
+			if ($(this).html().trim() === '') {
+				$(this).addClass('hidden').hide();
+			} else {
+				$(this).removeClass('hidden').show();
+			}
+		});
+
 		$(document).on('click', '.bt-js-add-to-cart-variable', function (e) {
 			e.preventDefault();
 			console.log(1);
