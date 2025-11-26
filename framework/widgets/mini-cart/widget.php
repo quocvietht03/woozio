@@ -205,7 +205,7 @@ class Widget_MiniCart extends Widget_Base
 			<div class="bt-mini-cart-sidebar-overlay"></div>
 			<div class="bt-mini-cart-sidebar-content">
 				<div class="bt-mini-cart-sidebar-header">
-					<h4><?php echo esc_html__('Shopping Cart', 'woozio'); ?></h4>
+					<h4><?php echo esc_html__('Shopping Cart', 'woozio'); ?><span class="cart_total"><?php echo WC()->cart->get_cart_contents_count(); ?> </span></h4>
 					<button class="bt-mini-cart-close">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
 							<path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

@@ -1168,12 +1168,22 @@
 	/* Helper function to open mini cart sidebar */
 	function WoozioOpenMiniCart() {
 		if ($('.bt-mini-cart-sidebar').length > 0) {
-			$('.bt-mini-cart-sidebar').addClass('active');
+			const $sidebar = $('.bt-mini-cart-sidebar');
+			$sidebar.addClass('active');
 			const scrollbarWidth = window.innerWidth - $(window).width();
 			$('body').css({
 				'overflow': 'hidden',
 				'padding-right': scrollbarWidth + 'px'
 			});
+			// Update bottom cart padding
+			setTimeout(function () {
+				const $bottomCart = $sidebar.find('.bt-bottom-mini-cart');
+				const $sidebarBody = $sidebar.find('.bt-mini-cart-sidebar-body');
+				if ($bottomCart.length && $sidebarBody.length) {
+					const height = $bottomCart.outerHeight(true);
+					$sidebarBody.css('--padding-bottom', height + 'px');
+				}
+			}, 100);
 		}
 	}
 	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
@@ -1291,12 +1301,12 @@
 			var isCategoryPage = $sidebar.data('is-category-page') === 1;
 			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
 			var taxonomyType = $sidebar.data('taxonomy-type') || '';
-			
+
 			// Remove product_cat from params when on category page
 			if (isCategoryPage) {
 				params.delete('product_cat');
 			}
-			
+
 			// Remove taxonomy from params when on taxonomy page
 			if (isTaxonomyPage && taxonomyType) {
 				params.delete(taxonomyType);
@@ -1316,7 +1326,7 @@
 				const svgStar = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				  <path d="M14.6431 7.17815L11.8306 9.60502L12.6875 13.2344C12.7347 13.4314 12.7226 13.638 12.6525 13.8281C12.5824 14.0182 12.4575 14.1833 12.2937 14.3025C12.1298 14.4217 11.9343 14.4896 11.7319 14.4977C11.5294 14.5059 11.3291 14.4538 11.1562 14.3481L7.99996 12.4056L4.84184 14.3481C4.66898 14.4532 4.4689 14.5048 4.2668 14.4963C4.06469 14.4879 3.8696 14.4199 3.70609 14.3008C3.54257 14.1817 3.41795 14.0169 3.3479 13.8272C3.27786 13.6374 3.26553 13.4312 3.31246 13.2344L4.17246 9.60502L1.35996 7.17815C1.20702 7.04597 1.09641 6.87166 1.04195 6.67699C0.987486 6.48232 0.99158 6.27592 1.05372 6.08356C1.11586 5.89121 1.23329 5.72142 1.39135 5.59541C1.54941 5.4694 1.7411 5.39274 1.94246 5.37502L5.62996 5.07752L7.05246 1.63502C7.12946 1.44741 7.26051 1.28693 7.42894 1.17398C7.59738 1.06104 7.7956 1.00073 7.9984 1.00073C8.2012 1.00073 8.39942 1.06104 8.56785 1.17398C8.73629 1.28693 8.86734 1.44741 8.94434 1.63502L10.3662 5.07752L14.0537 5.37502C14.2555 5.39209 14.4477 5.46831 14.6064 5.59415C14.765 5.71999 14.883 5.88984 14.9455 6.08243C15.008 6.27502 15.0123 6.48178 14.9579 6.6768C14.9034 6.87183 14.7926 7.04644 14.6393 7.17877L14.6431 7.17815Z" fill="#FDCC0D"></path>
 				</svg>`;
-				
+
 				params.forEach((value, key) => {
 					// Skip taxonomy if on taxonomy page
 					if (isTaxonomyPage && key === taxonomyType) {
@@ -1350,21 +1360,21 @@
 							tagElement.text(product_rating).append(svgStar).append(svgElement).addClass('bt-rating-tag');;
 							tagsContainer.append(tagElement);
 						} else {
-						const matchingLink = $(`.bt-form-field[data-name="${key}"] .bt-field-list a`).filter(function () {
-							return $(this).data('slug') === tag.trim();
-						});
-						if (matchingLink.length) {
-							const colorTaxonomy = AJ_Options.color_taxonomy;
-							console.log(colorTaxonomy);
-							if (key == colorTaxonomy) {
-								const colortag = matchingLink.prop('outerHTML');
-								//	console.log(colortag);
-								tagElement.html(colortag).append(svgElement).addClass('bt-color-tag');
-							} else {
-								const textTag = matchingLink.text().trim();
-								const nameTag = textTag.replace(/\(\d+\)$/g, '').trim();
-								tagElement.text(nameTag).append(svgElement);
-							}
+							const matchingLink = $(`.bt-form-field[data-name="${key}"] .bt-field-list a`).filter(function () {
+								return $(this).data('slug') === tag.trim();
+							});
+							if (matchingLink.length) {
+								const colorTaxonomy = AJ_Options.color_taxonomy;
+								console.log(colorTaxonomy);
+								if (key == colorTaxonomy) {
+									const colortag = matchingLink.prop('outerHTML');
+									//	console.log(colortag);
+									tagElement.html(colortag).append(svgElement).addClass('bt-color-tag');
+								} else {
+									const textTag = matchingLink.text().trim();
+									const nameTag = textTag.replace(/\(\d+\)$/g, '').trim();
+									tagElement.text(nameTag).append(svgElement);
+								}
 								tagsContainer.append(tagElement);
 							} else {
 								if (tag != '') {
@@ -1638,7 +1648,7 @@
 				if ($checkedItem.hasClass('item-radio-child')) {
 					// Find all parent .bt-children-categories containers and open them
 					// This opens all parent levels to show the selected item
-					$checkedItem.parents('.bt-children-categories').each(function() {
+					$checkedItem.parents('.bt-children-categories').each(function () {
 						var $parent = $(this).closest('.item-radio.has-children');
 						if ($parent.length) {
 							$parent.addClass('open');
@@ -1681,7 +1691,7 @@
 		}
 		// Filter field toggle (expand/collapse)
 		if ($('.bt-field-title').length > 0) {
-			$('.bt-field-title').on('click', function(e) {
+			$('.bt-field-title').on('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				var $formField = $(this).closest('.bt-form-field');
@@ -1693,10 +1703,10 @@
 			e.preventDefault();
 			var tagSlug = $(this).parent().data('slug');
 			var tagName = $(this).parent().data('name');
-			
+
 			// Check if the field has radio buttons dynamically
 			var hasRadioButtons = $(`.bt-product-filter-form .bt-form-field[data-name="${tagName}"] input[type="radio"]`).length > 0;
-			
+
 			if (hasRadioButtons) {
 				// For radio button fields, uncheck all radio buttons
 				$(`.bt-product-filter-form .bt-form-field[data-name="${tagName}"] input[type="radio"]`).prop('checked', false);
@@ -1758,7 +1768,7 @@
 			// Check if we're on a category page
 			var $sidebar = $('.bt-product-sidebar');
 			var isCategoryPage = $sidebar.data('is-category-page') === 1;
-			
+
 			if (isCategoryPage) {
 				// Reset all inputs except product_cat on category page
 				$('.bt-product-filter-form input').not('[type="radio"]').not('[name="product_cat"]').val('');
@@ -1772,7 +1782,7 @@
 				$('.bt-product-filter-form input[type="checkbox"]').prop('checked', false);
 				$('.bt-product-filter-form .bt-field-item').removeClass('checked');
 			}
-			
+
 			$('.bt-product-filter-form select').select2().val('').trigger('change');
 			$(this).addClass('disable')
 
@@ -1786,20 +1796,20 @@
 			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
 			var taxonomyType = $sidebar.data('taxonomy-type') || '';
 			var taxonomySlug = $sidebar.data('taxonomy-slug') || '';
-			
+
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
-			
+
 			// Remove product_cat from URL params if on category page
 			if (isCategoryPage) {
 				urlParams.delete('product_cat');
 			}
-			
+
 			// Remove taxonomy from URL params if on taxonomy page
 			if (isTaxonomyPage && taxonomyType) {
 				urlParams.delete(taxonomyType);
 			}
-			
+
 			// NOTE: jQuery serialize() omits unchecked radio groups entirely.
 			// To ensure radio group names always exist (even when nothing is checked),
 			// build params from serializeArray() and then append empty entries for
@@ -1813,7 +1823,7 @@
 				categorySlug = $sidebar.data('category-slug') || '';
 				if (!categorySlug) {
 					// Fallback: get from serializeArray
-					var productCatItem = dataArr.find(function(item) {
+					var productCatItem = dataArr.find(function (item) {
 						return item.name === 'product_cat';
 					});
 					if (productCatItem && productCatItem.value) {
@@ -1831,7 +1841,7 @@
 			// Get taxonomy slug from data attribute (for ajax request)
 			if (isTaxonomyPage && !taxonomySlug) {
 				// Fallback: try to get from serializeArray
-				var taxonomyItem = dataArr.find(function(item) {
+				var taxonomyItem = dataArr.find(function (item) {
 					return item.name === taxonomyType;
 				});
 				if (taxonomyItem && taxonomyItem.value) {
@@ -1841,14 +1851,14 @@
 
 			// Remove product_cat from form data if on category page
 			if (isCategoryPage) {
-				dataArr = dataArr.filter(function(item) {
+				dataArr = dataArr.filter(function (item) {
 					return item.name !== 'product_cat';
 				});
 			}
 
 			// Remove taxonomy from form data if on taxonomy page
 			if (isTaxonomyPage && taxonomyType) {
-				dataArr = dataArr.filter(function(item) {
+				dataArr = dataArr.filter(function (item) {
 					return item.name !== taxonomyType;
 				});
 			}
@@ -2278,7 +2288,7 @@
 			if (!mediaQuery.matches) {
 				return;
 			}
-			
+
 			clearTimeout(timeout);
 			if (!$(this).find('.tooltip').length) {
 				var tooltip = $('<span class="tooltip"></span>').text(tooltipText);
@@ -2290,11 +2300,11 @@
 		$(document).on('mouseleave', targetSelector, function () {
 			hideTooltip($(this));
 		});
-		
+
 		// Automatically remove tooltips when resizing to mobile
-		mediaQuery.addListener(function(e) {
+		mediaQuery.addListener(function (e) {
 			if (!e.matches) {
-				$('.tooltip').fadeOut(200, function() {
+				$('.tooltip').fadeOut(200, function () {
 					$(this).remove();
 				});
 			}
@@ -2780,7 +2790,12 @@
 				}
 
 				// Open clicked toggle
-				$clickedContent.slideDown(300);
+				$clickedContent.slideDown(300, function () {
+					// Scroll to the toggle container after opening
+					$('html, body').animate({
+						scrollTop: $toggleContainer.offset().top - 100
+					}, 500);
+				});
 				$clickedTitle.addClass('active');
 			}
 		});

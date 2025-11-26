@@ -1818,6 +1818,35 @@
                     "delay": 0
                 },
                 {
+                    "key": "field_69241e79b4a1a",
+                    "label": "Maps Store Location",
+                    "name": "maps_store_location",
+                    "aria-label": "",
+                    "type": "wysiwyg",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_67516dc10e887",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "50",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "allow_in_bindings": 0,
+                    "tabs": "all",
+                    "toolbar": "basic",
+                    "media_upload": 1,
+                    "delay": 0
+                },
+                {
                     "key": "field_688c847de4e2e",
                     "label": "Ask A Question",
                     "name": "ask_a_question",
@@ -2548,5 +2577,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1763949495
+    "modified": 1763975103
 }

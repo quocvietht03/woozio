@@ -402,6 +402,9 @@ class Widget_CollectionBanner extends Widget_Base
 				?>
 					<div class="collection-item <?php echo esc_attr($is_active); ?>" data-index="<?php echo esc_attr($index); ?>">
 						<div class="collection-image">
+							<?php if (!empty($item['button_link']['url'])) : ?>
+								<a href="<?php echo esc_url($item['button_link']['url']); ?>" <?php echo $target . $nofollow; ?>>
+							<?php endif; ?>
 							<?php
 							if (!empty($item['image']['id'])) {
 								echo wp_get_attachment_image($item['image']['id'], $settings['thumbnail_size']);
@@ -412,10 +415,21 @@ class Widget_CollectionBanner extends Widget_Base
 									echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '">';
 								}
 							} ?>
+							<?php if (!empty($item['button_link']['url'])) : ?>
+								</a>
+							<?php endif; ?>
 						</div>
 						<div class="collection-content">
 							<?php if (!empty($item['title'])) : ?>
-								<h3><?php echo esc_html($item['title']); ?></h3>
+								<h3>
+									<?php if (!empty($item['button_link']['url'])) : ?>
+										<a href="<?php echo esc_url($item['button_link']['url']); ?>" <?php echo $target . $nofollow; ?>>
+									<?php endif; ?>
+									<?php echo esc_html($item['title']); ?>
+									<?php if (!empty($item['button_link']['url'])) : ?>
+										</a>
+									<?php endif; ?>
+								</h3>
 							<?php endif; ?>
 							<?php if (!empty($item['description'])) : ?>
 								<p><?php echo esc_html($item['description']); ?></p>

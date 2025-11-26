@@ -291,12 +291,23 @@
 
 	/* Helper function to open mini cart sidebar */
 	function WoozioOpenMiniCart() {
-		$('.bt-mini-cart-sidebar').addClass('active');
+		const $sidebar = $('.bt-mini-cart-sidebar');
+		$sidebar.addClass('active');
 		const scrollbarWidth = window.innerWidth - $(window).width();
 		$('body').css({
 			'overflow': 'hidden',
 			'padding-right': scrollbarWidth + 'px'
 		});
+	
+		// Update bottom cart padding
+		setTimeout(function() {
+			const $bottomCart = $sidebar.find('.bt-bottom-mini-cart');
+			const $sidebarBody = $sidebar.find('.bt-mini-cart-sidebar-body');
+			if ($bottomCart.length && $sidebarBody.length) {
+				const height = $bottomCart.outerHeight(true);
+				$sidebarBody.css('--padding-bottom', height + 'px');
+			}
+		}, 100);
 	}
 
 	function WoozioshowToast(idproduct, tools = 'cart', status = 'add') {
@@ -1856,6 +1867,16 @@
 
 				// Show corresponding product
 				$productItems.filter(`[data-product-id="${productId}"]`).addClass('active');
+
+				// Scroll to product list on mobile/tablet (<=991px)
+				if ($(window).width() <= 991) {
+					const $productList = $hotspotProductNormal.find('.bt-hotspot-product-list');
+					if ($productList.length > 0) {
+						$('html, body').animate({
+							scrollTop: $productList.offset().top - 100
+						}, 500);
+					}
+				}
 			});
 			WoozioProductHotspotAddSetCart($hotspotProductNormal);
 		}
