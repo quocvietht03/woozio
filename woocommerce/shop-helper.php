@@ -302,19 +302,18 @@ function woozio_woocommerce_single_product_meta()
 
     $sku = $product->get_sku();
     if ($sku) {
-        echo '<li class="sku"><span>SKU:</span> ' . esc_html($sku) . '</li>';
+        echo '<li class="sku"><span>' . esc_html__('SKU:', 'woozio') . '</span> ' . esc_html($sku) . '</li>';
     }
 
     $post = get_post($product->get_id());
     $author_id = $post->post_author;
     $author = get_the_author_meta('display_name', $author_id);
     if ($author) {
-        echo '<li class="vendor"><span>Vendor:</span> ' . esc_html($author) . '</li>';
+        echo '<li class="vendor"><span>' . esc_html__('Vendor:', 'woozio') . '</span> ' . esc_html($author) . '</li>';
     }
 
-    $availability = $product->is_in_stock() ? 'In stock' : 'Out of stock';
-    echo '<li class="availability"><span>Availability:</span> ' . esc_html($availability) . '</li>';
-
+    $availability = $product->is_in_stock() ? esc_html__('In stock', 'woozio') : esc_html__('Out of stock', 'woozio');
+    echo '<li class="availability"><span>' . esc_html__('Availability:', 'woozio') . '</span> ' . esc_html($availability) . '</li>';
     $terms = get_the_terms($product->get_id(), 'product_cat');
     if ($terms && !is_wp_error($terms)) {
         $cat_links = array();
@@ -324,7 +323,7 @@ function woozio_woocommerce_single_product_meta()
                 $cat_links[] = '<a href="' . esc_url($term_link) . '">' . esc_html($term->name) . '</a>';
             }
         }
-        echo '<li class="categories"><span>Categories:</span> ' . implode(', ', $cat_links) . '</li>';
+        echo '<li class="categories"><span>' . esc_html__('Categories:', 'woozio') . '</span> ' . implode(', ', $cat_links) . '</li>';
     }
     echo '</ul>';
 }
@@ -4465,7 +4464,8 @@ function woozio_woocommerce_after_add_to_cart_button()
     if (isset($_REQUEST['variation_id'])) {
         $variation_id = intval($_REQUEST['variation_id']);
     }
-    if ($product->is_type('variable')) {
+    
+    if ($product->is_type('variable')) { 
         echo '<a href="#"
         class="bt-btn-add-to-cart-variable single_add_to_cart_button bt-button-hover bt-js-add-to-cart-variable disabled"
         data-product-quantity="1"
@@ -4473,8 +4473,13 @@ function woozio_woocommerce_after_add_to_cart_button()
         data-variation="' . esc_attr($variation_id) . '">'
             . esc_html__('Add To Cart', 'woozio') .
             '</a>';
+        
+        echo '<a href="' . esc_url($product->get_permalink()) . '" 
+        class="bt-btn-read-more bt-button-hover" 
+        rel="nofollow">' . esc_html__('Read more', 'woozio') . '</a>';
     }
 }
+
 function get_default_variation_id($product)
 {
     if (!$product->is_type('variable')) {

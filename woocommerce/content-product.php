@@ -26,9 +26,9 @@ if (empty($product) || ! $product->is_visible()) {
 <div <?php wc_product_class('woocommerce-loop-product', $product); ?>>
 	<div class="woocommerce-loop-product__thumbnail">
 		<?php
-		do_action('woozio_woocommerce_template_loop_product_link_open');
+		// do_action('woozio_woocommerce_template_loop_product_link_open');
 		do_action('woozio_woocommerce_template_loop_product_thumbnail');
-		do_action('woozio_woocommerce_template_loop_product_link_close');
+		// do_action('woozio_woocommerce_template_loop_product_link_close');
 		?>
 		<div class="woocommerce-product-sale-label">
 			<?php
@@ -36,6 +36,19 @@ if (empty($product) || ! $product->is_visible()) {
 			do_action('woozio_woocommerce_shop_loop_item_label');
 			?>
 		</div>
+		
+		<?php echo wc_get_stock_html( $product ); // WPCS: XSS ok. ?>
+
+		<div class="bt-add-to-cart">
+			<?php
+			if (!$product->is_type('variable')) {
+				do_action('woozio_woocommerce_template_loop_add_to_cart');
+			} else {
+				do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
+			}
+			?>
+		</div>
+
 		<?php
 		$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
 		$show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;
@@ -67,15 +80,7 @@ if (empty($product) || ! $product->is_visible()) {
 			<?php endif; ?>
 		</div>
 		<?php endif; ?>
-		<div class="bt-add-to-cart">
-			<?php
-			if (!$product->is_type('variable')) {
-				do_action('woozio_woocommerce_template_loop_add_to_cart');
-			} else {
-				do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
-			}
-			?>
-		</div>
+
 		<?php do_action('woozio_template_loop_product_countdown_and_sale') ?>
 		
 	</div>
