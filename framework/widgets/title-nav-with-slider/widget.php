@@ -554,10 +554,23 @@ class Widget_TitleNavWithSlider extends Widget_Base
                                     <div class="bt-content-slide">
                                         <?php if (!empty($nav_item['content_image']['url'])) : ?>
                                             <div class="bt-content-image">
-                                                <?php if (!empty($nav_item['content_image']['id'])) : ?>
-                                                    <?php echo wp_get_attachment_image($nav_item['content_image']['id'], $settings['thumbnail_size']); ?>
+                                                <?php if (!empty($nav_item['content_button_link']['url'])) : ?>
+                                                    <a href="<?php echo esc_url($nav_item['content_button_link']['url']); ?>"
+                                                        class="bt-content-image-link"
+                                                        <?php echo !empty($nav_item['content_button_link']['is_external']) ? 'target="_blank"' : ''; ?>
+                                                        <?php echo !empty($nav_item['content_button_link']['nofollow']) ? 'rel="nofollow"' : ''; ?>>
+                                                        <?php if (!empty($nav_item['content_image']['id'])) : ?>
+                                                            <?php echo wp_get_attachment_image($nav_item['content_image']['id'], $settings['thumbnail_size']); ?>
+                                                        <?php else : ?>
+                                                            <img src="<?php echo esc_url(Utils::get_placeholder_image_src()); ?>" alt="<?php echo esc_attr__('Awaiting image', 'woozio'); ?>">
+                                                        <?php endif; ?>
+                                                    </a>
                                                 <?php else : ?>
-                                                    <img src="<?php echo esc_url(Utils::get_placeholder_image_src()); ?>" alt="<?php echo esc_attr__('Awaiting image', 'woozio'); ?>">
+                                                    <?php if (!empty($nav_item['content_image']['id'])) : ?>
+                                                        <?php echo wp_get_attachment_image($nav_item['content_image']['id'], $settings['thumbnail_size']); ?>
+                                                    <?php else : ?>
+                                                        <img src="<?php echo esc_url(Utils::get_placeholder_image_src()); ?>" alt="<?php echo esc_attr__('Awaiting image', 'woozio'); ?>">
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
                                         <?php endif; ?>
@@ -566,8 +579,18 @@ class Widget_TitleNavWithSlider extends Widget_Base
                                             <?php if (!empty($nav_item['nav_title'])) : ?>
                                                 <h3 class="bt-nav-title"><?php echo esc_html($nav_item['nav_title']); ?></h3>
                                             <?php endif; ?>
+                                            
                                             <?php if (!empty($nav_item['content_heading'])) : ?>
-                                                <h2 class="bt-content-heading"><?php echo esc_html($nav_item['content_heading']); ?></h2>
+                                                <?php if (!empty($nav_item['content_button_link']['url'])) : ?>
+                                                    <a href="<?php echo esc_url($nav_item['content_button_link']['url']); ?>"
+                                                        class="bt-content-heading-link"
+                                                        <?php echo !empty($nav_item['content_button_link']['is_external']) ? 'target="_blank"' : ''; ?>
+                                                        <?php echo !empty($nav_item['content_button_link']['nofollow']) ? 'rel="nofollow"' : ''; ?>>
+                                                        <h2 class="bt-content-heading"><?php echo esc_html($nav_item['content_heading']); ?></h2>
+                                                    </a>
+                                                <?php else : ?>
+                                                    <h2 class="bt-content-heading"><?php echo esc_html($nav_item['content_heading']); ?></h2>
+                                                <?php endif; ?>
                                             <?php endif; ?>
 
                                             <?php if (!empty($nav_item['content_description'])) : ?>

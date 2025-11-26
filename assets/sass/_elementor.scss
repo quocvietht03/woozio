@@ -11263,6 +11263,7 @@
               .bt-content-image {
                 &::before {
                   opacity: 0;
+                  display: none;
                 }
               }
             }
@@ -11331,6 +11332,9 @@
             line-height: 50px;
             color: $color-primary;
             margin: 0 0 16px 0;
+            &:hover {
+              color: $color-accent;
+            }
           }
 
           .bt-content-description {
