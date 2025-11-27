@@ -96,7 +96,9 @@
                     "ui": 0,
                     "ajax": 0,
                     "placeholder": "",
-                    "parent_repeater": "field_653a2ba523293"
+                    "parent_repeater": "field_653a2ba523293",
+                    "create_options": 0,
+                    "save_options": 0
                 },
                 {
                     "key": "field_653a2bdd23295",
@@ -140,5 +142,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1710857431
+    "modified": 1764229711
 }
