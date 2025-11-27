@@ -690,6 +690,7 @@ function woozio_remove_after_single_product_summary()
 {
     if (function_exists('get_field')) {
         $related_posts = get_field('product_related_posts', 'options');
+        
         $enable_related_product = $related_posts['enable_related_product'];
 
         if (!$enable_related_product) {
@@ -3646,6 +3647,35 @@ function woozio_woocommerce_single_product_safe_checkout()
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>
+    </div>
+<?php
+}
+
+// add out of stock single product
+add_action('woozio_woocommerce_template_single_out_of_stock', 'woozio_woocommerce_single_product_out_of_stock', 10);
+function woozio_woocommerce_single_product_out_of_stock()
+{
+    // Check if ACF function exists
+    if (!function_exists('get_field')) {
+        return;
+    }
+
+    $out_of_stock = get_field('out_of_stock', 'options');
+
+    // Validate out of stock settings
+    if (empty($out_of_stock) || empty($out_of_stock['enable_out_of_stock'])) {
+        echo '<p class="stock out-of-stock">'. esc_html__('Out of stock', 'woozio') .'</p>';
+        return;
+    }
+
+    $notification_form = !empty($out_of_stock['notification_form']) ? $out_of_stock['notification_form'] : '';
+
+    if (empty($notification_form)) {
+        return;
+    }
+    ?>
+    <div class="bt-notification-form">
+        <?php echo do_shortcode($notification_form); ?>
     </div>
 <?php
 }

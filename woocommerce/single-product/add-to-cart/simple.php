@@ -54,6 +54,5 @@ if ( $product->is_in_stock() ) : ?>
 	<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>
 	
 <?php else : ?>
-	<?php echo wc_get_stock_html( $product ); // WPCS: XSS ok. ?>
-
+	<?php do_action( 'woozio_woocommerce_template_single_out_of_stock' ); ?>
 <?php endif; ?>
