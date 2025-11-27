@@ -24,7 +24,11 @@ if (is_wp_error($category_url)) {
                 <?php if (isset($args['show_custom_count']) && $args['show_custom_count'] === 'yes'): ?>
                     <span class="bt-product-category--count"><?php echo sprintf('%s %s', esc_html($args['category']->count), esc_html($args['custom_count_text'])); ?></span>
                 <?php else: ?>
-                    <span class="bt-product-category--count"><?php echo sprintf(_n('%s item', '%s items', $args['category']->count, 'woozio'), $args['category']->count); ?></span>
+                    <?php
+                    $product_count = $args['category']->count;
+                    $count_text = sprintf(_n('%s item', '%s items', $product_count, 'woozio'), $product_count);
+                    ?>
+                    <span class="bt-product-category--count"><?php echo $count_text; ?></span>
                 <?php endif; ?>
             <?php endif; ?>
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
