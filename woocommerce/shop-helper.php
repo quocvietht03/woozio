@@ -3655,6 +3655,7 @@ function woozio_woocommerce_single_product_safe_checkout()
 add_action('woozio_woocommerce_template_single_out_of_stock', 'woozio_woocommerce_single_product_out_of_stock', 10);
 function woozio_woocommerce_single_product_out_of_stock()
 {
+    global $product;
     // Check if ACF function exists
     if (!function_exists('get_field')) {
         return;
@@ -3664,7 +3665,9 @@ function woozio_woocommerce_single_product_out_of_stock()
 
     // Validate out of stock settings
     if (empty($out_of_stock) || empty($out_of_stock['enable_out_of_stock'])) {
-        echo '<p class="stock out-of-stock">'. esc_html__('Out of stock', 'woozio') .'</p>';
+        if(!$product->is_type('variable')) {
+            echo '<p class="stock out-of-stock">'. esc_html__('Out of stock', 'woozio') .'</p>';
+        }
         return;
     }
 
