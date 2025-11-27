@@ -2011,6 +2011,74 @@
             ]
         },
         {
+            "key": "field_692817258b9b2",
+            "label": "Out Of Stock",
+            "name": "out_of_stock",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_692817258b9b3",
+                    "label": "Enable Out Of Stock",
+                    "name": "enable_out_of_stock",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "",
+                    "default_value": 0,
+                    "allow_in_bindings": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": "",
+                    "ui": 1
+                },
+                {
+                    "key": "field_692817258b9b4",
+                    "label": "Notification Form",
+                    "name": "notification_form",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_692817258b9b3",
+                                "operator": "==",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
             "key": "field_68ff1442b70e5",
             "label": "Frequently Bought Together",
             "name": "frequently_bought_together",
@@ -2577,5 +2645,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1764230103
+    "modified": 1764235169
 }

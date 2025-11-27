@@ -3127,7 +3127,8 @@
 				var $form = $(this);
 				$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
 				if (!variation) return;
-				if(!variation.is_in_stock) {
+				console.log($('.bt-notification-form').length);
+				if(!variation.is_in_stock && $form.parent().find('.bt-notification-form').length > 0) {
 					$form.addClass('out-of-stock');
 				} else {
 					$form.removeClass('out-of-stock');
