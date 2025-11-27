@@ -30097,8 +30097,8 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 .mfp-product-popup-hotspot .bt-product-popup-hotspot-modal .bt-popup-inner .bt-popup-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner {
   width: calc(100% - 40px);
 }
-.mfp-product-popup-hotspot .bt-product-popup-hotspot-modal .bt-popup-inner .bt-popup-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .ppcp-messages {
-  display: none;
+.mfp-product-popup-hotspot .bt-product-popup-hotspot-modal .bt-popup-inner .bt-popup-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .ppcp-messages, .mfp-product-popup-hotspot .bt-product-popup-hotspot-modal .bt-popup-inner .bt-popup-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .ppc-button-wrapper {
+  display: none !important;
 }
 .mfp-product-popup-hotspot .bt-product-popup-hotspot-modal .bt-popup-inner .bt-popup-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .bt-product-name {
   font-size: 18px;

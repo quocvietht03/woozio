@@ -13903,8 +13903,8 @@
 
               .bt-product-content__inner {
                 width: calc(100% - 40px);
-                .ppcp-messages {
-                  display: none;
+                .ppcp-messages,.ppc-button-wrapper {
+                  display: none !important;
                 }
                 .bt-product-name {
                   font-size: 18px;
