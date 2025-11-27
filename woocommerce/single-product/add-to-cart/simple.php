@@ -23,9 +23,9 @@ if ( ! $product->is_purchasable() ) {
 	return;
 }
 
-echo wc_get_stock_html( $product ); // WPCS: XSS ok.
-
 if ( $product->is_in_stock() ) : ?>
+
+	<?php echo wc_get_stock_html( $product ); // WPCS: XSS ok. ?>
 
 	<?php do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
@@ -52,5 +52,8 @@ if ( $product->is_in_stock() ) : ?>
 	</form>
 
 	<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>
+	
+<?php else : ?>
+	<?php echo wc_get_stock_html( $product ); // WPCS: XSS ok. ?>
 
 <?php endif; ?>
