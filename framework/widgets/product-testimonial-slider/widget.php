@@ -238,7 +238,7 @@ class Widget_ProductTestimonialSlider extends Widget_Base
         $this->add_responsive_control(
             'image_spacing_custom',
             [
-                'label' => esc_html__('Gap between slides', 'elementor-pro'),
+                'label' => esc_html__('Gap between slides', 'woozio'),
                 'type' => Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [

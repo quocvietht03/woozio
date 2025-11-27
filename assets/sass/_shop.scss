@@ -4775,7 +4775,7 @@
           }
         }
       }
-    }
+    } 
     .bt-notification-form {
       display: none;
       background: #F6F6F4;
@@ -5462,6 +5462,13 @@
         flex-direction: column;
         #wc-stripe-express-checkout-element {
           margin-top: 0 !important;
+        }
+        @media (max-width: 574px) {
+          #wc-stripe-express-checkout-element-applePay,
+          #wc-stripe-express-checkout-element-googlePay {
+            min-width: calc(50% - 5px) !important;
+            max-width: calc(50% - 5px);
+          }
         }
       }
       .price,

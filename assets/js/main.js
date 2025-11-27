@@ -1012,15 +1012,19 @@
 					return;
 				}
 			}
-			$(this).closest('.bt-table--row').remove();
-			let itemCompareCount = $('.bt-table-compare .bt-table--row').length;
-			if (itemCompareCount == 5) {
-				$('.bt-table-compare .bt-table--row.bt-product-add-compare').first().addClass('active');
-			} else if (itemCompareCount == 4) {
-				$('.bt-table-compare .bt-table--row.bt-product-add-compare').slice(0, 2).addClass('active');
-			} else if (itemCompareCount == 3) {
-				$('.bt-table-compare .bt-table--row.bt-product-add-compare').slice(0, 3).addClass('active');
-			}
+		// Get the specific table before removing the row
+		var tableCompare = $(this).closest('.bt-table-compare');
+		$(this).closest('.bt-table--row').remove();
+		
+		// Count rows only in the specific table
+		let itemCompareCount = tableCompare.find('.bt-table--row').length;
+		if (itemCompareCount == 5) {
+			tableCompare.find('.bt-table--row.bt-product-add-compare').first().addClass('active');
+		} else if (itemCompareCount == 4) {
+			tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 2).addClass('active');
+		} else if (itemCompareCount == 3) {
+			tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 3).addClass('active');
+		}
 		});
 	}
 	/* Product Compare Load */
@@ -1140,6 +1144,12 @@
 	}
 	/* Helper function to handle cart toast vs cart mini logic */
 	function WoozioHandleCartAction(productId) {
+		// Check if page has bt-loop-add-show-cart class - if yes, always show mini cart
+		if ($('.bt-loop-add-show-minicart').length > 0) {
+			WoozioOpenMiniCart();
+			return;
+		}
+		
 		var cart_toast = AJ_Options.cart_toast || false;
 		var show_cart_mini = AJ_Options.show_cart_mini || false;
 		var isMobile = $(window).width() <= 1023;

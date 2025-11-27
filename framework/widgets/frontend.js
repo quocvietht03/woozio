@@ -3074,6 +3074,180 @@
 		}
 	};
 
+	const ProductPopupHotspotHandler = function ($scope) {
+		const $HotspotProduct = $scope.find('.bt-elwg-product-popup-hotspot--default');
+		
+		if ($HotspotProduct.length === 0) {
+			return;
+		}
+
+		// Check if mobile tooltip style is manually enabled
+		const isMobileStyleEnabled = $HotspotProduct.hasClass('bt-hotspot-product-mobile');
+
+		// Position hotspot tooltips
+		function getPositionPoint($point) {
+			const pointLeft = $point.position().left;
+			const pointTop = $point.position().top;
+			const pointRight = $point.parent().width() - (pointLeft + $point.outerWidth());
+			const pointBottom = $point.parent().height() - (pointTop + $point.outerHeight());
+			const $info = $point.find('.bt-hotspot-product-info');
+			const infoWidth = $info.outerWidth();
+			const halfWidth = infoWidth / 2 - (window.innerWidth <= 600 ? 6 : 10);
+			const infoHeight = $info.outerHeight();
+			const halfHeight = infoHeight / 2 - (window.innerWidth <= 600 ? 6 : 10);
+			const maxPoint = Math.max(pointLeft, pointTop, pointRight, pointBottom);
+			
+			// Only toggle mobile class automatically if it's not manually enabled
+			if (!isMobileStyleEnabled) {
+				$HotspotProduct.toggleClass('bt-hotspot-product-mobile', $point.parent().width() < 600);
+			}
+			
+			if (maxPoint === pointRight) {
+				if (infoWidth > pointRight) {
+					const maxHigh = Math.max(pointTop, pointBottom);
+					if (maxHigh === pointTop) {
+						return 'topcenter';
+					} else {
+						return 'bottomcenter';
+					}
+				} else {
+					if (halfHeight < pointTop && halfHeight < pointBottom) {
+						return 'rightcenter';
+					} else if (infoHeight < pointTop) {
+						return 'righttop';
+					} else {
+						return 'rightbottom';
+					}
+				}
+			} else if (maxPoint === pointLeft) {
+				if (infoWidth > pointLeft) {
+					const maxHigh = Math.max(pointTop, pointBottom);
+					if (maxHigh === pointTop) {
+						return 'topcenter';
+					} else {
+						return 'bottomcenter';
+					}
+				} else {
+					if (halfHeight < pointTop && halfHeight < pointBottom) {
+						return 'leftcenter';
+					} else if (infoHeight < pointTop) {
+						return 'lefttop';
+					} else {
+						return 'leftbottom';
+					}
+				}
+			} else if (maxPoint === pointTop) {
+				if (halfWidth < pointLeft && halfWidth < pointRight) {
+					return 'topcenter';
+				} else if (infoWidth < pointLeft) {
+					return 'topleft';
+				} else {
+					return 'topright';
+				}
+			} else if (maxPoint === pointBottom) {
+				if (halfWidth < pointLeft && halfWidth < pointRight) {
+					return 'bottomcenter';
+				} else if (infoWidth < pointLeft) {
+					return 'bottomleft';
+				} else {
+					return 'bottomright';
+				}
+			}
+		}
+		
+		function hotspotPoint() {
+			$HotspotProduct.find('.bt-hotspot-point').each(function () {
+				const $point = $(this);
+				const $positionPoin = getPositionPoint($point);
+				const $info = $point.find('.bt-hotspot-product-info');
+				const containerWidth = $point.parent().width();
+				let smallOffset = 5;
+				let largeOffset = 15;
+				if (containerWidth < 700) {
+					smallOffset = 2;
+					largeOffset = 8;
+				}
+				if ($positionPoin == 'rightcenter') {
+					$info.css({
+						'inset': 'auto auto auto 100%',
+						'transform': `translateX(${largeOffset}px)`
+					});
+				} else if ($positionPoin == 'righttop') {
+					$info.css({
+						'inset': 'auto auto 100% 100%',
+						'transform': `translate(0, -${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'rightbottom') {
+					$info.css({
+						'inset': '100% auto auto 100%',
+						'transform': `translate(0, ${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'leftcenter') {
+					$info.css({
+						'inset': 'auto 100% auto auto',
+						'transform': `translateX(-${largeOffset}px)`
+					});
+				} else if ($positionPoin == 'lefttop') {
+					$info.css({
+						'inset': 'auto 100% 100% auto',
+						'transform': `translate(0, -${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'leftbottom') {
+					$info.css({
+						'inset': '100% 100% auto auto',
+						'transform': `translate(0, ${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'topcenter') {
+					$info.css({
+						'inset': 'auto auto 100% auto',
+						'transform': `translateY(-${largeOffset}px)`
+					});
+				} else if ($positionPoin == 'topleft') {
+					$info.css({
+						'inset': 'auto 100% 100% auto',
+						'transform': `translate(0, -${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'topright') {
+					$info.css({
+						'inset': 'auto auto 100% 100%',
+						'transform': `translate(0, -${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'bottomcenter') {
+					$info.css({
+						'inset': '100% auto auto auto',
+						'transform': `translateY(${largeOffset}px)`
+					});
+				} else if ($positionPoin == 'bottomleft') {
+					$info.css({
+						'inset': '100% 100% auto auto',
+						'transform': `translate(0, ${smallOffset}px)`
+					});
+				} else if ($positionPoin == 'bottomright') {
+					$info.css({
+						'inset': '100% auto auto 100%',
+						'transform': `translate(0, ${smallOffset}px)`
+					});
+				}
+			});
+		}
+		
+		hotspotPoint();
+		$(window).on('resize', function () {
+			hotspotPoint();
+		});
+
+		// Initialize magnificPopup
+		const $openBtn = $HotspotProduct.find('.bt-js-open-popup-link');
+		if ($openBtn.length > 0) {
+			$openBtn.magnificPopup({
+				type: 'inline',
+				midClick: true,
+				mainClass: 'mfp-fade mfp-product-popup-hotspot',
+				removalDelay: 300
+			});
+		}
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
@@ -3115,6 +3289,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-order-tracking.default', OrderTrackingHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/list-text-image-hover.default', ImageListWidgetHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/flicker-collage.default', FlickerCollageHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-popup-hotspot.default', ProductPopupHotspotHandler);
 	});
 
 })(jQuery);
