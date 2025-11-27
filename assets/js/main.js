@@ -3127,7 +3127,11 @@
 				var $form = $(this);
 				$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
 				if (!variation) return;
-				
+				if(!variation.is_in_stock) {
+					$form.addClass('out-of-stock');
+				} else {
+					$form.removeClass('out-of-stock');
+				}
 				$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
 					var $item = $(this);
 					var $attrItem = $item.closest('.bt-attributes--item');

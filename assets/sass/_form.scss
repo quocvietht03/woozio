@@ -57,8 +57,9 @@
       font-size: 30px;
       font-style: normal;
       font-weight: 500;
-      line-height: 42px;
+      line-height: 1.25;
       text-align: left;
+      margin: 0 0 12px;
       @media (max-width: $break-sm) {
         font-size: 28px;
       }

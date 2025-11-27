@@ -37,7 +37,11 @@ if (empty($product) || ! $product->is_visible()) {
 			?>
 		</div>
 		
-		<?php echo wc_get_stock_html( $product ); // WPCS: XSS ok. ?>
+		<?php 
+			if (!$product->is_type('variable')) {
+				echo wc_get_stock_html( $product ); // WPCS: XSS ok. 
+			}
+		?>
 
 		<div class="bt-add-to-cart">
 			<?php
