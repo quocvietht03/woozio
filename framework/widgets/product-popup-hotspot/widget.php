@@ -228,134 +228,9 @@ class Widget_ProductPopupHotspot extends Widget_Base
                 'type' => Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-point .bt-hotspot-marker' => 'background-color: {{VALUE}}; border-color: {{VALUE}};',
-                    '{{WRAPPER}} .bt-hotspot-point .bt-hotspot-marker::before' => 'border-color: {{VALUE}};',
-                    '{{WRAPPER}} .bt-hotspot-point .bt-hotspot-marker::after' => 'border-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'hotspot_size',
-            [
-                'label' => __('Hotspot Size', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px'],
-                'range' => [
-                    'px' => [
-                        'min' => 10,
-                        'max' => 100,
-                    ],
-                ],
-                'default' => [
-                    'size' => 30,
-                    'unit' => 'px',
-                ],
-                'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-point .bt-hotspot-marker' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        $this->start_controls_section(
-            'section_style_popup',
-            [
-                'label' => __('Popup', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'popup_background_color',
-            [
-                'label' => __('Background Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '.bt-product-popup-hotspot-modal' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'popup_padding',
-            [
-                'label' => __('Padding', 'woozio'),
-                'type' => Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '.bt-product-popup-hotspot-modal' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'popup_max_width',
-            [
-                'label' => __('Max Width', 'woozio'),
-                'type' => Controls_Manager::SLIDER,
-                'size_units' => ['px', '%'],
-                'range' => [
-                    'px' => [
-                        'min' => 300,
-                        'max' => 1600,
-                    ],
-                    '%' => [
-                        'min' => 10,
-                        'max' => 100,
-                    ],
-                ],
-                'default' => [
-                    'size' => 1200,
-                    'unit' => 'px',
-                ],
-                'selectors' => [
-                    '.bt-product-popup-hotspot-modal' => 'max-width: {{SIZE}}{{UNIT}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        $this->start_controls_section(
-            'section_style_tooltip',
-            [
-                'label' => __('Tooltip', 'woozio'),
-                'tab' => Controls_Manager::TAB_STYLE,
-                'condition' => [
-                    'show_tooltip' => 'yes',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'tooltip_background_color',
-            [
-                'label' => __('Background Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-tooltip' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            Group_Control_Typography::get_type(),
-            [
-                'name' => 'tooltip_typography',
-                'label' => __('Typography', 'woozio'),
-                'selector' => '{{WRAPPER}} .bt-hotspot-tooltip',
-            ]
-        );
-
-        $this->add_control(
-            'tooltip_color',
-            [
-                'label' => __('Text Color', 'woozio'),
-                'type' => Controls_Manager::COLOR,
-                'selectors' => [
-                    '{{WRAPPER}} .bt-hotspot-tooltip' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .bt-elwg-product-popup-hotspot--default .bt-hotspot-point .bt-hotspot-marker' => 'border-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .bt-elwg-product-popup-hotspot--default .bt-hotspot-point .bt-hotspot-marker::before' => 'border-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .bt-elwg-product-popup-hotspot--default .bt-hotspot-point .bt-hotspot-marker::after' => 'border-color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -493,7 +368,7 @@ class Widget_ProductPopupHotspot extends Widget_Base
                                                     <a class="bt-hotspot-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                         <?php
                                                         if (has_post_thumbnail($product_id)) {
-                                                            echo get_the_post_thumbnail($product_id, 'thumbnail');
+                                                            echo get_the_post_thumbnail($product_id, 'medium');
                                                         } else {
                                                             echo '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
                                                         }
