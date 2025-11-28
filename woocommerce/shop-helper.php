@@ -691,7 +691,7 @@ function woozio_remove_after_single_product_summary()
     if (function_exists('get_field')) {
         $related_posts = get_field('product_related_posts', 'options');
         
-        $enable_related_product = $related_posts['enable_related_product'];
+        $enable_related_product = isset($related_posts['enable_related_product']) ? $related_posts['enable_related_product'] : false;
 
         if (!$enable_related_product) {
             remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
