@@ -11703,7 +11703,7 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
 }
 .woocommerce div.product.product-type-variable div.summary form.cart.out-of-stock ~ .ppcp-messages,
 .woocommerce div.product.product-type-variable div.summary form.cart.out-of-stock ~ .ppc-button-wrapper {
-  display: none;
+  display: none !important;
 }
 .woocommerce div.product .bt-notification-form {
   display: none;

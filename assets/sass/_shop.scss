@@ -4777,7 +4777,7 @@
             }
             ~ .ppcp-messages,
             ~ .ppc-button-wrapper {
-              display: none;
+              display: none !important;
             }
           }
         }
