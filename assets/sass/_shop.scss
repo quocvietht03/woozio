@@ -2969,6 +2969,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     color: #fff !important;
+    background-color: #7ad03a;
+    &.in-stock {
+      background-color: #3dab25;
+    }
     &.available-on-backorder {
       background-color: #958e09;
     }
@@ -5820,6 +5824,7 @@
           display: none;
         }
         .woocommerce-variation {
+          width: 100%;
           font-size: 16px;
           font-style: normal;
           font-weight: 400;
@@ -5834,16 +5839,22 @@
           padding-top: 24px;
           display: flex;
           flex-wrap: wrap;
+          width: 100%;
         }
         .woocommerce-variation-price {
           display: none;
         }
         .stock {
+          display: block;
+          margin-bottom: 0;
           &.in-stock {
-            display: block;
             color: #3dab25;
-            font-weight: 500;
-            margin-bottom: 0;
+          }
+          &.available-on-backorder {
+            color: #958e09;
+          }
+          &.out-of-stock {
+            color: #f03e3e;
           }
         }
 
