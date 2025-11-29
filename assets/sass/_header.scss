@@ -25,39 +25,67 @@ nav .elementor-nav-menu .sub-arrow {
   margin-block-start: -5px;
 }
 
-.bt-primary-menu-wrapper .menu-item,
+.bt-primary-menu-wrapper,
 .elementor-widget-n-menu .e-n-menu-item,
-.elementor-widget-bt-mobile-menu .menu-item {
+.elementor-widget-bt-mobile-menu {
+  .menu-item span,
+  .elementor-heading-title,
+  .elementor-image-box-title a,
+  .elementor-icon-list-text {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+  }
+  .elementor-widget-image-box {
+    position: relative;
+    .elementor-image-box-img a:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  }
   sup {
-    --label-color: #181818;
     font-weight: 600;
     line-height: 1;
     text-transform: uppercase;
     color: #fff;
-    background: var(--label-color);
-    position: relative;
-    top: -15px;
-    left: -20px;
+    background: $color-accent;
+    position: absolute;
+    top: 0;
+    right: 0;
     padding: 3px 5px;
+    transform: translate(50%, -100%);
     &:before {
       content: "";
       position: absolute;
       top: 100%;
       inset-inline-start: 10px;
-      border: 4px solid var(--label-color);
+      border: 4px solid $color-accent;
       border-bottom-color: transparent !important;
       border-inline-end-color: transparent !important;
       border-inline-end-width: 7px;
       border-inline-start-width: 0;
     }
     &.red {
-      --label-color: #d41212;
+      background: $color-red;
+      &:before {
+        border-color: $color-red;
+      }
     }
     &.orange {
-      --label-color: #fbbc34;
+      background: $color-orange;
+      &:before {
+        border-color: $color-orange;
+      }
     }
     &.green {
-      --label-color: #65b32e;
+      background: $color-green;
+      &:before {
+        border-color: $color-green;
+      }
     }
   }
 }
