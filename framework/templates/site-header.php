@@ -36,6 +36,8 @@
                 'container_class' => 'bt-primary-menu-container',
                 'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
                 'fallback_cb'     => false,
+                'link_before'          => '<span>',
+		            'link_after'           => '</span>',
               )
             );
           } else {
