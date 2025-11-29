@@ -71,15 +71,21 @@ nav .elementor-nav-menu .sub-arrow {
     }
     &.red {
       background: $color-red;
-      border-color: $color-red;
+      &:before {
+        border-color: $color-red;
+      }
     }
     &.orange {
       background: $color-orange;
-      border-color: $color-orange;
+      &:before {
+        border-color: $color-orange;
+      }
     }
     &.green {
       background: $color-green;
-      border-color: $color-green;
+      &:before {
+        border-color: $color-green;
+      }
     }
   }
 }
