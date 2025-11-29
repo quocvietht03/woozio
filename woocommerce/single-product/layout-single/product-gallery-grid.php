@@ -15,8 +15,48 @@ global $product;
          */
         //   do_action('woocommerce_before_single_product_summary');
 
-        $attachment_ids = $product->get_gallery_image_ids();
         $featured_image_id = $product->get_image_id();
+        
+        // Check if product has default variation and load its images
+        $default_variation_id = 0;
+        $use_variation_images = false;
+        
+        if ($product->is_type('variable')) {
+            // Get default variation ID using the helper function
+            if (function_exists('get_default_variation_id')) {
+                $default_variation_id = get_default_variation_id($product);
+            }
+            
+            // If we have a default variation, load its images
+            if ($default_variation_id && $default_variation_id > 0) {
+                $variation = wc_get_product($default_variation_id);
+                if ($variation) {
+                    $variation_image_id = $variation->get_image_id();
+                    $variation_gallery = get_post_meta($default_variation_id, '_variation_gallery', true);
+                    
+                    // Only use variation images if the variation has a custom image
+                    if ($variation_image_id && $variation_image_id !== $featured_image_id) {
+                        $featured_image_id = $variation_image_id;
+                        $use_variation_images = true;
+                        
+                        // Get variation gallery images
+                        if (!empty($variation_gallery)) {
+                            $attachment_ids = explode(',', $variation_gallery);
+                            $attachment_ids = array_map('intval', $attachment_ids);
+                            $attachment_ids = array_filter($attachment_ids);
+                        } else {
+                            $attachment_ids = array();
+                        }
+                    }
+                }
+            }
+        }
+        
+        // If not using variation images, get default product gallery
+        if (!$use_variation_images) {
+            $attachment_ids = $product->get_gallery_image_ids();
+        }
+        
         $itemgallery = count($attachment_ids) + 1;
         if ($args['layout'] === 'gallery-four-columns') {
             $show_number = 8;

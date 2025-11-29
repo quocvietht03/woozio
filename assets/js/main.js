@@ -342,22 +342,32 @@
 				} else {
 					gallerylayout = 'slider-thumb';
 				}
+
 				// update js variations_form woo
 				if (typeof $.fn.wc_variation_form !== 'undefined') {
-					$('.variations_form').each(function () {
-						if (!$(this).data('variation-form-initialized')) {
-							$(this).wc_variation_form();
-							$(this).data('variation-form-initialized', true);
-						}
-					});
+					var $currentForm = $(this).closest('.variations_form');
 
+					// Check if form already has events from WooCommerce
+					var events = $._data($currentForm[0], 'events');
+					var hasWcVariationForm = false;
+
+					if (events && events.change) {
+						// Check if 'change.wc-variation-form' event exists
+						hasWcVariationForm = events.change.some(function (handler) {
+							return handler.namespace === 'wc-variation-form';
+						});
+					}
+
+					if (!hasWcVariationForm) {
+						$currentForm.wc_variation_form();
+					}
 				}
 				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					var variationId = variation.variation_id;
-					
+
 					if (variationId && variationId !== '0') {
-						if( !variation.is_in_stock ) {
+						if (!variation.is_in_stock) {
 							$(this).closest('.variations_form').find('.bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
 						} else {
 							$(this).closest('.variations_form').find('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
@@ -365,7 +375,7 @@
 
 						if ($('.bt-product-add-to-cart-variable').length > 0 && variation.is_in_stock) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
-							
+
 							$addToCartBtn.removeClass('disabled').attr('data-variation', variationId);
 
 							// Handle quantity controls - remove old handler first
@@ -1012,19 +1022,19 @@
 					return;
 				}
 			}
-		// Get the specific table before removing the row
-		var tableCompare = $(this).closest('.bt-table-compare');
-		$(this).closest('.bt-table--row').remove();
-		
-		// Count rows only in the specific table
-		let itemCompareCount = tableCompare.find('.bt-table--row').length;
-		if (itemCompareCount == 5) {
-			tableCompare.find('.bt-table--row.bt-product-add-compare').first().addClass('active');
-		} else if (itemCompareCount == 4) {
-			tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 2).addClass('active');
-		} else if (itemCompareCount == 3) {
-			tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 3).addClass('active');
-		}
+			// Get the specific table before removing the row
+			var tableCompare = $(this).closest('.bt-table-compare');
+			$(this).closest('.bt-table--row').remove();
+
+			// Count rows only in the specific table
+			let itemCompareCount = tableCompare.find('.bt-table--row').length;
+			if (itemCompareCount == 5) {
+				tableCompare.find('.bt-table--row.bt-product-add-compare').first().addClass('active');
+			} else if (itemCompareCount == 4) {
+				tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 2).addClass('active');
+			} else if (itemCompareCount == 3) {
+				tableCompare.find('.bt-table--row.bt-product-add-compare').slice(0, 3).addClass('active');
+			}
 		});
 	}
 	/* Product Compare Load */
@@ -1149,7 +1159,7 @@
 			WoozioOpenMiniCart();
 			return;
 		}
-		
+
 		var cart_toast = AJ_Options.cart_toast || false;
 		var show_cart_mini = AJ_Options.show_cart_mini || false;
 		var isMobile = $(window).width() <= 1023;
@@ -3119,28 +3129,42 @@
 	function WoozioLoadDefaultActiveVariations(context) {
 		// If context is provided, search within that context, otherwise search globally
 		var $context = context ? $(context) : $(document);
-		var $variationForms = $context.find('.variations_form');
+		var $variationForms = $context.find('.variations_form').not('.bt-product-inner .variations_form');
+		var $singleProductForms = $context.find('.bt-product-inner .variations_form');
 
+		// Handle single product variation form inside .bt-product-inner (only out-of-stock logic)
+		if ($singleProductForms.length > 0) {
+			var $form = $singleProductForms;
+			$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
+				if (!variation) return;
+				if (!variation.is_in_stock && $form.parent().find('.bt-notification-form').length > 0) {
+					$form.addClass('out-of-stock');
+				} else {
+					$form.removeClass('out-of-stock');
+				}
+			});
+		}
+
+		// Handle other variation forms (full logic)
 		if ($variationForms.length > 0) {
 
 			$variationForms.each(function () {
 				var $form = $(this);
 				$form.off('show_variation.wooziosetdefault').on('show_variation.wooziosetdefault', function (event, variation) {
-				if (!variation) return;
-				console.log($('.bt-notification-form').length);
-				if(!variation.is_in_stock && $form.parent().find('.bt-notification-form').length > 0) {
-					$form.addClass('out-of-stock');
-				} else {
-					$form.removeClass('out-of-stock');
-				}
-				$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
-					var $item = $(this);
-					var $attrItem = $item.closest('.bt-attributes--item');
-					var attrName = $attrItem.data('attribute-name');
-					var colorTaxonomy = AJ_Options.color_taxonomy;
-					var name = (attrName == colorTaxonomy) ? $item.find('label').text() : $item.text();
-					$attrItem.find('.bt-result').text(name);
-				});
+					if (!variation) return;
+					if (!variation.is_in_stock && $form.parent().find('.bt-notification-form').length > 0) {
+						$form.addClass('out-of-stock');
+					} else {
+						$form.removeClass('out-of-stock');
+					}
+					$form.find('.bt-attributes-wrap .bt-js-item.active').each(function () {
+						var $item = $(this);
+						var $attrItem = $item.closest('.bt-attributes--item');
+						var attrName = $attrItem.data('attribute-name');
+						var colorTaxonomy = AJ_Options.color_taxonomy;
+						var name = (attrName == colorTaxonomy) ? $item.find('label').text() : $item.text();
+						$attrItem.find('.bt-result').text(name);
+					});
 				});
 
 				var $activeItems = $form.find('.bt-attributes-wrap .bt-js-item.active');
