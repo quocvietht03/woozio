@@ -366,9 +366,8 @@ nav .elementor-nav-menu .sub-arrow {
 .elementor-location-header {
   position: relative;
   .e-n-menu-content > div.elementor-element {
+    @extend .__scrollbar_style;
     max-height: 73vh;
-    overflow-x: hidden;
-    overflow-y: auto;
   }
 }
 body.admin-bar .dialog-type-lightbox {

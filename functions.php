@@ -56,7 +56,13 @@ function woozio_get_icon_svg_html($icon_file_name)
 
 	if (!empty($icon_file_name)) {
 		$file_path =  get_template_directory_uri() . '/assets/images/' . $icon_file_name . '.svg';
-		$file = file_get_contents($file_path);
+		$options = [
+			"http" => [
+				"header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
+			]
+		];
+		$context = stream_context_create($options);
+		$file = file_get_contents($file_path, false, $context);
 		if ($file !== false) {
 			return $file;
 		} else {

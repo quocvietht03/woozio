@@ -445,7 +445,13 @@ class Woozio_TextSlider extends Widget_Base
 
                             // Handle SVG files differently
                             if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
-                                echo file_get_contents($image_url);
+                                $options = [
+                                    "http" => [
+                                        "header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
+                                    ]
+                                ];
+                                $context = stream_context_create($options);
+                                echo file_get_contents($image_url, false, $context);
                             } else {
                                 echo wp_get_attachment_image($image_id, 'medium');
                             }
