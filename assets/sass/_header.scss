@@ -365,6 +365,11 @@ nav .elementor-nav-menu .sub-arrow {
 /* Elementor Header */
 .elementor-location-header {
   position: relative;
+  .e-n-menu-content > div.elementor-element {
+    max-height: 73vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
 body.admin-bar .dialog-type-lightbox {
   &.bt-menu-mobile-popup {
