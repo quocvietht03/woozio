@@ -699,7 +699,46 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 							}
 							
 							$post_thumbnail_id = $product->get_image_id();
-							$attachment_ids = $product->get_gallery_image_ids();
+							
+							// Check if product has default variation and load its images
+							$default_variation_id = 0;
+							$use_variation_images = false;
+							
+							if ($product->is_type('variable')) {
+								// Get default variation ID using the helper function
+								if (function_exists('get_default_variation_id')) {
+									$default_variation_id = get_default_variation_id($product);
+								}
+								
+								// If we have a default variation, load its images
+								if ($default_variation_id && $default_variation_id > 0) {
+									$variation = wc_get_product($default_variation_id);
+									if ($variation) {
+										$variation_image_id = $variation->get_image_id();
+										$variation_gallery = get_post_meta($default_variation_id, '_variation_gallery', true);
+										
+										// Only use variation images if the variation has a custom image
+										if ($variation_image_id && $variation_image_id !== $post_thumbnail_id) {
+											$post_thumbnail_id = $variation_image_id;
+											$use_variation_images = true;
+											
+											// Get variation gallery images
+											if (!empty($variation_gallery)) {
+												$attachment_ids = explode(',', $variation_gallery);
+												$attachment_ids = array_map('intval', $attachment_ids);
+												$attachment_ids = array_filter($attachment_ids);
+											} else {
+												$attachment_ids = array();
+											}
+										}
+									}
+								}
+							}
+							
+							// If not using variation images, get default product gallery
+							if (!$use_variation_images) {
+								$attachment_ids = $product->get_gallery_image_ids();
+							}
 							$columns = apply_filters('woocommerce_product_thumbnails_columns', 4);
 							$wrapper_classes = apply_filters(
 								'woocommerce_single_product_image_gallery_classes',
@@ -735,8 +774,15 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 												<div class="swiper-wrapper">
 													<?php
 													$html = woozio_get_gallery_image_html($post_thumbnail_id, false, true);
+													
+													// Add gallery thumbnails
+													if (!empty($attachment_ids)) {
+														foreach ($attachment_ids as $key => $attachment_id) {
+															$html .= woozio_get_gallery_image_html($attachment_id, false, true, $key);
+														}
+													}
+													
 													echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id);
-													do_action('woocommerce_product_thumbnails');
 													?>
 												</div>
 											</div>
@@ -746,17 +792,50 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 							</div>
 						<?php else : 
 							// Default layout: Show 2 images (thumbnail + first gallery)
-							if (has_post_thumbnail($product_id)) {
-								$product_thumbnail = get_the_post_thumbnail($product_id, $thumbnail_size);
+							
+							// Check if product has default variation and load its images
+							$default_image_id = get_post_thumbnail_id($product_id);
+							$default_gallery_ids = $product->get_gallery_image_ids();
+							
+							if ($product->is_type('variable')) {
+								// Get default variation ID using the helper function
+								if (function_exists('get_default_variation_id')) {
+									$default_variation_id = get_default_variation_id($product);
+									
+									// If we have a default variation, load its images
+									if ($default_variation_id && $default_variation_id > 0) {
+										$variation = wc_get_product($default_variation_id);
+										if ($variation) {
+											$variation_image_id = $variation->get_image_id();
+											$variation_gallery = get_post_meta($default_variation_id, '_variation_gallery', true);
+											
+											// Only use variation images if the variation has a custom image
+											if ($variation_image_id && $variation_image_id !== $default_image_id) {
+												$default_image_id = $variation_image_id;
+												
+												// Get variation gallery images
+												if (!empty($variation_gallery)) {
+													$default_gallery_ids = explode(',', $variation_gallery);
+													$default_gallery_ids = array_map('intval', $default_gallery_ids);
+													$default_gallery_ids = array_filter($default_gallery_ids);
+												} else {
+													$default_gallery_ids = array();
+												}
+											}
+										}
+									}
+								}
+							}
+							
+							if ($default_image_id) {
+								$product_thumbnail = wp_get_attachment_image($default_image_id, $thumbnail_size);
 							} else {
 								$product_thumbnail = '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
 							}
 
 							$gallery_image_html = '';
-							$gallery_image_ids = $product->get_gallery_image_ids();
-
-							if (!empty($gallery_image_ids)) {
-								$first_gallery_image_id = $gallery_image_ids[0];
+							if (!empty($default_gallery_ids)) {
+								$first_gallery_image_id = $default_gallery_ids[0];
 								$gallery_image_html = wp_get_attachment_image($first_gallery_image_id, $thumbnail_size);
 							} else {
 								$gallery_image_html = $product_thumbnail;

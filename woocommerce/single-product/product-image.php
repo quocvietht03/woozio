@@ -36,6 +36,47 @@ if ($is_quick_view) {
 }
 $columns           = apply_filters('woocommerce_product_thumbnails_columns', 4);
 $post_thumbnail_id = $product->get_image_id();
+
+// Check if product has default variation and load its images
+$default_variation_id = 0;
+$use_variation_images = false;
+
+if ($product->is_type('variable') && !$is_quick_view) {
+    // Get default variation ID using the helper function
+    if (function_exists('get_default_variation_id')) {
+        $default_variation_id = get_default_variation_id($product);
+    }
+    
+    // If we have a default variation, load its images
+    if ($default_variation_id && $default_variation_id > 0) {
+        $variation = wc_get_product($default_variation_id);
+        if ($variation) {
+            $variation_image_id = $variation->get_image_id();
+            $variation_gallery = get_post_meta($default_variation_id, '_variation_gallery', true);
+            
+            // Only use variation images if the variation has a custom image
+            if ($variation_image_id && $variation_image_id !== $post_thumbnail_id) {
+                $post_thumbnail_id = $variation_image_id;
+                $use_variation_images = true;
+                
+                // Get variation gallery images
+                if (!empty($variation_gallery)) {
+                    $attachment_ids = explode(',', $variation_gallery);
+                    $attachment_ids = array_map('intval', $attachment_ids);
+                    $attachment_ids = array_filter($attachment_ids);
+                } else {
+                    $attachment_ids = array();
+                }
+            }
+        }
+    }
+}
+
+// If not using variation images, get default product gallery
+if (!$use_variation_images) {
+    $attachment_ids = $product->get_gallery_image_ids();
+}
+
 $wrapper_classes   = apply_filters(
     'woocommerce_single_product_image_gallery_classes',
     array(
@@ -46,8 +87,6 @@ $wrapper_classes   = apply_filters(
         'bt-' . $product_layout
     )
 );
-
-$attachment_ids = $product->get_gallery_image_ids();
 
 ?>
 <div class="<?php echo esc_attr(implode(' ', array_map('sanitize_html_class', $wrapper_classes))); ?>" style="opacity: 0; transition: opacity .25s ease-in-out;">
@@ -180,8 +219,15 @@ $attachment_ids = $product->get_gallery_image_ids();
                 <div class="swiper-wrapper">
                     <?php
                     $html = woozio_get_gallery_image_html($post_thumbnail_id, false, true);
+                    
+                    // Add gallery thumbnails
+                    if (!empty($attachment_ids)) {
+                        foreach ($attachment_ids as $key => $attachment_id) {
+                            $html .= woozio_get_gallery_image_html($attachment_id, false, true, $key);
+                        }
+                    }
+                    
                     echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $post_thumbnail_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
-                    do_action('woocommerce_product_thumbnails');
                     ?>
                 </div>
             </div>

@@ -4817,6 +4817,9 @@
             ~ .ppc-button-wrapper {
               display: none !important;
             }
+            ~ #wc-stripe-express-checkout-element{
+              display: none !important;
+            }
           }
         }
       }
@@ -5498,6 +5501,7 @@
         flex-direction: column;
         #wc-stripe-express-checkout-element {
           margin-top: 0 !important;
+          display: flex !important;
         }
         @media (max-width: 574px) {
           #wc-stripe-express-checkout-element-applePay,
