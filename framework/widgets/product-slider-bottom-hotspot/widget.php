@@ -296,6 +296,27 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
             return;
         }
 
+        // Check if any products are selected
+        $has_products = false;
+        if (!empty($settings['hotspot_items'])) {
+            foreach ($settings['hotspot_items'] as $item) {
+                if (!empty($item['id_product'])) {
+                    $has_products = true;
+                    break;
+                }
+            }
+        }
+
+        // Show message if no products selected
+        if (!$has_products) {
+            echo '<div class="bt-elwg-product-slider-bottom-hotspot--default">';
+            echo '<div class="bt-product-slider-bottom-hotspot-empty-message">';
+            echo '<p>' . esc_html__('Please select products in the hotspot items.', 'woozio') . '</p>';
+            echo '</div>';
+            echo '</div>';
+            return;
+        }
+
 ?>
         <div class="bt-elwg-product-slider-bottom-hotspot--default bt-slider-position-<?php echo esc_attr($settings['slider_position']); ?>" data-slider-direction="<?php echo esc_attr($settings['slider_direction']); ?>">
             <?php if ($settings['show_heading'] === 'yes' && !empty($settings['heading'])) : ?>
@@ -405,11 +426,14 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                             }
                                             $order_currency = get_woocommerce_currency();
                                             $product_currencySymbol = get_woocommerce_currency_symbol($order_currency);
+                                            $is_in_stock = $product->is_in_stock();
+                                            $out_of_stock_class = !$is_in_stock ? ' out-of-stock' : '';
                                 ?>
-                                            <li class="bt-hotspot-product-list__item swiper-slide"
+                                            <li class="bt-hotspot-product-list__item swiper-slide<?php echo esc_attr($out_of_stock_class); ?>"
                                                 data-product-currency="<?php echo esc_attr($product_currencySymbol); ?>"
                                                 data-product-single-price="<?php echo esc_attr($product->get_sale_price() ? $product->get_sale_price() : $product->get_regular_price()); ?>"
-                                                data-product-id="<?php echo esc_attr($product_id); ?>">
+                                                data-product-id="<?php echo esc_attr($product_id); ?>"
+                                                data-in-stock="<?php echo esc_attr($is_in_stock ? '1' : '0'); ?>">
                                                 <div class="bt-number-product">
                                                     <?php
                                                     if ($settings['slider_direction'] === 'rtl') {
@@ -435,6 +459,10 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                                 <?php echo esc_html($product->get_name()); ?>
                                                             </a>
                                                         </h4>
+                                                        <?php if (!$product->is_type('variable')) : ?>
+                                                            <?php echo wc_get_stock_html($product); // WPCS: XSS ok. 
+                                                            ?>
+                                                        <?php endif; ?>
                                                         <?php
                                                         if ($product->is_type('variable')) {
                                                             do_action('woozio_woocommerce_template_single_add_to_cart');

@@ -370,6 +370,27 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
             return;
         }
 
+        // Check if any products are selected
+        $has_products = false;
+        if (!empty($settings['hotspot_items'])) {
+            foreach ($settings['hotspot_items'] as $item) {
+                if (!empty($item['id_product'])) {
+                    $has_products = true;
+                    break;
+                }
+            }
+        }
+
+        // Show message if no products selected
+        if (!$has_products) {
+            echo '<div class="bt-elwg-product-overlay-hotspot-style-1--default">';
+            echo '<div class="bt-product-overlay-hotspot-empty-message">';
+            echo '<p>' . esc_html__('Please select products in the hotspot items.', 'woozio') . '</p>';
+            echo '</div>';
+            echo '</div>';
+            return;
+        }
+
         // Build $product_ids array with proper structure
         $product_ids = [];
         $product_count = 0;
@@ -468,11 +489,14 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
                                                 }
                                                 $order_currency = get_woocommerce_currency();
                                                 $product_currencySymbol = get_woocommerce_currency_symbol($order_currency);
+                                                $is_in_stock = $product->is_in_stock();
+                                                $out_of_stock_class = !$is_in_stock ? ' out-of-stock' : '';
                                     ?>
-                                                <li class="bt-hotspot-product-list__item bt-product-item"
+                                                <li class="bt-hotspot-product-list__item bt-product-item<?php echo esc_attr($out_of_stock_class); ?>"
                                                     data-product-currency="<?php echo esc_attr($product_currencySymbol); ?>"
                                                     data-product-single-price="<?php echo esc_attr($product->get_sale_price() ? $product->get_sale_price() : $product->get_regular_price()); ?>"
-                                                    data-product-id="<?php echo esc_attr($product_id); ?>">
+                                                    data-product-id="<?php echo esc_attr($product_id); ?>"
+                                                    data-in-stock="<?php echo esc_attr($is_in_stock ? '1' : '0'); ?>">
                                                     <a class="bt-product-thumbnail" href="<?php echo esc_url($product->get_permalink()); ?>">
                                                         <?php
                                                         if (has_post_thumbnail($product_id)) {
@@ -483,17 +507,20 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
                                                         ?>
                                                     </a>
                                                     <div class="bt-product-content">
-                                                        <h4 class="bt-product-name">
-                                                            <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                                <?php echo esc_html($product->get_name()); ?>
-                                                            </a>
-                                                        </h4>
-                                                        <?php
-                                                        if ($product->is_type('variable')) {
-                                                            do_action('woozio_woocommerce_template_single_add_to_cart');
-                                                        }
-                                                        ?>
-                                                        <div class="bt-product-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></div>
+                                                    <h4 class="bt-product-name">
+                                                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                                            <?php echo esc_html($product->get_name()); ?>
+                                                        </a>
+                                                    </h4>
+                                                    <?php if (!$product->is_type('variable')) : ?>
+                                                        <?php echo wc_get_stock_html($product); // WPCS: XSS ok. ?>
+                                                    <?php endif; ?>
+                                                    <?php
+                                                    if ($product->is_type('variable')) {
+                                                        do_action('woozio_woocommerce_template_single_add_to_cart');
+                                                    }
+                                                    ?>
+                                                        <div class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></div>
                                                     </div>
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">

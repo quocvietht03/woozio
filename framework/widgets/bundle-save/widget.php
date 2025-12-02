@@ -62,17 +62,19 @@ class Widget_BundleSave extends Widget_Base
                     continue;
                 }
 
-                // If simple product, add it
+                // If simple product, add it only if in stock
                 if ($product_obj->is_type('simple')) {
-                    $supported_products[$product->ID] = $product->post_title;
+                    if ($product_obj->is_in_stock()) {
+                        $supported_products[$product->ID] = $product->post_title;
+                    }
                 }
 
-                // If variable product, only add variations (not parent)
+                // If variable product, only add variations (not parent) that are in stock
                 if ($product_obj->is_type('variable')) {
                     $variations = $product_obj->get_available_variations();
                     foreach ($variations as $variation) {
                         $variation_obj = wc_get_product($variation['variation_id']);
-                        if ($variation_obj) {
+                        if ($variation_obj && $variation_obj->is_in_stock()) {
                             $attributes = [];
                             foreach ($variation['attributes'] as $attr_name => $attr_value) {
                                 $attr_label = str_replace('attribute_', '', $attr_name);
