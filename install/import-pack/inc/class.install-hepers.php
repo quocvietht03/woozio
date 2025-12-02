@@ -15,7 +15,7 @@ class Import_Pack_Installer_Helper {
   public static function download_and_install_a_package( $package, $destination, $hook_extra = array(), $folder = false ) {
 
     if ( ! class_exists( 'WP_Upgrader' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
     }
 
     global $wp_filesystem;
@@ -25,12 +25,12 @@ class Import_Pack_Installer_Helper {
         WP_Filesystem();
     }
 
-		@set_time_limit( 60 * 10 );
-		/**
-		 * @var WP_Upgrader $upgrader
-		 */
-		$upgrader = new WP_Upgrader( new Import_Pack_Auto_Install_Upgrader_Skin() );
-		$upgrader->generic_strings();
+	@set_time_limit( 60 * 10 );
+	/**
+	 * @var WP_Upgrader $upgrader
+	 */
+	$upgrader = new WP_Upgrader( new Import_Pack_Auto_Install_Upgrader_Skin() );
+	$upgrader->generic_strings();
     $download = $upgrader->download_package( $package );
 
 		if ( is_wp_error( $download ) ) {
