@@ -1699,8 +1699,10 @@
 				let updated = false;
 				let totalPrice = 0;
 				let hasInvalidVariation = false;
+				let filteredIdsArr = [];
 
-				idsArr = idsArr.map(item => {
+				idsArr.forEach(item => {
+					// Update variation_id for current product being changed
 					if (item.product_id == $productId) {
 						if (item.variation_id != variationId && variationId !== 0) {
 							item.variation_id = variationId;
@@ -1708,33 +1710,71 @@
 						}
 					}
 
-					// Check if this is a variable product that needs a variation selected
+					// Get product item element
+					const $productItemId = $container.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+					
+					// Check product stock status
+					let isInStock = true;
+					
+					// Check if this is a variable product
 					const $form = $container.find(`.variations_form[data-product_id="${item.product_id}"]`);
-					if ($form.length && (!item.variation_id || item.variation_id === 0 || item.variation_id === null)) {
-						hasInvalidVariation = true;
-					}
-
-					// Get price for each variation
+					
 					if ($form.length) {
-						// Product has variations
-						const variations = $form.data('product_variations');
-						if (variations) {
-							const variation = variations.find(v => v.variation_id === item.variation_id);
-							if (variation && variation.display_price) {
-								totalPrice += parseFloat(variation.display_price);
+						// Variable product - check variation stock
+						if (!item.variation_id || item.variation_id === 0 || item.variation_id === null) {
+							// No variation selected yet
+							hasInvalidVariation = true;
+							isInStock = false;
+						//	console.log('Product', item.product_id, '- No variation selected');
+						} else {
+							// Check variation stock from variation data
+							const variations = $form.data('product_variations');
+							if (variations) {
+								// Convert to number for comparison
+								const currentVariationId = parseInt(item.variation_id, 10);
+								const variation = variations.find(v => parseInt(v.variation_id, 10) === currentVariationId);
+								if (variation) {
+									isInStock = variation.is_in_stock ? true : false;
+								} else {
+									isInStock = false;
+								}
 							}
 						}
 					} else {
-						// Simple product - get price from data attribute
-						const $productItemId = $container.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+						// Simple product - check data-in-stock attribute
 						if ($productItemId.length) {
-							const simplePrice = $productItemId.data('product-single-price');
-							if (simplePrice) {
-								totalPrice += parseFloat(simplePrice);
+							const inStockAttr = $productItemId.attr('data-in-stock');
+							if (inStockAttr === '0' || inStockAttr === 0) {
+								isInStock = false;
 							}
 						}
 					}
-					return item;
+
+					// Only include in-stock products in calculations and data-ids
+					if (isInStock) {
+						// Get price for each product
+						if ($form.length) {
+							// Variable product - get price from variation
+							const variations = $form.data('product_variations');
+							if (variations) {
+								const currentVariationId = parseInt(item.variation_id, 10);
+								const variation = variations.find(v => parseInt(v.variation_id, 10) === currentVariationId);
+								if (variation && variation.display_price) {
+									totalPrice += parseFloat(variation.display_price);
+								}
+							}
+						} else {
+							// Simple product - get price from data attribute
+							if ($productItemId.length) {
+								const simplePrice = $productItemId.data('product-single-price');
+								if (simplePrice) {
+									totalPrice += parseFloat(simplePrice);
+								}
+							}
+						}
+						// Add to filtered array only if in stock
+						filteredIdsArr.push(item);
+					}
 				});
 
 				// Update button state based on variations
@@ -1744,9 +1784,9 @@
 					$addSetToCartBtn.removeClass('disabled');
 				}
 
-				if (updated) {
-					$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
-				}
+				// Always update data-ids to reflect current stock status
+				$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
+				
 				// update total price
 				totalPrice = totalPrice.toFixed(2);
 				$addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
@@ -1764,6 +1804,13 @@
 				var variationId = variation.variation_id;
 				if (variationId && variationId !== '0') {
 					var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');
+					if (!variation.is_in_stock ) {
+						$ItemProduct.addClass('out-of-stock');
+						$ItemProduct.attr('data-in-stock', '0');
+					} else {
+						$ItemProduct.removeClass('out-of-stock');
+						$ItemProduct.attr('data-in-stock', '1');
+					}
 					updateHotspotProductVariationId($ItemProduct, variationId, $container);
 					var variations = $form.data('product_variations');
 					if (variations) {
@@ -1808,6 +1855,22 @@
 				productIds = [];
 			}
 
+			// Filter out out-of-stock products before adding to cart
+			productIds = productIds.filter(item => {
+				const $productItem = $container.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
+				if ($productItem.length) {
+					// Check if product has out-of-stock class
+					if ($productItem.hasClass('out-of-stock')) {
+						return false;
+					}
+					// Check data-in-stock attribute
+					const inStockAttr = $productItem.data('in-stock');
+					if (inStockAttr === 0 || inStockAttr === '0') {
+						return false;
+					}
+				}
+				return true;
+			});
 
 			if (productIds.length > 0) {
 				$.ajax({

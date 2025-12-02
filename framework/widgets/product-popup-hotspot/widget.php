@@ -253,7 +253,7 @@ class Widget_ProductPopupHotspot extends Widget_Base
         }
 
         $widget_id = $this->get_id();
-        
+
         // Add mobile tooltip class if enabled
         $mobile_tooltip_class = ($settings['enable_mobile_tooltip_style'] === 'yes') ? ' bt-hotspot-product-mobile' : '';
 
@@ -387,6 +387,10 @@ class Widget_ProductPopupHotspot extends Widget_Base
                                                                     <?php echo esc_html($product->get_name()); ?>
                                                                 </a>
                                                             </h4>
+                                                            <?php if (!$product->is_type('variable')) : ?>
+                                                                <?php echo wc_get_stock_html($product); // WPCS: XSS ok. 
+                                                                ?>
+                                                            <?php endif; ?>
                                                             <?php
                                                             if ($product->is_type('variable')) {
                                                                 do_action('woozio_woocommerce_template_single_add_to_cart');
