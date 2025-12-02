@@ -352,8 +352,9 @@ class Widget_ProductOverlayHotspot extends Widget_Base
                             <?php
                             $product = wc_get_product($item['id_product']);
                             if ($product) :
-                            ?>
-                                <div class="bt-product-item-minimal <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                $is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+                                ?>
+                                <div class="bt-product-item-minimal <?php echo esc_attr($is_variable); ?>" data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                     <div class="bt-product-thumbnail">
                                         <a href="<?php echo esc_url($product->get_permalink()); ?>">
                                             <?php 

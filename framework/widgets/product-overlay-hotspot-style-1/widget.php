@@ -507,20 +507,24 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
                                                         ?>
                                                     </a>
                                                     <div class="bt-product-content">
-                                                    <h4 class="bt-product-name">
-                                                        <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                                                            <?php echo esc_html($product->get_name()); ?>
-                                                        </a>
-                                                    </h4>
-                                                    <?php if (!$product->is_type('variable')) : ?>
-                                                        <?php echo wc_get_stock_html($product); // WPCS: XSS ok. ?>
-                                                    <?php endif; ?>
-                                                    <?php
-                                                    if ($product->is_type('variable')) {
-                                                        do_action('woozio_woocommerce_template_single_add_to_cart');
-                                                    }
-                                                    ?>
-                                                        <div class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></div>
+                                                        <h4 class="bt-product-name">
+                                                            <a href="<?php echo esc_url($product->get_permalink()); ?>">
+                                                                <?php echo esc_html($product->get_name()); ?>
+                                                            </a>
+                                                        </h4>
+                                                        <?php if (!$product->is_type('variable')) : ?>
+                                                            <?php echo wc_get_stock_html($product); // WPCS: XSS ok. ?>
+                                                        <?php endif; ?>
+                                                        <?php
+                                                        if ($product->is_type('variable')) {
+                                                            do_action('woozio_woocommerce_template_single_add_to_cart');
+                                                        }
+                                                        $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                        $price_html  = $product->get_price_html();
+                                                        ?>
+                                                        <div class="bt-price <?php echo esc_attr( $price_class ); ?> ?>">
+                                                             <?php echo wp_kses_post( $price_html ); ?>
+                                                        </div>
                                                     </div>
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">

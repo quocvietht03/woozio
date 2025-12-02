@@ -450,9 +450,11 @@ class Widget_TheStory extends Widget_Base
                 <div class="bt-the-story--items bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>">
                     <div class="swiper js-story-items-slider">
                         <div class="swiper-wrapper">
-                            <?php foreach ($settings['story_items'] as $index => $item) : ?>
+                            <?php foreach ($settings['story_items'] as $index => $item) : 
+                                    $class_active = $index === 0 ? 'active' : '';
+                                ?>
                                 <div class="swiper-slide">
-                                    <div class="bt-the-story--item <?php echo $index === 0 ? 'active' : ''; ?>" data-slide-index="<?php echo esc_attr($index); ?>">
+                                    <div class="bt-the-story--item <?php echo esc_attr($class_active); ?>" data-slide-index="<?php echo esc_attr($index); ?>">
                                         <?php if (!empty($item['story_title'])) : ?>
                                             <h3 class="bt-the-story--title"><?php echo esc_html($item['story_title']); ?></h3>
                                         <?php endif; ?>

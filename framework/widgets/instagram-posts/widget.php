@@ -721,12 +721,16 @@ class Widget_InstagramPosts extends Widget_Base
 			$breakpoints = Plugin::$instance->breakpoints->get_active_breakpoints();
 			$slider_settings = bt_elwg_get_slider_settings($settings, $breakpoints);
 		}
-?>
-		<div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" <?php echo $settings['enable_slider'] === 'yes' ? 'data-slider-settings="' . esc_attr(json_encode($slider_settings)) . '"' : ''; ?>>
+
+		$data_slider_settings = $settings['enable_slider'] === 'yes' ? esc_attr(json_encode($slider_settings)) : '';
+		?>
+		<div class="<?php echo esc_attr(implode(' ', $classes)); ?> bt-slider-offset-sides-<?php echo esc_attr($settings['slider_offset_sides']); ?>" data-slider-settings="<?php echo esc_attr($data_slider_settings); ?>">
 			<?php if ($settings['enable_slider'] === 'yes') : ?>
 				<div class="swiper">
 					<div class="swiper-wrapper">
-						<?php foreach ($settings['gallery'] as $item) : ?>
+						<?php foreach ($settings['gallery'] as $item) : 
+							$image_link = $settings['open_type'] === 'popup' ? $item['url'] : $settings['link']['url'];
+							?>
 							<div class="swiper-slide">
 								<div class="bt-ins-posts--image">
 									<div class="bt-cover-image">
@@ -736,7 +740,17 @@ class Widget_InstagramPosts extends Widget_Base
 											echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
 										} ?>
 									</div>
-									<a href="<?php echo $settings['open_type'] === 'popup' ? esc_url($item['url']) : esc_url($settings['link']['url']); ?>" <?php echo $settings['open_type'] === 'popup' ? 'class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins"' : 'class="bt-icon-view" target="_blank"'; ?>>
+									<?php 
+										if($settings['open_type'] === 'popup') {
+										?>
+											<a href="<?php echo esc_url($item['url']); ?>" class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins">
+										<?php
+										} else {
+										?>
+											<a href="<?php echo esc_url($settings['link']['url']); ?>" class="bt-icon-view" target="_blank">
+										<?php
+										}
+									?>
 										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"></path>
 										</svg>
@@ -776,8 +790,18 @@ class Widget_InstagramPosts extends Widget_Base
 									echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
 								} ?>
 							</div>
-							<a href="<?php echo $settings['open_type'] === 'popup' ? esc_url($item['url']) : esc_url($settings['link']['url']); ?>" <?php echo $settings['open_type'] === 'popup' ? 'class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins"' : 'class="bt-icon-view" target="_blank"'; ?>>
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+							<?php 
+								if($settings['open_type'] === 'popup') {
+								?>
+									<a href="<?php echo esc_url($item['url']); ?>" class="bt-icon-view elementor-clickable" data-elementor-lightbox-slideshow="bt-gallery-ins">
+								<?php
+								} else {
+								?>
+									<a href="<?php echo esc_url($settings['link']['url']); ?>" class="bt-icon-view" target="_blank">
+								<?php
+								}
+							?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"></path>
 								</svg>
 							</a>

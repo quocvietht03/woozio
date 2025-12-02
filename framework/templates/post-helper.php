@@ -144,7 +144,7 @@ if (!function_exists('woozio_post_publish_render')) {
     }
   ?>
     <div class="bt-post--publish">
-      <span> <?php echo $date; ?> </span>
+      <?php echo '<span>'. $date .'</span>'; ?>
     </div>
   <?php
 

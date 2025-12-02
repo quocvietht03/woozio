@@ -696,9 +696,11 @@ class Widget_BannerProductSlider extends Widget_Base
                                 <?php
                                 if (!empty($item['product'])) :
                                     $product = wc_get_product($item['product']);
-                                    if ($product) : ?>
+                                    if ($product) : 
+                                        $is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+                                        ?>
                                         <div class="bt-banner-product-slider--info">
-                                            <div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
+                                            <div class="bt-product-item-minimal active <?php echo esc_attr($is_variable); ?>"
                                                 data-product-id="<?php echo esc_attr($item['product']); ?>">
                                                 <div class="bt-product-thumbnail">
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>">
@@ -713,7 +715,12 @@ class Widget_BannerProductSlider extends Widget_Base
                                                 </div>
                                                 <div class="bt-product-content">
                                                     <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                    <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                    <div class="bt-product-price">
+                                                        <?php 
+                                                            $price_html  = $product->get_price_html();
+                                                            echo wp_kses_post($price_html); 
+                                                        ?>
+                                                    </div>
                                                     <div class="bt-product-add-to-cart">
                                                         <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
                                                             <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>

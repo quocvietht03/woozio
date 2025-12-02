@@ -338,13 +338,13 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                 <?php foreach ($settings['hotspot_items'] as $index => $item) :
                                     $product = wc_get_product($item['id_product']);
                                     if ($product) :
-                                ?>
-                                        <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
-                                            data-product-id="<?php echo esc_attr($item['id_product']); ?>">
-                                            <div class="bt-hotspot-marker"> <?php echo $index + 1; ?>
+                                        ?>
+                                            <div class="bt-hotspot-point elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
+                                                data-product-id="<?php echo esc_attr($item['id_product']); ?>">
+                                                <?php echo '<div class="bt-hotspot-marker">' . $index + 1 . '</div>'; ?>
                                             </div>
-                                        </div>
-                                <?php endif;
+                                        <?php 
+                                    endif;
                                 endforeach; ?>
                             </div>
                         <?php endif; ?>
@@ -437,9 +437,9 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                 <div class="bt-number-product">
                                                     <?php
                                                     if ($settings['slider_direction'] === 'rtl') {
-                                                        echo $total_items;
+                                                        echo esc_html($total_items);
                                                     } else {
-                                                        echo $index;
+                                                        echo esc_html($index);
                                                     }
                                                     ?>
                                                 </div>
@@ -467,8 +467,13 @@ class Widget_ProductSliderBottomHotspot extends Widget_Base
                                                         if ($product->is_type('variable')) {
                                                             do_action('woozio_woocommerce_template_single_add_to_cart');
                                                         }
+                                                        
+                                                        $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                        $price_html  = $product->get_price_html();
                                                         ?>
-                                                        <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
+                                                        <p class="bt-price <?php echo esc_attr( $price_class ); ?>">
+                                                            <?php echo wp_kses_post( $price_html ); ?>
+                                                        </p>
                                                     </div>
                                                     <div class="bt-product-add-to-cart">
                                                         <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>

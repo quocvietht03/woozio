@@ -883,7 +883,7 @@ class Widget_ProductTestimonialSlider extends Widget_Base
                                                     for ($i = 1; $i <= 5; $i++) :
                                                         $filled_class = ($i <= $rating) ? 'filled' : '';
                                                     ?>
-                                                        <span class="star <?php echo $filled_class; ?>">
+                                                        <span class="star <?php echo esc_attr($filled_class); ?>">
                                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                 <path d="M10 1.66667L12.575 6.88334L18.3333 7.725L14.1667 11.7833L15.15 17.5167L10 14.8083L4.85 17.5167L5.83333 11.7833L1.66667 7.725L7.425 6.88334L10 1.66667Z" fill="currentColor" />
                                                             </svg>
@@ -907,8 +907,10 @@ class Widget_ProductTestimonialSlider extends Widget_Base
 
                                         <?php if (!empty($item['id_product'])) :
                                             $product = wc_get_product($item['id_product']);
-                                            if ($product) : ?>
-                                                <div class="bt-product-item-minimal active <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"
+                                            if ($product) : 
+                                                $is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+                                                ?>
+                                                <div class="bt-product-item-minimal active <?php echo esc_attr($is_variable); ?>"
                                                     data-product-id="<?php echo esc_attr($item['id_product']); ?>">
                                                     <div class="bt-product-thumbnail">
                                                         <a href="<?php echo esc_url($product->get_permalink()); ?>">
@@ -923,7 +925,12 @@ class Widget_ProductTestimonialSlider extends Widget_Base
                                                     </div>
                                                     <div class="bt-product-content">
                                                         <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                        <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                        <div class="bt-product-price">
+                                                            <?php 
+                                                                $price_html  = $product->get_price_html();
+                                                                echo wp_kses_post( $price_html );
+                                                            ?>
+                                                        </div>
                                                         <div class="bt-product-add-to-cart">
                                                             <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
                                                                 <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>

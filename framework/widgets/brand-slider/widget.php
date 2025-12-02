@@ -739,16 +739,16 @@ class Widget_BrandSlider extends Widget_Base
 							<?php endif; ?>
 									<div class="bt-brand-slider--image">
 										<?php if ($is_svg && !empty($image_url)) {
-											// Output SVG content
-											
-											$options = [
-												"http" => [
-													"header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
-												]
-											];
-											$context = stream_context_create($options);
-											$svg_content = file_get_contents($image_url, false, $context);
-											echo '<div class="bt-svg">' . $svg_content . '</div>';
+											$response = wp_safe_remote_get( $image_url, array(
+												'timeout' => 20,
+												'headers' => array(
+													'User-Agent' => 'Mozilla/5.0 (compatible; WordPress)',
+												),
+											) );
+											if ( is_wp_error( $response ) ) {
+												return;
+											}
+											echo '<div class="bt-svg">' . wp_remote_retrieve_body( $response ) . '</div>';
 										} else {
 											if (!empty($image_id)) {
 												echo wp_get_attachment_image($image_id, 'medium');

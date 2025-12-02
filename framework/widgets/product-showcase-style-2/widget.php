@@ -670,7 +670,7 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 			'post_status' => 'publish',
 			'orderby' => 'post__in',
 		)
-?>
+		?>
 		<div class="bt-elwg-product-showcase--style-2 bt-layout-<?php echo esc_attr($layout); ?> js-product-showcase">
 			<?php
 			$query = new \WP_Query($args);
@@ -685,8 +685,10 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 					$product_id = $product->get_id();
 					$product_name = $product->get_name();
 					$product_link = get_permalink($product_id);
-			?>
-					<div class="bt-product-showcase bt-product-showcase--horizontal<?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+
+					$is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+					?>
+					<div class="bt-product-showcase bt-product-showcase--horizontal<?php echo esc_attr($is_variable); ?>">
 						<?php if ($layout === 'layout-01') : 
 							// Layout 01: Render product images with thumbnail slider
 							// Get layout from product meta, only allow thumbnail layouts
@@ -843,14 +845,10 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 						?>
 							<div class="bt-product-showcase--item-images">
 								<div class="bt-product-showcase--item-image">
-									<div class="bt-cover-image">
-										<?php echo $product_thumbnail; ?>
-									</div>
+									<?php echo '<div class="bt-cover-image">' . $product_thumbnail . '</div>'; ?>
 								</div>
 								<div class="bt-product-showcase--item-image">
-									<div class="bt-cover-image">
-										<?php echo $gallery_image_html; ?>
-									</div>
+									<?php echo '<div class="bt-cover-image">' . $gallery_image_html . '</div>'; ?>
 								</div>
 							</div>
 						<?php endif; ?>
@@ -875,7 +873,11 @@ class Widget_ProductShowcaseStyle2 extends Widget_Base
 							<div class="bt-product--infor">
 								<div class="bt-product--info">
 									<?php if ($product->get_price_html()) : ?>
-										<div class="bt-product--price"><?php echo $product->get_price_html(); ?></div>
+										<div class="bt-product--price">
+											<?php
+												$price_html = $product->get_price_html();
+												echo wp_kses_post($price_html); 
+											?>
 									<?php endif; ?>
 									<?php do_action('woozio_woocommerce_show_product_loop_sale_flash'); ?>
 								</div>

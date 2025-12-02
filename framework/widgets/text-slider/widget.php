@@ -430,7 +430,7 @@ class Woozio_TextSlider extends Widget_Base
             $wrapper_class .= ' bt-staggered-enabled';
         }
 ?>
-        <div class="<?php echo $wrapper_class; ?>" data-direction="<?php echo esc_attr($slider_direction) ?>" data-speed="<?php echo esc_attr($slider_speed) ?>" data-spacebetween="<?php echo esc_attr($slider_space_between) ?>">
+        <div class="<?php echo esc_attr($wrapper_class); ?>" data-direction="<?php echo esc_attr($slider_direction) ?>" data-speed="<?php echo esc_attr($slider_speed) ?>" data-spacebetween="<?php echo esc_attr($slider_space_between) ?>">
             <ul class="bt-text-slider swiper-wrapper">
                 <?php foreach ($settings['list'] as $index => $item): ?>
                     <li class="bt-text--item swiper-slide">
@@ -445,13 +445,16 @@ class Woozio_TextSlider extends Widget_Base
 
                             // Handle SVG files differently
                             if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
-                                $options = [
-                                    "http" => [
-                                        "header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
-                                    ]
-                                ];
-                                $context = stream_context_create($options);
-                                echo file_get_contents($image_url, false, $context);
+                                $response = wp_safe_remote_get( $image_url, array(
+                                    'timeout' => 20,
+                                    'headers' => array(
+                                        'User-Agent' => 'Mozilla/5.0 (compatible; WordPress)',
+                                    ),
+                                ) );
+                                if ( is_wp_error( $response ) ) {
+                                    return;
+                                }
+                                echo wp_remote_retrieve_body( $response );
                             } else {
                                 echo wp_get_attachment_image($image_id, 'medium');
                             }
@@ -460,7 +463,7 @@ class Woozio_TextSlider extends Widget_Base
                             echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="' . esc_html__('Awaiting image', 'woozio') . '">';
                         }
                         ?>
-                        <span><?php echo $item['text_item']; ?></span>
+                        <?php echo '<span>' . $item['text_item'] . '</span>'; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

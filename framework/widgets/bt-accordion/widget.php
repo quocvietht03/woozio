@@ -301,10 +301,12 @@ class Widget_BtAccordion extends Widget_Base
 ?>
         <div class="bt-elwg-accordion--default" data-open-first="<?php echo esc_attr($settings['open_first_item']); ?>">
             <div class="bt-elwg-accordion-inner">
-                <?php foreach ($settings['accordion_list'] as $index => $item): ?>
+                <?php foreach ($settings['accordion_list'] as $index => $item): 
+                        $class_active = ($index === 0 && $settings['open_first_item'] === 'yes') ? ' active' : '';
+                    ?>
                     <div class="accordion-item">
                         <div class="accordion-item-inner">
-                            <div class="bt-accordion-title<?php echo ($index === 0 && $settings['open_first_item'] === 'yes') ? ' active' : ''; ?>">
+                            <div class="bt-accordion-title<?php echo esc_attr($class_active); ?>">
                                 <div class="bt-accordion-title-content">
                                     <?php if (!empty($item['accordion_icon']['value'])): ?>
                                         <div class="bt-accordion-icon">
@@ -320,8 +322,10 @@ class Widget_BtAccordion extends Widget_Base
                                     <rect class="horizontal-line" y="70" width="160" height="15" rx="7" ry="7" />
                                 </svg>
                             </div>
-                            <?php if (!empty($item['accordion_description'])): ?>
-                                <div class="bt-accordion-content"<?php echo ($index === 0 && $settings['open_first_item'] === 'yes') ? ' style="display: block;"' : ''; ?>>
+                            <?php if (!empty($item['accordion_description'])): 
+                                    $style_active = ($index === 0 && $settings['open_first_item'] === 'yes') ? 'display: block;' : '';
+                                ?>
+                                <div class="bt-accordion-content" style="<?php echo esc_attr($style_active); ?>">
                                     <?php echo esc_html($item['accordion_description']) ?>
                                 </div>
                             <?php endif; ?>

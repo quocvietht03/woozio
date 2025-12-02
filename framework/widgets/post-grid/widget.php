@@ -765,9 +765,9 @@ class Widget_PostGrid extends Widget_Base
 		if ($settings['layout'] == 'layout-02') {
 			$excerpt = 'yes';
 		} 
-
-?>
-		<div class="bt-elwg-post-grid--<?php echo $settings['layout']; ?>">
+		$elwg_class = 'bt-elwg-post-grid--' . $settings['layout'];
+		?>
+		<div class="<?php echo esc_attr($elwg_class); ?>">
 			<?php
 			if ($query->have_posts()) {
 			?>

@@ -521,8 +521,10 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                         </div>
                     <?php endif; ?>
                     <div class="bt-accordion-nav">
-                        <?php foreach ($settings['accordion_items'] as $index => $item) : ?>
-                            <div class="bt-accordion-nav-item <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
+                        <?php foreach ($settings['accordion_items'] as $index => $item) : 
+                            $class_active = $index === 0 ? 'active' : '';
+                            ?>
+                            <div class="bt-accordion-nav-item <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <h3 class="bt-accordion-nav-title"><?php echo esc_html($item['accordion_title']); ?></h3>
                                 <?php if (!empty($item['accordion_description'])) : ?>
                                     <p class="bt-accordion-description"><?php echo esc_html($item['accordion_description']); ?></p>
@@ -547,8 +549,9 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                                         $product_id = $accordion_item['accordion_products'];
                                         $product = wc_get_product($product_id);
                                         if ($product) {
-                                    ?>
-                                            <div class="bt-product-item <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+                                            $is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+                                        ?>
+                                            <div class="bt-product-item <?php echo esc_attr($is_variable); ?>">
                                                 <?php
                                                 $post_thumbnail_id = $product->get_image_id();
 
@@ -569,7 +572,12 @@ class Widget_AccordionWithProductSlider extends Widget_Base
                                                 ?>
                                                 <div class="bt-product-content">
                                                     <h4 class="bt-product-title"><a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                    <div class="bt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                                                    <div class="bt-product-price">
+                                                        <?php 
+                                                            $price_html  = $product->get_price_html();
+                                                            echo wp_kses_post($price_html); 
+                                                        ?>
+                                                    </div>
                                                     <div class="bt-product-add-to-cart">
                                                         <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>
                                                             <a href="?add-to-cart=<?php echo esc_attr($product->get_id()); ?>" aria-describedby="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr($product->get_id()); ?>" data-quantity="1" class="bt-button product_type_simple add_to_cart_button ajax_add_to_cart bt-button-hover" data-product_id="<?php echo esc_attr($product->get_id()); ?>" data-product_sku="" rel="nofollow"><?php echo esc_html__('Add to cart', 'woozio') ?></a>

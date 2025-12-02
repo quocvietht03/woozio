@@ -699,8 +699,12 @@ class Widget_ProductBannerScrollHotspot extends Widget_Base
                                                     do_action('woozio_woocommerce_template_single_add_to_cart');
                                                 }
                                                 ?>
-                                                <div class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
-                                                    <?php echo $product->get_price_html(); ?>
+                                                <?php
+                                                $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                $price_html  = $product->get_price_html();
+                                                ?>
+                                                <div class="bt-price <?php echo esc_attr( $price_class ); ?>">
+                                                    <?php echo wp_kses_post( $price_html ); ?>
                                                 </div>
                                             </div>
                                             <div class="bt-product-add-to-cart">
