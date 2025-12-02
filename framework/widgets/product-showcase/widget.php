@@ -428,8 +428,9 @@ class Widget_ProductShowcase extends Widget_Base
 						$gallery_image_html = $product_thumbnail;
 					}
 
-			?>
-					<div class="bt-product-showcase <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+					$is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+					?>
+					<div class="bt-product-showcase <?php echo esc_attr($is_variable); ?>">
 						<div class="bt-col-product bt-product-showcase--item-content js-check-bg-color">
 							<div class="bt-product--category">
 								<?php
@@ -451,7 +452,12 @@ class Widget_ProductShowcase extends Widget_Base
 							<div class="bt-product--infor">
 								<div class="bt-product--info">
 									<?php if ($product->get_price_html()) : ?>
-										<div class="bt-product--price"><?php echo $product->get_price_html(); ?></div>
+										<div class="bt-product--price">
+											<?php 
+												$price_html = $product->get_price_html();
+												echo wp_kses_post($price_html); 
+											?>
+										</div>
 									<?php endif; ?>
 									<?php do_action('woozio_woocommerce_show_product_loop_sale_flash'); ?>
 								</div>
@@ -472,14 +478,10 @@ class Widget_ProductShowcase extends Widget_Base
 							</div>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-image">
-							<div class="bt-cover-image">
-								<?php echo $product_thumbnail; ?>
-							</div>
+							<?php echo '<div class="bt-cover-image">' . $product_thumbnail . '</div>'; ?>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-image">
-							<div class="bt-cover-image">
-								<?php echo $gallery_image_html; ?>
-							</div>
+							<?php echo '<div class="bt-cover-image">' . $gallery_image_html . '</div>'; ?>
 						</div>
 					</div>
 			<?php

@@ -811,8 +811,9 @@ class Widget_OffersSlider extends Widget_Base
                                 $link_url = !empty($item['offer_link']['url']) ? $item['offer_link']['url'] : '#';
                                 $link_target = !empty($item['offer_link']['is_external']) ? ' target="_blank"' : '';
                                 $link_nofollow = !empty($item['offer_link']['nofollow']) ? ' rel="nofollow"' : '';
+
+                                echo '<a href="'. esc_url($link_url) .'" '. $link_target . $link_nofollow .' class="bt-offers-slider--link">'
                                 ?>
-                                <a href="<?php echo esc_url($link_url); ?>"<?php echo $link_target . $link_nofollow; ?> class="bt-offers-slider--link">
                                     <div class="bt-offers-slider--image">
                                         <div class="bt-cover-image">
                                             <?php if ($item['content_type'] === 'image') : ?>
@@ -841,7 +842,7 @@ class Widget_OffersSlider extends Widget_Base
                                             <div class="bt-offers-slider--subtitle"><?php echo esc_html($item['offer_subtitle']); ?></div>
                                         <?php endif; ?>
                                     </div>
-                                </a>
+                                <?php echo '</a>' ?>
                             </div>
                         </div>
                     <?php endforeach; ?>

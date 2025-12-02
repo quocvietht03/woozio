@@ -538,8 +538,10 @@ class Widget_TitleNavWithSlider extends Widget_Base
             <div class="bt-title-nav-with-slider">
                 <div class="bt-nav-left">
                     <div class="bt-nav-list">
-                        <?php foreach ($settings['nav_items'] as $index => $item) : ?>
-                            <div class="bt-nav-item <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo $index; ?>">
+                        <?php foreach ($settings['nav_items'] as $index => $item) : 
+                                $class_active = $index === 0 ? 'active' : '';
+                            ?>
+                            <div class="bt-nav-item <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
                                 <h3 class="bt-nav-title"><?php echo esc_html($item['nav_title']); ?></h3>
                             </div>
                         <?php endforeach; ?>

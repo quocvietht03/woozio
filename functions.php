@@ -51,26 +51,25 @@ function woozio_fix_mime_type_glb($data, $file, $filename, $mimes, $real_mime)
 add_filter('wp_check_filetype_and_ext', 'woozio_fix_mime_type_glb', 10, 5);
 
 /* Get icon SVG HTML */
-function woozio_get_icon_svg_html($icon_file_name)
-{
+function woozio_get_icon_svg_html( $icon_file_name ) {
+    if ( empty( $icon_file_name ) ) {
+        return 'Error: Invalid file name or file name is missing.';
+    }
 
-	if (!empty($icon_file_name)) {
-		$file_path =  get_template_directory_uri() . '/assets/images/' . $icon_file_name . '.svg';
-		$options = [
-			"http" => [
-				"header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
-			]
-		];
-		$context = stream_context_create($options);
-		$file = file_get_contents($file_path, false, $context);
-		if ($file !== false) {
-			return $file;
-		} else {
-			return 'Error: File does not exist.';
-		}
-	} else {
-		return 'Error: Invalid file name or file name is missing.';
-	}
+    $icon_file_name = sanitize_file_name( $icon_file_name );
+    $file_path = get_template_directory() . '/assets/images/' . $icon_file_name . '.svg';
+
+    if ( ! file_exists( $file_path ) ) {
+        return 'Error: File does not exist.';
+    }
+
+    $svg = file_get_contents( $file_path );
+
+    if ( false === $svg ) {
+        return 'Error: Unable to read file.';
+    }
+
+    return $svg;
 }
 
 /* Enqueue Script */

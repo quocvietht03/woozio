@@ -562,25 +562,21 @@ function woozio_display_product_countdown_and_sale_marquee()
                 // Generate marquee items
                 $marquee_items = '';
                 for ($i = 0; $i < 5; $i++) {
-                    $marquee_items .= '<div class="bt-marquee-item">' . $sale_text . '</div>';
+                    $marquee_items .= '<div class="bt-marquee-item">' . wp_kses_post($sale_text) . '</div>';
                     $marquee_items .= '<div class="bt-marquee-separator"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="23" viewBox="0 0 17 23" fill="none">
-	  <path d="M16.2991 11.0156L5.79911 22.2656C5.68784 22.3844 5.54097 22.4637 5.38065 22.4917C5.22034 22.5196 5.05528 22.4947 4.91039 22.4206C4.7655 22.3465 4.64863 22.2273 4.57743 22.0809C4.50623 21.9346 4.48455 21.7691 4.51568 21.6094L5.89005 14.7347L0.487238 12.7059C0.371205 12.6625 0.267731 12.5911 0.186059 12.4979C0.104388 12.4048 0.0470632 12.2928 0.0192066 12.1721C-0.00865008 12.0514 -0.0061709 11.9257 0.0264224 11.8061C0.0590157 11.6866 0.120708 11.577 0.205988 11.4872L10.706 0.237181C10.8173 0.118433 10.9641 0.0390974 11.1244 0.0111465C11.2848 -0.0168043 11.4498 0.00814581 11.5947 0.082232C11.7396 0.156318 11.8565 0.27552 11.9277 0.421851C11.9989 0.568182 12.0205 0.7337 11.9894 0.893431L10.6113 7.77562L16.0141 9.80156C16.1293 9.84525 16.2319 9.91664 16.313 10.0094C16.394 10.1022 16.4509 10.2135 16.4787 10.3335C16.5065 10.4535 16.5044 10.5785 16.4724 10.6975C16.4404 10.8165 16.3796 10.9257 16.2954 11.0156H16.2991Z" fill="white"/>
-	</svg></div>';
+                        <path d="M16.2991 11.0156L5.79911 22.2656C5.68784 22.3844 5.54097 22.4637 5.38065 22.4917C5.22034 22.5196 5.05528 22.4947 4.91039 22.4206C4.7655 22.3465 4.64863 22.2273 4.57743 22.0809C4.50623 21.9346 4.48455 21.7691 4.51568 21.6094L5.89005 14.7347L0.487238 12.7059C0.371205 12.6625 0.267731 12.5911 0.186059 12.4979C0.104388 12.4048 0.0470632 12.2928 0.0192066 12.1721C-0.00865008 12.0514 -0.0061709 11.9257 0.0264224 11.8061C0.0590157 11.6866 0.120708 11.577 0.205988 11.4872L10.706 0.237181C10.8173 0.118433 10.9641 0.0390974 11.1244 0.0111465C11.2848 -0.0168043 11.4498 0.00814581 11.5947 0.082232C11.7396 0.156318 11.8565 0.27552 11.9277 0.421851C11.9989 0.568182 12.0205 0.7337 11.9894 0.893431L10.6113 7.77562L16.0141 9.80156C16.1293 9.84525 16.2319 9.91664 16.313 10.0094C16.394 10.1022 16.4509 10.2135 16.4787 10.3335C16.5065 10.4535 16.5044 10.5785 16.4724 10.6975C16.4404 10.8165 16.3796 10.9257 16.2954 11.0156H16.2991Z" fill="white"/>
+                    </svg></div>';
                 }
-        ?>
+                ?>
                 <div class="bt-product-sale-marquee">
                     <div class="bt-marquee">
-                        <div class="bt-marquee-items">
-                            <?php echo $marquee_items; ?>
-                        </div>
+                        <?php echo '<div class="bt-marquee-items">' . $marquee_items . '</div>'; ?>
                     </div>
                     <div class="bt-marquee">
-                        <div class="bt-marquee-items">
-                            <?php echo $marquee_items; ?>
-                        </div>
+                        <?php echo '<div class="bt-marquee-items">' . $marquee_items . '</div>'; ?>
                     </div>
                 </div>
-    <?php
+            <?php
             }
         }
     }
@@ -1070,7 +1066,7 @@ function woozio_product_field_radio_html($slug = '', $field_title = '', $field_v
             }
         }
     ?>
-        <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . $slug; ?> bt-field-mode-<?php echo $category_mode; ?>" data-name="<?php echo esc_attr($slug); ?>">
+        <div class="bt-form-field bt-field-type-radio <?php echo 'bt-field-' . esc_attr($slug); ?> bt-field-mode-<?php echo esc_attr($category_mode); ?>" data-name="<?php echo esc_attr($slug); ?>">
             <div class="bt-field-title">
                 <?php echo esc_html($field_title_default) ?>
                 <span class="bt-field-toggle">
@@ -1881,7 +1877,7 @@ function woozio_products_compare()
                                     <?php } ?>
                                     <?php if (in_array('price', $fields_show_compare)) { ?>
                                         <div class="bt-table--col bt-price">
-                                            <?php echo '<p>' . $product_price . '</p>'; ?>
+                                            <?php echo '<p>' . wp_kses_post($product_price) . '</p>'; ?>
                                         </div>
                                     <?php } ?>
                                     <?php if (in_array('rating', $fields_show_compare)) { ?>
@@ -1975,8 +1971,9 @@ function woozio_products_compare()
                     <?php
                     //     if ($ex_items > 0) {
                     for ($i = 0; $i < 3; $i++) {
+                        $class_active = ($i < $ex_items) ? ' active' : '';
                     ?>
-                        <div class="bt-table--row bt-product-add-compare<?php echo ($i < $ex_items) ? ' active' : ''; ?>">
+                        <div class="bt-table--row bt-product-add-compare<?php echo esc_attr($class_active); ?>">
                             <div class="bt-table--col bt-thumb">
                                 <div class="bt-cover-image">
                                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" fill="currentColor">
@@ -2180,14 +2177,14 @@ function woozio_products_wishlist()
                         </h3>
                         <?php
                         if ($product_price) {
-                            echo '<span class="bt-price-mobile">' . $product_price . '</span>';
+                            echo '<span class="bt-price-mobile">' . wp_kses_post($product_price) . '</span>';
                         }
                         ?>
                     </div>
                     <div class="bt-table--col bt-product-price<?php echo !$product->is_type('simple') ? ' bt-type-variable' : ''; ?>">
                         <?php
                         if ($product_price) {
-                            echo '<span>' . $product_price . '</span>';
+                            echo '<span>' . wp_kses_post($product_price) . '</span>';
                         }
                         ?>
                     </div>
@@ -3542,16 +3539,34 @@ function woozio_woocommerce_single_product_more_information()
             </div>
         <?php } ?>
 
-        <?php if ($store_location) { ?>
+        <?php if ($store_location) { 
+                $has_map = $maps_store_location ? 'bt-has-map' : '';
+            ?>
             <div class="bt-store-location">
                 <div id="bt_store_location" class="bt-store-location__popup mfp-content__popup mfp-hide">
-                    <div class="bt-store-location__content mfp-content__inner <?php echo $maps_store_location ? 'bt-has-map' : ''; ?>">
+                    <div class="bt-store-location__content mfp-content__inner <?php echo esc_attr($has_map); ?>">
                         <div class="bt-store-location__text">
-                            <?php echo $store_location; ?>
+                            <?php echo wp_kses_post($store_location); ?>
                         </div>
                         <?php if ($maps_store_location) { ?>
                             <div class="bt-store-location__map">
-                                <?php echo $maps_store_location; ?>
+                                <?php
+                                    echo wp_kses(
+                                        $maps_store_location,
+                                        array(
+                                            'iframe' => array(
+                                                'src'               => true,
+                                                'width'             => true,
+                                                'height'            => true,
+                                                'style'             => true,
+                                                'allowfullscreen'   => true,
+                                                'loading'           => true,
+                                                'referrerpolicy'    => true,
+                                                'frameborder'       => true,
+                                            ),
+                                        )
+                                    );
+                                ?>
                             </div>
                         <?php } ?>
                     </div>
@@ -3815,10 +3830,11 @@ function woozio_render_product_info_toggle()
             $i++;
             $is_first = ($i === 1);
             $is_active = ($toggle_state === 'all') || ($toggle_state === 'first' && $is_first);
-        ?>
+            $class_active = $is_active ? 'active' : '';
+            ?>
             <div class="bt-item">
                 <div class="bt-item-inner">
-                    <div class="bt-item-title <?php echo $is_active ? 'active' : ''; ?>" data-tab="<?php echo esc_attr($key); ?>">
+                    <div class="bt-item-title <?php echo esc_attr($class_active); ?>" data-tab="<?php echo esc_attr($key); ?>">
                         <h3><?php echo wp_kses_post(apply_filters('woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key)); ?></h3>
                         <svg xmlns="http://www.w3.org/2000/svg" class="plus" width="18" height="18" viewBox="0 0 160 160">
                             <rect class="vertical-line" x="70" width="15" height="160" rx="7" ry="7" />
@@ -4551,13 +4567,15 @@ function woozio_get_bundle_products()
         ob_start();
     ?>
         <div class="bt-modal-product--item">
-            <div class="bt-product-thumb">
-                <?php echo $product_image; ?>
-            </div>
+            <?php echo '<div class="bt-product-thumb">' . $product_image . '</div>'; ?>
+            
             <div class="bt-product-info">
                 <h4 class="bt-product-name"><?php echo esc_html($product_name); ?></h4>
                 <div class="bt-product-price">
-                    <?php echo $product->get_price_html(); ?>
+                    <?php 
+                        $price_html  = $product->get_price_html();
+                        echo wp_kses_post( $price_html );
+                    ?>
                 </div>
                 <?php if ($variation_text) : ?>
                     <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>
@@ -4633,16 +4651,17 @@ function woozio_get_bundle_product_item()
         data-price="<?php echo esc_attr($price); ?>"
         data-regular-price="<?php echo esc_attr($regular_price ? $regular_price : $price); ?>">
         <div class="bt-product-thumb">
-            <a href="<?php echo esc_url($product_link); ?>">
-                <?php echo $product_image; ?>
-            </a>
+            <?php echo '<a href="'. esc_url($product_link) .'">'. $product_image .'</a>'; ?>
         </div>
         <div class="bt-product-info">
             <h4 class="bt-product-name">
-                <a href="<?php echo esc_url($product_link); ?>"><?php echo esc_html($product_name); ?></a>
+                <?php echo '<a href="'. esc_url($product_link) .'">'. esc_html($product_name) .'</a>'; ?>
             </h4>
             <div class="bt-product-price">
-                <?php echo $product->get_price_html(); ?>
+                <?php 
+                    $price_html  = $product->get_price_html();
+                    echo wp_kses_post( $price_html );
+                ?>
             </div>
             <?php if ($variation_text) : ?>
                 <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>
@@ -4762,6 +4781,7 @@ function woozio_display_frequently_bought_together($product_id = null)
             $current_price = $product->get_price();
             $current_regular_price = $product->get_regular_price() ? $product->get_regular_price() : $current_price;
             $is_variable = $product->is_type('variable');
+            $data_variable = $is_variable ? '1' : '0';
             $current_name = $product->get_name();
 
             // If it's a variable product, we'll need to get the selected variation via JS
@@ -4770,7 +4790,7 @@ function woozio_display_frequently_bought_together($product_id = null)
 
             <div class="fbt-product-item fbt-current-product"
                 data-product-id="<?php echo esc_attr($current_product_id); ?>"
-                data-is-variable="<?php echo $is_variable ? '1' : '0'; ?>"
+                data-is-variable="<?php echo esc_attr($data_variable); ?>"
                 data-price="<?php echo esc_attr($current_price); ?>"
                 data-regular-price="<?php echo esc_attr($current_regular_price); ?>">
                 <div class="fbt-product-checkbox">
@@ -4782,9 +4802,7 @@ function woozio_display_frequently_bought_together($product_id = null)
                     <label for="fbt-product-current"></label>
                 </div>
                 <div class="fbt-product-image">
-                    <a href="<?php echo esc_url($product->get_permalink()); ?>">
-                        <?php echo $product->get_image('woocommerce_gallery_thumbnail'); ?>
-                    </a>
+                    <?php echo '<a href="'. esc_url($product->get_permalink()) .'">'. $product->get_image('woocommerce_gallery_thumbnail') .'</a>'; ?>
                 </div>
                 <div class="fbt-product-details">
                     <h3 class="fbt-product-name">
@@ -4796,7 +4814,12 @@ function woozio_display_frequently_bought_together($product_id = null)
                         </a>
 
                     </h3>
-                    <div class="fbt-product-price"><?php echo wp_kses_post($product->get_price_html()); ?></div>
+                    <div class="fbt-product-price">
+                        <?php 
+                            $price_html  = $product->get_price_html();
+                            echo wp_kses_post( $price_html );
+                        ?>
+                    </div>
                 </div>
             </div>
 
@@ -4844,9 +4867,7 @@ function woozio_display_frequently_bought_together($product_id = null)
                         <label for="fbt-product-<?php echo esc_attr($fbt_product->get_id()); ?>"></label>
                     </div>
                     <div class="fbt-product-image">
-                        <a href="<?php echo esc_url($fbt_product->get_permalink()); ?>">
-                            <?php echo $fbt_product->get_image('woocommerce_gallery_thumbnail'); ?>
-                        </a>
+                        <?php echo '<a href="'. esc_url($fbt_product->get_permalink());'">'. $fbt_product->get_image('woocommerce_gallery_thumbnail') .'</a>'; ?>
                     </div>
                     <div class="fbt-product-details">
                         <h3 class="fbt-product-name">
@@ -5081,8 +5102,14 @@ if (!function_exists('woozio_track_order_callback')) {
                     <div class="bt-timeline-progress">
 
                         <div class="bt-timeline-steps">
-                            <div class="bt-progress-line" style="--progress-width: <?php echo ($current_step - 1) * 25; ?>%;"></div>
-                            <div class="bt-step <?php echo $current_step >= 1 ? 'completed' : ''; ?> <?php echo $current_step == 1 ? 'active' : ''; ?>">
+                            <?php $progress_percent = ($current_step - 1) * 25; ?>
+                            <div class="bt-progress-line" style="--progress-width: <?php echo esc_attr($progress_percent); ?>%;"></div>
+                            
+                            <?php 
+                                $is_completed = $current_step >= 1 ? 'completed' : '';
+                                $is_active = $current_step == 1 ? 'active' : '';
+                            ?>
+                            <div class="bt-step <?php echo esc_attr($is_completed); ?> <?php echo esc_attr($is_active); ?>">
                                 <div class="bt-step-circle">
                                     <?php if ($current_step > 1) : ?>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -5092,7 +5119,12 @@ if (!function_exists('woozio_track_order_callback')) {
                                 </div>
                                 <div class="bt-step-label"><?php esc_html_e('Placed', 'woozio'); ?></div>
                             </div>
-                            <div class="bt-step <?php echo $current_step >= 2 ? 'completed' : ''; ?> <?php echo $current_step == 2 ? 'active' : ''; ?>">
+
+                            <?php 
+                                $is_completed = $current_step >= 2 ? 'completed' : '';
+                                $is_active = $current_step == 2 ? 'active' : '';
+                            ?>
+                            <div class="bt-step <?php echo esc_attr($is_completed); ?> <?php echo esc_attr($is_active); ?>">
                                 <div class="bt-step-circle">
                                     <?php if ($current_step > 2) : ?>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -5102,7 +5134,12 @@ if (!function_exists('woozio_track_order_callback')) {
                                 </div>
                                 <div class="bt-step-label"><?php esc_html_e('Approved', 'woozio'); ?></div>
                             </div>
-                            <div class="bt-step <?php echo $current_step >= 3 ? 'completed' : ''; ?> <?php echo $current_step == 3 ? 'active' : ''; ?>">
+
+                            <?php 
+                                $is_completed = $current_step >= 3 ? 'completed' : '';
+                                $is_active = $current_step == 3 ? 'active' : '';
+                            ?>
+                            <div class="bt-step <?php echo esc_attr($is_completed); ?> <?php echo esc_attr($is_active); ?>">
                                 <div class="bt-step-circle">
                                     <?php if ($current_step > 3) : ?>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -5112,7 +5149,12 @@ if (!function_exists('woozio_track_order_callback')) {
                                 </div>
                                 <div class="bt-step-label"><?php esc_html_e('Processed', 'woozio'); ?></div>
                             </div>
-                            <div class="bt-step <?php echo $current_step >= 4 ? 'completed' : ''; ?> <?php echo $current_step == 4 ? 'active' : ''; ?>">
+
+                            <?php 
+                                $is_completed = $current_step >= 4 ? 'completed' : '';
+                                $is_active = $current_step == 4 ? 'active' : '';
+                            ?>
+                            <div class="bt-step <?php echo esc_attr($is_completed); ?> <?php echo esc_attr($is_active); ?>">
                                 <div class="bt-step-circle">
                                     <?php if ($current_step > 4) : ?>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -5122,7 +5164,12 @@ if (!function_exists('woozio_track_order_callback')) {
                                 </div>
                                 <div class="bt-step-label"><?php esc_html_e('Shipped', 'woozio'); ?></div>
                             </div>
-                            <div class="bt-step <?php echo $current_step >= 5 ? 'completed' : ''; ?> <?php echo $current_step == 5 ? 'active' : ''; ?>">
+
+                            <?php 
+                                $is_completed = $current_step >= 5 ? 'completed' : '';
+                                $is_active = $current_step == 5 ? 'active' : '';
+                            ?>
+                            <div class="bt-step <?php echo esc_attr($is_completed); ?> <?php echo esc_attr($is_active); ?>">
                                 <div class="bt-step-circle">
                                     <?php if ($current_step >= 5) : ?>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">

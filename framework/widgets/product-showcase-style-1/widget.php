@@ -562,16 +562,16 @@ class Widget_ProductShowcaseStyle1 extends Widget_Base
 					} else {
 						$product_thumbnail = '<img src="' . esc_url(wc_placeholder_img_src('woocommerce_thumbnail')) . '" alt="' . esc_html__('Awaiting product image', 'woozio') . '" class="wp-post-image" />';
 					}
-			?>
-					<div class="bt-product-showcase <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>">
+
+					$is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
+					?>
+					<div class="bt-product-showcase <?php echo esc_attr($is_variable); ?>">
 						<div class="bt-col-product bt-product-showcase--item-image">
-							<div class="bt-cover-image">
-								<?php if ($settings['image_custom']['id']) : ?>
-									<?php echo wp_get_attachment_image($settings['image_custom']['id'], $thumbnail_size); ?>
-								<?php else : ?>
-									<?php echo $product_thumbnail; ?>
-								<?php endif; ?>
-							</div>
+							<?php if ($settings['image_custom']['id']) : ?>
+								<?php echo '<div class="bt-cover-image">' . wp_get_attachment_image($settings['image_custom']['id'], $thumbnail_size) . '</div>'; ?>
+							<?php else : ?>
+								<?php echo '<div class="bt-cover-image">' . $product_thumbnail . '</div>'; ?>
+							<?php endif; ?>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-content js-check-bg-color">
 							<div class="bt-product--category">
@@ -594,7 +594,12 @@ class Widget_ProductShowcaseStyle1 extends Widget_Base
 							<div class="bt-product--infor">
 								<div class="bt-product--info">
 									<?php if ($product->get_price_html()) : ?>
-										<div class="bt-product--price"><?php echo $product->get_price_html(); ?></div>
+										<div class="bt-product--price">
+											<?php
+												$price_html = $product->get_price_html();
+												echo wp_kses_post($price_html); 
+											?>
+										</div>
 									<?php endif; ?>
 									<?php do_action('woozio_woocommerce_show_product_loop_sale_flash'); ?>
 								</div>

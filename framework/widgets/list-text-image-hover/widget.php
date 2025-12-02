@@ -378,11 +378,22 @@ class Widget_ListTextImageHover extends Widget_Base
                     $target = $has_link && $link['is_external'] ? ' target="_blank"' : '';
                     $nofollow = $has_link && $link['nofollow'] ? ' rel="nofollow"' : '';
                     // Only set active for the exact default active index
-                    $is_active = ($index === $default_active_index);
-                ?>
-                    <div class="list-text-image-hover--item<?php echo $is_active ? ' active' : ''; ?><?php echo $has_link ? ' has-link' : ''; ?>" data-index="<?php echo esc_attr($index); ?>" data-image-id="<?php echo esc_attr($index); ?>">
-                        <?php if ($has_link) : ?>
-                            <a href="<?php echo esc_url($link['url']); ?>" class="list-text-image-hover--link" <?php echo $target . $nofollow; ?>>
+                    $classes = array(
+                        'list-text-image-hover--item',
+                    );
+                    if ( ! empty( $index === $default_active_index ) ) {
+                        $classes[] = 'active';
+                    }
+                    if ( ! empty( $has_link ) ) {
+                        $classes[] = 'has-link';
+                    }
+                    $class_string = implode( ' ', $classes );
+
+                    ?>
+                    <div class="<?php echo esc_attr($class_string); ?>" data-index="<?php echo esc_attr($index); ?>" data-image-id="<?php echo esc_attr($index); ?>">
+                        <?php if ($has_link) : 
+                                echo '<a href="'. esc_url($link['url']) .'" class="list-text-image-hover--link" '. $target . $nofollow .'>';
+                            ?>
                             <?php endif; ?>
                             <div class="list-text-image-hover--container">
                                 <h3 class="list-text-image-hover--title">
@@ -415,8 +426,10 @@ class Widget_ListTextImageHover extends Widget_Base
                                 <?php endif; ?>
                             </div>
                             <?php if ($has_link) : ?>
-                            </a>
-                        <?php endif; ?>
+                            
+                        <?php 
+                        echo '</a>';
+                        endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>

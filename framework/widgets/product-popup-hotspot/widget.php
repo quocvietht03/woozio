@@ -294,7 +294,13 @@ class Widget_ProductPopupHotspot extends Widget_Base
                                                 </a>
                                                 <div class="bt-product-content">
                                                     <h4><a href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                    <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
+                                                    <?php
+                                                    $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                    $price_html  = $product->get_price_html();
+                                                    ?>
+                                                    <p class="bt-price <?php echo esc_attr( $price_class ); ?>">
+                                                        <?php echo wp_kses_post( $price_html ); ?>
+                                                    </p>
                                                 </div>
                                             </div>
                                         <?php endif; ?>
@@ -385,8 +391,13 @@ class Widget_ProductPopupHotspot extends Widget_Base
                                                             if ($product->is_type('variable')) {
                                                                 do_action('woozio_woocommerce_template_single_add_to_cart');
                                                             }
+                                                            
+                                                            $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                            $price_html  = $product->get_price_html();
                                                             ?>
-                                                            <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
+                                                            <p class="bt-price <?php echo esc_attr( $price_class ); ?>">
+                                                                <?php echo wp_kses_post( $price_html ); ?>
+                                                            </p>
                                                         </div>
                                                         <div class="bt-product-add-to-cart">
                                                             <?php if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) : ?>

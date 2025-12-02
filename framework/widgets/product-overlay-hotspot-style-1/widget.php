@@ -492,8 +492,13 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
                                                         if ($product->is_type('variable')) {
                                                             do_action('woozio_woocommerce_template_single_add_to_cart');
                                                         }
+
+                                                        $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                        $price_html  = $product->get_price_html();
                                                         ?>
-                                                        <div class="bt-product-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></div>
+                                                        <p class="bt-product-price <?php echo esc_attr( $price_class ); ?>">
+                                                            <?php echo wp_kses_post( $price_html ); ?>
+                                                        </p>
                                                     </div>
                                                     <a href="<?php echo esc_url($product->get_permalink()); ?>" class="bt-product-link">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">

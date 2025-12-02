@@ -500,6 +500,7 @@ class Widget_MobileMenu extends Widget_Base
 						'menu_class' 		=> 'bt-mobile-menu',
 						'items_wrap'      	=> '<ul id="%1$s" class="%2$s">%3$s</ul>',
 						'fallback_cb'     	=> false,
+						'theme_location' 	=> ''
 						)
 					);
 				?>

@@ -227,9 +227,11 @@ class Widget_SiteNotification extends Widget_Base
         } else {
             $site_infor = '';
         }
-        if (!empty($site_infor) && isset($site_infor)) { ?>
+        if (!empty($site_infor) && isset($site_infor)) { 
+            $is_enable = $settings['slider_navigation'] == 'yes' ? 'bt-navigation-enabled' : '';
+            ?>
             <div class="bt-elwg-site-notification--default " data-slider-settings='<?php echo json_encode($slider_settings); ?>'>
-                <div class="bt-site-notification <?php echo $settings['slider_navigation'] == 'yes' ? 'bt-navigation-enabled' : ''; ?>">
+                <div class="bt-site-notification <?php echo esc_attr($is_enable); ?>">
                     <div class="swiper bt-site-notification--content js-notification-content">
                         <div class="swiper-wrapper">
                             <?php foreach ($site_infor['site_notification'] as $item) : ?>
@@ -247,15 +249,16 @@ class Widget_SiteNotification extends Widget_Base
                                                 }
 
                                                 if ($is_svg) {
-                                                    // Output SVG content
-                                                    $options = [
-                                                        "http" => [
-                                                            "header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
-                                                        ]
-                                                    ];
-                                                    $context = stream_context_create($options);
-                                                    $svg_content = file_get_contents($image_url, false, $context);
-                                                    echo '<div class="bt-svg">' . $svg_content . '</div>';
+                                                    $response = wp_safe_remote_get( $image_url, array(
+                                                        'timeout' => 20,
+                                                        'headers' => array(
+                                                            'User-Agent' => 'Mozilla/5.0 (compatible; WordPress)',
+                                                        ),
+                                                    ) );
+                                                    if ( is_wp_error( $response ) ) {
+                                                        return;
+                                                    }
+                                                    echo '<div class="bt-svg">' . wp_remote_retrieve_body( $response ) . '</div>';
                                                 } else {
                                                     echo wp_get_attachment_image($image_id, 'thumbnail');
                                                 }

@@ -1091,7 +1091,13 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                                             </a>
                                             <div class="bt-product-content">
                                                 <h4><a href="<?php echo esc_url($product->get_permalink()); ?>"><?php echo esc_html($product->get_name()); ?></a></h4>
-                                                <p class="bt-price <?php echo $product->is_type('variable') ? 'bt-product-variable' : ''; ?>"><?php echo $product->get_price_html(); ?></p>
+                                                <?php 
+                                                    $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
+                                                    $price_html  = $product->get_price_html();  
+                                                ?>
+                                                <p class="bt-price <?php echo esc_attr( $price_class ); ?>">
+                                                    <?php echo wp_kses_post( $price_html ); ?>
+                                                </p>
                                                 <?php if ($show_quickview) : ?>
                                                 <a class="btn bt-product-quick-view-btn" href="#" data-id="<?php echo esc_attr($item['id_product']); ?>">
                                                     <?php esc_html_e('Quick View', 'woozio'); ?>

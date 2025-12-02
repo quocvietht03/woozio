@@ -312,8 +312,10 @@ class Woozio_VerticalBannerSlider extends Widget_Base
         <div class="bt-vertical-banner-slider" data-autoplay="<?php echo esc_attr($settings['autoplay']); ?>" data-autoplay-speed="<?php echo esc_attr($settings['autoplay_speed']); ?>" data-autoplay-only-mobile="<?php echo esc_attr($settings['autoplay_only_mobile']); ?>">
             <!-- Banner Backgrounds -->
             <div class="bt-banner-backgrounds">
-                <?php foreach ($settings['banner_list'] as $index => $item): ?>
-                    <div class="bt-banner-background <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
+                <?php foreach ($settings['banner_list'] as $index => $item): 
+                        $class_active = $index === 0 ? 'active' : '';
+                    ?>
+                    <div class="bt-banner-background <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
                         <?php if (!empty($item['banner_image']['id'])) { ?>
                             <?php echo wp_get_attachment_image($item['banner_image']['id'], $settings['thumbnail_size']); ?>
                         <?php } else {
@@ -333,8 +335,11 @@ class Woozio_VerticalBannerSlider extends Widget_Base
                     <?php
                     $link_key = 'link_' . $index;
                     $this->add_link_attributes($link_key, $item['banner_link']);
+                    $link_attributes = $this->get_render_attribute_string($link_key);
+                    $class_active = $index === 0 ? 'active' : '';
+
                     ?>
-                    <a <?php echo $this->get_render_attribute_string($link_key); ?> class="bt-banner-heading <?php echo $index === 0 ? 'active' : ''; ?>" data-index="<?php echo esc_attr($index); ?>">
+                    <a <?php echo esc_attr($link_attributes); ?> class="bt-banner-heading <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
                         <?php echo esc_html($item['banner_heading']); ?>
                     </a>
                 <?php endforeach; ?>

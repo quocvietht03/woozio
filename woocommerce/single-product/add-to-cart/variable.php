@@ -129,8 +129,9 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 							// Get image URL
 							$image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
 							$is_selected = ($selected_value === $option);
-						?>
-							<div class="bt-js-item bt-item-image<?php echo $is_selected ? ' active' : ''; ?>" data-value="<?php echo esc_attr($option); ?>">
+							$class_active = $is_selected ? ' active' : '';
+							?>
+							<div class="bt-js-item bt-item-image<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
 								<div class="bt-image">
 									<?php if ($image_url) : ?>
 										<span style="background-image: url('<?php echo esc_url($image_url); ?>');">
@@ -162,8 +163,9 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 									$color = $option;
 								}
 								$is_selected = ($selected_value === $option);
+								$class_active = $is_selected ? ' active' : '';
 							?>
-								<div class="bt-js-item bt-item-color<?php echo $is_selected ? ' active' : ''; ?>" data-value="<?php echo esc_attr($option); ?>">
+								<div class="bt-js-item bt-item-color<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
 									<div class="bt-color">
 										<span style="background-color: <?php echo esc_attr($color); ?>;">
 											<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -182,8 +184,9 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 								$term = get_term_by('slug', $option, $attribute_name);
 								$display_name = $term ? $term->name : $option;
 								$is_selected = ($selected_value === $option);
+								$class_active = $is_selected ? ' active' : '';
 								?>
-								<span class="bt-js-item bt-item-value<?php echo $is_selected ? ' active' : ''; ?>" data-value="<?php echo esc_attr($option); ?>"><?php echo esc_html($display_name); ?></span>
+								<span class="bt-js-item bt-item-value<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>"><?php echo esc_html($display_name); ?></span>
 							<?php endforeach; ?>
 						</div>
 					<?php } ?>

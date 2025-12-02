@@ -99,15 +99,50 @@ $wrapper_classes   = apply_filters(
         $video_link = get_post_meta($product->get_id(), '_product_video_link', true);
 
         if (!empty($video_link) && function_exists('woozio_get_product_video_embed')) {
-            $video_embed = woozio_get_product_video_embed($video_type, $video_link);
+            $video_html = woozio_get_product_video_embed($video_type, $video_link);
 
-            if (!empty($video_embed)) {
+            if (!empty($video_html)) {
     ?>
                 <div class="bt-button-product-video">
                     <!-- Popup Container -->
                     <div id="bt_product_video" class="bt-product-video__popup mfp-content__popup mfp-hide">
                         <div class="bt-product-video__content mfp-content__inner">
-                            <?php echo $video_embed; ?>
+                            <?php 
+                                echo wp_kses(
+                                    $video_html,
+                                    array(
+                                        'div' => array(
+                                            'class' => true,
+                                            'style' => true,
+                                        ),
+                                        'iframe' => array(
+                                            'src' => true,
+                                            'width' => true,
+                                            'height' => true,
+                                            'style' => true,
+                                            'frameborder' => true,
+                                            'allow' => true,
+                                            'allowfullscreen' => true,
+                                        ),
+                                        'video' => array(
+                                            'controls' => true,
+                                            'width' => true,
+                                            'height' => true,
+                                            'style' => true,
+                                            'poster' => true,
+                                            'autoplay' => true,
+                                            'loop' => true,
+                                            'muted' => true,
+                                            'playsinline' => true,
+                                            'preload' => true,
+                                        ),
+                                        'source' => array(
+                                            'src'  => true,
+                                            'type' => true,
+                                        ),
+                                    )
+                                );
+                            ?>
                         </div>
                     </div>
 
@@ -130,9 +165,10 @@ $wrapper_classes   = apply_filters(
             $file_url = wp_get_attachment_url($product_360_file);
 
             if ($file_url) {
+                $model_viewer_url = get_template_directory_uri() . '/assets/libs/model-viewer/model-viewer.min.js';
             ?>
                 <!-- Load model-viewer as ES6 module -->
-                <script type="module" src="<?php echo get_template_directory_uri(); ?>/assets/libs/model-viewer/model-viewer.min.js"></script>
+                <script type="module" src="<?php echo esc_url($model_viewer_url); ?>"></script>
 
                 <div class="bt-button-product-360">
                     <!-- Popup Container -->

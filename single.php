@@ -15,8 +15,8 @@ if (function_exists('get_field')) {
 ?>
 
 <main id="bt_main" class="bt-site-main">
-	<?php 
-	if ( strpos( $_SERVER['REQUEST_URI'], 'elementor' ) !== false ) {
+	<?php
+	if ( did_action( 'elementor/loaded' ) && \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
 		while (have_posts()) : the_post();
 			the_content();
 		endwhile;

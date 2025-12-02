@@ -660,16 +660,17 @@ class Widget_BundleSave extends Widget_Base
             data-price="<?php echo esc_attr($price); ?>"
             data-regular-price="<?php echo esc_attr($regular_price ? $regular_price : $price); ?>">
             <div class="bt-product-thumb">
-                <a href="<?php echo esc_url($product_link); ?>">
-                    <?php echo $product_image; ?>
-                </a>
+                <?php echo '<a href="'. esc_url($product_link) .'">'. $product_image .'</a>'; ?>
             </div>
             <div class="bt-product-info">
                 <h4 class="bt-product-name">
                     <a href="<?php echo esc_url($product_link); ?>"><?php echo esc_html($product_name); ?></a>
                 </h4>
                 <div class="bt-product-price">
-                    <?php echo $product->get_price_html(); ?>
+                    <?php
+                        $price_html = $product->get_price_html();
+                        echo wp_kses_post( $price_html );
+                    ?>
                 </div>
                 <?php if ($variation_text) : ?>
                     <div class="bt-product-variation"><?php echo esc_html($variation_text); ?></div>

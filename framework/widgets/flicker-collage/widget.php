@@ -448,8 +448,9 @@ class Widget_FlickerCollage extends Widget_Base
 
         // Check if Elementor editor mode
         $is_editor = Plugin::$instance->editor->is_edit_mode();
-?>
-        <div class="bt-elwg-flicker-collage" data-elementor-editor="<?php echo $is_editor ? 'true' : 'false'; ?>">
+        $enable_editor = $is_editor ? 'true' : 'false';
+        ?>
+        <div class="bt-elwg-flicker-collage" data-elementor-editor="<?php echo esc_attr($enable_editor); ?>">
             <div class="bt-flicker-collage">
                 <div class="bt-flicker-collage-wrapper">
                     <div class="bt-flicker-collage-content">
@@ -471,9 +472,7 @@ class Widget_FlickerCollage extends Widget_Base
                         <?php endif; ?>
 
                         <?php if (!empty($button_text) && $has_link) : ?>
-                            <a href="<?php echo esc_url($button_link['url']); ?>" class="bt-flicker-collage--button" <?php echo $target . $nofollow; ?>>
-                                <?php echo esc_html($button_text); ?>
-                            </a>
+                            <?php echo '<a href="' . esc_url($button_link['url']) . '" class="bt-flicker-collage--button" ' . $target . $nofollow . '>' . esc_html($button_text) . '</a>'; ?>
                         <?php endif; ?>
                     </div>
 
@@ -492,25 +491,25 @@ class Widget_FlickerCollage extends Widget_Base
                                 // In editor mode, show all items, otherwise let JS handle visibility
                                 $visible_class = $is_editor ? ' visible' : '';
                             ?>
-                                <div class="bt-flicker-collage_item<?php echo $visible_class; ?> elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
+                                <div class="bt-flicker-collage_item<?php echo esc_attr($visible_class); ?> elementor-repeater-item-<?php echo esc_attr($item['_id']); ?>"
                                     data-id="<?php echo esc_attr($data_id); ?>"
                                     data-index="<?php echo esc_attr($index); ?>">
-                                    <div class="bt-flicker-collage_img">
-                                        <?php
-                                        if (!empty($image['id'])) {
-                                            $image_html = wp_get_attachment_image($image['id'], $settings['thumbnail_size']);
-                                            // Add loading and sizes attributes
-                                            $image_html = str_replace('<img ', '<img loading="lazy" sizes="100vw" ', $image_html);
-                                            echo $image_html;
-                                        } else {
+                                    <?php
+                                    if (!empty($image['id'])) {
+                                        $image_html = wp_get_attachment_image($image['id'], $settings['thumbnail_size']);
+                                        // Add loading and sizes attributes
+                                        $image_html = str_replace('<img ', '<img loading="lazy" sizes="100vw" ', $image_html);
+                                        echo '<div class="bt-flicker-collage_img">' . $image_html . '</div>';
+                                    } else {
+                                        echo '<div class="bt-flicker-collage_img">';
                                             if (!empty($image['url'])) {
                                                 echo '<img src="' . esc_url($image['url']) . '" alt="" loading="lazy" sizes="100vw">';
                                             } else {
                                                 echo '<img src="' . esc_url(Utils::get_placeholder_image_src()) . '" alt="" loading="lazy" sizes="100vw">';
                                             }
-                                        }
-                                        ?>
-                                    </div>
+                                        echo '</div>';
+                                    }
+                                    ?>
                                 </div>
                             <?php endforeach; ?>
                         </div>
