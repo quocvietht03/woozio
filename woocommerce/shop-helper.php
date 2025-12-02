@@ -140,7 +140,9 @@ add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_di
 add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_display_frequently_bought_together', 20);
 
 // Remove categories from product loop
-remove_filter('woocommerce_product_loop_start', 'woocommerce_maybe_show_product_subcategories');
+add_filter('woocommerce_product_loop_start', function( $html ) {
+    return '<div class="woocommerce-loop-products products columns-3">';
+});
 
 /**
  * Prevent product_brand query param from being treated as taxonomy archive
