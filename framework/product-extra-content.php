@@ -44,10 +44,6 @@ function woozio_register_extra_content_post_type()
 }
 add_action('init', 'woozio_register_extra_content_post_type');
 
-// Note: Flush rewrite rules on theme activation
-// register_activation_hook only works in plugins, not themes
-// For themes, flush happens automatically on theme switch
-// Or use the manual flush button in admin
 // Enable Elementor support for this post type
 function woozio_add_elementor_support_to_extra_content($post_types)
 {
@@ -378,8 +374,7 @@ function woozio_display_product_extra_content($product_id = null)
 
     // Check if Elementor is active
     if (class_exists('\Elementor\Plugin')) {
-        echo $extra_content_id;
-        echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($extra_content_id);
+        echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($extra_content_id);  
     } else {
         // Fallback if Elementor is not available
         $extra_post = get_post($extra_content_id);
