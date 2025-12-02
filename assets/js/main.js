@@ -3578,6 +3578,7 @@
 		WoozioFrequentlyBoughtTogether();
 		WoozioElementorSliderControl(); // Elementor slider control via button clicks
 		WoozioMiniCartNoteHandler();	// Initialize Mini Cart Note Handler
+
 	});
 	// Block WooCommerce from changing images
 	jQuery(function ($) {

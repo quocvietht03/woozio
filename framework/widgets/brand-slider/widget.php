@@ -740,7 +740,14 @@ class Widget_BrandSlider extends Widget_Base
 									<div class="bt-brand-slider--image">
 										<?php if ($is_svg && !empty($image_url)) {
 											// Output SVG content
-											$svg_content = file_get_contents($image_url);
+											
+											$options = [
+												"http" => [
+													"header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
+												]
+											];
+											$context = stream_context_create($options);
+											$svg_content = file_get_contents($image_url, false, $context);
 											echo '<div class="bt-svg">' . $svg_content . '</div>';
 										} else {
 											if (!empty($image_id)) {

@@ -248,7 +248,13 @@ class Widget_SiteNotification extends Widget_Base
 
                                                 if ($is_svg) {
                                                     // Output SVG content
-                                                    $svg_content = file_get_contents($image_url);
+                                                    $options = [
+                                                        "http" => [
+                                                            "header" => "User-Agent: Mozilla/5.0 (compatible; PHP file_get_contents)\r\n"
+                                                        ]
+                                                    ];
+                                                    $context = stream_context_create($options);
+                                                    $svg_content = file_get_contents($image_url, false, $context);
                                                     echo '<div class="bt-svg">' . $svg_content . '</div>';
                                                 } else {
                                                     echo wp_get_attachment_image($image_id, 'thumbnail');
