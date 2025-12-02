@@ -28,7 +28,7 @@ class Widget_BannerProductSlider extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-slider-push';
+        return 'eicon-posts-ticker';
     }
 
     public function get_categories()

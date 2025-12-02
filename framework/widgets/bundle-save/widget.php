@@ -25,7 +25,7 @@ class Widget_BundleSave extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-products';
+        return 'eicon-posts-ticker';
     }
 
     public function get_categories()

@@ -27,7 +27,7 @@ class Widget_AccordionWithProductSlider extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-accordion';
+        return 'eicon-posts-ticker';
     }
 
     public function get_categories()
