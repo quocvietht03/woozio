@@ -44,13 +44,10 @@ function woozio_register_extra_content_post_type()
 }
 add_action('init', 'woozio_register_extra_content_post_type');
 
-// Flush rewrite rules on activation (run once)
-function woozio_extra_content_flush_rewrites()
-{
-    woozio_register_extra_content_post_type();
-    flush_rewrite_rules();
-}
-register_activation_hook(__FILE__, 'woozio_extra_content_flush_rewrites');
+// Note: Flush rewrite rules on theme activation
+// register_activation_hook only works in plugins, not themes
+// For themes, flush happens automatically on theme switch
+// Or use the manual flush button in admin
 // Enable Elementor support for this post type
 function woozio_add_elementor_support_to_extra_content($post_types)
 {
@@ -206,18 +203,21 @@ function woozio_ajax_create_extra_content()
 
     if (!current_user_can('edit_products')) {
         wp_send_json_error(array('message' => __('Permission denied', 'woozio')));
+        return;
     }
 
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
 
     if (!$product_id || get_post_type($product_id) !== 'product') {
         wp_send_json_error(array('message' => __('Invalid Product ID', 'woozio')));
+        return;
     }
 
     // Check if Extra Content already exists
     $existing_extra = get_post_meta($product_id, '_extra_content_post_id', true);
     if ($existing_extra && get_post_status($existing_extra) !== false) {
         wp_send_json_error(array('message' => __('Extra Content already exists for this product', 'woozio')));
+        return;
     }
 
     $product = wc_get_product($product_id);
@@ -236,6 +236,7 @@ function woozio_ajax_create_extra_content()
 
     if (is_wp_error($extra_content_id)) {
         wp_send_json_error(array('message' => __('Failed to create Extra Content', 'woozio')));
+        return;
     }
 
     // Save relationship between Product and Extra Content
@@ -248,7 +249,11 @@ function woozio_ajax_create_extra_content()
 
     // Initialize empty Elementor data FIRST
     update_post_meta($extra_content_id, '_elementor_data', '[]');
-    update_post_meta($extra_content_id, '_elementor_version', ELEMENTOR_VERSION);
+    
+    // Check if Elementor constant exists
+    if (defined('ELEMENTOR_VERSION')) {
+        update_post_meta($extra_content_id, '_elementor_version', ELEMENTOR_VERSION);
+    }
     update_post_meta($extra_content_id, '_elementor_css', '');
 
     // IMPORTANT: _elementor_page_settings must be an array, not JSON string
@@ -279,6 +284,7 @@ function woozio_ajax_delete_extra_content()
 
     if (!current_user_can('delete_products')) {
         wp_send_json_error(array('message' => __('Permission denied', 'woozio')));
+        return;
     }
 
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
@@ -286,12 +292,20 @@ function woozio_ajax_delete_extra_content()
 
     if (!$product_id || !$extra_id) {
         wp_send_json_error(array('message' => __('Invalid ID', 'woozio')));
+        return;
     }
 
     // Verify Extra Content belongs to Product
     $linked_product = get_post_meta($extra_id, '_parent_product_id', true);
     if ($linked_product != $product_id) {
         wp_send_json_error(array('message' => __('Extra Content does not belong to this Product', 'woozio')));
+        return;
+    }
+
+    // Verify the extra content post exists
+    if (get_post_type($extra_id) !== 'extra_content_prod') {
+        wp_send_json_error(array('message' => __('Invalid Extra Content', 'woozio')));
+        return;
     }
 
     // Delete Extra Content Post permanently
@@ -299,6 +313,7 @@ function woozio_ajax_delete_extra_content()
 
     if (!$deleted) {
         wp_send_json_error(array('message' => __('Failed to delete Extra Content', 'woozio')));
+        return;
     }
 
     // Remove meta from Product
@@ -330,10 +345,10 @@ function woozio_extra_content_column_content($column, $post_id)
     if ($column === 'extra_content') {
         $extra_content_id = get_post_meta($post_id, '_extra_content_post_id', true);
         if ($extra_content_id && get_post_status($extra_content_id) !== false) {
-            $edit_link = admin_url('post.php?post=' . $extra_content_id . '&action=elementor');
+            $edit_link = admin_url('post.php?post=' . intval($extra_content_id) . '&action=elementor');
             echo '<a href="' . esc_url($edit_link) . '" target="_blank" class="button button-small">';
             echo '<span class="dashicons dashicons-yes-alt" style="color: green;"></span> ';
-            echo __('Edit', 'woozio');
+            echo esc_html__('Edit', 'woozio');
             echo '</a>';
         } else {
             echo '<span class="dashicons dashicons-minus" style="color: #ccc;"></span>';
@@ -363,6 +378,7 @@ function woozio_display_product_extra_content($product_id = null)
 
     // Check if Elementor is active
     if (class_exists('\Elementor\Plugin')) {
+        echo $extra_content_id;
         echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($extra_content_id);
     } else {
         // Fallback if Elementor is not available
@@ -409,24 +425,24 @@ function woozio_extra_content_admin_notice()
             if ($parent_product_id && get_post_status($parent_product_id) !== false) {
                 $product = wc_get_product($parent_product_id);
                 $product_title = $product ? $product->get_name() : 'Product #' . $parent_product_id;
-                $product_edit_link = admin_url('post.php?post=' . $parent_product_id . '&action=edit');
+                $product_edit_link = admin_url('post.php?post=' . intval($parent_product_id) . '&action=edit');
                 $product_view_link = get_permalink($parent_product_id);
 
     ?>
                 <div class="notice notice-info extra_content_prod-info-notice">
-                    <p><strong><?php _e('📦 Linked to Product:', 'woozio'); ?></strong></p>
+                    <p><strong><?php esc_html_e('📦 Linked to Product:', 'woozio'); ?></strong></p>
                     <p>
-                        <?php _e('This Extra Content will be displayed in:', 'woozio'); ?>
+                        <?php esc_html_e('This Extra Content will be displayed in:', 'woozio'); ?>
                         <a href="<?php echo esc_url($product_edit_link); ?>" target="_blank">
                             <strong><?php echo esc_html($product_title); ?></strong>
                         </a>
                     </p>
                     <p>
                         <a href="<?php echo esc_url($product_view_link); ?>" class="button button-small" target="_blank">
-                            <?php _e('View Product', 'woozio'); ?>
+                            <?php esc_html_e('View Product', 'woozio'); ?>
                         </a>
                         <a href="<?php echo esc_url($product_edit_link); ?>" class="button button-small" target="_blank">
-                            <?php _e('Edit Product', 'woozio'); ?>
+                            <?php esc_html_e('Edit Product', 'woozio'); ?>
                         </a>
                     </p>
                 </div>
@@ -507,10 +523,10 @@ function woozio_extra_content_flush_notice()
     $screen = get_current_screen();
 
     if ($screen && $screen->post_type === 'extra_content_prod') {
-        if (isset($_GET['flushed'])) {
+        if (isset($_GET['flushed']) && $_GET['flushed'] === '1') {
             ?>
             <div class="notice notice-success is-dismissible">
-                <p><strong><?php _e('Rewrite rules flushed successfully!', 'woozio'); ?></strong></p>
+                <p><strong><?php esc_html_e('Rewrite rules flushed successfully!', 'woozio'); ?></strong></p>
             </div>
         <?php
         } else {
@@ -521,9 +537,9 @@ function woozio_extra_content_flush_notice()
         ?>
             <div class="notice notice-info">
                 <p>
-                    <?php _e('If you experience issues with Extra Content posts:', 'woozio'); ?>
+                    <?php esc_html_e('If you experience issues with Extra Content posts:', 'woozio'); ?>
                     <a href="<?php echo esc_url($flush_url); ?>" class="button button-small" style="margin-left: 10px;">
-                        <?php _e('Flush Rewrite Rules', 'woozio'); ?>
+                        <?php esc_html_e('Flush Rewrite Rules', 'woozio'); ?>
                     </a>
                 </p>
             </div>

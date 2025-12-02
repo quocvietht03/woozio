@@ -5346,6 +5346,7 @@
         font-weight: 500;
         line-height: 48px;
         text-transform: capitalize;
+        display: block;
         @media (max-width: $break-xs) {
           font-size: 30px;
           line-height: 1.3;
