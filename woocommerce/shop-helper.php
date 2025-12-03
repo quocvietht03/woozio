@@ -140,7 +140,9 @@ add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_di
 add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_display_frequently_bought_together', 20);
 
 // Remove categories from product loop
-remove_filter('woocommerce_product_loop_start', 'woocommerce_maybe_show_product_subcategories');
+add_filter('woocommerce_product_loop_start', function( $html ) {
+    return '<div class="woocommerce-loop-products products columns-3">';
+});
 
 /**
  * Prevent product_brand query param from being treated as taxonomy archive
@@ -3990,8 +3992,9 @@ function woozio_get_product_video_embed($video_type, $video_link)
             $video_id = !empty($matches[1]) ? $matches[1] : '';
 
             if ($video_id) {
+                $video_src  = esc_url( "https://www.youtube.com/embed/$video_id?rel=0&enablejsapi=1" );
                 $video_html = '<div class="bt-video-embed bt-video-youtube" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
-                $video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr($video_id) . '?rel=0&enablejsapi=1" ';
+                $video_html .= '<iframe src="'. $video_src .'" ';
                 $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
                 $video_html .= 'frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>';
                 $video_html .= '</iframe>';
@@ -4003,10 +4006,11 @@ function woozio_get_product_video_embed($video_type, $video_link)
             // Extract Vimeo video ID
             preg_match('/vimeo\.com\/(?:.*\/)?(\d+)/', $video_link, $matches);
             $video_id = !empty($matches[1]) ? $matches[1] : '';
-
+            
             if ($video_id) {
+                $video_src  = esc_url( "https://player.vimeo.com/video/$video_id?api=1" );
                 $video_html = '<div class="bt-video-embed bt-video-vimeo" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">';
-                $video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr($video_id) . '?api=1" ';
+                $video_html .= '<iframe src="'. $video_src .'" ';
                 $video_html .= 'style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" ';
                 $video_html .= 'frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>';
                 $video_html .= '</iframe>';
