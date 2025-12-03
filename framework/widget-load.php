@@ -156,11 +156,20 @@ class ElementorWidgets
 	private function include_widgets_files()
 	{
 
-		foreach ($this->widgets_list() as $widget) {
-			require_once(get_stylesheet_directory() . '/framework/widgets/' . $widget . '/widget.php');
+		foreach ( $this->widgets_list() as $widget ) {
+			$widget_file = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/widget.php';
+			
+			// Only require if file exists and class is not already declared
+			if ( file_exists( $widget_file ) && ! class_exists( $widget ) ) {
+				require_once $widget_file;
+			}
 
-			foreach (glob(get_stylesheet_directory() . '/framework/widgets/' . $widget . '/skins/*.php') as $filepath) {
-				include $filepath;
+			// Include skins safely
+			$skins_path = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/skins/';
+			foreach ( glob( $skins_path . '*.php' ) as $filepath ) {
+				if ( file_exists( $filepath ) ) {
+					include $filepath;
+				}
 			}
 		}
 	}

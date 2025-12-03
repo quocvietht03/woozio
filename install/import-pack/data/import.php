@@ -29,10 +29,6 @@ $plugin_includes = array(
     'source'   => IMPORT_REMOTE_SERVER_PLUGIN_DOWNLOAD . 'gravityforms.zip',
   ),
   array(
-    'name'     => __( 'Newsletter', 'woozio' ),
-    'slug'     => 'newsletter',
-  ),
-  array(
     'name'     => __( 'WooCommerce', 'woozio' ),
     'slug'     => 'woocommerce',
   ),

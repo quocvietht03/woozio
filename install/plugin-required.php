@@ -87,11 +87,6 @@ function woozio_register_required_plugins() {
 		'source'        => $pathfile . 'gravityforms.zip',
 		'required'      => true,
 	),
-	array(
-		'name'          => __( 'Newsletter', 'woozio' ),
-		'slug'          => 'newsletter',
-		'required'      => false,
-    ),
     array(
 		'name'          => __( 'WooCommerce', 'woozio' ),
 		'slug'          => 'woocommerce',
