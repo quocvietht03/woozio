@@ -2402,7 +2402,8 @@
           }
           &.bt-view-product,
           &.product_type_grouped,
-          &.product_type_external {
+          &.product_type_external,
+          &.bt-btn-add-to-cart-link {
             &::before {
               background-image: url("../images/view-product-white.svg");
             }
@@ -4799,7 +4800,7 @@
             .woocommerce-variation-add-to-cart-disabled {
               padding-top: 0;
               > *:not(.bt-product-icon-btn) {
-                display: none;
+                display: none !important;
               }
               .bt-product-icon-btn {
                 padding-left: 0;

@@ -29,6 +29,44 @@ add_action('woozio_woocommerce_template_related_products', 'woocommerce_output_r
 remove_action('woocommerce_cart_collaterals', 'woocommerce_cross_sell_display');
 
 /**
+ * Filter add to cart link for loop products
+ * If AJAX add to cart is disabled, change link to product page
+ */
+add_filter('woocommerce_loop_add_to_cart_link', 'woozio_woocommerce_loop_add_to_cart_link', 10, 3);
+if (!function_exists('woozio_woocommerce_loop_add_to_cart_link')) {
+    function woozio_woocommerce_loop_add_to_cart_link($link, $product, $args) {
+        global $is_ajax_filter_product;
+        
+        if (!$product || !($product instanceof WC_Product)) {
+            return $link;
+        }
+        
+        // Check if AJAX add to cart is disabled
+        $ajax_add_to_cart_enabled = get_option('woocommerce_enable_ajax_add_to_cart') === 'yes';
+        
+        // Check if we're on archive/shop/category pages or AJAX filter is running
+        $is_archive_page = is_shop() || is_product_category() || is_product_tag() || 
+                          (is_archive() && 'product' === get_post_type()) || 
+                          !empty($is_ajax_filter_product);
+        
+        // Only modify if AJAX is disabled, on archive pages, and product is simple type
+        if (!$ajax_add_to_cart_enabled && $is_archive_page && $product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) {
+            $product_url = get_permalink($product->get_id());
+            $button_text = $product->add_to_cart_text();
+            
+            // Create new link pointing to product page, remove AJAX-related classes and attributes
+            $link = sprintf(
+                '<a href="%s" class="button product_type_%s bt-btn-add-to-cart-link" rel="nofollow">%s</a>',
+                esc_url($product_url),
+                esc_attr($product->get_type()),
+                esc_html($button_text)
+            );
+        }
+        
+        return $link;
+    }
+}
+/**
  * Get the color taxonomy dynamically by checking which attribute has color_tax_attributes field
  * 
  * @return string|false The color taxonomy name or false if not found

@@ -65,68 +65,68 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 		<div class="bt-attributes-wrap">
 			<?php
 			// Helper function to check if an option is available based on selected attributes
-			$check_option_availability = function($option_value, $current_attribute_name, $all_attributes, $selected_attributes, $available_variations) {
+			$check_option_availability = function ($option_value, $current_attribute_name, $all_attributes, $selected_attributes, $available_variations) {
 				// Build test attributes array - exclude current attribute and add the test option
 				$test_attributes = $selected_attributes;
 				unset($test_attributes[$current_attribute_name]); // Remove current attribute from test
 				$test_attributes[$current_attribute_name] = $option_value; // Add the option we're testing
-				
+
 				// Get the attribute key format used in variations
 				$current_attr_key = 'attribute_' . sanitize_title($current_attribute_name);
-				
+
 				// Check if any variation matches these attributes
 				foreach ($available_variations as $variation) {
 					if (!isset($variation['attributes'])) {
 						continue;
 					}
-					
+
 					$variation_attrs = $variation['attributes'];
 					$matches = true;
-					
+
 					// First, check that the current attribute matches (if specified in variation)
 					$variation_current_value = isset($variation_attrs[$current_attr_key]) ? $variation_attrs[$current_attr_key] : '';
 					// Variation can have empty value (any) or must match exactly
 					if ($variation_current_value !== '' && $variation_current_value !== $option_value) {
 						continue; // Skip this variation, doesn't match current attribute
 					}
-					
+
 					// Then check each selected attribute (excluding current)
 					foreach ($test_attributes as $attr_name => $test_value) {
 						if ($attr_name === $current_attribute_name || $test_value === '') {
 							continue; // Skip current attribute and empty values
 						}
-						
+
 						$attr_key = 'attribute_' . sanitize_title($attr_name);
 						$variation_value = isset($variation_attrs[$attr_key]) ? $variation_attrs[$attr_key] : '';
-						
+
 						// Variation can have empty value (any), or must match exactly
 						if ($variation_value !== '' && $variation_value !== $test_value) {
 							$matches = false;
 							break;
 						}
 					}
-					
+
 					if ($matches) {
 						return true; // Found at least one matching variation
 					}
 				}
-				
+
 				return false; // No matching variation found
 			};
-			
+
 			// Build selected attributes array from defaults
 			$selected_attributes = array();
 			foreach ($attributes as $attr_name => $attr_options) {
 				$attr_slug = sanitize_title($attr_name);
-				$selected_attr = isset($_REQUEST['attribute_' . $attr_slug]) 
-					? wc_clean(wp_unslash($_REQUEST['attribute_' . $attr_slug])) 
+				$selected_attr = isset($_REQUEST['attribute_' . $attr_slug])
+					? wc_clean(wp_unslash($_REQUEST['attribute_' . $attr_slug]))
 					: $product->get_variation_default_attribute($attr_name);
-				
+
 				if ($selected_attr) {
 					$selected_attributes[$attr_name] = $selected_attr;
 				}
 			}
-			
+
 			foreach ($attributes as $attribute_name => $options) :
 				$data_attribute = strtolower($attribute_name);
 				$data_attribute_slug = sanitize_title($attribute_name);
@@ -138,11 +138,11 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 				// Check if this is color or image attribute and add dynamic class
 				$color_taxonomy = function_exists('woozio_get_color_taxonomy') ? woozio_get_color_taxonomy() : false;
 				$image_taxonomy = function_exists('woozio_get_image_taxonomy') ? woozio_get_image_taxonomy() : false;
-				
+
 				// Prioritize image over color
 				$is_image_attr = $image_taxonomy && ($attribute_name === $image_taxonomy);
 				$is_color_attr = !$is_image_attr && $color_taxonomy && ($attribute_name === $color_taxonomy);
-				
+
 				$attr_class = $is_image_attr ? ' bt-is-image-attribute' : ($is_color_attr ? ' bt-is-color-attribute' : '');
 			?>
 				<div class="bt-attributes--item<?php echo esc_attr($attr_class); ?>" data-attribute-name="<?php echo esc_attr($data_attribute_slug); ?>">
@@ -172,51 +172,51 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 					// Check if this is image attribute
 					if ($is_image_attr) { ?>
 						<div class="bt-attributes--value bt-value-image">
-						<?php
-						$reversed_options = array_reverse($options);
-						foreach ($reversed_options as $option) :
-							$term = get_term_by('slug', $option, $attribute_name);
-							$term_id = $term ? $term->term_id : '';
-							$image_data = $term_id ? get_field('image_tax_attributes', $attribute_name . '_' . $term_id) : '';
-							
-							// Get image ID from ACF field
-							$image_id = 0;
-							if ($image_data) {
-								if (is_array($image_data) && isset($image_data['ID'])) {
-									$image_id = $image_data['ID'];
-								} elseif (is_numeric($image_data)) {
-									$image_id = $image_data;
+							<?php
+							$reversed_options = array_reverse($options);
+							foreach ($reversed_options as $option) :
+								$term = get_term_by('slug', $option, $attribute_name);
+								$term_id = $term ? $term->term_id : '';
+								$image_data = $term_id ? get_field('image_tax_attributes', $attribute_name . '_' . $term_id) : '';
+
+								// Get image ID from ACF field
+								$image_id = 0;
+								if ($image_data) {
+									if (is_array($image_data) && isset($image_data['ID'])) {
+										$image_id = $image_data['ID'];
+									} elseif (is_numeric($image_data)) {
+										$image_id = $image_data;
+									}
 								}
-							}
-							
-							// Get image URL
-							$image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
-							$is_selected = ($selected_value === $option);
-							$class_active = $is_selected ? ' active' : '';
-							
-							// Check if option is available based on selected attributes
-							$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
-							$class_disabled = !$is_available ? ' disabled' : '';
+
+								// Get image URL
+								$image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
+								$is_selected = ($selected_value === $option);
+								$class_active = $is_selected ? ' active' : '';
+
+								// Check if option is available based on selected attributes
+								$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
+								$class_disabled = !$is_available ? ' disabled' : '';
 							?>
-							<div class="bt-js-item bt-item-image<?php echo esc_attr($class_active . $class_disabled); ?>" data-value="<?php echo esc_attr($option); ?>">
-								<div class="bt-image">
-									<?php if ($image_url) : ?>
-										<span style="background-image: url('<?php echo esc_url($image_url); ?>');">
-											<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-												<path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
-											</svg>
-										</span>
-									<?php else : ?>
-										<span style="background-color: #e5e7eb;">
-											<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-												<path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
-											</svg>
-										</span>
-									<?php endif; ?>
+								<div class="bt-js-item bt-item-image<?php echo esc_attr($class_active . $class_disabled); ?>" data-value="<?php echo esc_attr($option); ?>">
+									<div class="bt-image">
+										<?php if ($image_url) : ?>
+											<span style="background-image: url('<?php echo esc_url($image_url); ?>');">
+												<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+													<path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
+												</svg>
+											</span>
+										<?php else : ?>
+											<span style="background-color: #e5e7eb;">
+												<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+													<path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
+												</svg>
+											</span>
+										<?php endif; ?>
+									</div>
+									<label><?php echo esc_html($term ? $term->name : $option); ?></label>
 								</div>
-								<label><?php echo esc_html($term ? $term->name : $option); ?></label>
-							</div>
-						<?php endforeach; ?>
+							<?php endforeach; ?>
 						</div>
 					<?php } elseif ($is_color_attr) { ?>
 						<div class="bt-attributes--value bt-value-color">
@@ -231,7 +231,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 								}
 								$is_selected = ($selected_value === $option);
 								$class_active = $is_selected ? ' active' : '';
-								
+
 								// Check if option is available based on selected attributes
 								$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
 								$class_disabled = !$is_available ? ' disabled' : '';
@@ -256,7 +256,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 								$display_name = $term ? $term->name : $option;
 								$is_selected = ($selected_value === $option);
 								$class_active = $is_selected ? ' active' : '';
-								
+
 								// Check if option is available based on selected attributes
 								$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
 								$class_disabled = !$is_available ? ' disabled' : '';
@@ -268,37 +268,38 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 				</div>
 			<?php endforeach; ?>
 		</div>
-		
+
 		<div class="reset_variations_alert screen-reader-text" role="alert" aria-live="polite" aria-relevant="all"></div>
 		<?php do_action('woocommerce_after_variations_table'); ?>
+		<div class="single_variation_wrap">
+			<?php
+			/**
+			 * Hook: woocommerce_before_single_variation.
+			 */
+			do_action('woocommerce_before_single_variation');
 
-		<?php
-		/**
-		 * Hook: woocommerce_before_single_variation.
-		 */
-		do_action('woocommerce_before_single_variation');
+			/**
+			 * Hook: woocommerce_single_variation. Used to output the cart button and placeholder for variation data.
+			 *
+			 * @since 2.4.0
+			 * @hooked woocommerce_single_variation - 10 Empty div for variation data.
+			 * @hooked woocommerce_single_variation_add_to_cart_button - 20 Qty and cart button.
+			 */
+			do_action('woocommerce_single_variation');
 
-		/**
-		 * Hook: woocommerce_single_variation. Used to output the cart button and placeholder for variation data.
-		 *
-		 * @since 2.4.0
-		 * @hooked woocommerce_single_variation - 10 Empty div for variation data.
-		 * @hooked woocommerce_single_variation_add_to_cart_button - 20 Qty and cart button.
-		 */
-		do_action('woocommerce_single_variation');
+			/**
+			 * Hook: woocommerce_after_single_variation.
+			 */
+			do_action('woocommerce_after_single_variation');
 
-		/**
-		 * Hook: woocommerce_after_single_variation.
-		 */
-		do_action('woocommerce_after_single_variation');
-
-		?>
+			?>
+		</div>
 	<?php endif; ?>
 
 	<?php do_action('woocommerce_after_variations_form'); ?>
 </form>
 
-<?php do_action( 'woozio_woocommerce_template_single_out_of_stock' ); ?>
+<?php do_action('woozio_woocommerce_template_single_out_of_stock'); ?>
 
 <?php
 do_action('woocommerce_after_add_to_cart_form');
