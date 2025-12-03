@@ -343,29 +343,17 @@
 					gallerylayout = 'slider-thumb';
 				}
 
-				// update js variations_form woo
-				if (typeof $.fn.wc_variation_form !== 'undefined') {
-					var $currentForm = $(this).closest('.variations_form');
-
-					// Check if form already has events from WooCommerce
-					var events = $._data($currentForm[0], 'events');
-					var hasWcVariationForm = false;
-
-					if (events && events.change) {
-						// Check if 'change.wc-variation-form' event exists
-						hasWcVariationForm = events.change.some(function (handler) {
-							return handler.namespace === 'wc-variation-form';
-						});
-					}
-
-					if (!hasWcVariationForm) {
-						$currentForm.wc_variation_form();
-					}
-				}
+				
+				// update js variations_form woo (only in product loop)
+				var $currentForm = $(this).closest('.variations_form');
+				var $productLoop = $(this).closest('.woocommerce-loop-product');
+				var isInProductLoop = $productLoop.length > 0;
+				var showVariationTriggered = false;
+			
 				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
+					showVariationTriggered = true;
 					var variationId = variation.variation_id;
-
 					if (variationId && variationId !== '0') {
 						if (!variation.is_in_stock) {
 							$(this).closest('.variations_form').find('.bt-button-buy-now a').addClass('disabled').removeAttr('data-variation');
@@ -544,24 +532,65 @@
 					}
 				});
 
-				$('.bt-attributes-wrap .bt-js-item').each(function () {
-					var valueItem = $(this).data('value');
-					var attributesItem = $(this).closest('.bt-attributes--item');
-					var attributeName = attributesItem.data('attribute-name');
-					var options = $(this).closest('.variations_form').find('select#' + attributeName + ' option');
-					var optionExists = false;
-					options.each(function () {
-						if ($(this).val() == valueItem) {
-							optionExists = true;
-							return false; // break the loop
+				// Check if show_variation.woozio event is triggered (only in product loop)
+				if (typeof $.fn.wc_variation_form !== 'undefined' && isInProductLoop) {
+					// Set timeout to check if show_variation.woozio event is triggered after setting value
+					setTimeout(function() {
+						if (!showVariationTriggered) {
+							$currentForm.wc_variation_form();
 						}
-					});
-					if (!optionExists) {
-						$(this).addClass('disabled');
-					} else {
-						$(this).removeClass('disabled');
+					}, 300);
+				}
+			
+			// Function to update available options based on current selections
+			var updateAvailableOptions = function() {
+				$currentForm.find('.bt-attributes-wrap .bt-js-item').each(function () {
+					var $item = $(this);
+					var valueItem = $item.data('value');
+					
+					// Skip if valueItem is missing
+					if (!valueItem) {
+						$item.addClass('disabled');
+						return;
 					}
+					
+					var $attributesItem = $item.closest('.bt-attributes--item');
+					var attributeName = $attributesItem.data('attribute-name');
+					
+					// Skip if attributeName is missing
+					if (!attributeName) {
+						$item.addClass('disabled');
+						return;
+					}
+					
+					// Find the select element for this attribute
+					var $select = $currentForm.find('select#' + attributeName);
+					
+					// Check if select exists
+					if ($select.length === 0) {
+						$item.addClass('disabled');
+						return;
+					}
+					
+					// Find the option with matching value
+					var $option = $select.find('option[value="' + valueItem.replace(/"/g, '\\"') + '"]');
+					
+					// Check if option exists and is NOT disabled
+					// WooCommerce disables unavailable options, so we check for !disabled
+					var isAvailable = $option.length > 0 && !$option.prop('disabled');
+					
+					// Toggle disabled class
+					$item.toggleClass('disabled', !isAvailable);
 				});
+			};
+			
+			// Listen to WooCommerce variation update event to update immediately
+			$currentForm.off('woocommerce_update_variation_values.updateOptions').on('woocommerce_update_variation_values.updateOptions', function() {
+				updateAvailableOptions();
+			});
+
+			// Initial update for single product page
+			updateAvailableOptions();
 			});
 		}
 	}
@@ -3049,7 +3078,7 @@
 
 		$(document).on('click', '.bt-js-add-to-cart-variable', function (e) {
 			e.preventDefault();
-			console.log(1);
+
 			var $button = $(this);
 			var $form = $button.closest('.variations_form');
 

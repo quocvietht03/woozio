@@ -442,6 +442,11 @@ class Widget_ProductShowcaseVertical extends Widget_Base
 							<?php endforeach; ?>
 						</div>
 						<div class="bt-product-showcase--content">
+							<?php
+							if (!$product->is_type('variable')) {
+								echo '<div class="bt-single-product-stock">' . wc_get_stock_html($product) . '</div>'; // WPCS: XSS ok. 
+							}
+							?>
 							<div class="bt-product--category">
 								<?php
 								$categories = get_the_terms($product_id, 'product_cat');

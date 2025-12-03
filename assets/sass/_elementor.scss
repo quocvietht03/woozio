@@ -6747,10 +6747,10 @@
                   width: auto;
                   margin-bottom: 4px;
                   background-color: #3dab25;
-                  &.out-of-stock{
+                  &.out-of-stock {
                     background-color: #f03e3e;
                   }
-                  &.available-on-backorder{
+                  &.available-on-backorder {
                     background-color: #f0a750;
                   }
                 }
@@ -6779,10 +6779,10 @@
                         text-overflow: ellipsis;
                         color: #fff;
                         background: #3dab25;
-                        &.out-of-stock{
+                        &.out-of-stock {
                           background-color: #f03e3e;
                         }
-                        &.available-on-backorder{
+                        &.available-on-backorder {
                           background-color: #f0a750;
                         }
                       }
@@ -7178,10 +7178,54 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        .stock {
+          display: inline-block;
+          margin: 0;
+          padding: 0 8px;
+          font-size: 14px !important;
+          font-weight: 400;
+          line-height: 22px;
+          text-transform: capitalize;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #fff;
+          background: #3dab25;
+          margin-bottom: 10px;
+          &.out-of-stock {
+            background-color: #f03e3e;
+          }
+          &.available-on-backorder {
+            background-color: #f0a750;
+          }
+        }
       }
       &--item-content {
         background: $color-primary;
         padding: 40px 60px 40px 75px;
+        .bt-single-product-stock {
+          margin-bottom: 10px;
+          .stock {
+            display: inline-block;
+            margin: 0;
+            padding: 0 8px;
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 22px;
+            text-transform: capitalize;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+            background: #3dab25;
+            &.out-of-stock {
+              background-color: #f03e3e;
+            }
+            &.available-on-backorder {
+              background-color: #f0a750;
+            }
+          }
+        }
         .bt-product {
           &--category {
             font-size: 14px;
@@ -7312,12 +7356,44 @@
               &.added {
                 display: none;
               }
+              &.bt-btn-read-more {
+                display: none;
+              }
             }
           }
         }
-        .variations,
-        .woocommerce-variation.single_variation {
+        .variations {
           display: none !important;
+        }
+        .woocommerce-variation.single_variation {
+          display: none;
+          > * {
+            display: none;
+          }
+          .woocommerce-variation-availability {
+            display: flex;
+            .stock {
+              display: inline-block;
+              margin: 0;
+              padding: 0 8px;
+              font-size: 14px !important;
+              font-weight: 400;
+              line-height: 22px;
+              text-transform: capitalize;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: #fff;
+              background: #3dab25;
+              margin-bottom: 10px;
+              &.out-of-stock {
+                background-color: #f03e3e;
+              }
+              &.available-on-backorder {
+                background-color: #f0a750;
+              }
+            }
+          }
         }
         .woocommerce-variation-add-to-cart {
           display: flex;
@@ -7815,6 +7891,30 @@
       &--item-content {
         background: #f6f6f4;
         padding: 40px 80px 40px 80px;
+        .bt-single-product-stock {
+          margin-bottom: 10px;
+          display: flex;
+          .stock {
+            display: inline-block;
+            margin: 0;
+            padding: 0 8px;
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 22px;
+            text-transform: capitalize;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+            background: #3dab25;
+            &.out-of-stock {
+              background-color: #f03e3e;
+            }
+            &.available-on-backorder {
+              background-color: #f0a750;
+            }
+          }
+        }
         .bt-product {
           &--category {
             font-size: 14px;
@@ -7946,12 +8046,42 @@
               &.added {
                 display: none;
               }
+              &.bt-btn-read-more {
+                display: none;
+              }
             }
           }
         }
         .variations,
         .woocommerce-variation.single_variation {
-          display: none !important;
+          display: none;
+          > * {
+            display: none;
+          }
+          .woocommerce-variation-availability {
+            display: flex;
+            .stock {
+              display: inline-block;
+              margin: 0;
+              padding: 0 8px;
+              font-size: 14px !important;
+              font-weight: 400;
+              line-height: 22px;
+              text-transform: capitalize;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: #fff;
+              background: #3dab25;
+              margin-bottom: 10px;
+              &.out-of-stock {
+                background-color: #f03e3e;
+              }
+              &.available-on-backorder {
+                background-color: #f0a750;
+              }
+            }
+          }
         }
         .woocommerce-variation-add-to-cart {
           display: flex;
@@ -8642,6 +8772,30 @@
         @media (max-width: 1300px) and (min-width: $break-lg) {
           padding: 0 0 0 20px;
         }
+        .bt-single-product-stock {
+          margin-bottom: 10px;
+          display: flex;
+          .stock {
+            display: inline-block;
+            margin: 0;
+            padding: 0 8px;
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 22px;
+            text-transform: capitalize;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+            background: #3dab25;
+            &.out-of-stock {
+              background-color: #f03e3e;
+            }
+            &.available-on-backorder {
+              background-color: #f0a750;
+            }
+          }
+        }
         .bt-product {
           &--category {
             font-size: 14px;
@@ -8772,6 +8926,9 @@
               &.added {
                 display: none;
               }
+              &.bt-btn-read-more {
+                display: none;
+              }
             }
           }
           &--view-details {
@@ -8792,7 +8949,34 @@
         }
         .variations,
         .woocommerce-variation.single_variation {
-          display: none !important;
+          display: none;
+          > * {
+            display: none;
+          }
+          .woocommerce-variation-availability {
+            display: flex;
+            .stock {
+              display: inline-block;
+              margin: 0;
+              padding: 0 8px;
+              font-size: 14px !important;
+              font-weight: 400;
+              line-height: 22px;
+              text-transform: capitalize;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: #fff;
+              background: #3dab25;
+              margin-bottom: 10px;
+              &.out-of-stock {
+                background-color: #f03e3e;
+              }
+              &.available-on-backorder {
+                background-color: #f0a750;
+              }
+            }
+          }
         }
         .woocommerce-variation-add-to-cart {
           display: flex;
@@ -9320,6 +9504,29 @@
         &--item-content {
           width: 50%;
           padding: 0 0 0 60px;
+          .bt-single-product-stock {
+            margin-bottom: 10px;
+            .stock {
+              display: inline-block;
+              margin: 0;
+              padding: 0 8px;
+              font-size: 14px !important;
+              font-weight: 400;
+              line-height: 22px;
+              text-transform: capitalize;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: #fff;
+              background: #3dab25;
+              &.out-of-stock {
+                background-color: #f03e3e;
+              }
+              &.available-on-backorder {
+                background-color: #f0a750;
+              }
+            }
+          }
         }
         @media (max-width: $break-lg) {
           max-width: 100%;
@@ -9380,6 +9587,30 @@
       }
       &--content {
         padding: 24px 0 0 0;
+        .bt-single-product-stock {
+          margin-bottom: 10px;
+          display: flex;
+          .stock {
+            display: inline-block;
+            margin: 0;
+            padding: 0 8px;
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 22px;
+            text-transform: capitalize;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+            background: #3dab25;
+            &.out-of-stock {
+              background-color: #f03e3e;
+            }
+            &.available-on-backorder {
+              background-color: #f0a750;
+            }
+          }
+        }
         .bt-product {
           &--category {
             font-size: 14px;
@@ -9662,10 +9893,10 @@
                   color: #fff;
                   width: auto;
                   background-color: #3dab25;
-                  &.out-of-stock{
+                  &.out-of-stock {
                     background-color: #f03e3e;
                   }
-                  &.available-on-backorder{
+                  &.available-on-backorder {
                     background-color: #f0a750;
                   }
                 }
@@ -9692,10 +9923,10 @@
                         text-overflow: ellipsis;
                         color: #fff;
                         background: #3dab25;
-                        &.out-of-stock{
+                        &.out-of-stock {
                           background-color: #f03e3e;
                         }
-                        &.available-on-backorder{
+                        &.available-on-backorder {
                           background-color: #f0a750;
                         }
                       }
@@ -10586,10 +10817,10 @@
                   width: auto;
                   margin-bottom: 4px;
                   background-color: #3dab25;
-                  &.out-of-stock{
+                  &.out-of-stock {
                     background-color: #f03e3e;
                   }
-                  &.available-on-backorder{
+                  &.available-on-backorder {
                     background-color: #f0a750;
                   }
                 }
@@ -10617,10 +10848,10 @@
                         text-overflow: ellipsis;
                         color: #fff;
                         background: #3dab25;
-                        &.out-of-stock{
+                        &.out-of-stock {
                           background-color: #f03e3e;
                         }
-                        &.available-on-backorder{
+                        &.available-on-backorder {
                           background-color: #f0a750;
                         }
                       }
@@ -14101,6 +14332,8 @@
         }
         @media (max-width: $break-xs) {
           padding: 15px;
+          min-height: 395px;
+          max-height: 395px;
         }
 
         .bt-popup-title {
@@ -14191,10 +14424,10 @@
                   width: auto;
                   margin-bottom: 4px;
                   background-color: #3dab25;
-                  &.out-of-stock{
+                  &.out-of-stock {
                     background-color: #f03e3e;
                   }
-                  &.available-on-backorder{
+                  &.available-on-backorder {
                     background-color: #f0a750;
                   }
                 }
@@ -14222,10 +14455,10 @@
                         text-overflow: ellipsis;
                         color: #fff;
                         background: #3dab25;
-                        &.out-of-stock{
+                        &.out-of-stock {
                           background-color: #f03e3e;
                         }
-                        &.available-on-backorder{
+                        &.available-on-backorder {
                           background-color: #f0a750;
                         }
                       }

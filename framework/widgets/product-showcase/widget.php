@@ -429,9 +429,14 @@ class Widget_ProductShowcase extends Widget_Base
 					}
 
 					$is_variable = $product->is_type('variable') ? 'bt-product-variable' : '';
-					?>
+			?>
 					<div class="bt-product-showcase <?php echo esc_attr($is_variable); ?>">
 						<div class="bt-col-product bt-product-showcase--item-content js-check-bg-color">
+							<?php
+							if (!$product->is_type('variable')) {
+								echo '<div class="bt-single-product-stock">' . wc_get_stock_html($product) . '</div>'; // WPCS: XSS ok. 
+							}
+							?>
 							<div class="bt-product--category">
 								<?php
 								$categories = get_the_terms($product_id, 'product_cat');
@@ -453,9 +458,9 @@ class Widget_ProductShowcase extends Widget_Base
 								<div class="bt-product--info">
 									<?php if ($product->get_price_html()) : ?>
 										<div class="bt-product--price">
-											<?php 
-												$price_html = $product->get_price_html();
-												echo wp_kses_post($price_html); 
+											<?php
+											$price_html = $product->get_price_html();
+											echo wp_kses_post($price_html);
 											?>
 										</div>
 									<?php endif; ?>

@@ -574,6 +574,11 @@ class Widget_ProductShowcaseStyle1 extends Widget_Base
 							<?php endif; ?>
 						</div>
 						<div class="bt-col-product bt-product-showcase--item-content js-check-bg-color">
+							<?php
+							if (!$product->is_type('variable')) {
+								echo '<div class="bt-single-product-stock">' . wc_get_stock_html($product) . '</div>'; // WPCS: XSS ok. 
+							}
+							?>
 							<div class="bt-product--category">
 								<?php
 								$categories = get_the_terms($product_id, 'product_cat');

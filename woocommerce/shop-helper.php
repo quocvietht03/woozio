@@ -2885,8 +2885,24 @@ function woozio_display_button_buy_now()
         if ($product->is_type('variable')) {
             $variations = $product->get_available_variations();
             if (!empty($variations)) {
+                // Check if there's a default variation set
+                $default_variation_id = 0;
+                if (function_exists('get_default_variation_id')) {
+                    $default_variation_id = get_default_variation_id($product);
+                }
+                
+                $button_class = 'button';
+                $data_variation = '';
+                
+                // If default variation ID exists, add data-variation and remove disabled class
+                if ($default_variation_id && $default_variation_id > 0) {
+                    $data_variation = ' data-variation="' . esc_attr($default_variation_id) . '"';
+                } else {
+                    $button_class .= ' disabled';
+                }
+                
                 echo '<div class="bt-button-buy-now">';
-                echo '<a class="button disabled" data-id="' . get_the_ID() . '">' . esc_html__('Buy it now ', 'woozio') . '</a>';
+                echo '<a class="' . esc_attr($button_class) . '" data-id="' . get_the_ID() . '"' . $data_variation . '>' . esc_html__('Buy it now ', 'woozio') . '</a>';
                 echo '</div>';
             }
         }

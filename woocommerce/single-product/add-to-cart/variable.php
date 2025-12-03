@@ -64,6 +64,69 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
 		<div class="bt-attributes-wrap">
 			<?php
+			// Helper function to check if an option is available based on selected attributes
+			$check_option_availability = function($option_value, $current_attribute_name, $all_attributes, $selected_attributes, $available_variations) {
+				// Build test attributes array - exclude current attribute and add the test option
+				$test_attributes = $selected_attributes;
+				unset($test_attributes[$current_attribute_name]); // Remove current attribute from test
+				$test_attributes[$current_attribute_name] = $option_value; // Add the option we're testing
+				
+				// Get the attribute key format used in variations
+				$current_attr_key = 'attribute_' . sanitize_title($current_attribute_name);
+				
+				// Check if any variation matches these attributes
+				foreach ($available_variations as $variation) {
+					if (!isset($variation['attributes'])) {
+						continue;
+					}
+					
+					$variation_attrs = $variation['attributes'];
+					$matches = true;
+					
+					// First, check that the current attribute matches (if specified in variation)
+					$variation_current_value = isset($variation_attrs[$current_attr_key]) ? $variation_attrs[$current_attr_key] : '';
+					// Variation can have empty value (any) or must match exactly
+					if ($variation_current_value !== '' && $variation_current_value !== $option_value) {
+						continue; // Skip this variation, doesn't match current attribute
+					}
+					
+					// Then check each selected attribute (excluding current)
+					foreach ($test_attributes as $attr_name => $test_value) {
+						if ($attr_name === $current_attribute_name || $test_value === '') {
+							continue; // Skip current attribute and empty values
+						}
+						
+						$attr_key = 'attribute_' . sanitize_title($attr_name);
+						$variation_value = isset($variation_attrs[$attr_key]) ? $variation_attrs[$attr_key] : '';
+						
+						// Variation can have empty value (any), or must match exactly
+						if ($variation_value !== '' && $variation_value !== $test_value) {
+							$matches = false;
+							break;
+						}
+					}
+					
+					if ($matches) {
+						return true; // Found at least one matching variation
+					}
+				}
+				
+				return false; // No matching variation found
+			};
+			
+			// Build selected attributes array from defaults
+			$selected_attributes = array();
+			foreach ($attributes as $attr_name => $attr_options) {
+				$attr_slug = sanitize_title($attr_name);
+				$selected_attr = isset($_REQUEST['attribute_' . $attr_slug]) 
+					? wc_clean(wp_unslash($_REQUEST['attribute_' . $attr_slug])) 
+					: $product->get_variation_default_attribute($attr_name);
+				
+				if ($selected_attr) {
+					$selected_attributes[$attr_name] = $selected_attr;
+				}
+			}
+			
 			foreach ($attributes as $attribute_name => $options) :
 				$data_attribute = strtolower($attribute_name);
 				$data_attribute_slug = sanitize_title($attribute_name);
@@ -130,8 +193,12 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 							$image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
 							$is_selected = ($selected_value === $option);
 							$class_active = $is_selected ? ' active' : '';
+							
+							// Check if option is available based on selected attributes
+							$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
+							$class_disabled = !$is_available ? ' disabled' : '';
 							?>
-							<div class="bt-js-item bt-item-image<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
+							<div class="bt-js-item bt-item-image<?php echo esc_attr($class_active . $class_disabled); ?>" data-value="<?php echo esc_attr($option); ?>">
 								<div class="bt-image">
 									<?php if ($image_url) : ?>
 										<span style="background-image: url('<?php echo esc_url($image_url); ?>');">
@@ -164,8 +231,12 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 								}
 								$is_selected = ($selected_value === $option);
 								$class_active = $is_selected ? ' active' : '';
+								
+								// Check if option is available based on selected attributes
+								$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
+								$class_disabled = !$is_available ? ' disabled' : '';
 							?>
-								<div class="bt-js-item bt-item-color<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
+								<div class="bt-js-item bt-item-color<?php echo esc_attr($class_active . $class_disabled); ?>" data-value="<?php echo esc_attr($option); ?>">
 									<div class="bt-color">
 										<span style="background-color: <?php echo esc_attr($color); ?>;">
 											<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -185,8 +256,12 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 								$display_name = $term ? $term->name : $option;
 								$is_selected = ($selected_value === $option);
 								$class_active = $is_selected ? ' active' : '';
+								
+								// Check if option is available based on selected attributes
+								$is_available = $check_option_availability($option, $attribute_name, $attributes, $selected_attributes, $available_variations);
+								$class_disabled = !$is_available ? ' disabled' : '';
 								?>
-								<span class="bt-js-item bt-item-value<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>"><?php echo esc_html($display_name); ?></span>
+								<span class="bt-js-item bt-item-value<?php echo esc_attr($class_active . $class_disabled); ?>" data-value="<?php echo esc_attr($option); ?>"><?php echo esc_html($display_name); ?></span>
 							<?php endforeach; ?>
 						</div>
 					<?php } ?>

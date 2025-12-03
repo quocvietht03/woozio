@@ -2349,15 +2349,15 @@
           animation: spin 2s linear infinite;
         }
       }
-      .bt-add-to-cart, 
+      .bt-add-to-cart,
       .bt-attributes-wrap,
       .bt-btn-add-to-cart-variable,
       .bt-btn-read-more {
         opacity: 0;
         visibility: hidden;
         transition:
-        opacity 0.5s ease,
-        visibility 0.5s ease;
+          opacity 0.5s ease,
+          visibility 0.5s ease;
         @media (max-width: $break-sm) {
           opacity: 1;
           visibility: visible;
@@ -2918,7 +2918,7 @@
               }
             }
           }
-          .bt-add-to-cart, 
+          .bt-add-to-cart,
           .bt-attributes-wrap,
           .bt-btn-add-to-cart-variable,
           .bt-btn-read-more {
@@ -2979,7 +2979,6 @@
     }
   }
 }
-
 
 .bt-elwg-product-loop-item {
   @extend .__bt-loop-product-style;
@@ -3547,7 +3546,7 @@
 
 .bt-notification-form {
   display: none;
-  background: #F6F6F4;
+  background: #f6f6f4;
   margin-bottom: 16px;
   padding: 30px;
   border: 1px solid #e9e9e9;
@@ -3741,7 +3740,7 @@
       }
     }
     .woocommerce-error {
-      border-top-color:$color-red;
+      border-top-color: $color-red;
       &::before {
         color: $color-red;
       }
@@ -4796,16 +4795,16 @@
     &.product-type-variable {
       div.summary {
         form.cart {
-          .woocommerce-variation-add-to-cart-disabled {
-            padding-top: 0;
-             > *:not(.bt-product-icon-btn) {
-              display: none;
-            }
-            .bt-product-icon-btn {
-              padding-left: 0;
-            }
-          }
           &.out-of-stock {
+            .woocommerce-variation-add-to-cart-disabled {
+              padding-top: 0;
+              > *:not(.bt-product-icon-btn) {
+                display: none;
+              }
+              .bt-product-icon-btn {
+                padding-left: 0;
+              }
+            }
             ~ .bt-notification-form {
               display: block;
               margin-top: 24px;
@@ -4817,7 +4816,7 @@
             ~ .ppc-button-wrapper {
               display: none !important;
             }
-            ~ #wc-stripe-express-checkout-element{
+            ~ #wc-stripe-express-checkout-element {
               display: none !important;
             }
           }
@@ -5778,7 +5777,7 @@
             .tooltip {
               position: absolute;
               top: auto;
-              bottom: calc(100% + 10px); 
+              bottom: calc(100% + 10px);
               padding: 0 10px;
               background-color: #333;
               color: #fff;
