@@ -177,10 +177,13 @@ remove_action('woocommerce_after_single_product_summary', 'woocommerce_upsell_di
 add_action('woozio_woocommerce_template_upsell_products', 'woocommerce_upsell_display', 20);
 add_action('woozio_woocommerce_template_frequently_bought_together', 'woozio_display_frequently_bought_together', 20);
 
-// Remove categories from product loop
+//Remove categories from product loop
 add_filter('woocommerce_product_loop_start', function( $html ) {
-    return '<div class="woocommerce-loop-products products columns-3">';
-});
+    // Get columns from loop prop, default to 3 if not set
+    $columns = absint( max( 1, wc_get_loop_prop( 'columns', 3 ) ) );
+    // Return original loop start HTML without categories (strip any category HTML that might have been added)
+    return '<div class="woocommerce-loop-products products columns-' . esc_attr( $columns ) . '">';
+}, 20);
 
 /**
  * Prevent product_brand query param from being treated as taxonomy archive
@@ -717,7 +720,6 @@ function woozio_woocommerce_related_products_args($args)
     }
 
     $args['columns'] = 4;
-
     return $args;
 }
 
@@ -3035,6 +3037,24 @@ function woozio_products_add_to_cart_variable()
 add_action('wp_ajax_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
 add_action('wp_ajax_nopriv_woozio_products_add_to_cart_variable', 'woozio_products_add_to_cart_variable');
 
+/* ajax add to cart simple */
+
+function woozio_products_add_to_cart_simple()
+{
+    $product_id = intval($_POST['product_id']);
+    $quantity = intval($_POST['quantity']);
+
+    $product = wc_get_product($product_id);
+    if ($product && $product->is_type('simple')) {
+        WC()->cart->add_to_cart($product_id, $quantity);
+
+        wp_send_json_success(array('success' => true));
+        wp_die();
+    }
+}
+add_action('wp_ajax_woozio_products_add_to_cart_simple', 'woozio_products_add_to_cart_simple');
+add_action('wp_ajax_nopriv_woozio_products_add_to_cart_simple', 'woozio_products_add_to_cart_simple');
+
 /* Ensure shipping is calculated before mini cart is rendered */
 function woozio_calculate_shipping_before_mini_cart()
 {
@@ -4524,7 +4544,7 @@ function woozio_woocommerce_template_loop_add_to_cart_variable()
     }
 }
 // hook button add to cart variable after add to cart
-add_action('woocommerce_after_add_to_cart_button', 'woozio_woocommerce_after_add_to_cart_button', 10);
+add_action('woocommerce_after_add_to_cart_button', 'woozio_woocommerce_after_add_to_cart_button', 1);
 function woozio_woocommerce_after_add_to_cart_button()
 {
     global $product;
@@ -4532,7 +4552,12 @@ function woozio_woocommerce_after_add_to_cart_button()
     if (isset($_REQUEST['variation_id'])) {
         $variation_id = intval($_REQUEST['variation_id']);
     }
-    
+
+    if($product->is_type('simple') ){
+        echo '<a href="#"
+        class="single_add_to_cart_button bt-button-hover bt-js-add-to-cart-simple"
+        data-product-id="' . esc_attr($product->get_id()) . '">' . esc_html__('Add To Cart', 'woozio') . '</a>';
+    }
     if ($product->is_type('variable')) { 
         echo '<a href="#"
         class="bt-btn-add-to-cart-variable single_add_to_cart_button bt-button-hover bt-js-add-to-cart-variable disabled"

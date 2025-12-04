@@ -19,7 +19,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 if ( $related_products || !empty($recently_viewed_products) ) :
-
+	if ( function_exists( 'wp_increase_content_media_count' ) ) {
+		$content_media_count = wp_increase_content_media_count( 0 );
+		if ( $content_media_count < wp_omit_loading_attr_threshold() ) {
+			wp_increase_content_media_count( wp_omit_loading_attr_threshold() - $content_media_count );
+		}
+	}
 	if(function_exists('get_field')){
 		$related_posts = get_field('product_related_posts', 'options');
 	} else {

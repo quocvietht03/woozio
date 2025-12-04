@@ -1546,6 +1546,27 @@
             "selected": 0
         },
         {
+            "key": "field_692ff607f0227",
+            "label": "Enable AJAX add to cart buttons on single product",
+            "name": "enable_ajax_add_to_cart_buttons_on_single_product",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 1,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
             "key": "field_68fc2ab509391",
             "label": "Size Guide",
             "name": "size_guide",
@@ -2645,5 +2666,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1764235169
+    "modified": 1764750969
 }

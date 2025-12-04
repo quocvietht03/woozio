@@ -1806,6 +1806,21 @@
         width: 100%;
         .bt-product-inner {
           gap: 30px;
+          &.bt-add-cart-ajax {
+            div.summary form.cart .button.single_add_to_cart_button {
+              display: none;
+            }
+            div.summary form.cart .bt-btn-add-to-cart-variable {
+              display: inline-block;
+              box-sizing: border-box;
+              text-align: center;
+            }
+            div.summary form.cart .bt-js-add-to-cart-simple {
+              display: inline-block;
+              box-sizing: border-box;
+              text-align: center;
+            }
+          }
         }
         div.images {
           width: calc(50% - 15px);
@@ -2471,6 +2486,9 @@
           .woocommerce-variation-add-to-cart {
             > * {
               display: none;
+            }
+            > .quantity{
+              display: none !important;
             }
             .bt-btn-add-to-cart-variable {
               display: block;
@@ -5214,6 +5232,21 @@
         flex-direction: column;
         gap: 40px;
       }
+      &.bt-add-cart-ajax{
+        div.summary form.cart .button.single_add_to_cart_button{
+          display: none;
+        }
+        div.summary form.cart .bt-btn-add-to-cart-variable{
+          display: inline-block;
+          box-sizing: border-box;
+          text-align: center;
+        }
+        div.summary form.cart .bt-js-add-to-cart-simple{
+          display: inline-block;
+          box-sizing: border-box;
+          text-align: center;
+        }
+      }
     }
 
     div.images {
@@ -5725,7 +5758,7 @@
             }
           }
         }
-        .button {
+        .button,.bt-btn-add-to-cart-variable,.bt-js-add-to-cart-simple{
           margin: 20px 0 0 0;
           width: calc(100% - 116px);
           float: none;
@@ -5756,6 +5789,11 @@
             order: 1;
             padding: 11px;
           }
+        }
+        .bt-btn-add-to-cart-variable,
+        .bt-btn-read-more,
+        .bt-js-add-to-cart-simple{
+          display: none;
         }
         .bt-product-icon-btn {
           display: flex;
@@ -6108,10 +6146,7 @@
             }
           }
         }
-        .bt-btn-add-to-cart-variable,
-        .bt-btn-read-more {
-          display: none;
-        }
+       
         &.grouped_form {
           .woocommerce-grouped-product-list {
             padding: 0;

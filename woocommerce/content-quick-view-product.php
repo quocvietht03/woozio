@@ -21,7 +21,17 @@ defined('ABSPATH') || exit;
 global $product;
 ?>
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('bt-bottom-thumbnail', $product); ?>>
-	<div class="bt-product-inner bt-quickview-product">
+	<?php
+	$ajax_add_to_cart_enabled = false;
+	if (function_exists('get_field')) {
+		$ajax_add_to_cart_enabled = get_field('enable_ajax_add_to_cart_buttons_on_single_product', 'options');
+	}
+	$bt_product_inner_class = 'bt-product-inner bt-quickview-product';
+	if ($ajax_add_to_cart_enabled && $product && ($product->is_type('simple') || $product->is_type('variable'))) {
+		$bt_product_inner_class .= ' bt-add-cart-ajax';
+	}
+	?>
+	<div class="<?php echo esc_attr($bt_product_inner_class); ?>">
 		<?php
 		do_action('woocommerce_before_single_product_summary');
 		?>
