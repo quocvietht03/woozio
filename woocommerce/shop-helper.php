@@ -4950,7 +4950,7 @@ function woozio_display_frequently_bought_together($product_id = null)
                         <label for="fbt-product-<?php echo esc_attr($fbt_product->get_id()); ?>"></label>
                     </div>
                     <div class="fbt-product-image">
-                        <?php echo '<a href="'. esc_url($fbt_product->get_permalink());'">'. $fbt_product->get_image('woocommerce_gallery_thumbnail') .'</a>'; ?>
+                        <?php echo '<a href="'. esc_url($fbt_product->get_permalink()) .'">'. $fbt_product->get_image('woocommerce_gallery_thumbnail') .'</a>'; ?>
                     </div>
                     <div class="fbt-product-details">
                         <h3 class="fbt-product-name">
