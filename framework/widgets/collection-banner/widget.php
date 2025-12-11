@@ -234,7 +234,29 @@ class Widget_CollectionBanner extends Widget_Base
 				],
 			]
 		);
-
+		$this->add_responsive_control(
+			'image_object_position',
+			[
+				'label' => __('Image Object Position', 'woozio'),
+				'label_block' => true,
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'top' => __('Top', 'woozio'),
+					'center' => __('Center', 'woozio'),
+					'bottom' => __('Bottom', 'woozio'),
+					'left' => __('Left', 'woozio'),
+					'right' => __('Right', 'woozio'),
+					'top left' => __('Top Left', 'woozio'),
+					'top right' => __('Top Right', 'woozio'),
+					'bottom left' => __('Bottom Left', 'woozio'),
+					'bottom right' => __('Bottom Right', 'woozio'),
+				],
+				'default' => 'top',
+				'selectors' => [
+					'{{WRAPPER}} .bt-collection-banner .collection-image img' => 'object-position: {{VALUE}};',
+				],
+			]
+		);
 		$this->end_controls_section();
 
 		$this->start_controls_section(

@@ -1024,7 +1024,7 @@ class Widget_ProductTooltipHotspot extends Widget_Base
                 ];
             }
         }   
-        if ($settings['hotspot_full_width'] === 'yes') {
+        if ($settings['hotspot_full_width'] === 'yes' && isset($settings['hotspot_container_width']['size'])) {
             $hotspot_container_width = $settings['hotspot_container_width']['size'];
 ?>
             <style>
