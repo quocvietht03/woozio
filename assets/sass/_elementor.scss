@@ -6760,6 +6760,11 @@
                   > * {
                     display: none;
                   }
+                  .single_variation_wrap{
+                    > * {
+                      display: none;
+                    }
+                  }
                   .woocommerce-variation {
                     > * {
                       display: none;
@@ -9904,6 +9909,11 @@
                   > * {
                     display: none;
                   }
+                  .single_variation_wrap{
+                    > * {
+                      display: none;
+                    }
+                  }
                   .woocommerce-variation {
                     > * {
                       display: none;
@@ -10827,6 +10837,11 @@
                 .variations_form {
                   > * {
                     display: none;
+                  }
+                  .single_variation_wrap{
+                    > * {
+                      display: none;
+                    }
                   }
                   .woocommerce-variation {
                     > * {
@@ -14435,6 +14450,12 @@
                 .variations_form {
                   > * {
                     display: none;
+                  }
+                  .single_variation_wrap{
+                    display: block;
+                    > * {
+                      display: none;
+                    }
                   }
                   .woocommerce-variation {
                     > * {
