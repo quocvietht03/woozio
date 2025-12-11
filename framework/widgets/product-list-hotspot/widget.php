@@ -448,7 +448,7 @@ class Widget_ProductListHotspot extends Widget_Base
                                                 $price_class = $product->is_type( 'variable' ) ? 'bt-product-variable' : '';
                                                 $price_html  = $product->get_price_html();
                                                 ?>
-                                                <p class="bt-product-price <?php echo esc_attr( $price_class ); ?>">
+                                                <p class="bt-price <?php echo esc_attr( $price_class ); ?>">
                                                     <?php echo wp_kses_post( $price_html ); ?>
                                                 </p>
                                             </div>
