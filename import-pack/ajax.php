@@ -34,7 +34,7 @@ if( ! function_exists( 'woozio_import_pack_modal_import_body_template' ) ) {
         set_query_var( 'import_steps', woozio_import_pack_import_steps() );
 
         ob_start();
-        load_template( get_template_directory() . '/install/import-pack/templates/modal-body-by-package-id.php' );
+        load_template( get_template_directory() . '/import-pack/templates/modal-body-by-package-id.php' );
         $content = ob_get_clean();
 
         wp_send_json( [

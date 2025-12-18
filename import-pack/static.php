@@ -12,8 +12,8 @@ if( ! function_exists( 'woozio_import_pack_scripts' ) ) {
      */
     function woozio_import_pack_scripts() {
 
-        wp_enqueue_style( 'import-pack-css', get_template_directory_uri() . '/install/import-pack/dist/import-pack.css', false, wp_get_theme()->get( 'Version' ) );
-        wp_enqueue_script( 'import-pack-js', get_template_directory_uri() . '/install/import-pack/dist/import-pack.js', ['jquery'], wp_get_theme()->get( 'Version' ), true );
+        wp_enqueue_style( 'import-pack-css', get_template_directory_uri() . '/import-pack/dist/import-pack.css', false, wp_get_theme()->get( 'Version' ) );
+        wp_enqueue_script( 'import-pack-js', get_template_directory_uri() . '/import-pack/dist/import-pack.js', ['jquery'], wp_get_theme()->get( 'Version' ), true );
 
         # get current user id
         $user_id = get_current_user_id();

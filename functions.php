@@ -204,8 +204,8 @@ if (!function_exists('woozio_enqueue_admin_scripts')) {
 /**
  * Theme install
  */
-require_once get_template_directory() . '/install/plugin-required.php';
-require_once get_template_directory() . '/install/import-pack/import-functions.php';
+require_once get_template_directory() . '/plugin-install/plugin-required.php';
+require_once get_template_directory() . '/import-pack/import-functions.php';
 
 /* ACF Options */
 require_once get_template_directory() . '/framework/acf-options.php';

@@ -29,7 +29,7 @@
  * require_once get_stylesheet_directory() . '/path/to/class-tgm-plugin-activation.php';
  */
 
-require_once get_template_directory() . '/install/class-tgm-plugin-activation.php';
+require_once get_template_directory() . '/plugin-install/class-tgm-plugin-activation.php';
 
 add_action( 'tgmpa_register', 'woozio_register_required_plugins' );
 

@@ -25,10 +25,10 @@
      * Includes
      *
      */
-    require( get_template_directory() . '/install/import-pack/inc/class.install-hepers.php' );
-    require( get_template_directory() . '/install/import-pack/static.php' );
-    require( get_template_directory() . '/install/import-pack/hooks.php' );
-    require( get_template_directory() . '/install/import-pack/ajax.php' );
+    require( get_template_directory() . '/import-pack/inc/class.install-hepers.php' );
+    require( get_template_directory() . '/import-pack/static.php' );
+    require( get_template_directory() . '/import-pack/hooks.php' );
+    require( get_template_directory() . '/import-pack/ajax.php' );
 }
 
 if( ! function_exists( 'woozio_register_import_menu' ) ) {
@@ -59,7 +59,7 @@ if( ! function_exists( 'woozio_register_import_page_callback' ) ) {
     function woozio_register_import_page_callback() {
 
         set_query_var( 'tabs', woozio_import_page_tabs() );
-        load_template( get_template_directory() . '/install/import-pack/templates/import-page.php' );
+        load_template( get_template_directory() . '/import-pack/templates/import-page.php' );
     }
 }
 
@@ -92,7 +92,7 @@ if( ! function_exists( 'woozio_package_demo' ) ) {
      */
     function woozio_package_demo() {
 
-        return require( get_template_directory() . '/install/import-pack/data/import.php' );
+        return require( get_template_directory() . '/import-pack/data/import.php' );
     }
 }
 
@@ -103,7 +103,7 @@ if( ! function_exists( 'woozio_import_pack_theme_requirements_tab_content' ) ) {
      */
     function woozio_import_pack_theme_requirements_tab_content() {
 
-        load_template( get_template_directory() . '/install/import-pack/templates/theme-requirements.php' );
+        load_template( get_template_directory() . '/import-pack/templates/theme-requirements.php' );
     }
 }
 
@@ -115,7 +115,7 @@ if( ! function_exists( 'woozio_import_pack_demo_install_package_tab_content' ) )
     function woozio_import_pack_demo_install_package_tab_content() {
 
         set_query_var( 'package_demos', woozio_package_demo() );
-        load_template( get_template_directory() . '/install/import-pack/templates/demo-install-package.php' );
+        load_template( get_template_directory() . '/import-pack/templates/demo-install-package.php' );
     }
 }
 
@@ -250,7 +250,7 @@ if( ! function_exists( 'woozio_import_pack_step_backup_site' ) ) {
         ?>
         <div class="item inner-step">
             <div class="heading-image">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/install/import-pack/images/backup-site.jpg' ); ?>" alt="<?php echo esc_attr( $package['title'] ); ?>">
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/import-pack/images/backup-site.jpg' ); ?>" alt="<?php echo esc_attr( $package['title'] ); ?>">
             </div>
             <div class="entry">
                 <h4 class="title"><?php echo "{$int_step}. ", "{$step['title']}"; ?></h4>

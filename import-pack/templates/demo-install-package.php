@@ -15,7 +15,7 @@
     <?php foreach( $package_demos as $index => $package_item ) : ?>
     <div class="ip-package-demo-item">
         <div class="preview-image">
-            <img src="<?php echo esc_url( get_template_directory_uri() . '/install/import-pack/images/browser-header-mockup.png' ); ?>" alt="">
+            <img src="<?php echo esc_url( get_template_directory_uri() . '/import-pack/images/browser-header-mockup.png' ); ?>" alt="">
             <img src="<?php echo esc_url( $package_item['preview'] ); ?>" alt="<?php echo esc_attr( $package_item['title'] ); ?>">
 
             <div class="actions">
