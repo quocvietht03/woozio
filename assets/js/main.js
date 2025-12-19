@@ -360,7 +360,7 @@
 						} else {
 							$(this).closest('.variations_form').find('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						}
-
+						
 						if ($('.bt-product-add-to-cart-variable').length > 0 && variation.is_in_stock) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
 
