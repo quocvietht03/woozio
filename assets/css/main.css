@@ -18222,8 +18222,8 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   transition: all 2s cubic-bezier(0, 0, 0.44, 1.18);
 }
 .bt-elwg-instagram-posts .bt-ins-posts--image .bt-icon-view {
-  width: 60px;
-  height: 60px;
+  width: 42px;
+  height: 42px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -18236,8 +18236,8 @@ body.admin-bar .dialog-type-lightbox.bt-menu-mobile-popup .elementor-location-po
   transition: transform 0.3s ease;
 }
 .bt-elwg-instagram-posts .bt-ins-posts--image .bt-icon-view svg {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 .bt-elwg-instagram-posts .bt-ins-posts--image .bt-icon-view:hover {
   color: #fff;

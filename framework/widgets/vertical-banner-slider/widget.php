@@ -339,7 +339,7 @@ class Woozio_VerticalBannerSlider extends Widget_Base
                     $class_active = $index === 0 ? 'active' : '';
 
                     ?>
-                    <a <?php echo esc_attr($link_attributes); ?> class="bt-banner-heading <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
+                    <a <?php echo esc_url($link_attributes); ?> class="bt-banner-heading <?php echo esc_attr($class_active); ?>" data-index="<?php echo esc_attr($index); ?>">
                         <?php echo esc_html($item['banner_heading']); ?>
                     </a>
                 <?php endforeach; ?>
