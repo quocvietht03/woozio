@@ -1693,3 +1693,131 @@
 .mfp-fade.mfp-wrap.mfp-removing .mfp-content {
   opacity: 0;
 }
+
+/* ============================================ */
+/* PRELOADER */
+/* ============================================ */
+.bt-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  background: $color-primary;
+  &.bt-preloader-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .bt-preloader-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* SVG Logo Animation */
+  .bt-svg-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    svg {
+      width: 247px;
+      height: auto;
+      max-width: 90vw;
+
+      @media (max-width: 575px) {
+        width: 200px;
+      }
+    }
+  }
+
+  .bt-preloader-logo {
+    width: 247px;
+    height: auto;
+    max-width: 90vw;
+
+    @media (max-width: 575px) {
+      width: 200px;
+    }
+  }
+
+  .bt-preloader-path {
+    opacity: 0;
+    transform: scale(0.8);
+    transform-origin: center center;
+    transform-box: fill-box;
+    animation: bt-path-loop 4s ease-in-out infinite;
+
+    /* Stagger animation for each path */
+    &[data-path="0"] { animation-delay: 0s; }
+    &[data-path="1"] { animation-delay: 0.15s; }
+    &[data-path="2"] { animation-delay: 0.3s; }
+    &[data-path="3"] { animation-delay: 0.45s; }
+    &[data-path="4"] { animation-delay: 0.6s; }
+    &[data-path="5"] { animation-delay: 0.75s; }
+    &[data-path="6"] { animation-delay: 0.9s; }
+    &[data-path="7"] { animation-delay: 1.05s; }
+    &[data-path="8"] { animation-delay: 1.2s; }
+    &[data-path="9"] { animation-delay: 1.35s; }
+  }
+
+  @keyframes bt-path-loop {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    12.5% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    62.5% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  /* Image Spinner Animation (for non-SVG images) */
+  .bt-preloader-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bt-preloader-image {
+    width: 280px;
+    height: auto;
+    max-width: 90vw;
+    animation: bt-image-pulse 2s ease-in-out infinite;
+
+    @media (max-width: 575px) {
+      width: 120px;
+    }
+  }
+
+  @keyframes bt-image-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  }
+}

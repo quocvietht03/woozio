@@ -80,24 +80,43 @@
 				$categoryList.toggle();
 			});
 
-			// Handle category selection
-			$categoryItems.on('click', function (e) {
-				e.preventDefault();
-				const $this = $(this);
-				const selectedText = $this.text();
-				const catSlug = $this.data('cat-slug');
+		// Handle category selection
+		$categoryItems.on('click', function (e) {
+			e.preventDefault();
+			const $this = $(this);
+			const selectedText = $this.text();
+			const catSlug = $this.data('cat-slug');
+			const catUrl = $this.data('cat-url');
 
-				// Update selected category
-				$selectedCategory.find('span').text(selectedText);
-				$catProductInput.val(catSlug);
+			// Update selected category
+			$selectedCategory.find('span').text(selectedText);
+			$catProductInput.val(catSlug);
+			
+			// Store category URL in form data attribute
+			$searchProduct.find('.bt-search--form').data('category-url', catUrl);
 
-				// Update active class
-				$categoryItems.removeClass('active');
-				$this.addClass('active');
+			// Update active class
+			$categoryItems.removeClass('active');
+			$this.addClass('active');
 
-				// Hide dropdown
-				$categoryList.hide();
-			});
+			// Hide dropdown
+			$categoryList.hide();
+		});
+		
+		// Handle form submit - update action URL based on category
+		$searchProduct.find('.bt-search--form').on('submit', function(e) {
+			const $form = $(this);
+			const categoryUrl = $form.data('category-url');
+			
+			// Disable all hidden inputs (only submit search_keyword)
+			$form.find('input[type="hidden"]').prop('disabled', true);
+			
+			if (categoryUrl) {
+				// Use the stored category URL from data attribute
+				$form.attr('action', categoryUrl);
+			}
+			// If no category URL, keep default action (already set in HTML)
+		});
 
 			// Close dropdown when clicking outside
 			$(document).on('click', function () {
@@ -113,14 +132,22 @@
 			let typingTimer;
 			const doneTypingInterval = 500; // 0.5 second delay after typing stops
 
-			const performSearch = function () {
-				const searchTerm = $liveSearch.val().trim();
-				if (searchTerm.length >= 2) {
-					var param_ajax = {
-						action: 'woozio_search_live',
-						search_term: searchTerm,
-						category_slug: $catProductInput.val()
-					};
+		const performSearch = function () {
+			const searchTerm = $liveSearch.val().trim();
+			if (searchTerm.length >= 2) {
+				// Get widget settings for category filtering
+				const categoryInclude = $searchProduct.find('.bt-widget-category-include').val();
+				const categoryExclude = $searchProduct.find('.bt-widget-category-exclude').val();
+				const autocompleteLimit = $searchProduct.find('.bt-autocomplete-limit').val() || 5;
+				
+				var param_ajax = {
+					action: 'woozio_search_live',
+					search_term: searchTerm,
+					category_slug: $catProductInput.val(),
+					widget_category_include: categoryInclude,
+					widget_category_exclude: categoryExclude,
+					autocomplete_limit: autocompleteLimit
+				};
 					$.ajax({
 						type: 'POST',
 						dataType: 'json',
@@ -148,15 +175,56 @@
 							}
 							$dataSearch.html(skeletonHtml);
 						},
-						success: function (response) {
-							if (response.success) {
-								setTimeout(function () {
-									$dataSearch.html(response.data['items']);
-								}, 300);
-							} else {
-								console.log('error');
-							}
-						},
+					success: function (response) {
+						if (response.success) {
+							setTimeout(function () {
+								$dataSearch.html(response.data['items']);
+								
+								// Handle "View All" button visibility and link
+								const $viewAllButton = $searchProduct.find('.bt-view-all-button');
+								const $viewAllResults = $searchProduct.find('.bt-view-all-results');
+								
+								if ($viewAllButton.length) {
+									const hasProducts = response.data['has_products'];
+									const isCustomLink = $viewAllButton.data('custom-link');
+									
+									if (hasProducts) {
+										// Show button if has products
+										$viewAllResults.show();
+										
+										// Update link if not using custom link
+										if (!isCustomLink) {
+											let buttonUrl = '';
+											const categoryUrl = $searchProduct.find('.bt-search--form').data('category-url');
+											
+											if (categoryUrl) {
+												buttonUrl = categoryUrl;
+											} else {
+												// Fallback to current href
+												buttonUrl = $viewAllButton.attr('href');
+											}
+											
+											// Remove existing search_keyword parameter if exists
+											buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+											// Clean up trailing ? or &
+											buttonUrl = buttonUrl.replace(/[?&]$/, '');
+											
+											// Add search_keyword parameter
+											const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
+											buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
+											
+											$viewAllButton.attr('href', buttonUrl);
+										}
+									} else {
+										// Hide button if no products
+										$viewAllResults.hide();
+									}
+								}
+							}, 300);
+						} else {
+							console.log('error');
+						}
+					},
 						error: function (jqXHR, textStatus, errorThrown) {
 							console.log('The following error occured: ' + textStatus, errorThrown);
 						}

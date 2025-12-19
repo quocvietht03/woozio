@@ -51,25 +51,26 @@ function woozio_fix_mime_type_glb($data, $file, $filename, $mimes, $real_mime)
 add_filter('wp_check_filetype_and_ext', 'woozio_fix_mime_type_glb', 10, 5);
 
 /* Get icon SVG HTML */
-function woozio_get_icon_svg_html( $icon_file_name ) {
-    if ( empty( $icon_file_name ) ) {
-        return 'Error: Invalid file name or file name is missing.';
-    }
+function woozio_get_icon_svg_html($icon_file_name)
+{
+	if (empty($icon_file_name)) {
+		return 'Error: Invalid file name or file name is missing.';
+	}
 
-    $icon_file_name = sanitize_file_name( $icon_file_name );
-    $file_path = get_template_directory() . '/assets/images/' . $icon_file_name . '.svg';
+	$icon_file_name = sanitize_file_name($icon_file_name);
+	$file_path = get_template_directory() . '/assets/images/' . $icon_file_name . '.svg';
 
-    if ( ! file_exists( $file_path ) ) {
-        return 'Error: File does not exist.';
-    }
+	if (! file_exists($file_path)) {
+		return 'Error: File does not exist.';
+	}
 
-    $svg = file_get_contents( $file_path );
+	$svg = file_get_contents($file_path);
 
-    if ( false === $svg ) {
-        return 'Error: Unable to read file.';
-    }
+	if (false === $svg) {
+		return 'Error: Unable to read file.';
+	}
 
-    return $svg;
+	return $svg;
 }
 
 /* Enqueue Script */
@@ -92,7 +93,7 @@ if (!function_exists('woozio_enqueue_scripts')) {
 			wp_enqueue_style('magnific-popup', get_template_directory_uri() . '/assets/libs/magnific-popup/magnific-popup.css', array(), false);
 		}
 
-		if (is_singular('post') && comments_open() || is_singular('product')) {
+		if ((is_singular('post') && comments_open()) || (is_page() && !is_page_template()) || is_singular('product')) {
 			wp_enqueue_script('jquery-validate', get_template_directory_uri() . '/assets/libs/jquery-validate/jquery.validate.min.js', array('jquery'), '', true);
 		}
 		wp_enqueue_script('select2', get_template_directory_uri() . '/assets/libs/select2/select2.min.js', array('jquery'), '', true);

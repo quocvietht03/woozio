@@ -422,7 +422,7 @@ if (!function_exists('woozio_popup_newslleter_form')) {
 					</div>
 				</div>
 			</div>
-<?php
+		<?php
 		}
 	}
 	add_action('wp_footer', 'woozio_popup_newslleter_form');
@@ -497,7 +497,7 @@ add_action('elementor/element/loop-carousel/section_carousel_pagination/before_s
 			'default' => 'left',
 			'options' => [
 				'left' => esc_html__('Left', 'woozio'),
-				'center' => esc_html__('Center', 'woozio'), 
+				'center' => esc_html__('Center', 'woozio'),
 				'right' => esc_html__('Right', 'woozio'),
 			],
 			'prefix_class' => 'pagination-progress-position-horizontal-',
@@ -683,7 +683,7 @@ add_action('elementor/element/nested-carousel/section_carousel_pagination/before
 			'default' => 'center',
 			'options' => [
 				'left' => esc_html__('Left', 'woozio'),
-				'center' => esc_html__('Center', 'woozio'), 
+				'center' => esc_html__('Center', 'woozio'),
 				'right' => esc_html__('Right', 'woozio'),
 			],
 			'prefix_class' => 'pagination-progress-position-horizontal-',
@@ -963,7 +963,7 @@ function bt_elwg_get_grid_area_positions($collage_items, $breakpoints)
 
 		// Get default desktop grid area
 		$default_grid_area = $get_grid_area('grid_area', '1 / 1 / 3 / 3');
-		
+
 		// Add default grid area
 		$result['breakpoints']['default'][] = $default_grid_area;
 
@@ -1013,7 +1013,7 @@ function bt_elwg_get_grid_area_positions($collage_items, $breakpoints)
 		// Get grid area for each breakpoint
 		foreach ($breakpoints as $key => $breakpoint) {
 			$breakpoint_value = $breakpoint->get_value();
-			
+
 			// Get grid area for this breakpoint with proper fallback
 			$grid_area = $get_grid_area_with_fallback($key);
 
@@ -1022,4 +1022,125 @@ function bt_elwg_get_grid_area_positions($collage_items, $breakpoints)
 	}
 
 	return $result;
+}
+
+/**
+ * Preloader HTML
+ */
+if (!function_exists('woozio_preloader_html')) {
+	function woozio_preloader_html()
+	{
+		if (!function_exists('get_field')) {
+			return;
+		}
+
+		$preloader_options = get_field('site_preloader', 'options');
+
+		if (!$preloader_options || !isset($preloader_options['enable_preloader']) || !$preloader_options['enable_preloader']) {
+			return;
+		}
+
+		$logo = isset($preloader_options['logo_preloader']) ? $preloader_options['logo_preloader'] : null;
+		$background = isset($preloader_options['background_preloader']) ? $preloader_options['background_preloader'] : '#000000';
+
+		// Fallback to site logo if no preloader logo is set
+		if (!$logo) {
+			$custom_logo_id = get_theme_mod('custom_logo');
+			if ($custom_logo_id) {
+				$logo = array(
+					'ID' => $custom_logo_id,
+					'url' => wp_get_attachment_image_url($custom_logo_id, 'full'),
+					'alt' => get_bloginfo('name'),
+					'mime_type' => get_post_mime_type($custom_logo_id)
+				);
+			}
+		}
+
+		// If still no logo, return
+		if (!$logo || !isset($logo['url'])) {
+			return;
+		}
+
+		// Check if logo is SVG
+		$is_svg = false;
+		$svg_content = '';
+		$image_url = isset($logo['url']) ? $logo['url'] : '';
+
+		// Check if the image is SVG by URL extension
+		if ($image_url && pathinfo($image_url, PATHINFO_EXTENSION) === 'svg') {
+			$is_svg = true;
+
+			// Get SVG content via wp_safe_remote_get
+			$response = wp_safe_remote_get($image_url, array(
+				'timeout' => 20,
+				'headers' => array(
+					'User-Agent' => 'Mozilla/5.0 (compatible; WordPress)',
+				),
+			));
+
+			if (!is_wp_error($response)) {
+				$svg_content = wp_remote_retrieve_body($response);
+
+				// Parse SVG and add classes to paths
+				if ($svg_content) {
+					// Add class to SVG tag
+					$svg_content = preg_replace('/<svg/', '<svg class="bt-preloader-logo"', $svg_content, 1);
+
+					// Add class and data-path to all path elements
+					$path_index = 0;
+					// Add class and data-path to all ellipse/circle elements
+					$svg_content = preg_replace_callback('/<(ellipse|circle)/', function ($matches) use (&$path_index) {
+						$result = '<' . $matches[1] . ' class="bt-preloader-path" data-path="' . $path_index . '"';
+						$path_index++;
+						return $result;
+					}, $svg_content);
+					$svg_content = preg_replace_callback('/<path/', function ($matches) use (&$path_index) {
+						$result = '<path class="bt-preloader-path" data-path="' . $path_index . '"';
+						$path_index++;
+						return $result;
+					}, $svg_content);
+					// Add class and data-path to all polygon/polyline elements
+					$svg_content = preg_replace_callback('/<(polygon|polyline)/', function ($matches) use (&$path_index) {
+						$result = '<' . $matches[1] . ' class="bt-preloader-path" data-path="' . $path_index . '"';
+						$path_index++;
+						return $result;
+					}, $svg_content);
+				}
+			}
+		}
+
+		?>
+		<div class="bt-preloader" id="bt-preloader" style="background: <?php echo esc_attr($background); ?>;">
+			<div class="bt-preloader-content">
+				<?php if ($is_svg && $svg_content):
+					echo '<div class="bt-svg-logo">' . $svg_content . '</div>';
+				else: ?>
+					<div class="bt-preloader-spinner">
+						<img src="<?php echo esc_url($logo['url']); ?>" alt="<?php echo esc_attr(isset($logo['alt']) ? $logo['alt'] : get_bloginfo('name')); ?>" class="bt-preloader-image">
+					</div>
+				<?php endif; ?>
+			</div>
+		</div>
+<?php
+	}
+}
+
+/**
+ * Add preloader to wp_body_open hook
+ */
+if (!function_exists('woozio_add_preloader')) {
+	function woozio_add_preloader()
+	{
+		// Only add preloader if enabled
+		if (!function_exists('get_field')) {
+			return;
+		}
+
+		$preloader_options = get_field('site_preloader', 'options');
+
+		if ($preloader_options && isset($preloader_options['enable_preloader']) && $preloader_options['enable_preloader']) {
+			woozio_preloader_html();
+		}
+	}
+	add_action('wp_body_open', 'woozio_add_preloader', 1);
 }

@@ -163,6 +163,65 @@ class Widget_SearchProduct extends Widget_Base
 				'default' => 'yes',
 			]
 		);
+		$this->add_control(
+			'autocomplete_limit',
+			[
+				'label' => __('Autocomplete Products Limit', 'woozio'),
+				'type' => Controls_Manager::NUMBER,
+				'default' => 5,
+				'min' => -1,
+				'max' => 50,
+				'step' => 1,
+				'description' => __('Number of products to show in autocomplete results. Use -1 for unlimited.', 'woozio'),
+				'condition' => [
+					'enable_autocomplete' => 'yes',
+				],
+			]
+		);
+		$this->add_control(
+			'button_text',
+			[
+				'label' => __('Button Text', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => __('View All Results', 'woozio'),
+				'placeholder' => __('Enter button text', 'woozio'),
+				'condition' => [
+					'enable_autocomplete' => 'yes',
+				],
+			]
+		);
+		$this->add_control(
+			'custom_button_link',
+			[
+				'label' => __('Custom Button Link', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'no',
+				'condition' => [
+					'enable_autocomplete' => 'yes',
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_link',
+			[
+				'label' => __('Button Link', 'woozio'),
+				'type' => Controls_Manager::URL,
+				'placeholder' => __('https://your-link.com', 'woozio'),
+				'default' => [
+					'url' => '',
+					'is_external' => false,
+					'nofollow' => false,
+				],
+				'condition' => [
+					'enable_autocomplete' => 'yes',
+					'custom_button_link' => 'yes',
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 	protected function register_style_section_controls()
@@ -306,7 +365,7 @@ class Widget_SearchProduct extends Widget_Base
 ?>
 		<div class="bt-elwg-search-product <?php echo esc_attr($settings['layout_type']); ?>">
 			<div class="bt-search">
-				<form method="get" class="bt-search--form" action="<?php echo esc_url(home_url('/shop')); ?>">
+				<form method="get" class="bt-search--form" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
 					<?php if ($settings['enable_category'] === 'yes') : ?>
 						<div class="bt-search--category">
 							<div class="bt-category-dropdown">
@@ -321,36 +380,54 @@ class Widget_SearchProduct extends Widget_Base
 								<ul class="bt-category-list" style="display: none;">
 									<?php
 
-									// All Categories item
-									$all_categories_class = empty($current_cat) ? 'active' : '';
-									echo '<li class="bt-category-item ' . $all_categories_class . '" data-cat-slug="">';
-									echo '<a href="#">' . esc_html__('All', 'woozio') . '</a>';
-									echo '</li>';
+									// All Categories item - only show if no specific categories are selected
+									if (empty($settings['category'])) {
+										$all_categories_class = empty($current_cat) ? 'active' : '';
+										$shop_url = get_permalink(wc_get_page_id('shop'));
+										echo '<li class="bt-category-item ' . $all_categories_class . '" data-cat-slug="" data-cat-url="' . esc_url($shop_url) . '">';
+										echo '<a href="#">' . esc_html__('All', 'woozio') . '</a>';
+										echo '</li>';
+									}
 
-									// Get categories
+									// Get categories with proper filtering
 									$args = array(
 										'hide_empty' => true,
-										'exclude' => !empty($settings['category_exclude']) ? $settings['category_exclude'] : array(),
-										'include' => !empty($settings['category']) ? $settings['category'] : array()
 									);
+									
+									// If category (include) is set, show those specific categories (can include child categories)
+									if (!empty($settings['category'])) {
+										$args['include'] = $settings['category'];
+									} else {
+										// Default: Only show parent categories (top level)
+										$args['parent'] = 0;
+									}
+									
+									// If category_exclude is set, exclude those categories
+									if (!empty($settings['category_exclude'])) {
+										$args['exclude'] = $settings['category_exclude'];
+									}
+									
 									$categories = get_terms('product_cat', $args);
 
 									if (!empty($categories) && !is_wp_error($categories)) {
 										foreach ($categories as $category) {
 											$active_class = ($current_cat === $category->slug) ? 'active' : '';
-											echo '<li class="bt-category-item ' . $active_class . '" data-cat-slug="' . esc_attr($category->slug) . '">';
+											$category_url = get_term_link($category);
+											echo '<li class="bt-category-item ' . $active_class . '" data-cat-slug="' . esc_attr($category->slug) . '" data-cat-url="' . esc_url($category_url) . '">';
 											echo '<a href="#">' . esc_html($category->name) . '</a>';
 											echo '</li>';
 										}
 									}
 									?>
 								</ul>
-								<script>
-								</script>
 							</div>
 						</div>
 					<?php endif; ?>
-					<input type="hidden" name="product_cat" value="" />
+					<input type="hidden" name="product_cat" class="bt-product-cat-input" value="<?php echo esc_attr($current_cat); ?>" />
+					<!-- Widget settings for category filtering -->
+					<input type="hidden" name="widget_category_include" class="bt-widget-category-include" value="<?php echo !empty($settings['category']) ? esc_attr(implode(',', $settings['category'])) : ''; ?>" />
+					<input type="hidden" name="widget_category_exclude" class="bt-widget-category-exclude" value="<?php echo !empty($settings['category_exclude']) ? esc_attr(implode(',', $settings['category_exclude'])) : ''; ?>" />
+					<input type="hidden" name="autocomplete_limit" class="bt-autocomplete-limit" value="<?php echo !empty($settings['autocomplete_limit']) ? esc_attr($settings['autocomplete_limit']) : '5'; ?>" />
 					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />
 					<button type="submit" class="bt-search-submit">
 						<?php esc_html_e('Search', 'woozio'); ?>
@@ -369,6 +446,30 @@ class Widget_SearchProduct extends Widget_Base
 					<div class="bt-live-search-results">
 						<span class="bt-loading-wave"></span>
 						<div class="bt-load-data"></div>
+						<?php if (!empty($settings['button_text'])) : 
+							// Check if custom link is enabled
+							$use_custom_link = ($settings['custom_button_link'] === 'yes');
+							$button_link = '#';
+							$target = '';
+							$nofollow = '';
+							$data_custom = '';
+							
+							if ($use_custom_link && !empty($settings['button_link']['url'])) {
+								// Use custom link
+								$button_link = $settings['button_link']['url'];
+								$target = !empty($settings['button_link']['is_external']) ? ' target="_blank"' : '';
+								$nofollow = !empty($settings['button_link']['nofollow']) ? ' rel="nofollow"' : '';
+								$data_custom = ' data-custom-link="true"';
+							} else {
+								// Use dynamic link (will be updated by JS)
+								$button_link = get_permalink(wc_get_page_id('shop'));
+								$data_custom = ' data-custom-link="false"';
+							}
+						?>
+							<div class="bt-view-all-results" >
+								<?php echo '<a href="' . esc_url($button_link) . '" class="bt-view-all-button"' . $target . $nofollow . $data_custom . '>' . esc_html($settings['button_text']) . '</a>'; ?>
+							</div>
+						<?php endif; ?>
 					</div>
 				</form>
 			</div>

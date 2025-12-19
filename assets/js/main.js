@@ -343,13 +343,13 @@
 					gallerylayout = 'slider-thumb';
 				}
 
-				
+
 				// update js variations_form woo (only in product loop)
 				var $currentForm = $(this).closest('.variations_form');
 				var $productLoop = $(this).closest('.woocommerce-loop-product');
 				var isInProductLoop = $productLoop.length > 0;
 				var showVariationTriggered = false;
-			
+
 				var $productContainer = $(this).closest('.bt-product-inner, .bt-quickview-product');
 				$(this).closest('.variations_form').off('show_variation.woozio').on('show_variation.woozio', function (event, variation) {
 					showVariationTriggered = true;
@@ -360,7 +360,7 @@
 						} else {
 							$(this).closest('.variations_form').find('.bt-button-buy-now a').removeClass('disabled').attr('data-variation', variationId);
 						}
-						
+
 						if ($('.bt-product-add-to-cart-variable').length > 0 && variation.is_in_stock) {
 							var $addToCartBtn = $(this).closest('.bt-product-add-to-cart-variable').find('.bt-js-add-to-cart-variable');
 
@@ -535,62 +535,62 @@
 				// Check if show_variation.woozio event is triggered (only in product loop)
 				if (typeof $.fn.wc_variation_form !== 'undefined' && isInProductLoop) {
 					// Set timeout to check if show_variation.woozio event is triggered after setting value
-					setTimeout(function() {
+					setTimeout(function () {
 						if (!showVariationTriggered) {
 							$currentForm.wc_variation_form();
 						}
 					}, 300);
 				}
-			
-			// Function to update available options based on current selections
-			var updateAvailableOptions = function() {
-				$currentForm.find('.bt-attributes-wrap .bt-js-item').each(function () {
-					var $item = $(this);
-					var valueItem = $item.data('value');
-					
-					// Skip if valueItem is missing
-					if (!valueItem) {
-						$item.addClass('disabled');
-						return;
-					}
-					
-					var $attributesItem = $item.closest('.bt-attributes--item');
-					var attributeName = $attributesItem.data('attribute-name');
-					
-					// Skip if attributeName is missing
-					if (!attributeName) {
-						$item.addClass('disabled');
-						return;
-					}
-					
-					// Find the select element for this attribute
-					var $select = $currentForm.find('select#' + attributeName);
-					
-					// Check if select exists
-					if ($select.length === 0) {
-						$item.addClass('disabled');
-						return;
-					}
-					
-					// Find the option with matching value
-					var $option = $select.find('option[value="' + valueItem.replace(/"/g, '\\"') + '"]');
-					
-					// Check if option exists and is NOT disabled
-					// WooCommerce disables unavailable options, so we check for !disabled
-					var isAvailable = $option.length > 0 && !$option.prop('disabled');
-					
-					// Toggle disabled class
-					$item.toggleClass('disabled', !isAvailable);
-				});
-			};
-			
-			// Listen to WooCommerce variation update event to update immediately
-			$currentForm.off('woocommerce_update_variation_values.updateOptions').on('woocommerce_update_variation_values.updateOptions', function() {
-				updateAvailableOptions();
-			});
 
-			// Initial update for single product page
-			updateAvailableOptions();
+				// Function to update available options based on current selections
+				var updateAvailableOptions = function () {
+					$currentForm.find('.bt-attributes-wrap .bt-js-item').each(function () {
+						var $item = $(this);
+						var valueItem = $item.data('value');
+
+						// Skip if valueItem is missing
+						if (!valueItem) {
+							$item.addClass('disabled');
+							return;
+						}
+
+						var $attributesItem = $item.closest('.bt-attributes--item');
+						var attributeName = $attributesItem.data('attribute-name');
+
+						// Skip if attributeName is missing
+						if (!attributeName) {
+							$item.addClass('disabled');
+							return;
+						}
+
+						// Find the select element for this attribute
+						var $select = $currentForm.find('select#' + attributeName);
+
+						// Check if select exists
+						if ($select.length === 0) {
+							$item.addClass('disabled');
+							return;
+						}
+
+						// Find the option with matching value
+						var $option = $select.find('option[value="' + valueItem.replace(/"/g, '\\"') + '"]');
+
+						// Check if option exists and is NOT disabled
+						// WooCommerce disables unavailable options, so we check for !disabled
+						var isAvailable = $option.length > 0 && !$option.prop('disabled');
+
+						// Toggle disabled class
+						$item.toggleClass('disabled', !isAvailable);
+					});
+				};
+
+				// Listen to WooCommerce variation update event to update immediately
+				$currentForm.off('woocommerce_update_variation_values.updateOptions').on('woocommerce_update_variation_values.updateOptions', function () {
+					updateAvailableOptions();
+				});
+
+				// Initial update for single product page
+				updateAvailableOptions();
 			});
 		}
 	}
@@ -614,11 +614,11 @@
 			var step = parseFloat($input.attr('step')) || 1;
 			var max = $input.attr('max') ? parseFloat($input.attr('max')) : null;
 			var newVal = currentVal + step;
-			
+
 			if (max !== null && newVal > max) {
 				newVal = max;
 			}
-			
+
 			$input.val(newVal);
 			$input.trigger('change');
 		});
@@ -630,11 +630,11 @@
 			var step = parseFloat($input.attr('step')) || 1;
 			var min = parseFloat($input.attr('min')) || 1;
 			var newVal = currentVal - step;
-			
+
 			if (newVal < min) {
 				newVal = min;
 			}
-			
+
 			$input.val(newVal);
 			$input.trigger('change');
 		});
@@ -3653,7 +3653,34 @@
 			clearCartNote();
 		}
 	}
+	/* Preloader */
+	function WoozioPreloader() {
+		var $preloader = $('#bt-preloader');
+		if ($preloader.length === 0) return;
 
+		// Function to hide preloader
+		function hidePreloader() {
+			// Fade out the entire preloader
+			$preloader.css('opacity', '0');
+
+			// Remove from DOM after fade out
+			setTimeout(function () {
+				$preloader.remove();
+			}, 400);
+		}
+
+		// Hide preloader when page is fully loaded
+		$(window).on('load', function () {
+			hidePreloader();
+		});
+
+		// Fallback: hide preloader after maximum wait time (3 seconds) if load event doesn't fire
+		setTimeout(function () {
+			if ($preloader.length && $preloader.css('opacity') !== '0') {
+				hidePreloader();
+			}
+		}, 3000);
+	}
 	jQuery(document).ready(function ($) {
 		WoozioSubmenuAuto();
 		WoozioToggleMenuMobile();
@@ -3698,7 +3725,7 @@
 		WoozioFrequentlyBoughtTogether();
 		WoozioElementorSliderControl(); // Elementor slider control via button clicks
 		WoozioMiniCartNoteHandler();	// Initialize Mini Cart Note Handler
-
+		WoozioPreloader(); // Initialize Preloader
 	});
 	// Block WooCommerce from changing images
 	jQuery(function ($) {

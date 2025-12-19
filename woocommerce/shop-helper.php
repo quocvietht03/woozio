@@ -3159,20 +3159,67 @@ function woozio_search_live()
 {
     $search_term = isset($_POST['search_term']) ? sanitize_text_field($_POST['search_term']) : '';
     $category_slug = isset($_POST['category_slug']) ? sanitize_text_field($_POST['category_slug']) : '';
+    
+    // Get widget settings for category filtering
+    $widget_category_include = isset($_POST['widget_category_include']) ? sanitize_text_field($_POST['widget_category_include']) : '';
+    $widget_category_exclude = isset($_POST['widget_category_exclude']) ? sanitize_text_field($_POST['widget_category_exclude']) : '';
+    
+    // Get autocomplete limit setting
+    $autocomplete_limit = isset($_POST['autocomplete_limit']) ? intval($_POST['autocomplete_limit']) : 5;
+    
+    // Validate: -1 for unlimited, or between 1 and 50. If 0 or invalid, default to 5
+    if ($autocomplete_limit === 0) {
+        $autocomplete_limit = 5; // Default to 5 if 0 is provided
+    } elseif ($autocomplete_limit !== -1) {
+        $autocomplete_limit = max(1, min(50, $autocomplete_limit));
+    }
 
     $args = array(
         'post_type' => 'product',
-        'posts_per_page' => -1,
+        'posts_per_page' => $autocomplete_limit,
         's' => $search_term,
         'tax_query' => array()
     );
 
+    // Build tax_query based on widget settings and user selection
+    $tax_query_parts = array();
+    
+    // If user selected a specific category from dropdown
     if (!empty($category_slug)) {
-        $args['tax_query'][] = array(
+        $tax_query_parts[] = array(
             'taxonomy' => 'product_cat',
             'field' => 'slug',
             'terms' => $category_slug
         );
+    } 
+    // If no category selected but widget has category include settings
+    elseif (!empty($widget_category_include)) {
+        $include_ids = array_map('intval', explode(',', $widget_category_include));
+        $tax_query_parts[] = array(
+            'taxonomy' => 'product_cat',
+            'field' => 'term_id',
+            'terms' => $include_ids,
+            'operator' => 'IN'
+        );
+    }
+    
+    // If widget has category exclude settings
+    if (!empty($widget_category_exclude)) {
+        $exclude_ids = array_map('intval', explode(',', $widget_category_exclude));
+        $tax_query_parts[] = array(
+            'taxonomy' => 'product_cat',
+            'field' => 'term_id',
+            'terms' => $exclude_ids,
+            'operator' => 'NOT IN'
+        );
+    }
+    
+    // Apply tax_query if we have any conditions
+    if (!empty($tax_query_parts)) {
+        if (count($tax_query_parts) > 1) {
+            $args['tax_query']['relation'] = 'AND';
+        }
+        $args['tax_query'] = array_merge($args['tax_query'], $tax_query_parts);
     }
 
     $query = new WP_Query($args);
@@ -3215,8 +3262,10 @@ function woozio_search_live()
         }
         wp_reset_postdata();
         $output['items'] = ob_get_clean();
+        $output['has_products'] = true;
     } else {
         $output['items'] = '<div class="bt-no-results">' . esc_html__('No products found!', 'woozio') . '</div>';
+        $output['has_products'] = false;
     }
 
     wp_send_json_success($output);
