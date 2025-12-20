@@ -383,17 +383,6 @@ class Widget_SearchProductStyle1 extends Widget_Base
 		);
 
 		$this->add_control(
-			'input_bg_color',
-			[
-				'label' => __('Input Background Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-search--form' => 'background-color: {{VALUE}}',
-				],
-			]
-		);
-
-		$this->add_control(
 			'button_color',
 			[
 				'label' => __('Button Text Color', 'woozio'),
