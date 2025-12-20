@@ -442,38 +442,38 @@ class Widget_SearchProductStyle1 extends Widget_Base
 									</svg>
 								</div>
 
-							<ul class="bt-category-list">
-								<?php
-								// Always show "All Categories" option
-								$all_categories_class = empty($current_cat) ? 'active' : '';
-								$shop_url = get_permalink(wc_get_page_id('shop'));
-								echo '<li class="bt-category-item ' . $all_categories_class . '" data-name="' . esc_attr__('All Categories', 'woozio') . '" data-slug="" data-url="' . esc_url($shop_url) . '">';
-								echo '<a href="#">' . esc_html__('All Categories', 'woozio') . '</a>';
-								echo '</li>';
+								<ul class="bt-category-list">
+									<?php
+									// Always show "All Categories" option
+									$all_categories_class = empty($current_cat) ? 'active' : '';
+									$shop_url = get_permalink(wc_get_page_id('shop'));
+									echo '<li class="bt-category-item ' . $all_categories_class . '" data-name="' . esc_attr__('All Categories', 'woozio') . '" data-slug="" data-url="' . esc_url($shop_url) . '">';
+									echo '<a href="#">' . esc_html__('All Categories', 'woozio') . '</a>';
+									echo '</li>';
 
-								// Get categories
-								$args = array('hide_empty' => true);
-								if (!empty($settings['category'])) {
-									$args['include'] = $settings['category'];
-								} else {
-									$args['parent'] = 0;
-								}
-								if (!empty($settings['category_exclude'])) {
-									$args['exclude'] = $settings['category_exclude'];
-								}
-
-								$categories = get_terms('product_cat', $args);
-								if (!empty($categories) && !is_wp_error($categories)) {
-									foreach ($categories as $category) {
-										$active_class = ($current_cat === $category->slug) ? 'active' : '';
-										$category_url = get_term_link($category);
-										echo '<li class="bt-category-item ' . $active_class . '" data-name="' . esc_attr($category->name) . '" data-slug="' . esc_attr($category->slug) . '" data-url="' . esc_url($category_url) . '">';
-										echo '<a href="#">' . esc_html($category->name) . '</a>';
-										echo '</li>';
+									// Get categories
+									$args = array('hide_empty' => true);
+									if (!empty($settings['category'])) {
+										$args['include'] = $settings['category'];
+									} else {
+										$args['parent'] = 0;
 									}
-								}
-								?>
-							</ul>
+									if (!empty($settings['category_exclude'])) {
+										$args['exclude'] = $settings['category_exclude'];
+									}
+
+									$categories = get_terms('product_cat', $args);
+									if (!empty($categories) && !is_wp_error($categories)) {
+										foreach ($categories as $category) {
+											$active_class = ($current_cat === $category->slug) ? 'active' : '';
+											$category_url = get_term_link($category);
+											echo '<li class="bt-category-item ' . $active_class . '" data-name="' . esc_attr($category->name) . '" data-slug="' . esc_attr($category->slug) . '" data-url="' . esc_url($category_url) . '">';
+											echo '<a href="#">' . esc_html($category->name) . '</a>';
+											echo '</li>';
+										}
+									}
+									?>
+								</ul>
 							</div>
 						</div>
 					<?php endif; ?>
@@ -559,6 +559,41 @@ class Widget_SearchProductStyle1 extends Widget_Base
 							<h2 class="bt-section-heading"><?php echo esc_html($settings['products_section_heading']); ?></h2>
 							<div class="bt-products-container">
 								<!-- Products will be loaded here -->
+								<?php
+								$skeleton_count = $settings['products_limit'];
+
+								// Desktop skeleton (WooCommerce structure)
+								for ($i = 0; $i < $skeleton_count; $i++) {
+								?>
+									<div class="bt-product-skeleton bt-skeleton-desktop product">
+										<div class="bt-skeleton-thumbnail"></div>
+										<div class="bt-skeleton-content">
+											<div class="bt-skeleton-title"></div>
+											<div class="bt-skeleton-price"></div>
+											<div class="bt-skeleton-rating"></div>
+										</div>
+									</div>
+								<?php
+								}
+
+								// Mobile skeleton (bt-product-item structure)
+								for ($i = 0; $i < $skeleton_count; $i++) {
+								?>
+									<div class="bt-product-item bt-product-skeleton bt-skeleton-mobile">
+										<div class="bt-product-thumb">
+											<div class="bt-skeleton-thumbnail"></div>
+											<div class="bt-product-title">
+												<div class="bt-skeleton-title"></div>
+												<div class="bt-skeleton-price"></div>
+											</div>
+										</div>
+										<div class="bt-product-add-to-cart">
+											<div class="bt-skeleton-button"></div>
+										</div>
+									</div>
+								<?php
+								}
+								?>
 							</div>
 						</div>
 					</div>

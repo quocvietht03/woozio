@@ -473,6 +473,9 @@
 											$viewAllButton.attr('href', buttonUrl);
 										}
 									}
+
+									// Keep focus on input so user can continue typing
+									$liveSearch.focus();
 								}, 300);
 							}
 						},
