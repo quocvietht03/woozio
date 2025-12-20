@@ -477,6 +477,9 @@
 									// Keep focus on input so user can continue typing
 									$liveSearch.focus();
 								}, 300);
+								setTimeout(function () {
+									$liveSearch.focus();
+								}, 1000);
 							}
 						},
 						error: function () {
