@@ -370,22 +370,10 @@ nav .elementor-nav-menu .sub-arrow {
     max-height: 73vh;
   }
 }
-body.admin-bar .dialog-type-lightbox {
-  &.bt-menu-mobile-popup {
-    position: fixed;
-    top: 32px;
-    .elementor-location-popup {
-      > .elementor-element {
-        &:last-child {
-          bottom: 32px;
-        }
-      }
-    }
-  }
-} 
 .bt-menu-mobile-popup {
   position: fixed !important;
   &.elementor-popup-modal {
+    .sub-menu,
     .dialog-message {
       &::-webkit-scrollbar {
         width: 6px;
@@ -402,6 +390,10 @@ body.admin-bar .dialog-type-lightbox {
         border-radius: 10px;
         background-color: #f1f1f1;
       }
+    }
+    .sub-menu {
+      max-height: 300px;
+      overflow-y: auto;
     }
   }
   .elementor-nav-menu {
