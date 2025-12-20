@@ -322,7 +322,7 @@
   overflow: hidden;
   width: 100%;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
 }
 .__bt-button-style {
@@ -1334,6 +1334,11 @@
     .dialog-close-button.dialog-lightbox-close-button {
       width: 28px;
       height: 28px;
+      background-image: url(../images/close.svg);
+    }
+  }
+  &.bt-popup-search {
+    .dialog-close-button.dialog-lightbox-close-button {
       background-image: url(../images/close.svg);
     }
   }

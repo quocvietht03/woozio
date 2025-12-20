@@ -73,6 +73,7 @@ class ElementorWidgets
 			'bt-accordion',
 			'account-login',
 			'search-product',
+			'search-product-style-1',
 			'brand-slider',
 			'product-item',
 			'product-showcase',
@@ -234,6 +235,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductCompare\Widget_ProductCompare());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccountLogin\Widget_AccountLogin());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SearchProduct\Widget_SearchProduct());
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SearchProductStyle1\Widget_SearchProductStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BrandSlider\Widget_BrandSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductItem\Widget_ProductItem());
 

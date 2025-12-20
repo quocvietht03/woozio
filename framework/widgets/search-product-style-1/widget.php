@@ -1,41 +1,33 @@
 <?php
 
-namespace WoozioElementorWidgets\Widgets\SearchProduct;
+namespace WoozioElementorWidgets\Widgets\SearchProductStyle1;
 
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Image_Size;
-use Elementor\Group_Control_Css_Filter;
-use Elementor\Group_Control_Typography;
-use Elementor\Group_Control_Border;
-use Elementor\Group_Control_Box_Shadow;
 
-class Widget_SearchProduct extends Widget_Base
+if (!defined('ABSPATH')) exit;
+
+class Widget_SearchProductStyle1 extends Widget_Base
 {
 
 	public function get_name()
 	{
-		return 'bt-search-product';
+		return 'bt-search-product-style-1';
 	}
 
 	public function get_title()
 	{
-		return __('Search Product', 'woozio');
+		return __('Search Product Style 1', 'woozio');
 	}
 
 	public function get_icon()
 	{
-		return 'eicon-posts-ticker';
+		return 'eicon-search';
 	}
 
 	public function get_categories()
 	{
 		return ['woozio'];
-	}
-
-	public function get_script_depends()
-	{
-		return ['elementor-widgets'];
 	}
 
 	public function get_supported_taxonomies()
@@ -55,43 +47,52 @@ class Widget_SearchProduct extends Widget_Base
 		return $supported_taxonomies;
 	}
 
+	protected function get_product_list()
+	{
+		$products = [];
+		$args = array(
+			'post_type' => 'product',
+			'posts_per_page' => -1,
+			'orderby' => 'title',
+			'order' => 'ASC',
+		);
+		$query = new \WP_Query($args);
+		if ($query->have_posts()) {
+			while ($query->have_posts()) {
+				$query->the_post();
+				$products[get_the_ID()] = get_the_title();
+			}
+			wp_reset_postdata();
+		}
+		return $products;
+	}
+
 	protected function register_query_section_controls()
 	{
+		// Search Settings Section
 		$this->start_controls_section(
-			'section_layout',
+			'search_section',
 			[
-				'label' => __('Layout', 'woozio'),
+				'label' => __('Search Settings', 'woozio'),
+				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
-		$this->add_control(
-			'layout_type',
-			[
-				'label' => __('Layout Type', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'options' => [
-					'layout-01' => __('Layout 01', 'woozio'),
-					'layout-02' => __('Layout 02', 'woozio'),
-					'layout-03' => __('Layout 03', 'woozio'),
-				],
-				'default' => 'layout-01',
-			]
-		);
+
 		$this->add_control(
 			'enable_category',
 			[
-				'label' => __('Enable Category', 'woozio'),
+				'label' => __('Enable Category Filter', 'woozio'),
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __('Yes', 'woozio'),
 				'label_off' => __('No', 'woozio'),
 				'return_value' => 'yes',
 				'default' => 'yes',
-				'condition' => [
-					'layout_type!' => 'layout-02',
-				],
 			]
 		);
 
 		$this->end_controls_section();
+
+		// Query Section
 		$this->start_controls_section(
 			'section_query',
 			[
@@ -121,9 +122,8 @@ class Widget_SearchProduct extends Widget_Base
 
 		$this->end_controls_tab();
 
-
 		$this->start_controls_tab(
-			'tab_query_exnlude',
+			'tab_query_exclude',
 			[
 				'label' => __('Exclude', 'woozio'),
 			]
@@ -143,15 +143,18 @@ class Widget_SearchProduct extends Widget_Base
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
+
 		$this->add_control(
 			'placeholder_text',
 			[
 				'label' => __('Placeholder Text', 'woozio'),
-				'type' => Controls_Manager::TEXTAREA,
-				'default' => __('What are you looking for today?', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => __('What we can help you find?', 'woozio'),
 				'placeholder' => __('Enter placeholder text', 'woozio'),
+				'label_block' => true,
 			]
 		);
+
 		$this->add_control(
 			'enable_autocomplete',
 			[
@@ -163,62 +166,57 @@ class Widget_SearchProduct extends Widget_Base
 				'default' => 'yes',
 			]
 		);
+
 		$this->add_control(
 			'autocomplete_limit',
 			[
-				'label' => __('Autocomplete Products Limit', 'woozio'),
+				'label' => __('Autocomplete Limit', 'woozio'),
 				'type' => Controls_Manager::NUMBER,
 				'default' => 5,
 				'min' => -1,
 				'max' => 50,
 				'step' => 1,
-				'description' => __('Number of products to show in autocomplete results. Use -1 for unlimited.', 'woozio'),
+				'description' => __('Use -1 for unlimited', 'woozio'),
 				'condition' => [
 					'enable_autocomplete' => 'yes',
 				],
 			]
 		);
+
 		$this->add_control(
-			'add_to_cart_style',
+			'view_all_button_divider',
 			[
-				'label' => __('Add to Cart Style', 'woozio'),
-				'type' => Controls_Manager::SELECT,
-				'options' => [
-					'text' => __('Text', 'woozio'),
-					'icon' => __('Icon', 'woozio'),
-				],
-				'default' => 'text',
+				'type' => Controls_Manager::DIVIDER,
 				'condition' => [
 					'enable_autocomplete' => 'yes',
 				],
 			]
 		);
+
 		$this->add_control(
 			'button_text',
 			[
 				'label' => __('Button Text (Has Results)', 'woozio'),
 				'type' => Controls_Manager::TEXT,
 				'default' => __('View All Results', 'woozio'),
-				'placeholder' => __('Enter button text', 'woozio'),
-				'description' => __('Text shown when search has results', 'woozio'),
 				'condition' => [
 					'enable_autocomplete' => 'yes',
 				],
 			]
 		);
+
 		$this->add_control(
 			'button_text_no_results',
 			[
 				'label' => __('Button Text (No Results)', 'woozio'),
 				'type' => Controls_Manager::TEXT,
 				'default' => __('View All Products', 'woozio'),
-				'placeholder' => __('Enter button text', 'woozio'),
-				'description' => __('Text shown when search has no results', 'woozio'),
 				'condition' => [
 					'enable_autocomplete' => 'yes',
 				],
 			]
 		);
+
 		$this->add_control(
 			'custom_button_link',
 			[
@@ -240,133 +238,183 @@ class Widget_SearchProduct extends Widget_Base
 				'label' => __('Button Link', 'woozio'),
 				'type' => Controls_Manager::URL,
 				'placeholder' => __('https://your-link.com', 'woozio'),
-				'default' => [
-					'url' => '',
-					'is_external' => false,
-					'nofollow' => false,
-				],
 				'condition' => [
 					'enable_autocomplete' => 'yes',
 					'custom_button_link' => 'yes',
 				],
 			]
 		);
+
+		$this->end_controls_section();
+
+		// Products Display Section
+		$this->start_controls_section(
+			'products_section',
+			[
+				'label' => __('Products Display', 'woozio'),
+				'tab' => Controls_Manager::TAB_CONTENT,
+			]
+		);
+		$this->add_control(
+			'trending_searches_heading',
+			[
+				'label' => __('Trending Searches Heading', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => __('Trending Searches', 'woozio'),
+			]
+		);
+
+		$this->add_control(
+			'trending_searches',
+			[
+				'label' => __('Trending Keywords', 'woozio'),
+				'type' => Controls_Manager::TEXTAREA,
+				'default' => '',
+				'placeholder' => __('shoes, bags, dresses', 'woozio'),
+				'description' => __('Comma separated keywords', 'woozio'),
+			]
+		);
+		$this->add_control(
+			'products_section_heading',
+			[
+				'label' => __('Products Section Heading', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => __('Recently Viewed', 'woozio'),
+				'separator' => 'before',
+			]
+		);
+		$this->add_control(
+			'products_source',
+			[
+				'label' => __('Products Source', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'recent_viewed' => __('Recently Viewed', 'woozio'),
+					'latest' => __('Latest Products', 'woozio'),
+					'featured' => __('Featured Products', 'woozio'),
+					'custom' => __('Custom Products', 'woozio'),
+				],
+				'default' => 'recent_viewed',
+			]
+		);
+
+		$this->add_control(
+			'products_limit',
+			[
+				'label' => __('Products Limit', 'woozio'),
+				'type' => Controls_Manager::NUMBER,
+				'default' => 8,
+				'min' => 1,
+				'max' => 20,
+				'step' => 1,
+				'condition' => [
+					'products_source!' => 'custom',
+				],
+			]
+		);
+
+		$this->add_control(
+			'custom_products',
+			[
+				'label' => __('Select Products', 'woozio'),
+				'type' => Controls_Manager::SELECT2,
+				'multiple' => true,
+				'options' => $this->get_product_list(),
+				'label_block' => true,
+				'condition' => [
+					'products_source' => 'custom',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 	}
+
 	protected function register_style_section_controls()
 	{
 		$this->start_controls_section(
-			'section_style',
+			'style_section',
 			[
 				'label' => __('Style', 'woozio'),
 				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
-		
+		$this->add_control(
+			'search_max_width',
+			[
+				'label' => __('Search Max Width', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'size_units' => ['px', '%', 'em'],
+				'range' => [
+					'px' => [
+						'min' => 200,
+						'max' => 1200,
+						'step' => 10,
+					],
+					'%' => [
+						'min' => 10,
+						'max' => 100,
+						'step' => 1,
+					],
+					'em' => [
+						'min' => 10,
+						'max' => 80,
+						'step' => 0.5,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 1000,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-search-product-style-1' => '--max-width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
 		$this->add_control(
 			'input_color',
 			[
-				'label' => __('Input Text Color', 'woozio'), 
+				'label' => __('Input Text Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-search--form input[type="search"]' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .bt-search--form input' => 'color: {{VALUE}}',
 				],
 			]
 		);
 
 		$this->add_control(
-			'input_placeholder_color',
+			'input_bg_color',
 			[
-				'label' => __('Placeholder Color', 'woozio'),
+				'label' => __('Input Background Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-search--form input[type="search"]::placeholder' => 'color: {{VALUE}};',
-				],
-			]
-		);
-		$this->add_control(
-			'search_icon_color',
-			[
-				'label' => __('Search Icon Color', 'woozio'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .bt-search--form .bt-search-submit svg path' => 'stroke: {{VALUE}};',
-				],
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
+					'{{WRAPPER}} .bt-search--form' => 'background-color: {{VALUE}}',
 				],
 			]
 		);
 
 		$this->add_control(
-			'form_background',
+			'button_color',
 			[
-				'label' => __('Form Background', 'woozio'),
+				'label' => __('Button Text Color', 'woozio'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-search--form' => 'background-color: {{VALUE}};',
-				],
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Border::get_type(),
-			[
-				'name' => 'form_border',
-				'label' => __('Form Border', 'woozio'),
-				'selector' => '{{WRAPPER}} .bt-search--form',
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
-				],
-			]
-		);
-		$this->add_control(
-			'form_border_radius',
-			[
-				'label' => __('Border Radius', 'woozio'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%'],
-				'selectors' => [
-					'{{WRAPPER}} .bt-search--form' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
-				],
-			]
-		);
-		$this->add_control(
-			'input_padding',
-			[
-				'label' => __('Input Padding', 'woozio'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', 'em', '%'],
-				'selectors' => [
-					'{{WRAPPER}} .bt-search--form input[type="search"]' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
+					'{{WRAPPER}} .bt-search--form button' => 'color: {{VALUE}}',
 				],
 			]
 		);
 
 		$this->add_control(
-			'form_padding',
+			'button_bg_color',
 			[
-				'label' => __('Padding', 'woozio'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', 'em', '%'],
+				'label' => __('Button Background Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .bt-search--form' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-				'condition' => [
-					'layout_type' => ['layout-02', 'layout-03'],
+					'{{WRAPPER}} .bt-search--form button' => 'background-color: {{VALUE}}',
 				],
 			]
 		);
-       
+
 		$this->end_controls_section();
 	}
 
@@ -380,7 +428,7 @@ class Widget_SearchProduct extends Widget_Base
 	{
 		$settings = $this->get_settings_for_display();
 
-		// Get current category from URL or category page
+		// Get current category
 		$current_cat = '';
 		if (isset($_GET['product_cat'])) {
 			$current_cat = sanitize_text_field($_GET['product_cat']);
@@ -390,17 +438,14 @@ class Widget_SearchProduct extends Widget_Base
 				$current_cat = $current_category->slug;
 			}
 		}
-	
-	$add_to_cart_class = !empty($settings['add_to_cart_style']) && $settings['add_to_cart_style'] === 'icon' ? ' bt-add-to-cart-icon' : '';
 
 ?>
-		<div class="bt-elwg-search-product <?php echo esc_attr($settings['layout_type'] . $add_to_cart_class); ?>">
+		<div class="bt-elwg-search-product-style-1">
 			<div class="bt-search">
 				<form method="get" class="bt-search--form" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
 					<?php if ($settings['enable_category'] === 'yes') : ?>
 						<div class="bt-search--category">
 							<div class="bt-category-dropdown">
-
 								<div class="bt-selected-category">
 									<span><?php echo !empty($current_cat) ? esc_html(get_term_by('slug', $current_cat, 'product_cat')->name) : esc_html__('All Categories', 'woozio'); ?></span>
 									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="currentColor">
@@ -413,50 +458,44 @@ class Widget_SearchProduct extends Widget_Base
 								// Always show "All Categories" option
 								$all_categories_class = empty($current_cat) ? 'active' : '';
 								$shop_url = get_permalink(wc_get_page_id('shop'));
-								echo '<li class="bt-category-item ' . $all_categories_class . '" data-cat-slug="" data-cat-url="' . esc_url($shop_url) . '">';
+								echo '<li class="bt-category-item ' . $all_categories_class . '" data-name="' . esc_attr__('All Categories', 'woozio') . '" data-slug="" data-url="' . esc_url($shop_url) . '">';
 								echo '<a href="#">' . esc_html__('All Categories', 'woozio') . '</a>';
 								echo '</li>';
 
-								// Get categories with proper filtering
-								$args = array(
-									'hide_empty' => true,
-								);
-								
-								// If category (include) is set, show those specific categories (can include child categories)
+								// Get categories
+								$args = array('hide_empty' => true);
 								if (!empty($settings['category'])) {
 									$args['include'] = $settings['category'];
 								} else {
-									// Default: Only show parent categories (top level)
 									$args['parent'] = 0;
 								}
-								
-								// If category_exclude is set, exclude those categories
-									if (!empty($settings['category_exclude'])) {
-										$args['exclude'] = $settings['category_exclude'];
-									}
-									
-									$categories = get_terms('product_cat', $args);
+								if (!empty($settings['category_exclude'])) {
+									$args['exclude'] = $settings['category_exclude'];
+								}
 
-									if (!empty($categories) && !is_wp_error($categories)) {
-										foreach ($categories as $category) {
-											$active_class = ($current_cat === $category->slug) ? 'active' : '';
-											$category_url = get_term_link($category);
-											echo '<li class="bt-category-item ' . $active_class . '" data-cat-slug="' . esc_attr($category->slug) . '" data-cat-url="' . esc_url($category_url) . '">';
-											echo '<a href="#">' . esc_html($category->name) . '</a>';
-											echo '</li>';
-										}
+								$categories = get_terms('product_cat', $args);
+								if (!empty($categories) && !is_wp_error($categories)) {
+									foreach ($categories as $category) {
+										$active_class = ($current_cat === $category->slug) ? 'active' : '';
+										$category_url = get_term_link($category);
+										echo '<li class="bt-category-item ' . $active_class . '" data-name="' . esc_attr($category->name) . '" data-slug="' . esc_attr($category->slug) . '" data-url="' . esc_url($category_url) . '">';
+										echo '<a href="#">' . esc_html($category->name) . '</a>';
+										echo '</li>';
 									}
-									?>
-								</ul>
+								}
+								?>
+							</ul>
 							</div>
 						</div>
 					<?php endif; ?>
-					<input type="hidden" name="product_cat" class="bt-product-cat-input" value="<?php echo esc_attr($current_cat); ?>" />
-					<!-- Widget settings for category filtering -->
+
+					<input type="hidden" name="product_cat" class="bt-product-cat-input bt-cat-product" value="<?php echo esc_attr($current_cat); ?>" />
 					<input type="hidden" name="widget_category_include" class="bt-widget-category-include" value="<?php echo !empty($settings['category']) ? esc_attr(implode(',', $settings['category'])) : ''; ?>" />
 					<input type="hidden" name="widget_category_exclude" class="bt-widget-category-exclude" value="<?php echo !empty($settings['category_exclude']) ? esc_attr(implode(',', $settings['category_exclude'])) : ''; ?>" />
 					<input type="hidden" name="autocomplete_limit" class="bt-autocomplete-limit" value="<?php echo !empty($settings['autocomplete_limit']) ? esc_attr($settings['autocomplete_limit']) : '5'; ?>" />
+
 					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />
+
 					<button type="submit" class="bt-search-submit">
 						<?php esc_html_e('Search', 'woozio'); ?>
 						<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -471,38 +510,70 @@ class Widget_SearchProduct extends Widget_Base
 							</defs>
 						</svg>
 					</button>
+
+				</form>
+
+				<!-- Search Results & Products Section -->
+				<div class="bt-products-wrapper">
+					<!-- Live Search Results -->
 					<div class="bt-live-search-results">
+						<h2 class="bt-search-results-title" data-template="<?php echo esc_attr__('Search for "%s"', 'woozio'); ?>">
+							<?php esc_html_e('Search Results', 'woozio'); ?>
+						</h2>
 						<span class="bt-loading-wave"></span>
 						<div class="bt-load-data"></div>
-						<?php if (!empty($settings['button_text'])) : 
-							// Check if custom link is enabled
+						<?php if (!empty($settings['button_text'])) :
 							$use_custom_link = ($settings['custom_button_link'] === 'yes');
 							$button_link = '#';
 							$target = '';
 							$nofollow = '';
 							$data_custom = '';
-							
+
 							if ($use_custom_link && !empty($settings['button_link']['url'])) {
-								// Use custom link
 								$button_link = $settings['button_link']['url'];
 								$target = !empty($settings['button_link']['is_external']) ? ' target="_blank"' : '';
 								$nofollow = !empty($settings['button_link']['nofollow']) ? ' rel="nofollow"' : '';
 								$data_custom = ' data-custom-link="true"';
 							} else {
-								// Use dynamic link (will be updated by JS)
 								$button_link = get_permalink(wc_get_page_id('shop'));
 								$data_custom = ' data-custom-link="false"';
 							}
 						?>
-							<div class="bt-view-all-results" >
-								<?php 
+							<div class="bt-view-all-results">
+								<?php
 								$button_text_no_results = !empty($settings['button_text_no_results']) ? $settings['button_text_no_results'] : __('View All Products', 'woozio');
-								echo '<a href="' . esc_url($button_link) . '" class="bt-view-all-button"' . $target . $nofollow . $data_custom . ' data-text-has-results="' . esc_attr($settings['button_text']) . '" data-text-no-results="' . esc_attr($button_text_no_results) . '">' . esc_html($settings['button_text']) . '</a>'; 
+								echo '<a href="' . esc_url($button_link) . '" class="bt-view-all-button"' . $target . $nofollow . $data_custom . ' data-text-has-results="' . esc_attr($settings['button_text']) . '" data-text-no-results="' . esc_attr($button_text_no_results) . '">' . esc_html($settings['button_text']) . '</a>';
 								?>
 							</div>
 						<?php endif; ?>
 					</div>
-				</form>
+
+					<!-- Products Display Section -->
+					<div class="bt-products-display-section" data-source="<?php echo esc_attr($settings['products_source']); ?>" data-limit="<?php echo esc_attr($settings['products_limit']); ?>" data-products="<?php echo !empty($settings['custom_products']) ? esc_attr(implode(',', $settings['custom_products'])) : ''; ?>">
+						<?php if (!empty($settings['trending_searches'])) :
+							$trending_searches = array_map('trim', explode(',', $settings['trending_searches']));
+							$trending_searches = array_filter($trending_searches);
+						?>
+							<div class="bt-trending-searches">
+								<h3 class="bt-trending-title"><?php echo esc_html($settings['trending_searches_heading']); ?></h3>
+								<div class="bt-trending-items">
+									<?php foreach ($trending_searches as $keyword) : ?>
+										<span class="bt-trending-keyword" data-keyword="<?php echo esc_attr($keyword); ?>">
+											<?php echo esc_html($keyword); ?>
+										</span>
+									<?php endforeach; ?>
+								</div>
+							</div>
+						<?php endif; ?>
+
+						<div class="bt-products-wrapper-inner">
+							<h2 class="bt-section-heading"><?php echo esc_html($settings['products_section_heading']); ?></h2>
+							<div class="bt-products-container">
+								<!-- Products will be loaded here -->
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 <?php

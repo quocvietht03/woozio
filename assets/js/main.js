@@ -2656,7 +2656,7 @@
 		if (!$('body').hasClass('single-product')) {
 			return;
 		}
-		const MAX_PRODUCTS = 5;
+		const MAX_PRODUCTS = 8;
 		// Get product ID from URL
 		const bodyClasses = document.body.className;
 		const match = bodyClasses.match(/postid-(\d+)/);

@@ -80,43 +80,43 @@
 				$categoryList.toggle();
 			});
 
-		// Handle category selection
-		$categoryItems.on('click', function (e) {
-			e.preventDefault();
-			const $this = $(this);
-			const selectedText = $this.text();
-			const catSlug = $this.data('cat-slug');
-			const catUrl = $this.data('cat-url');
+			// Handle category selection
+			$categoryItems.on('click', function (e) {
+				e.preventDefault();
+				const $this = $(this);
+				const selectedText = $this.text();
+				const catSlug = $this.data('cat-slug');
+				const catUrl = $this.data('cat-url');
 
-			// Update selected category
-			$selectedCategory.find('span').text(selectedText);
-			$catProductInput.val(catSlug);
-			
-			// Store category URL in form data attribute
-			$searchProduct.find('.bt-search--form').data('category-url', catUrl);
+				// Update selected category
+				$selectedCategory.find('span').text(selectedText);
+				$catProductInput.val(catSlug);
 
-			// Update active class
-			$categoryItems.removeClass('active');
-			$this.addClass('active');
+				// Store category URL in form data attribute
+				$searchProduct.find('.bt-search--form').data('category-url', catUrl);
 
-			// Hide dropdown
-			$categoryList.hide();
-		});
-		
-		// Handle form submit - update action URL based on category
-		$searchProduct.find('.bt-search--form').on('submit', function(e) {
-			const $form = $(this);
-			const categoryUrl = $form.data('category-url');
-			
-			// Disable all hidden inputs (only submit search_keyword)
-			$form.find('input[type="hidden"]').prop('disabled', true);
-			
-			if (categoryUrl) {
-				// Use the stored category URL from data attribute
-				$form.attr('action', categoryUrl);
-			}
-			// If no category URL, keep default action (already set in HTML)
-		});
+				// Update active class
+				$categoryItems.removeClass('active');
+				$this.addClass('active');
+
+				// Hide dropdown
+				$categoryList.hide();
+			});
+
+			// Handle form submit - update action URL based on category
+			$searchProduct.find('.bt-search--form').on('submit', function (e) {
+				const $form = $(this);
+				const categoryUrl = $form.data('category-url');
+
+				// Disable all hidden inputs (only submit search_keyword)
+				$form.find('input[type="hidden"]').prop('disabled', true);
+
+				if (categoryUrl) {
+					// Use the stored category URL from data attribute
+					$form.attr('action', categoryUrl);
+				}
+				// If no category URL, keep default action (already set in HTML)
+			});
 
 			// Close dropdown when clicking outside
 			$(document).on('click', function () {
@@ -132,22 +132,22 @@
 			let typingTimer;
 			const doneTypingInterval = 500; // 0.5 second delay after typing stops
 
-		const performSearch = function () {
-			const searchTerm = $liveSearch.val().trim();
-			if (searchTerm.length >= 2) {
-				// Get widget settings for category filtering
-				const categoryInclude = $searchProduct.find('.bt-widget-category-include').val();
-				const categoryExclude = $searchProduct.find('.bt-widget-category-exclude').val();
-				const autocompleteLimit = $searchProduct.find('.bt-autocomplete-limit').val() || 5;
-				
-				var param_ajax = {
-					action: 'woozio_search_live',
-					search_term: searchTerm,
-					category_slug: $catProductInput.val(),
-					widget_category_include: categoryInclude,
-					widget_category_exclude: categoryExclude,
-					autocomplete_limit: autocompleteLimit
-				};
+			const performSearch = function () {
+				const searchTerm = $liveSearch.val().trim();
+				if (searchTerm.length >= 2) {
+					// Get widget settings for category filtering
+					const categoryInclude = $searchProduct.find('.bt-widget-category-include').val();
+					const categoryExclude = $searchProduct.find('.bt-widget-category-exclude').val();
+					const autocompleteLimit = $searchProduct.find('.bt-autocomplete-limit').val() || 5;
+
+					var param_ajax = {
+						action: 'woozio_search_live',
+						search_term: searchTerm,
+						category_slug: $catProductInput.val(),
+						widget_category_include: categoryInclude,
+						widget_category_exclude: categoryExclude,
+						autocomplete_limit: autocompleteLimit
+					};
 					$.ajax({
 						type: 'POST',
 						dataType: 'json',
@@ -175,56 +175,69 @@
 							}
 							$dataSearch.html(skeletonHtml);
 						},
-					success: function (response) {
-						if (response.success) {
-							setTimeout(function () {
-								$dataSearch.html(response.data['items']);
-								
-								// Handle "View All" button visibility and link
-								const $viewAllButton = $searchProduct.find('.bt-view-all-button');
-								const $viewAllResults = $searchProduct.find('.bt-view-all-results');
-								
-								if ($viewAllButton.length) {
-									const hasProducts = response.data['has_products'];
-									const isCustomLink = $viewAllButton.data('custom-link');
-									
-									if (hasProducts) {
-										// Show button if has products
+						success: function (response) {
+							if (response.success) {
+								setTimeout(function () {
+									$dataSearch.html(response.data['items']);
+
+									// Handle "View All" button visibility and link
+									const $viewAllButton = $searchProduct.find('.bt-view-all-button');
+									const $viewAllResults = $searchProduct.find('.bt-view-all-results');
+
+									if ($viewAllButton.length) {
+										const hasProducts = response.data['has_products'];
+										const isCustomLink = $viewAllButton.data('custom-link');
+
+										// Always show button
 										$viewAllResults.show();
-										
+
 										// Update link if not using custom link
 										if (!isCustomLink) {
 											let buttonUrl = '';
 											const categoryUrl = $searchProduct.find('.bt-search--form').data('category-url');
-											
+
 											if (categoryUrl) {
 												buttonUrl = categoryUrl;
 											} else {
 												// Fallback to current href
 												buttonUrl = $viewAllButton.attr('href');
 											}
-											
-											// Remove existing search_keyword parameter if exists
-											buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
-											// Clean up trailing ? or &
-											buttonUrl = buttonUrl.replace(/[?&]$/, '');
-											
-											// Add search_keyword parameter
-											const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
-											buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
-											
+
+											if (hasProducts) {
+												// Has products: use "has results" text and add search_keyword
+												const textHasResults = $viewAllButton.data('text-has-results');
+												if (textHasResults) {
+													$viewAllButton.text(textHasResults);
+												}
+
+												// Remove existing search_keyword parameter if exists
+												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												// Clean up trailing ? or &
+												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+
+												// Add search_keyword parameter
+												const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
+												buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
+											} else {
+												// No products: use "no results" text and remove search_keyword
+												const textNoResults = $viewAllButton.data('text-no-results');
+												if (textNoResults) {
+													$viewAllButton.text(textNoResults);
+												}
+
+												// Remove search_keyword parameter
+												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+											}
+
 											$viewAllButton.attr('href', buttonUrl);
 										}
-									} else {
-										// Hide button if no products
-										$viewAllResults.hide();
 									}
-								}
-							}, 300);
-						} else {
-							console.log('error');
-						}
-					},
+								}, 300);
+							} else {
+								console.log('error');
+							}
+						},
 						error: function (jqXHR, textStatus, errorThrown) {
 							console.log('The following error occured: ' + textStatus, errorThrown);
 						}
@@ -275,6 +288,313 @@
 			});
 		}
 	};
+
+	// Search Product Style 1 Handler
+	const SearchProductStyle1Handler = function ($scope, $) {
+		const $searchProduct = $scope.find('.bt-elwg-search-product-style-1');
+		if ($searchProduct.length) {
+			const $productsDisplay = $searchProduct.find('.bt-products-display-section');
+			const $productsContainer = $productsDisplay.find('.bt-products-container');
+			const $liveSearch = $searchProduct.find('.bt-live-search');
+			const $liveSearchResults = $searchProduct.find('.bt-live-search-results');
+			const $dataSearch = $liveSearchResults.find('.bt-load-data');
+			const $catProductInput = $searchProduct.find('.bt-cat-product');
+			const $form = $searchProduct.find('.bt-search--form');
+
+			const source = $productsDisplay.data('source');
+			const limit = parseInt($productsDisplay.data('limit')) || 8;
+			const customProducts = $productsDisplay.data('products');
+			let typingTimer;
+			const doneTypingInterval = 500;
+			let resizeTimer;
+			let previousIsMobile = $(window).width() <= 570;
+
+			// Load products display section
+			const loadProductsDisplay = function () {
+				const recentlyViewed = localStorage.getItem('recentlyViewed') || '[]';
+				const parsedRecentlyViewed = JSON.parse(recentlyViewed);
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				previousIsMobile = isMobile; // Update previous state
+
+				$.ajax({
+					url: AJ_Options.ajax_url,
+					type: 'POST',
+					data: {
+						action: 'load_products_display',
+						source: source,
+						limit: limit,
+						products: customProducts,
+						recently_viewed: source === 'recent_viewed' ? parsedRecentlyViewed.slice(0, limit) : [],
+						is_mobile: isMobile
+					},
+					success: function (response) {
+						if (response.success) {
+							$productsContainer.html(response.data['content']);
+
+							// Hide/show wrapper-inner based on has_products
+							const $wrapperInner = $productsDisplay.find('.bt-products-wrapper-inner');
+							if (!response.data['has_products']) {
+								$wrapperInner.hide();
+							} else {
+								$wrapperInner.show();
+							}
+						}
+					}
+				});
+			};
+
+			// Perform search with grid layout
+			const performSearch = function () {
+				const searchTerm = $liveSearch.val().trim();
+				if (searchTerm.length >= 2) {
+					const categoryInclude = $searchProduct.find('.bt-widget-category-include').val();
+					const categoryExclude = $searchProduct.find('.bt-widget-category-exclude').val();
+					const autocompleteLimit = $searchProduct.find('.bt-autocomplete-limit').val() || 8;
+
+					// Detect screen width to determine mobile layout
+					const windowWidth = $(window).width();
+					const isMobile = windowWidth <= 570;
+					previousIsMobile = isMobile; // Update previous state
+
+					$.ajax({
+						type: 'POST',
+						dataType: 'json',
+						url: AJ_Options.ajax_url,
+						data: {
+							action: 'woozio_search_live_style1',
+							search_term: searchTerm,
+							category_slug: $catProductInput.val(),
+							widget_category_include: categoryInclude,
+							widget_category_exclude: categoryExclude,
+							autocomplete_limit: autocompleteLimit,
+							is_mobile: isMobile
+						},
+						beforeSend: function () {
+							$liveSearchResults.addClass('active loading');
+							$productsDisplay.addClass('hidden');
+
+
+							// Show loading skeleton
+							let skeletonHtml = '';
+							const skeletonCount = isMobile ? 4 : 4;
+
+							if (isMobile) {
+								// Mobile skeleton với bt-product-item structure
+								for (let i = 0; i < skeletonCount; i++) {
+									skeletonHtml += `
+							<div class="bt-product-item bt-product-skeleton">
+								<div class="bt-product-thumb">
+									<div class="bt-skeleton-thumbnail"></div>
+									<div class="bt-product-title">
+										<div class="bt-skeleton-title"></div>
+										<div class="bt-skeleton-price"></div>
+									</div>
+								</div>
+								<div class="bt-product-add-to-cart">
+									<div class="bt-skeleton-button"></div>
+								</div>
+							</div>
+						`;
+								}
+							} else {
+								// Desktop skeleton với WooCommerce structure
+								for (let i = 0; i < skeletonCount; i++) {
+									skeletonHtml += `
+							<div class="bt-product-skeleton product">
+								<div class="bt-skeleton-thumbnail"></div>
+								<div class="bt-skeleton-content">
+									<div class="bt-skeleton-title"></div>
+									<div class="bt-skeleton-price"></div>
+									<div class="bt-skeleton-rating"></div>
+								</div>
+							</div>
+						`;
+								}
+							}
+							$dataSearch.html(skeletonHtml);
+						},
+						success: function (response) {
+							if (response.success) {
+								setTimeout(function () {
+									$dataSearch.html(response.data['items']);
+
+									// Remove loading class from title
+									$liveSearchResults.removeClass('loading');
+
+									// Update title
+									const $searchTitle = $searchProduct.find('.bt-search-results-title');
+									const titleTemplate = $searchTitle.data('template');
+									if (titleTemplate) {
+										$searchTitle.text(titleTemplate.replace('%s', searchTerm));
+									}
+
+									// Handle "View All" button
+									const $viewAllButton = $searchProduct.find('.bt-view-all-button');
+									const $viewAllResults = $searchProduct.find('.bt-view-all-results');
+
+									if ($viewAllButton.length) {
+										const hasProducts = response.data['has_products'];
+										const isCustomLink = $viewAllButton.data('custom-link');
+
+										$viewAllResults.show();
+
+										if (!isCustomLink) {
+											let buttonUrl = '';
+											const categoryUrl = $form.data('category-url');
+
+											if (categoryUrl) {
+												buttonUrl = categoryUrl;
+											} else {
+												buttonUrl = $viewAllButton.attr('href');
+											}
+
+											if (hasProducts) {
+												const textHasResults = $viewAllButton.data('text-has-results');
+												if (textHasResults) {
+													$viewAllButton.text(textHasResults);
+												}
+
+												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+
+												const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
+												buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
+											} else {
+												const textNoResults = $viewAllButton.data('text-no-results');
+												if (textNoResults) {
+													$viewAllButton.text(textNoResults);
+												}
+
+												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+											}
+
+											$viewAllButton.attr('href', buttonUrl);
+										}
+									}
+								}, 300);
+							}
+						},
+						error: function () {
+							$dataSearch.html('<p>Error loading results</p>');
+						}
+					});
+				}
+			};
+
+			// Load on init
+			loadProductsDisplay();
+
+			// Search on keyup
+			$liveSearch.on('keyup', function () {
+				const searchValue = $(this).val().trim();
+				clearTimeout(typingTimer);
+
+				if (searchValue.length >= 2) {
+					typingTimer = setTimeout(performSearch, doneTypingInterval);
+				} else {
+					$productsDisplay.removeClass('hidden');
+					$liveSearchResults.removeClass('active');
+				}
+			});
+
+			// Clear search input
+			$liveSearch.on('search', function () {
+				if ($(this).val() === '') {
+					$productsDisplay.removeClass('hidden');
+					$liveSearchResults.removeClass('active');
+				}
+			});
+
+			// Handle category dropdown
+			const $categoryDropdown = $searchProduct.find('.bt-category-dropdown');
+			const $selectedCategory = $categoryDropdown.find('.bt-selected-category');
+			const $categoryList = $categoryDropdown.find('.bt-category-list');
+			const $selectedCategorySvg = $selectedCategory.find('svg');
+
+			$selectedCategory.on('click', function (e) {
+				e.stopPropagation();
+				const isVisible = $categoryList.is(':visible');
+
+				if (isVisible) {
+					$categoryList.hide();
+					$selectedCategorySvg.css('transform', 'rotate(0deg)');
+				} else {
+					$categoryList.show();
+					$selectedCategorySvg.css('transform', 'rotate(180deg)');
+				}
+			});
+
+			$categoryList.find('.bt-category-item').on('click', function (e) {
+				e.stopPropagation();
+				const categoryName = $(this).data('name');
+				const categorySlug = $(this).data('slug');
+				const categoryUrl = $(this).data('url');
+
+				$selectedCategory.find('span').text(categoryName);
+				$catProductInput.val(categorySlug);
+				$form.data('category-url', categoryUrl);
+				$categoryList.find('.bt-category-item').removeClass('active');
+				$(this).addClass('active');
+				$categoryList.hide();
+				$selectedCategorySvg.css('transform', 'rotate(0deg)');
+
+				if ($liveSearch.val().trim().length >= 2) {
+					performSearch();
+				}
+			});
+
+			$(document).on('click', function (e) {
+				if (!$categoryDropdown.is(e.target) && $categoryDropdown.has(e.target).length === 0) {
+					$categoryList.hide();
+					$selectedCategorySvg.css('transform', 'rotate(0deg)');
+				}
+			});
+
+			// Form submit handler
+			$form.on('submit', function (e) {
+				const categoryUrl = $(this).data('category-url');
+				if (categoryUrl) {
+					$(this).attr('action', categoryUrl);
+				}
+				$(this).find('input[type="hidden"]').prop('disabled', true);
+			});
+
+			// Handle trending keyword clicks
+			$searchProduct.find('.bt-trending-keyword').on('click', function () {
+				const keyword = $(this).data('keyword');
+				$liveSearch.val(keyword);
+				$liveSearch.trigger('keyup');
+			});
+
+			// Handle window resize to reload AJAX with correct layout
+			$(window).on('resize', function () {
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(function () {
+					const windowWidth = $(window).width();
+					const currentIsMobile = windowWidth <= 570;
+
+					// Only reload if mobile state changed
+					if (currentIsMobile !== previousIsMobile) {
+						previousIsMobile = currentIsMobile;
+
+						const searchTerm = $liveSearch.val().trim();
+						
+						// If user is searching, reload search results
+						if (searchTerm.length >= 2) {
+							performSearch();
+						} else {
+							// Otherwise reload products display
+							loadProductsDisplay();
+						}
+					}
+				}, 250); // Debounce resize events
+			});
+
+		}
+	};
+
 	function WoozioAnimateText(selector, delayFactor = 50) {
 		const $text = $(selector);
 		const textContent = $text.text();
@@ -366,9 +686,9 @@
 			'overflow': 'hidden',
 			'padding-right': scrollbarWidth + 'px'
 		});
-	
+
 		// Update bottom cart padding
-		setTimeout(function() {
+		setTimeout(function () {
 			const $bottomCart = $sidebar.find('.bt-bottom-mini-cart');
 			const $sidebarBody = $sidebar.find('.bt-mini-cart-sidebar-body');
 			if ($bottomCart.length && $sidebarBody.length) {
@@ -550,7 +870,7 @@
 			const sliderSpeed = $sliderSettings.speed || 1000;
 			const autoplay = $sliderSettings.autoplay || false;
 			const autoplayDelay = $sliderSettings.autoplay_delay || 5000;
-			
+
 			// Initialize the items slider (thumbs)
 			var itemsSwiper = new Swiper($itemsSlider[0], {
 				spaceBetween: $sliderSettings.spaceBetween || 30,
@@ -561,7 +881,7 @@
 				speed: sliderSpeed,
 				breakpoints: $sliderSettings.breakpoints || {}
 			});
-			
+
 			// Initialize the image slider (main)
 			var imageSwiper = new Swiper($imageSlider[0], {
 				spaceBetween: 0,
@@ -574,7 +894,7 @@
 				thumbs: {
 					swiper: itemsSwiper,
 				},
-			}); 
+			});
 
 			// Progress animation manager
 			const ProgressManager = {
@@ -623,7 +943,7 @@
 					if (!item) return;
 
 					this.stop(); // Stop any existing animation
-					
+
 					const progressLine = item.querySelector('.bt-the-story--progress-line');
 					if (!progressLine) return;
 
@@ -636,7 +956,7 @@
 					// If autoplay is on, start animation
 					// Setup progress line (color handled by CSS)
 					this.reset(item);
-					
+
 					this.currentItem = item;
 					this.startTime = performance.now();
 
@@ -678,15 +998,15 @@
 			// Find active item by slide index
 			const findActiveItem = (slideIndex) => {
 				let activeItem = null;
-				
-				$items.each(function() {
+
+				$items.each(function () {
 					const itemIndex = parseInt(this.getAttribute('data-slide-index'), 10);
 					if (itemIndex === slideIndex) {
 						activeItem = this;
 						return false; // break
 					}
 				});
-				
+
 				return activeItem || $items.eq(slideIndex)[0];
 			};
 
@@ -695,10 +1015,10 @@
 				const activeItem = findActiveItem(imageSwiper.realIndex);
 				if (activeItem) {
 					// Reset all progress lines
-					$items.each(function() {
+					$items.each(function () {
 						ProgressManager.reset(this);
 					});
-					
+
 					// Start progress for active item (or set full if autoplay is off)
 					ProgressManager.start(activeItem);
 				}
@@ -710,7 +1030,7 @@
 			const firstActiveItem = findActiveItem(imageSwiper.realIndex);
 			if (firstActiveItem) {
 				// Reset all progress lines first
-				$items.each(function() {
+				$items.each(function () {
 					ProgressManager.reset(this);
 				});
 				// Start progress for first active item (or set full if autoplay is off)
@@ -1102,7 +1422,7 @@
 		function updateNoteButtonClass() {
 			const $noteBtn = $sidebar.find('.bt-mini-cart-note-btn');
 			if (!$noteBtn.length) return; // Button not found, skip
-			
+
 			try {
 				const savedNote = localStorage.getItem('bt_cart_note');
 				if (savedNote && savedNote.trim() !== '') {
@@ -1780,20 +2100,20 @@
 
 					// Get product item element
 					const $productItemId = $container.find(`.bt-hotspot-product-list__item[data-product-id="${item.product_id}"]`);
-					
+
 					// Check product stock status
 					let isInStock = true;
-					
+
 					// Check if this is a variable product
 					const $form = $container.find(`.variations_form[data-product_id="${item.product_id}"]`);
-					
+
 					if ($form.length) {
 						// Variable product - check variation stock
 						if (!item.variation_id || item.variation_id === 0 || item.variation_id === null) {
 							// No variation selected yet
 							hasInvalidVariation = true;
 							isInStock = false;
-						//	console.log('Product', item.product_id, '- No variation selected');
+							//	console.log('Product', item.product_id, '- No variation selected');
 						} else {
 							// Check variation stock from variation data
 							const variations = $form.data('product_variations');
@@ -1854,7 +2174,7 @@
 
 				// Always update data-ids to reflect current stock status
 				$addSetToCartBtn.attr('data-ids', JSON.stringify(idsArr));
-				
+
 				// update total price
 				totalPrice = totalPrice.toFixed(2);
 				$addSetToCartBtn.find('.bt-btn-price').html(' - ' + $product_currencySymbol + totalPrice);
@@ -1872,7 +2192,7 @@
 				var variationId = variation.variation_id;
 				if (variationId && variationId !== '0') {
 					var $ItemProduct = $form.closest('.bt-hotspot-product-list__item');
-					if (!variation.is_in_stock ) {
+					if (!variation.is_in_stock) {
 						$ItemProduct.addClass('out-of-stock');
 						$ItemProduct.attr('data-in-stock', '0');
 					} else {
@@ -2095,12 +2415,12 @@
 				}
 
 				// Scroll page so slider bottom is 20px from bottom of screen
-				setTimeout(function() {
+				setTimeout(function () {
 					const sliderBottom = $productSliderBottomHotspot.offset().top + $productSliderBottomHotspot.outerHeight();
 					const windowHeight = $(window).height();
 					const currentScroll = $(window).scrollTop();
 					const targetScroll = sliderBottom - windowHeight + 20;
-					
+
 					if (targetScroll > currentScroll) {
 						$('html, body').animate({
 							scrollTop: targetScroll
@@ -3207,7 +3527,7 @@
 
 	const ProductPopupHotspotHandler = function ($scope) {
 		const $HotspotProduct = $scope.find('.bt-elwg-product-popup-hotspot--default');
-		
+
 		if ($HotspotProduct.length === 0) {
 			return;
 		}
@@ -3227,12 +3547,12 @@
 			const infoHeight = $info.outerHeight();
 			const halfHeight = infoHeight / 2 - (window.innerWidth <= 600 ? 6 : 10);
 			const maxPoint = Math.max(pointLeft, pointTop, pointRight, pointBottom);
-			
+
 			// Only toggle mobile class automatically if it's not manually enabled
 			if (!isMobileStyleEnabled) {
 				$HotspotProduct.toggleClass('bt-hotspot-product-mobile', $point.parent().width() < 600);
 			}
-			
+
 			if (maxPoint === pointRight) {
 				if (infoWidth > pointRight) {
 					const maxHigh = Math.max(pointTop, pointBottom);
@@ -3285,7 +3605,7 @@
 				}
 			}
 		}
-		
+
 		function hotspotPoint() {
 			$HotspotProduct.find('.bt-hotspot-point').each(function () {
 				const $point = $(this);
@@ -3361,7 +3681,7 @@
 				}
 			});
 		}
-		
+
 		hotspotPoint();
 		$(window).on('resize', function () {
 			hotspotPoint();
@@ -3385,6 +3705,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-list-faq.default', FaqHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-accordion.default', BtAccordionHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product.default', SearchProductHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-search-product-style-1.default', SearchProductStyle1Handler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-heading-animation.default', headingAnimationHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-instagram-posts.default', InstagramPostsHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-banner-product-slider.default', BannerProductSliderHandler);

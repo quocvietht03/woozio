@@ -1131,6 +1131,16 @@ if (!function_exists('woozio_preloader_html')) {
 if (!function_exists('woozio_add_preloader')) {
 	function woozio_add_preloader()
 	{
+		// Don't show preloader in Elementor editor
+		if (class_exists('\Elementor\Plugin') && \Elementor\Plugin::$instance->editor->is_edit_mode()) {
+			return;
+		}
+
+		// Don't show preloader in Elementor preview mode
+		if (class_exists('\Elementor\Plugin') && \Elementor\Plugin::$instance->preview->is_preview_mode()) {
+			return;
+		}
+
 		// Only add preloader if enabled
 		if (!function_exists('get_field')) {
 			return;
