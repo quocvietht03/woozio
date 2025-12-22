@@ -332,12 +332,18 @@
 						if (response.success) {
 							$productsContainer.html(response.data['content']);
 
-							// Hide/show wrapper-inner based on has_products
+							// Set data attribute for has_products to make it easier to check
 							const $wrapperInner = $productsDisplay.find('.bt-products-wrapper-inner');
-							if (!response.data['has_products']) {
-								$wrapperInner.hide();
-							} else {
-								$wrapperInner.show();
+							if ($wrapperInner.length) {
+								const hasProducts = response.data['has_products'] || false;
+								$wrapperInner.attr('data-has-products', hasProducts ? 'true' : 'false');
+
+								// Hide/show wrapper-inner based on has_products
+								if (!hasProducts) {
+									$wrapperInner.hide();
+								} else {
+									$wrapperInner.show();
+								}
 							}
 						}
 					}
@@ -586,7 +592,7 @@
 						previousIsMobile = currentIsMobile;
 
 						const searchTerm = $liveSearch.val().trim();
-						
+
 						// If user is searching, reload search results
 						if (searchTerm.length >= 2) {
 							performSearch();

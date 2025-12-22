@@ -3769,6 +3769,90 @@
 			$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
 		}
 	});
+	// Handle search-product-style-1 widget in Elementor popup
+	jQuery(window).on('elementor/popup/show', function (event, id, instance) {
+		var $popup = jQuery('#elementor-popup-modal-' + id);
+		if (!$popup.length) {
+			return;
+		}
+		
+		// Only proceed if search-product-style-1 widget exists in popup
+		var $searchWidget = $popup.find('.bt-elwg-search-product-style-1');
+		if (!$searchWidget.length) {
+			return;
+		}
+		
+		var $productsDisplay = $searchWidget.find('.bt-products-display-section');
+		var $wrapperInner = $searchWidget.find('.bt-products-wrapper-inner');
+		
+		if (!$productsDisplay.length || !$wrapperInner.length) {
+			return;
+		}
+		
+		// Function to check and hide bt-products-wrapper-inner if no products
+		function checkAndHideProductsWrapper() {
+			var productsSource = $productsDisplay.data('source');
+			var shouldHide = false;
+			
+			// Check based on products_source
+			if (productsSource === 'recent_viewed') {
+				// Check if recentlyViewed is empty or doesn't exist
+				var recentlyViewed = localStorage.getItem('recentlyViewed');
+				if (!recentlyViewed || recentlyViewed === '[]' || recentlyViewed === '') {
+					shouldHide = true;
+				} else {
+					try {
+						var parsedRecentlyViewed = JSON.parse(recentlyViewed);
+						if (!parsedRecentlyViewed || parsedRecentlyViewed.length === 0) {
+							shouldHide = true;
+						}
+					} catch (e) {
+						shouldHide = true;
+					}
+				}
+			} else {
+				// For other sources, check data-has-products attribute
+				var hasProductsAttr = $wrapperInner.attr('data-has-products');
+				if (hasProductsAttr === 'false') {
+					shouldHide = true;
+				} else if (hasProductsAttr !== 'true') {
+					// Data attribute not set yet (products still loading)
+					return false;
+				}
+			}
+			
+			if (shouldHide) {
+				$wrapperInner.hide();
+				return true;
+			}
+			
+			return false;
+		}
+		
+		// Try to check and hide immediately
+		if (!checkAndHideProductsWrapper()) {
+			// Wait a bit for DOM/AJAX to complete
+			setTimeout(function() {
+				if (!checkAndHideProductsWrapper()) {
+					// Watch for data-has-products attribute changes
+					var observer = new MutationObserver(function(mutations) {
+						if (checkAndHideProductsWrapper()) {
+							observer.disconnect();
+						}
+					});
+					observer.observe($wrapperInner[0], {
+						attributes: true,
+						attributeFilter: ['data-has-products']
+					});
+					// Stop observing after 3 seconds
+					setTimeout(function() {
+						observer.disconnect();
+					}, 3000);
+				}
+			}, 100);
+		}
+	});
+
 	jQuery(window).on('scroll', function () {
 
 	});
