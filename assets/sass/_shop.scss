@@ -2973,7 +2973,25 @@
     }
   }
 }
-
+.not-found-products{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-width: 490px;
+  text-align: center;
+  margin: 0 auto;
+  color: $color-primary;
+  svg {
+    width: 110px;
+    height: 110px;
+  }
+  @media (max-width: $break-xs) {
+    svg {
+      width: 90px;
+      height: 90px;
+    }
+  }
+}
 .woocommerce-loop-product {
   .woocommerce-product-sale-label:not(.hidden) {
     + p.stock {

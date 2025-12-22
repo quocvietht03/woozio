@@ -26,7 +26,7 @@ if ($is_category_page) {
 	$display_type = get_option('woocommerce_category_archive_display', '');
 } else {
 	$display_type = get_option('woocommerce_shop_page_display', '');
-	if(isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
+	if (isset($_GET['layout-shop']) && $_GET['layout-shop'] == 'show-categories') {
 		$display_type = 'subcategories';
 	}
 }
@@ -65,7 +65,7 @@ get_template_part('framework/templates/shop', 'titlebar');
 	<div class="bt-filter-scroll-pos"></div>
 	<main id="bt_main" class="bt-site-main">
 		<div class="bt-main-content">
-			
+
 			<div class="bt-main-products-ss bt-template-sidebar <?php echo esc_attr($sidebar_position); ?>">
 				<div class="bt-container <?php echo esc_attr($content_width); ?>">
 					<div class="bt-main-product-row">
@@ -99,32 +99,32 @@ get_template_part('framework/templates/shop', 'titlebar');
 										</div>
 									</div>
 								</div>
-							<div class="bt-product-view-type">
-								<?php
-								// Determine $type_active from $rows if $_GET['view_type'] is not set
-								if (isset($_GET['view_type'])) {
-									$type_active = $_GET['view_type'];
-								} else {
-									// Map from $rows to $type_active
-									switch ($rows) {
-										case 1:
-											$type_active = 'list';
-											break;
-										case 2:
-											$type_active = 'grid-2';
-											break;
-										case 3:
-											$type_active = 'grid-3';
-											break;
-										case 4:
-											$type_active = 'grid-4';
-											break;
-										default:
-											$type_active = 'grid-3';
-											break;
+								<div class="bt-product-view-type">
+									<?php
+									// Determine $type_active from $rows if $_GET['view_type'] is not set
+									if (isset($_GET['view_type'])) {
+										$type_active = $_GET['view_type'];
+									} else {
+										// Map from $rows to $type_active
+										switch ($rows) {
+											case 1:
+												$type_active = 'list';
+												break;
+											case 2:
+												$type_active = 'grid-2';
+												break;
+											case 3:
+												$type_active = 'grid-3';
+												break;
+											case 4:
+												$type_active = 'grid-4';
+												break;
+											default:
+												$type_active = 'grid-3';
+												break;
+										}
 									}
-								}
-								?>
+									?>
 									<a href="#" class="bt-view-type bt-view-list <?php if ('list' == $type_active) echo 'active'; ?>" data-view="list">
 										<div class="bt-icon">
 											<span class="bt-dot"></span>
@@ -249,9 +249,7 @@ get_template_part('framework/templates/shop', 'titlebar');
 									}
 								} else {
 									woocommerce_product_loop_start();
-									echo '<h3 class="not-found-post">'
-										. esc_html__('Sorry, No products found', 'woozio')
-										. '</h3>';
+									echo '<div class="not-found-products"><svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-18.34,98.34a8,8,0,0,1-11.32,11.32L88,123.31,77.66,133.66a8,8,0,0,1-11.32-11.32L76.69,112,66.34,101.66A8,8,0,0,1,77.66,90.34L88,100.69,98.34,90.34a8,8,0,0,1,11.32,11.32L99.31,112ZM128,192a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm61.66-69.66a8,8,0,0,1-11.32,11.32L168,123.31l-10.34,10.35a8,8,0,0,1-11.32-11.32L156.69,112l-10.35-10.34a8,8,0,0,1,11.32-11.32L168,100.69l10.34-10.35a8,8,0,0,1,11.32,11.32L179.31,112Z"></path></svg>' . esc_html__('Oops! We couldn\'t find any products matching your search. Try adjusting your filters or explore our full collection.', 'woozio') . '</div>';
 									woocommerce_product_loop_end();
 								}
 								?>
