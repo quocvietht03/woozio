@@ -7500,6 +7500,9 @@
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             max-width: 500px;
+            a {
+              color: inherit;
+            }
           }
 
           p {
