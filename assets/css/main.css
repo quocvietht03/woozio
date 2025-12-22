@@ -9026,7 +9026,7 @@ nav .elementor-nav-menu .sub-arrow {
   top: 32px;
 }
 .bt-popup-quick-view.active {
-  z-index: 999;
+  z-index: 99999;
   visibility: visible;
   opacity: 1;
 }
