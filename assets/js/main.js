@@ -1014,16 +1014,20 @@
 					}
 				});
 			});
-			$(document).on('click', '.bt-popup-compare .bt-compare-overlay', function () {
+			// Prevent all click events from bubbling to Elementor popup
+			$(document).on('click', '.bt-popup-compare .bt-compare-overlay', function (e) {
+				e.stopPropagation();
 				removeComparePopup();
 			});
-			$(document).on('click', '.bt-popup-compare .bt-compare-close', function () {
+			$(document).on('click', '.bt-popup-compare .bt-compare-close', function (e) {
+				e.stopPropagation();
 				if (!$('.bt-popup-compare').hasClass('bt-compare-elwwg')) {
 					removeComparePopup();
 				}
 			});
 			$(document).on('keydown', function (e) {
-				if (e.key === 'Escape') {
+				if (e.key === 'Escape' && $('.bt-popup-compare').hasClass('active')) {
+					e.stopPropagation();
 					removeComparePopup();
 				}
 			});
@@ -3775,6 +3779,39 @@
 	});
 	// Handle search-product-style-1 widget in Elementor popup
 	jQuery(window).on('elementor/popup/show', function (event, id, instance) {
+
+		// Try to modify dialog settings and override hide function
+		if (instance && instance.getModal) {
+			setTimeout(function() {
+				try {
+					var modal = instance.getModal();
+					if (modal) {
+						// Modify settings to add quickview/compare to ignore list
+						if (modal.getSettings) {
+							var settings = modal.getSettings();
+							if (settings && settings.hide) {
+								var currentIgnore = settings.hide.ignore || '';
+								var ignoreList = currentIgnore ? currentIgnore.split(',').map(function(s) { return s.trim(); }) : [];
+								if (ignoreList.indexOf('.bt-popup-quick-view') === -1) {
+									ignoreList.push('.bt-popup-quick-view');
+								}
+								if (ignoreList.indexOf('.bt-popup-compare') === -1) {
+									ignoreList.push('.bt-popup-compare');
+								}
+								settings.hide.ignore = ignoreList.join(', ');
+								if (modal.setSettings) {
+									modal.setSettings(settings);
+								}
+							}
+						}
+						
+					}
+				} catch(e) {
+					console.log('Could not modify Elementor popup:', e);
+				}
+			}, 100);
+		}
+
 		var $popup = jQuery('#elementor-popup-modal-' + id);
 		if (!$popup.length) {
 			return;
