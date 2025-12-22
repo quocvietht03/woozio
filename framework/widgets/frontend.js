@@ -345,6 +345,12 @@
 									$wrapperInner.show();
 								}
 							}
+
+							// Initialize countdown timers for newly loaded products
+							if (typeof window.WoozioCountdownProductSale === 'function') {
+								window.WoozioCountdownProductSale($productsContainer);
+							}
+
 						}
 					}
 				});
@@ -433,6 +439,11 @@
 									const titleTemplate = $searchTitle.data('template');
 									if (titleTemplate) {
 										$searchTitle.text(titleTemplate.replace('%s', searchTerm));
+									}
+
+									// Initialize countdown timers for newly loaded products
+									if (typeof window.WoozioCountdownProductSale === 'function') {
+										window.WoozioCountdownProductSale($dataSearch);
 									}
 
 									// Handle "View All" button

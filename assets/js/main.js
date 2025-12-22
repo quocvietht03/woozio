@@ -2825,6 +2825,10 @@
 			}
 		}
 	}
+
+	// Expose function to global scope for use in other scripts
+	window.WoozioCountdownProductSale = WoozioCountdownProductSale;
+
 	/**
 	 * Product Info Display - Toggle Handler
 	 * Handle toggle/accordion for product information
