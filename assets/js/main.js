@@ -227,19 +227,45 @@
 		}
 
 		if ($('.quantity input').length > 0) {
-			/* Plus Qty */
-			$(document).on('click', '.qty-plus', function () {
-				var parent = $(this).parent();
-				$('input.qty', parent).val(parseInt($('input.qty', parent).val()) + 1);
-				$('input.qty', parent).trigger('change');
-			});
-			/* Minus Qty */
-			$(document).on('click', '.qty-minus', function () {
-				var parent = $(this).parent();
-				if (parseInt($('input.qty', parent).val()) > 1) {
-					$('input.qty', parent).val(parseInt($('input.qty', parent).val()) - 1);
-					$('input.qty', parent).trigger('change');
+			/* Plus Qty - Exclude quickview */
+			$(document).off('click.quantity', '.qty-plus').on('click.quantity', '.qty-plus', function () {
+				// Skip if inside quickview popup
+				if ($(this).closest('.bt-popup-quick-view').length > 0) {
+					return;
 				}
+				var parent = $(this).parent();
+				var $input = $('input.qty', parent);
+				var currentVal = parseFloat($input.val()) || 0;
+				var step = parseFloat($input.attr('step')) || 1;
+				var max = $input.attr('max') ? parseFloat($input.attr('max')) : null;
+				var newVal = currentVal + step;
+
+				if (max !== null && newVal > max) {
+					newVal = max;
+				}
+
+				$input.val(newVal);
+				$input.trigger('change');
+			});
+			/* Minus Qty - Exclude quickview */
+			$(document).off('click.quantity', '.qty-minus').on('click.quantity', '.qty-minus', function () {
+				// Skip if inside quickview popup
+				if ($(this).closest('.bt-popup-quick-view').length > 0) {
+					return;
+				}
+				var parent = $(this).parent();
+				var $input = $('input.qty', parent);
+				var currentVal = parseFloat($input.val()) || 0;
+				var step = parseFloat($input.attr('step')) || 1;
+				var min = parseFloat($input.attr('min')) || 1;
+				var newVal = currentVal - step;
+
+				if (newVal < min) {
+					newVal = min;
+				}
+
+				$input.val(newVal);
+				$input.trigger('change');
 			});
 		}
 
@@ -3782,7 +3808,7 @@
 
 		// Try to modify dialog settings and override hide function
 		if (instance && instance.getModal) {
-			setTimeout(function() {
+			setTimeout(function () {
 				try {
 					var modal = instance.getModal();
 					if (modal) {
@@ -3791,7 +3817,7 @@
 							var settings = modal.getSettings();
 							if (settings && settings.hide) {
 								var currentIgnore = settings.hide.ignore || '';
-								var ignoreList = currentIgnore ? currentIgnore.split(',').map(function(s) { return s.trim(); }) : [];
+								var ignoreList = currentIgnore ? currentIgnore.split(',').map(function (s) { return s.trim(); }) : [];
 								if (ignoreList.indexOf('.bt-popup-quick-view') === -1) {
 									ignoreList.push('.bt-popup-quick-view');
 								}
@@ -3804,9 +3830,9 @@
 								}
 							}
 						}
-						
+
 					}
-				} catch(e) {
+				} catch (e) {
 					console.log('Could not modify Elementor popup:', e);
 				}
 			}, 100);
@@ -3816,25 +3842,25 @@
 		if (!$popup.length) {
 			return;
 		}
-		
+
 		// Only proceed if search-product-style-1 widget exists in popup
 		var $searchWidget = $popup.find('.bt-elwg-search-product-style-1');
 		if (!$searchWidget.length) {
 			return;
 		}
-		
+
 		var $productsDisplay = $searchWidget.find('.bt-products-display-section');
 		var $wrapperInner = $searchWidget.find('.bt-products-wrapper-inner');
-		
+
 		if (!$productsDisplay.length || !$wrapperInner.length) {
 			return;
 		}
-		
+
 		// Function to check and hide bt-products-wrapper-inner if no products
 		function checkAndHideProductsWrapper() {
 			var productsSource = $productsDisplay.data('source');
 			var shouldHide = false;
-			
+
 			// Check based on products_source
 			if (productsSource === 'recent_viewed') {
 				// Check if recentlyViewed is empty or doesn't exist
@@ -3861,22 +3887,22 @@
 					return false;
 				}
 			}
-			
+
 			if (shouldHide) {
 				$wrapperInner.hide();
 				return true;
 			}
-			
+
 			return false;
 		}
-		
+
 		// Try to check and hide immediately
 		if (!checkAndHideProductsWrapper()) {
 			// Wait a bit for DOM/AJAX to complete
-			setTimeout(function() {
+			setTimeout(function () {
 				if (!checkAndHideProductsWrapper()) {
 					// Watch for data-has-products attribute changes
-					var observer = new MutationObserver(function(mutations) {
+					var observer = new MutationObserver(function (mutations) {
 						if (checkAndHideProductsWrapper()) {
 							observer.disconnect();
 						}
@@ -3886,7 +3912,7 @@
 						attributeFilter: ['data-has-products']
 					});
 					// Stop observing after 3 seconds
-					setTimeout(function() {
+					setTimeout(function () {
 						observer.disconnect();
 					}, 3000);
 				}
