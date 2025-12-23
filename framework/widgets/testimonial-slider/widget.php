@@ -491,12 +491,12 @@ class Widget_TestimonialSlider extends Widget_Base
             ]
         );
         
-        $this->add_control(
+        $this->add_responsive_control(
             'text_lines_number',
             [
                 'label' => __('Number of Lines', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
-                'default' => 8,
+                'default' => 6,
                 'min' => 1,
                 'condition' => [
                     'custom_text' => 'yes',
@@ -508,16 +508,16 @@ class Widget_TestimonialSlider extends Widget_Base
         );
 
         $this->add_responsive_control(
-            'text_min_height',
+            'text_height',
             [
-                'label' => __('Text Min Height', 'woozio'),
+                'label' => __('Text Height', 'woozio'),
                 'type' => Controls_Manager::NUMBER,
-                'default' => 228,
+                'default' => 264,
                 'condition' => [
                     'custom_text' => 'yes',
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .bt-testimonial--text' => 'min-height: {{SIZE}}px;',
+                    '{{WRAPPER}} .bt-testimonial--text' => 'height: {{SIZE}}px;',
                 ],
             ]
         );
