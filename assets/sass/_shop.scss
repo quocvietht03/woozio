@@ -8859,7 +8859,7 @@
         display: block;
       }
       .button {
-        background-color: $color-accent;
+        background-color: $color-accent; 
         @media (min-width: $break-sm) {
           &:hover {
             background: $color-primary;

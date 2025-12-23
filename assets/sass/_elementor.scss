@@ -3739,14 +3739,18 @@
 
     .bt-load-data {
       @extend .__bt-loop-product-style;
-
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       list-style: none;
       margin: 0;
       padding: 0;
-
+      .bt-attributes-wrap,.bt-btn-add-to-cart-variable{
+        display: none !important;
+      }
+      .bt-btn-read-more{
+        display: block !important;
+      }
       @media (max-width: $break-md) {
         grid-template-columns: repeat(3, 1fr);
         gap: 18px;
@@ -4176,7 +4180,12 @@
       list-style: none;
       margin: 0;
       padding: 0;
-
+      .bt-attributes-wrap,.bt-btn-add-to-cart-variable{
+        display: none !important;
+      }
+      .bt-btn-read-more{
+        display: block !important;
+      }
       @media (max-width: $break-md) {
         grid-template-columns: repeat(3, 1fr);
         gap: 18px;
