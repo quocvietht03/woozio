@@ -479,6 +479,49 @@ class Widget_TestimonialSlider extends Widget_Base
                 'selector' => '{{WRAPPER}} .bt-testimonial--text',
             ]
         );
+
+        $this->add_control(
+            'custom_text',
+            [
+                'label' => __('Custom Text', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+            ]
+        );
+        
+        $this->add_control(
+            'text_lines_number',
+            [
+                'label' => __('Number of Lines', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 8,
+                'min' => 1,
+                'condition' => [
+                    'custom_text' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--text' => 'display: -webkit-box; -webkit-line-clamp: {{VALUE}}; -webkit-box-orient: vertical; overflow: hidden;',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'text_min_height',
+            [
+                'label' => __('Text Min Height', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 228,
+                'condition' => [
+                    'custom_text' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-testimonial--text' => 'min-height: {{SIZE}}px;',
+                ],
+            ]
+        );
+
         $this->add_control(
             'author_heading',
             [

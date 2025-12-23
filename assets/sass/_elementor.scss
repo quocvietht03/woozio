@@ -2214,7 +2214,7 @@
       border-radius: 4px;
       font-size: 16px;
       &--head {
-        background: $color-accent;
+        background: $color-primary;
         span {
           font-size: 18px;
           font-weight: 500;
@@ -2235,6 +2235,7 @@
         &.loading {
           .bt-loading-wave {
             opacity: 1;
+            visibility: visible;
           }
           .bt-product-list {
             opacity: 0;
@@ -2242,6 +2243,7 @@
         }
         .bt-loading-wave {
           opacity: 0;
+          visibility: hidden;
         }
       }
       .bt-product-list {
@@ -2494,19 +2496,22 @@
         }
       }
       .bt-no-results {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 500;
         line-height: 1.5;
         text-align: center;
         padding: 20px 15px;
         a {
           display: inline-block;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 500;
           text-transform: uppercase;
           text-decoration: underline;
-          color: $color-accent;
+          color: $color-primary;
           margin: 0 4px;
+          &:hover {
+            color: $color-accent;
+          } 
         }
       }
 
