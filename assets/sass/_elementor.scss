@@ -4712,6 +4712,10 @@
   }
   &--style-3 {
     .bt-product-category {
+      &--thumb {
+        position: relative;
+        overflow: hidden;
+      }
       &--item {
         &:hover {
           .bt-product-category--thumb {
