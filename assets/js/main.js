@@ -1542,7 +1542,10 @@
 		if (!$('body').hasClass('post-type-archive-product')) {
 			return;
 		}
-
+	// Hide topbar if not-found-products exists on page load
+		if ($('.not-found-products').length > 0) {
+			$('.bt-products-topbar').addClass('bt-hide');
+		}
 		// Search by keywords
 		$('.bt-product-filter-form .bt-field-type-search input').on('keyup', function (e) {
 			if (e.key === 'Enter' || e.keyCode === 13) {
@@ -1860,7 +1863,8 @@
 			$('.bt-product-filter-form .bt-reset-filter-product-btn').removeClass('disable');
 		}
 
-		$('.bt-reset-filter-product-btn').on('click', function (e) {
+		// Use event delegation to handle dynamically created reset buttons
+		$(document).on('click', '.bt-reset-filter-product-btn', function (e) {
 			e.preventDefault();
 
 			if ($(this).hasClass('disable')) {
@@ -2152,12 +2156,16 @@
 						if ($title.length > 0) {
 							if (response.data['category_title']) {
 								// Set category title
-								$title.text(response.data['category_title']);
+								// Decode HTML entities (e.g., &amp; to &)
+								var decodedCategoryTitle = $('<textarea>').html(response.data['category_title']).text();
+								$title.text(decodedCategoryTitle);
 							} else {
 								// Restore original title
 								var originalTitle = $title.attr('data-original-title');
 								if (originalTitle) {
-									$title.text(originalTitle);
+									// Decode HTML entities (e.g., &amp; to &)
+									var decodedTitle = $('<textarea>').html(originalTitle).text();
+									$title.text(decodedTitle);
 								}
 							}
 						}
@@ -2183,6 +2191,14 @@
 							// Update pagination type data attribute
 							if (response.data.pagination_meta) {
 								$('.bt-product-pagination-wrap').attr('data-pagination-type', response.data.pagination_meta.pagination_type);
+							}
+
+							// Hide topbar if not-found-products exists
+							var hasNotFoundProducts = $('.not-found-products').length > 0;
+							if (hasNotFoundProducts) {
+								$('.bt-products-topbar').addClass('bt-hide');
+							} else {
+								$('.bt-products-topbar').removeClass('bt-hide');
 							}
 
 							WoozioProductButtonStatus();
@@ -2224,18 +2240,113 @@
 			// Update current page in filter form
 			$('.bt-product-filter-form .bt-product-current-page').val(nextPage);
 
+			// Check if we're on a category page or taxonomy page
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+			var taxonomyType = $sidebar.data('taxonomy-type') || '';
+			var taxonomySlug = $sidebar.data('taxonomy-slug') || '';
+
+			// Get current URL params
+			var urlParams = new URLSearchParams(window.location.search);
+			
+			// Check if formsearch=true exists in URL
+			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
+			
+			// Store product_cat from URL if formsearch=true exists
+			var preservedProductCat = '';
+			if (hasFormSearch && urlParams.has('product_cat')) {
+				preservedProductCat = urlParams.get('product_cat');
+			}
+
+			// Get form data
+			var dataArr = $('.bt-product-filter-form').serializeArray();
+
+			// Get product_cat from form
+			var formProductCat = '';
+			var productCatItem = dataArr.find(function (item) {
+				return item.name === 'product_cat';
+			});
+			if (productCatItem && productCatItem.value) {
+				formProductCat = productCatItem.value;
+			} else {
+				var productCatInput = $('.bt-product-filter-form').find('input[name="product_cat"]:checked');
+				if (productCatInput.length > 0) {
+					formProductCat = productCatInput.val();
+				}
+			}
+
+			// Get category slug
+			var categorySlug = '';
+			if (isCategoryPage) {
+				categorySlug = $sidebar.data('category-slug') || '';
+				if (!categorySlug && formProductCat) {
+					categorySlug = formProductCat;
+				}
+			}
+
+			// Get taxonomy slug
+			if (isTaxonomyPage && !taxonomySlug) {
+				var taxonomyItem = dataArr.find(function (item) {
+					return item.name === taxonomyType;
+				});
+				if (taxonomyItem && taxonomyItem.value) {
+					taxonomySlug = taxonomyItem.value;
+				}
+			}
+
+			// Remove product_cat from form data if on category page
+			if (isCategoryPage) {
+				dataArr = dataArr.filter(function (item) {
+					return item.name !== 'product_cat';
+				});
+			}
+
+			// Remove taxonomy from form data if on taxonomy page
+			if (isTaxonomyPage && taxonomyType) {
+				dataArr = dataArr.filter(function (item) {
+					return item.name !== taxonomyType;
+				});
+			}
+
 			// Get all form parameters
 			var param_ajax = {
 				action: 'woozio_products_filter',
 			};
 
-			var param_in = $('.bt-product-filter-form').serialize().split('&');
-			param_in.forEach(function (param) {
-				var param_key = param.split('=')[0],
-					param_val = param.split('=')[1];
+			// Add category slug to ajax params
+			// Priority: form value > preserved value (when formsearch=true) > categorySlug
+			if (formProductCat) {
+				param_ajax['product_cat'] = formProductCat.replace(/%2C/g, ',');
+			} else if (hasFormSearch && preservedProductCat) {
+				param_ajax['product_cat'] = preservedProductCat.replace(/%2C/g, ',');
+			} else if (isCategoryPage && categorySlug) {
+				param_ajax['product_cat'] = categorySlug.replace(/%2C/g, ',');
+			}
 
-				if ('' !== param_val) {
-					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
+			// Add taxonomy slug to ajax params if on taxonomy page
+			if (isTaxonomyPage && taxonomyType && taxonomySlug) {
+				param_ajax[taxonomyType] = taxonomySlug.replace(/%2C/g, ',');
+			}
+
+			// Add excluded_product_cat to ajax params if exists
+			var excludedProductCat = '';
+			var excludedCatItem = dataArr.find(function (item) {
+				return item.name === 'excluded_product_cat';
+			});
+			if (excludedCatItem && excludedCatItem.value) {
+				excludedProductCat = excludedCatItem.value;
+			} else if (urlParams.has('excluded_product_cat')) {
+				excludedProductCat = urlParams.get('excluded_product_cat');
+			}
+			if (excludedProductCat) {
+				param_ajax['excluded_product_cat'] = excludedProductCat.replace(/%2C/g, ',');
+			}
+
+			// Add other form params
+			dataArr.forEach(function (item) {
+				if (item.value) {
+					param_ajax[item.name] = item.value.replace(/%2C/g, ',');
 				}
 			});
 
@@ -2352,18 +2463,113 @@
 			// Update current page in filter form
 			$('.bt-product-filter-form .bt-product-current-page').val(nextPage);
 
+			// Check if we're on a category page or taxonomy page
+			var $sidebar = $('.bt-product-sidebar');
+			var isCategoryPage = $sidebar.data('is-category-page') === 1;
+			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
+			var taxonomyType = $sidebar.data('taxonomy-type') || '';
+			var taxonomySlug = $sidebar.data('taxonomy-slug') || '';
+
+			// Get current URL params
+			var urlParams = new URLSearchParams(window.location.search);
+			
+			// Check if formsearch=true exists in URL
+			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
+			
+			// Store product_cat from URL if formsearch=true exists
+			var preservedProductCat = '';
+			if (hasFormSearch && urlParams.has('product_cat')) {
+				preservedProductCat = urlParams.get('product_cat');
+			}
+
+			// Get form data
+			var dataArr = $('.bt-product-filter-form').serializeArray();
+
+			// Get product_cat from form
+			var formProductCat = '';
+			var productCatItem = dataArr.find(function (item) {
+				return item.name === 'product_cat';
+			});
+			if (productCatItem && productCatItem.value) {
+				formProductCat = productCatItem.value;
+			} else {
+				var productCatInput = $('.bt-product-filter-form').find('input[name="product_cat"]:checked');
+				if (productCatInput.length > 0) {
+					formProductCat = productCatInput.val();
+				}
+			}
+
+			// Get category slug
+			var categorySlug = '';
+			if (isCategoryPage) {
+				categorySlug = $sidebar.data('category-slug') || '';
+				if (!categorySlug && formProductCat) {
+					categorySlug = formProductCat;
+				}
+			}
+
+			// Get taxonomy slug
+			if (isTaxonomyPage && !taxonomySlug) {
+				var taxonomyItem = dataArr.find(function (item) {
+					return item.name === taxonomyType;
+				});
+				if (taxonomyItem && taxonomyItem.value) {
+					taxonomySlug = taxonomyItem.value;
+				}
+			}
+
+			// Remove product_cat from form data if on category page
+			if (isCategoryPage) {
+				dataArr = dataArr.filter(function (item) {
+					return item.name !== 'product_cat';
+				});
+			}
+
+			// Remove taxonomy from form data if on taxonomy page
+			if (isTaxonomyPage && taxonomyType) {
+				dataArr = dataArr.filter(function (item) {
+					return item.name !== taxonomyType;
+				});
+			}
+
 			// Get all form parameters
 			var param_ajax = {
 				action: 'woozio_products_filter',
 			};
 
-			var param_in = $('.bt-product-filter-form').serialize().split('&');
-			param_in.forEach(function (param) {
-				var param_key = param.split('=')[0],
-					param_val = param.split('=')[1];
+			// Add category slug to ajax params
+			// Priority: form value > preserved value (when formsearch=true) > categorySlug
+			if (formProductCat) {
+				param_ajax['product_cat'] = formProductCat.replace(/%2C/g, ',');
+			} else if (hasFormSearch && preservedProductCat) {
+				param_ajax['product_cat'] = preservedProductCat.replace(/%2C/g, ',');
+			} else if (isCategoryPage && categorySlug) {
+				param_ajax['product_cat'] = categorySlug.replace(/%2C/g, ',');
+			}
 
-				if ('' !== param_val) {
-					param_ajax[param_key] = param_val.replace(/%2C/g, ',');
+			// Add taxonomy slug to ajax params if on taxonomy page
+			if (isTaxonomyPage && taxonomyType && taxonomySlug) {
+				param_ajax[taxonomyType] = taxonomySlug.replace(/%2C/g, ',');
+			}
+
+			// Add excluded_product_cat to ajax params if exists
+			var excludedProductCat = '';
+			var excludedCatItem = dataArr.find(function (item) {
+				return item.name === 'excluded_product_cat';
+			});
+			if (excludedCatItem && excludedCatItem.value) {
+				excludedProductCat = excludedCatItem.value;
+			} else if (urlParams.has('excluded_product_cat')) {
+				excludedProductCat = urlParams.get('excluded_product_cat');
+			}
+			if (excludedProductCat) {
+				param_ajax['excluded_product_cat'] = excludedProductCat.replace(/%2C/g, ',');
+			}
+
+			// Add other form params
+			dataArr.forEach(function (item) {
+				if (item.value) {
+					param_ajax[item.name] = item.value.replace(/%2C/g, ',');
 				}
 			});
 

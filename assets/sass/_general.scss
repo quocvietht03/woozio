@@ -253,7 +253,9 @@
     transition: all 0.3s;
   }
 }
-
+.bt-hide{
+  display: none !important;
+}
 .bt-cover-iframe {
   position: relative;
   overflow: hidden;
@@ -1338,11 +1340,6 @@
     .dialog-close-button.dialog-lightbox-close-button {
       width: 28px;
       height: 28px;
-      background-image: url(../images/close.svg);
-    }
-  }
-  &.bt-popup-search {
-    .dialog-close-button.dialog-lightbox-close-button {
       background-image: url(../images/close.svg);
     }
   }

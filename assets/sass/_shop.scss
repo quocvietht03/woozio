@@ -1707,7 +1707,7 @@
     top: 32px;
   }
   &.active {
-    z-index: 99999;
+    z-index: 999;
     visibility: visible;
     opacity: 1;
   }
@@ -2981,6 +2981,23 @@
   text-align: center;
   margin: 0 auto;
   color: $color-primary;
+  a{
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 26px;
+    text-transform: uppercase;
+    color: $color-primary;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: none;
+    margin-top: 25px;
+    &:hover {
+      color: $color-accent;
+    }
+  }
   svg {
     width: 110px;
     height: 110px;

@@ -10,8 +10,12 @@
 }
 .bt-popup-search {
   &.elementor-popup-modal {
+    z-index: 99;
     .dialog-message {
       overflow: initial;
+    }
+    .dialog-close-button.dialog-lightbox-close-button {
+      background-image: url(../images/close.svg);
     }
   }
   &.elementor-popup-modal {
