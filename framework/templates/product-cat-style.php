@@ -21,8 +21,14 @@ if (is_wp_error($category_url)) {
         <h3 class="bt-product-category--content">
             <span class="bt-product-category--name"><?php echo esc_html($args['category']->name); ?></span>
             <?php if (isset($args['show_count']) && $args['show_count'] === 'yes'): ?>
-                <?php if (isset($args['show_custom_count']) && $args['show_custom_count'] === 'yes'): ?>
-                    <span class="bt-product-category--count"><?php echo sprintf('%s %s', esc_html($args['category']->count), esc_html($args['custom_count_text'])); ?></span>
+                <?php if (isset($args['show_custom_count']) && $args['show_custom_count'] === 'yes'): 
+                    $product_count = intval($args['category']->count);
+                    $count_text = $args['custom_count_text'];
+                    if($product_count < 2):
+                        $count_text = str_replace('s', '', $count_text);
+                    endif;
+                    ?>
+                    <span class="bt-product-category--count"><?php echo sprintf('%s %s', esc_html($product_count), esc_html($count_text)); ?></span>
                 <?php 
                     else:
                         $product_count = $args['category']->count;

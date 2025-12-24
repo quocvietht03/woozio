@@ -382,39 +382,43 @@
   }
 }
 .__scrollbar_style-x {
+  --scroll-bar-color: #a2a3ab;
+  --scroll-bar-bg-color: #f1f1f1;
   overflow-x: auto;
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
     border-radius: 10px;
-    background-color: #f1f1f1;
+    background-color: var(--scroll-bar-bg-color);
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: $color-accent;
+    background-color: var(--scroll-bar-color);
     cursor: pointer;
   }
   &::-webkit-scrollbar-track {
     border-radius: 10px;
-    background-color: #f1f1f1;
+    background-color: var(--scroll-bar-bg-color);
   }
 }
 .__scrollbar_style {
+  --scroll-bar-color: #a2a3ab;
+  --scroll-bar-bg-color: #f1f1f1;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
     border-radius: 10px;
-    background-color: #f1f1f1;
+    background-color: var(--scroll-bar-bg-color);
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: #a2a3ab;
+    background-color: var(--scroll-bar-color);
     cursor: pointer;
   }
   &::-webkit-scrollbar-track {
     border-radius: 10px;
-    background-color: #f1f1f1;
+    background-color: var(--scroll-bar-bg-color);
   }
 }
 .__bt-format-post-content {

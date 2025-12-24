@@ -365,9 +365,11 @@ nav .elementor-nav-menu .sub-arrow {
 /* Elementor Header */
 .elementor-location-header {
   position: relative;
-  .e-n-menu-content > div.elementor-element {
-    @extend .__scrollbar_style;
-    max-height: 73vh;
+  .e-n-menu-content {
+    > div.elementor-element {
+      @extend .__scrollbar_style;
+      max-height: 73vh;
+    }
   }
 }
 .bt-menu-mobile-popup {

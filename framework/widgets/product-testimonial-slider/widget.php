@@ -488,6 +488,48 @@ class Widget_ProductTestimonialSlider extends Widget_Base
         );
 
         $this->add_control(
+            'custom_text',
+            [
+                'label' => __('Custom Text', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+            ]
+        );
+        
+        $this->add_responsive_control(
+            'text_lines_number',
+            [
+                'label' => __('Number of Lines', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 4,
+                'min' => 1,
+                'condition' => [
+                    'custom_text' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--text' => 'display: -webkit-box; -webkit-line-clamp: {{VALUE}}; -webkit-box-orient: vertical; overflow: hidden;',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'text_height',
+            [
+                'label' => __('Text Height', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 120,
+                'condition' => [
+                    'custom_text' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-testimonial--text' => 'height: {{SIZE}}px;',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'author_heading',
             [
                 'label' => __('Author', 'woozio'),
@@ -513,6 +555,57 @@ class Widget_ProductTestimonialSlider extends Widget_Base
             [
                 'name' => 'author_typography',
                 'selector' => '{{WRAPPER}} .bt-product-testimonial--author',
+            ]
+        );
+
+        $this->add_control(
+            'Product_heading',
+            [
+                'label' => __('Product', 'woozio'),
+                'type' => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_control(
+            'custom_product_title',
+            [
+                'label' => __('Custom Product title', 'woozio'),
+                'type' => Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'woozio'),
+                'label_off' => __('No', 'woozio'),
+                'default' => 'no',
+            ]
+        );
+        
+        $this->add_responsive_control(
+            'product_title_lines_number',
+            [
+                'label' => __('Number of Lines', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 1,
+                'min' => 1,
+                'condition' => [
+                    'custom_product_title' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-title .bt-product-link' => 'display: -webkit-box; -webkit-line-clamp: {{VALUE}}; -webkit-box-orient: vertical; overflow: hidden;',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'product_title_height',
+            [
+                'label' => __('Product Title Height', 'woozio'),
+                'type' => Controls_Manager::NUMBER,
+                'default' => 23,
+                'condition' => [
+                    'custom_product_title' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .bt-product-title .bt-product-link' => 'height: {{SIZE}}px;',
+                ],
             ]
         );
 

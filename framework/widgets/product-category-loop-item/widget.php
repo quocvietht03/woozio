@@ -160,6 +160,7 @@ class Widget_ProductCategoryLoopItem extends Widget_Base
                 'label' => __('Custom Count Text', 'woozio'),
                 'type' => Controls_Manager::TEXT,
                 'default' => __('Products', 'woozio'),
+                'description' => __( 'Text shown after the count (supports plural, e.g. Products)', 'woozio' ),
                 'condition' => [
                     'show_count' => 'yes',
                     'show_custom_count' => 'yes',
