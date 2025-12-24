@@ -420,7 +420,13 @@ class Widget_SearchProductStyle1 extends Widget_Base
 		// Get current category
 		$current_cat = '';
 		if (isset($_GET['product_cat'])) {
-			$current_cat = sanitize_text_field($_GET['product_cat']);
+			$product_cat_value = sanitize_text_field($_GET['product_cat']);
+			// If product_cat contains comma, it means multiple categories, so treat as "All Categories"
+			if (strpos($product_cat_value, ',') !== false) {
+				$current_cat = ''; // Multiple categories = All Categories
+			} else {
+				$current_cat = $product_cat_value;
+			}
 		} elseif (woozio_is_category_archive_page()) {
 			$current_category = get_queried_object();
 			if ($current_category && isset($current_category->slug)) {
@@ -428,10 +434,43 @@ class Widget_SearchProductStyle1 extends Widget_Base
 			}
 		}
 
+		// Prepare category slugs for widget include categories (convert IDs to slugs)
+		$widget_category_slugs = '';
+		$widget_category_count = 0;
+		$widget_single_category_url = '';
+		if (!empty($settings['category']) && is_array($settings['category'])) {
+			$widget_category_count = count($settings['category']);
+			$category_slugs = array();
+			foreach ($settings['category'] as $cat_id) {
+				$term = get_term($cat_id, 'product_cat');
+				if ($term && !is_wp_error($term)) {
+					$category_slugs[] = $term->slug;
+					// Store first category URL for single category case
+					if ($widget_category_count === 1 && empty($widget_single_category_url)) {
+						$widget_single_category_url = get_term_link($term);
+					}
+				}
+			}
+			$widget_category_slugs = implode(',', $category_slugs);
+		}
+
+		// Prepare category slugs for widget exclude categories (convert IDs to slugs)
+		$widget_category_exclude_slugs = '';
+		if (!empty($settings['category_exclude']) && is_array($settings['category_exclude'])) {
+			$exclude_slugs = array();
+			foreach ($settings['category_exclude'] as $cat_id) {
+				$term = get_term($cat_id, 'product_cat');
+				if ($term && !is_wp_error($term)) {
+					$exclude_slugs[] = $term->slug;
+				}
+			}
+			$widget_category_exclude_slugs = implode(',', $exclude_slugs);
+		}
+
 ?>
 		<div class="bt-elwg-search-product-style-1">
 			<div class="bt-search">
-				<form method="get" class="bt-search--form" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>">
+				<form method="get" class="bt-search--form" action="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" data-widget-single-category-url="<?php echo esc_url($widget_single_category_url); ?>">
 					<?php if ($settings['enable_category'] === 'yes') : ?>
 						<div class="bt-search--category">
 							<div class="bt-category-dropdown">
@@ -479,8 +518,11 @@ class Widget_SearchProductStyle1 extends Widget_Base
 					<?php endif; ?>
 
 					<input type="hidden" name="product_cat" class="bt-product-cat-input bt-cat-product" value="<?php echo esc_attr($current_cat); ?>" />
-					<input type="hidden" name="widget_category_include" class="bt-widget-category-include" value="<?php echo !empty($settings['category']) ? esc_attr(implode(',', $settings['category'])) : ''; ?>" />
-					<input type="hidden" name="widget_category_exclude" class="bt-widget-category-exclude" value="<?php echo !empty($settings['category_exclude']) ? esc_attr(implode(',', $settings['category_exclude'])) : ''; ?>" />
+					<!-- Widget settings for category filtering -->
+					<!-- bt-widget-category-include now contains slugs instead of IDs -->
+					<input type="hidden" name="widget_category_include" class="bt-widget-category-include" value="<?php echo esc_attr($widget_category_slugs); ?>" />
+					<!-- bt-widget-category-exclude now contains slugs instead of IDs -->
+					<input type="hidden" name="widget_category_exclude" class="bt-widget-category-exclude" value="<?php echo esc_attr($widget_category_exclude_slugs); ?>" />
 					<input type="hidden" name="autocomplete_limit" class="bt-autocomplete-limit" value="<?php echo !empty($settings['autocomplete_limit']) ? esc_attr($settings['autocomplete_limit']) : '5'; ?>" />
 
 					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />

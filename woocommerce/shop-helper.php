@@ -1626,6 +1626,16 @@ function woozio_products_query_args($params = array(), $limit = 9)
             'terms' => explode(',', $product_cat)
         );
     }
+    // Handle excluded product categories
+    if (isset($params['excluded_product_cat']) && $params['excluded_product_cat'] != '') {
+        $excluded_cats = explode(',', $params['excluded_product_cat']);
+        $query_tax[] = array(
+            'taxonomy' => 'product_cat',
+            'field' => 'slug',
+            'terms' => $excluded_cats,
+            'operator' => 'NOT IN'
+        );
+    }
     if (isset($params['product_brand']) && $params['product_brand'] != '') {
         $query_tax[] = array(
             'taxonomy' => 'product_brand',
@@ -3196,25 +3206,33 @@ function woozio_search_live()
         );
     }
     // If no category selected but widget has category include settings
+    // widget_category_include now contains slugs (comma-separated), not IDs
     elseif (!empty($widget_category_include)) {
-        $include_ids = array_map('intval', explode(',', $widget_category_include));
-        $tax_query_parts[] = array(
-            'taxonomy' => 'product_cat',
-            'field' => 'term_id',
-            'terms' => $include_ids,
-            'operator' => 'IN'
-        );
+        $include_slugs = array_map('trim', explode(',', $widget_category_include));
+        $include_slugs = array_filter($include_slugs); // Remove empty values
+        if (!empty($include_slugs)) {
+            $tax_query_parts[] = array(
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => $include_slugs,
+                'operator' => 'IN'
+            );
+        }
     }
 
     // If widget has category exclude settings
+    // widget_category_exclude now contains slugs (comma-separated), not IDs
     if (!empty($widget_category_exclude)) {
-        $exclude_ids = array_map('intval', explode(',', $widget_category_exclude));
-        $tax_query_parts[] = array(
-            'taxonomy' => 'product_cat',
-            'field' => 'term_id',
-            'terms' => $exclude_ids,
-            'operator' => 'NOT IN'
-        );
+        $exclude_slugs = array_map('trim', explode(',', $widget_category_exclude));
+        $exclude_slugs = array_filter($exclude_slugs); // Remove empty values
+        if (!empty($exclude_slugs)) {
+            $tax_query_parts[] = array(
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => $exclude_slugs,
+                'operator' => 'NOT IN'
+            );
+        }
     }
 
     // Apply tax_query if we have any conditions
@@ -3319,25 +3337,33 @@ function woozio_search_live_style1()
         );
     }
     // If no category selected but widget has category include settings
+    // widget_category_include now contains slugs (comma-separated), not IDs
     elseif (!empty($widget_category_include)) {
-        $include_ids = array_map('intval', explode(',', $widget_category_include));
-        $tax_query_parts[] = array(
-            'taxonomy' => 'product_cat',
-            'field' => 'term_id',
-            'terms' => $include_ids,
-            'operator' => 'IN'
-        );
+        $include_slugs = array_map('trim', explode(',', $widget_category_include));
+        $include_slugs = array_filter($include_slugs); // Remove empty values
+        if (!empty($include_slugs)) {
+            $tax_query_parts[] = array(
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => $include_slugs,
+                'operator' => 'IN'
+            );
+        }
     }
 
     // If widget has category exclude settings
+    // widget_category_exclude now contains slugs (comma-separated), not IDs
     if (!empty($widget_category_exclude)) {
-        $exclude_ids = array_map('intval', explode(',', $widget_category_exclude));
-        $tax_query_parts[] = array(
-            'taxonomy' => 'product_cat',
-            'field' => 'term_id',
-            'terms' => $exclude_ids,
-            'operator' => 'NOT IN'
-        );
+        $exclude_slugs = array_map('trim', explode(',', $widget_category_exclude));
+        $exclude_slugs = array_filter($exclude_slugs); // Remove empty values
+        if (!empty($exclude_slugs)) {
+            $tax_query_parts[] = array(
+                'taxonomy' => 'product_cat',
+                'field' => 'slug',
+                'terms' => $exclude_slugs,
+                'operator' => 'NOT IN'
+            );
+        }
     }
 
     // Apply tax_query if we have any conditions

@@ -2909,7 +2909,8 @@
           }
           .bt-product-thumb {
             display: flex;
-            width: 70%;
+            flex: 1;
+            width: auto;
             gap: 15px;
             align-items: center;
             img {
@@ -2921,7 +2922,6 @@
             }
           }
           .bt-product-title {
-            width: calc(100% - 85px);
             h3 {
               font-size: 16px;
               @extend .__bt-max-line-ellipsis;
@@ -2942,7 +2942,7 @@
             }
           }
           .bt-product-add-to-cart {
-            width: calc(30% - 20px);
+            width: auto;
             display: flex;
             justify-content: flex-end;
             a {
@@ -2955,8 +2955,7 @@
               color: #fff;
               padding: 0;
               font-weight: 400;
-              width: 100%;
-              max-width: 145px;
+              width: 130px;
               &.added {
                 display: none;
               }
@@ -3103,7 +3102,8 @@
           }
           .bt-skeleton-thumb {
             display: flex;
-            width: 70%;
+            flex: 1;
+            width: auto;
             gap: 15px;
             align-items: center;
             padding-bottom: 0;
@@ -3115,7 +3115,8 @@
               @extend .__bt-animation-loading-card;
             }
             .bt-skeleton-content {
-              width: calc(100% - 85px);
+              flex: 1;
+              width: auto;
               .bt-skeleton-title {
                 width: 100%;
                 height: 24px;
@@ -3130,7 +3131,7 @@
             }
           }
           .bt-skeleton-add-to-cart {
-            width: calc(30% - 20px);
+            width: 130px;
             height: 35px;
             @extend.__bt-animation-loading-card;
           }
@@ -3235,15 +3236,16 @@
     .bt-live-search-results {
       .bt-product-item {
         .bt-product-add-to-cart {
+          width: auto;
           width: 40px;
           a {
             line-height: 1;
-            font-size: 0;
+            font-size: 0 !important;
             position: relative;
             max-width: 40px;
             &:not(.ajax_add_to_cart) {
               transition: all 0.3s cubic-bezier(0.11, 0.52, 0.53, 0.79) 0s;
-              font-size: 0;
+              font-size: 0 !important;
               display: flex;
               align-items: center;
               width: 40px;
@@ -3303,8 +3305,8 @@
             &::after {
               content: "";
               position: absolute;
-              top: 30% !important;
-              left: 32% !important;
+              top: 25% !important;
+              left: 27% !important;
               right: auto !important;
               bottom: auto;
               width: 18px;
@@ -3338,6 +3340,11 @@
               display: none;
             }
           }
+        }
+      }
+      .bt-product-skeleton {
+        .bt-skeleton-add-to-cart {
+          width: 40px !important;
         }
       }
     }
@@ -3469,13 +3476,13 @@
 
         @media (max-width: $break-sm) {
           min-height: 50px;
-          font-size: 16px; 
+          font-size: 16px;
           padding: 8px 15px;
         }
 
         @media (max-width: $break-xs) {
           min-height: 46px;
-          font-size: 16px; 
+          font-size: 16px;
           padding: 8px 12px;
         }
 
@@ -3740,10 +3747,11 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      .bt-attributes-wrap,.bt-btn-add-to-cart-variable{
+      .bt-attributes-wrap,
+      .bt-btn-add-to-cart-variable {
         display: none !important;
       }
-      .bt-btn-read-more{
+      .bt-btn-read-more {
         display: block !important;
       }
       @media (max-width: $break-md) {
@@ -4175,10 +4183,11 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      .bt-attributes-wrap,.bt-btn-add-to-cart-variable{
+      .bt-attributes-wrap,
+      .bt-btn-add-to-cart-variable {
         display: none !important;
       }
-      .bt-btn-read-more{
+      .bt-btn-read-more {
         display: block !important;
       }
       @media (max-width: $break-md) {

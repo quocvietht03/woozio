@@ -67,6 +67,107 @@
 			});
 		}
 	};
+	// Helper function to generate correct URL based on widget category settings
+	const generateCategoryUrl = function($form) {
+		// Get widget category slugs from bt-widget-category-include (now contains slugs, not IDs)
+		const $widgetCategoryInclude = $form.find('.bt-widget-category-include');
+		const widgetCategorySlugs = $widgetCategoryInclude.length ? $widgetCategoryInclude.val() : '';
+		const widgetCategoryCount = widgetCategorySlugs ? widgetCategorySlugs.split(',').filter(function(slug) { return slug.trim() !== ''; }).length : 0;
+		
+		// Get widget category exclude slugs (now contains slugs, not IDs)
+		const $widgetCategoryExclude = $form.find('.bt-widget-category-exclude');
+		const widgetCategoryExcludeSlugs = $widgetCategoryExclude.length ? $widgetCategoryExclude.val() : '';
+		
+		const widgetSingleCategoryUrl = $form.data('widget-single-category-url') || '';
+		const selectedCategoryUrl = $form.data('category-url');
+		const shopUrl = $form.attr('action') || '';
+		
+		// Get selected category slug to check if "All Categories" is selected
+		const $catProductInput = $form.find('input[name="product_cat"]');
+		const selectedCatSlug = $catProductInput.length ? $catProductInput.val() : '';
+
+		let url = '';
+		let isShopUrl = false; // Flag to check if URL is shop URL (not category page)
+		
+		// Rule: If has include, ignore exclude. Only use exclude when there's no include.
+		const hasInclude = widgetCategoryCount > 0;
+		const shouldUseExclude = !hasInclude && widgetCategoryExcludeSlugs;
+
+		// Priority 1: If user selected a specific category from dropdown (not "All Categories"), use that
+		if (selectedCategoryUrl && selectedCatSlug && selectedCatSlug !== '') {
+			url = selectedCategoryUrl;
+			// This is a category page, not shop URL
+			isShopUrl = false;
+			// Don't add excluded_product_cat for category pages
+		}
+		// Priority 2: If "All Categories" is selected (selectedCatSlug is empty), check widget include categories
+		// If widget has 2+ categories included, build shop URL with product_cat parameter
+		else if (widgetCategoryCount >= 2 && widgetCategorySlugs) {
+			// Get base shop URL (remove any existing query parameters)
+			let baseShopUrl = shopUrl.split('?')[0];
+			// Add product_cat parameter
+			url = baseShopUrl;
+			const separator = url.indexOf('?') !== -1 ? '&' : '?';
+			url += separator + 'product_cat=' + encodeURIComponent(widgetCategorySlugs);
+			// Don't add excluded_product_cat because we have include
+			// This is shop URL
+			isShopUrl = true;
+		}
+		// If widget has 1 category included, use that category page URL
+		else if (widgetCategoryCount === 1 && widgetSingleCategoryUrl) {
+			url = widgetSingleCategoryUrl;
+			// This is a category page, not shop URL
+			isShopUrl = false;
+			// Don't add excluded_product_cat for category pages or when we have include
+		}
+		// If "All Categories" is selected (selectedCatSlug is empty) and no widget include categories
+		// Use shop URL and check for exclude
+		else if (!selectedCatSlug || selectedCatSlug === '') {
+			url = shopUrl;
+			// This is shop URL
+			isShopUrl = true;
+			// Add excluded_product_cat only if we have exclude and no include, and it's shop URL
+			if (shouldUseExclude) {
+				url = addUrlParameter(url, 'excluded_product_cat', widgetCategoryExcludeSlugs);
+			}
+		}
+		// If no widget categories and selected category URL exists (fallback)
+		else if (selectedCategoryUrl) {
+			url = selectedCategoryUrl;
+			// This is a category page, not shop URL
+			isShopUrl = false;
+			// Don't add excluded_product_cat for category pages
+		}
+		// Default: use shop URL
+		else {
+			url = shopUrl;
+			// This is shop URL
+			isShopUrl = true;
+			// Add excluded_product_cat only if we have exclude and no include, and it's shop URL
+			if (shouldUseExclude) {
+				url = addUrlParameter(url, 'excluded_product_cat', widgetCategoryExcludeSlugs);
+			}
+		}
+
+		// Add formsearch=true to shop URLs only if URL has product_cat or excluded_product_cat
+		if (isShopUrl && (url.indexOf('product_cat=') !== -1 || url.indexOf('excluded_product_cat=') !== -1)) {
+			url = addUrlParameter(url, 'formsearch', 'true');
+		}
+
+		return url;
+	};
+
+	// Helper function to add URL parameter
+	const addUrlParameter = function(url, paramName, paramValue) {
+		// Remove existing parameter if exists
+		url = url.replace(new RegExp('([?&])' + paramName + '=[^&]*'), '');
+		// Clean up trailing ? or &
+		url = url.replace(/[?&]$/, '');
+		// Add parameter
+		const separator = url.indexOf('?') !== -1 ? '&' : '?';
+		return url + separator + paramName + '=' + encodeURIComponent(paramValue);
+	};
+
 	const SearchProductHandler = function ($scope, $) {
 		const $searchProduct = $scope.find('.bt-elwg-search-product');
 		if ($searchProduct.length) {
@@ -105,17 +206,44 @@
 
 			// Handle form submit - update action URL based on category
 			$searchProduct.find('.bt-search--form').on('submit', function (e) {
+				e.preventDefault();
 				const $form = $(this);
-				const categoryUrl = $form.data('category-url');
-
-				// Disable all hidden inputs (only submit search_keyword)
-				$form.find('input[type="hidden"]').prop('disabled', true);
-
-				if (categoryUrl) {
-					// Use the stored category URL from data attribute
-					$form.attr('action', categoryUrl);
+				const $searchInput = $form.find('input[name="search_keyword"]');
+				const searchKeyword = $searchInput.length ? $searchInput.val().trim() : '';
+				const shopUrl = $form.attr('action') || '';
+				
+				// Generate correct URL based on widget settings
+				let finalUrl = generateCategoryUrl($form);
+				
+				// Only add search_keyword to URL if it's not empty
+				if (searchKeyword) {
+					// Remove existing search_keyword and formsearch parameters if exists
+					finalUrl = finalUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+					finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+					// Clean up trailing ? or &
+					finalUrl = finalUrl.replace(/[?&]$/, '');
+					// Add search_keyword parameter
+					const separator = finalUrl.indexOf('?') !== -1 ? '&' : '?';
+					finalUrl += separator + 'search_keyword=' + encodeURIComponent(searchKeyword);
+					// Add formsearch=true at the end only if URL has product_cat or excluded_product_cat
+					if (finalUrl.indexOf('product_cat=') !== -1 || finalUrl.indexOf('excluded_product_cat=') !== -1) {
+						finalUrl += '&formsearch=true';
+					}
+				} else {
+					// Ensure formsearch=true is at the end only if URL has product_cat or excluded_product_cat
+					if (finalUrl.indexOf('product_cat=') !== -1 || finalUrl.indexOf('excluded_product_cat=') !== -1) {
+						finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+						finalUrl = finalUrl.replace(/[?&]$/, '');
+						finalUrl += (finalUrl.indexOf('?') !== -1 ? '&' : '?') + 'formsearch=true';
+					} else {
+						// Remove formsearch if URL doesn't have product_cat or excluded_product_cat
+						finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+						finalUrl = finalUrl.replace(/[?&]$/, '');
+					}
 				}
-				// If no category URL, keep default action (already set in HTML)
+
+				// Redirect to the correct URL
+				window.location.href = finalUrl;
 			});
 
 			// Close dropdown when clicking outside
@@ -193,15 +321,9 @@
 
 										// Update link if not using custom link
 										if (!isCustomLink) {
-											let buttonUrl = '';
-											const categoryUrl = $searchProduct.find('.bt-search--form').data('category-url');
-
-											if (categoryUrl) {
-												buttonUrl = categoryUrl;
-											} else {
-												// Fallback to current href
-												buttonUrl = $viewAllButton.attr('href');
-											}
+											const $form = $searchProduct.find('.bt-search--form');
+											// Generate correct URL based on widget category settings
+											let buttonUrl = generateCategoryUrl($form);
 
 											if (hasProducts) {
 												// Has products: use "has results" text and add search_keyword
@@ -210,14 +332,19 @@
 													$viewAllButton.text(textHasResults);
 												}
 
-												// Remove existing search_keyword parameter if exists
+												// Remove existing search_keyword and formsearch parameters if exists
 												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
 												// Clean up trailing ? or &
 												buttonUrl = buttonUrl.replace(/[?&]$/, '');
 
 												// Add search_keyword parameter
 												const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
 												buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
+												// Add formsearch=true at the end only if URL has product_cat or excluded_product_cat
+												if (buttonUrl.indexOf('product_cat=') !== -1 || buttonUrl.indexOf('excluded_product_cat=') !== -1) {
+													buttonUrl += '&formsearch=true';
+												}
 											} else {
 												// No products: use "no results" text and remove search_keyword
 												const textNoResults = $viewAllButton.data('text-no-results');
@@ -228,6 +355,16 @@
 												// Remove search_keyword parameter
 												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
 												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+												// Ensure formsearch=true is at the end only if URL has product_cat or excluded_product_cat
+												if (buttonUrl.indexOf('product_cat=') !== -1 || buttonUrl.indexOf('excluded_product_cat=') !== -1) {
+													buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
+													buttonUrl = buttonUrl.replace(/[?&]$/, '');
+													buttonUrl += (buttonUrl.indexOf('?') !== -1 ? '&' : '?') + 'formsearch=true';
+												} else {
+													// Remove formsearch if URL doesn't have product_cat or excluded_product_cat
+													buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
+													buttonUrl = buttonUrl.replace(/[?&]$/, '');
+												}
 											}
 
 											$viewAllButton.attr('href', buttonUrl);
@@ -457,14 +594,8 @@
 										$viewAllResults.show();
 
 										if (!isCustomLink) {
-											let buttonUrl = '';
-											const categoryUrl = $form.data('category-url');
-
-											if (categoryUrl) {
-												buttonUrl = categoryUrl;
-											} else {
-												buttonUrl = $viewAllButton.attr('href');
-											}
+											// Generate correct URL based on widget category settings
+											let buttonUrl = generateCategoryUrl($form);
 
 											if (hasProducts) {
 												const textHasResults = $viewAllButton.data('text-has-results');
@@ -472,19 +603,38 @@
 													$viewAllButton.text(textHasResults);
 												}
 
+												// Remove existing search_keyword and formsearch parameters if exists
 												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+												buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
+												// Clean up trailing ? or &
 												buttonUrl = buttonUrl.replace(/[?&]$/, '');
 
+												// Add search_keyword parameter
 												const separator = buttonUrl.indexOf('?') !== -1 ? '&' : '?';
 												buttonUrl += separator + 'search_keyword=' + encodeURIComponent(searchTerm);
+												// Add formsearch=true at the end only if URL has product_cat or excluded_product_cat
+												if (buttonUrl.indexOf('product_cat=') !== -1 || buttonUrl.indexOf('excluded_product_cat=') !== -1) {
+													buttonUrl += '&formsearch=true';
+												}
 											} else {
 												const textNoResults = $viewAllButton.data('text-no-results');
 												if (textNoResults) {
 													$viewAllButton.text(textNoResults);
 												}
 
+												// Remove search_keyword parameter
 												buttonUrl = buttonUrl.replace(/([?&])search_keyword=[^&]*/g, '');
 												buttonUrl = buttonUrl.replace(/[?&]$/, '');
+												// Ensure formsearch=true is at the end only if URL has product_cat or excluded_product_cat
+												if (buttonUrl.indexOf('product_cat=') !== -1 || buttonUrl.indexOf('excluded_product_cat=') !== -1) {
+													buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
+													buttonUrl = buttonUrl.replace(/[?&]$/, '');
+													buttonUrl += (buttonUrl.indexOf('?') !== -1 ? '&' : '?') + 'formsearch=true';
+												} else {
+													// Remove formsearch if URL doesn't have product_cat or excluded_product_cat
+													buttonUrl = buttonUrl.replace(/([?&])formsearch=[^&]*/g, '');
+													buttonUrl = buttonUrl.replace(/[?&]$/, '');
+												}
 											}
 
 											$viewAllButton.attr('href', buttonUrl);
@@ -577,11 +727,44 @@
 
 			// Form submit handler
 			$form.on('submit', function (e) {
-				const categoryUrl = $(this).data('category-url');
-				if (categoryUrl) {
-					$(this).attr('action', categoryUrl);
+				e.preventDefault();
+				const $form = $(this);
+				const $searchInput = $form.find('input[name="search_keyword"]');
+				const searchKeyword = $searchInput.length ? $searchInput.val().trim() : '';
+				const shopUrl = $form.attr('action') || '';
+				
+				// Generate correct URL based on widget settings
+				let finalUrl = generateCategoryUrl($form);
+				
+				// Only add search_keyword to URL if it's not empty
+				if (searchKeyword) {
+					// Remove existing search_keyword and formsearch parameters if exists
+					finalUrl = finalUrl.replace(/([?&])search_keyword=[^&]*/g, '');
+					finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+					// Clean up trailing ? or &
+					finalUrl = finalUrl.replace(/[?&]$/, '');
+					// Add search_keyword parameter
+					const separator = finalUrl.indexOf('?') !== -1 ? '&' : '?';
+					finalUrl += separator + 'search_keyword=' + encodeURIComponent(searchKeyword);
+					// Add formsearch=true at the end only if URL has product_cat or excluded_product_cat
+					if (finalUrl.indexOf('product_cat=') !== -1 || finalUrl.indexOf('excluded_product_cat=') !== -1) {
+						finalUrl += '&formsearch=true';
+					}
+				} else {
+					// Ensure formsearch=true is at the end only if URL has product_cat or excluded_product_cat
+					if (finalUrl.indexOf('product_cat=') !== -1 || finalUrl.indexOf('excluded_product_cat=') !== -1) {
+						finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+						finalUrl = finalUrl.replace(/[?&]$/, '');
+						finalUrl += (finalUrl.indexOf('?') !== -1 ? '&' : '?') + 'formsearch=true';
+					} else {
+						// Remove formsearch if URL doesn't have product_cat or excluded_product_cat
+						finalUrl = finalUrl.replace(/([?&])formsearch=[^&]*/g, '');
+						finalUrl = finalUrl.replace(/[?&]$/, '');
+					}
 				}
-				$(this).find('input[type="hidden"]').prop('disabled', true);
+
+				// Redirect to the correct URL
+				window.location.href = finalUrl;
 			});
 
 			// Handle trending keyword clicks

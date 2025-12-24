@@ -1366,10 +1366,17 @@
 		}
 	}
 	/* load Show filter Tag */
-	function WoozioLoadFilterTagProduct() {
+		function WoozioLoadFilterTagProduct() {
 		if ($('body').hasClass('archive') && $('body').hasClass('post-type-archive-product')) {
 			const url = new URL(window.location.href);
 			const params = new URLSearchParams(url.search);
+			
+			// Check if formsearch=true exists in URL before deleting it
+			var hasFormSearch = params.has('formsearch') && params.get('formsearch') === 'true';
+			
+			// Store product_cat value IMMEDIATELY before any deletion operations
+			var productCatValue = params.get('product_cat');
+			
 			params.delete('current_page');
 			params.delete('sort_order');
 			params.delete('view_type');
@@ -1380,6 +1387,8 @@
 			params.delete('layout-titlebar');
 			params.delete('layout-bottom-titlebar');
 			params.delete('layout-shop');
+			params.delete('formsearch');
+			params.delete('excluded_product_cat');
 			// Clean up URL params by removing empty values
 			for (const [key, value] of params.entries()) {
 				//	console.log(key, value);
@@ -1397,7 +1406,7 @@
 			var isTaxonomyPage = $sidebar.data('is-taxonomy-page') === 1;
 			var taxonomyType = $sidebar.data('taxonomy-type') || '';
 
-			// Remove product_cat from params when on category page
+			// Remove product_cat from params when on category page 
 			if (isCategoryPage) {
 				params.delete('product_cat');
 			}
@@ -1406,7 +1415,17 @@
 			if (isTaxonomyPage && taxonomyType) {
 				params.delete(taxonomyType);
 			}
-			console.log(params);
+			
+			// When formsearch=true, handle product_cat based on slug count
+			if (hasFormSearch && productCatValue) {
+				const slugCount = productCatValue.split(',').filter(slug => slug.trim() !== '').length;
+				if (slugCount >= 2) {
+					params.delete('product_cat');
+				} else {
+					params.set('product_cat', productCatValue);
+				}
+			}
+			
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1427,6 +1446,7 @@
 					if (isTaxonomyPage && key === taxonomyType) {
 						return;
 					}
+					
 					const tags = value.split(/[,; ]+/); // Split value by comma, semicolon, or space
 					tags.forEach(tag => {
 						const tagElement = $(`<span class="bt-filter-tag" data-name="${key}" data-slug="${tag.trim()}"></span>`); // Updated to use tag.trim() for data-slug
@@ -1706,6 +1726,18 @@
 		//Filter single tax
 		if ($('.bt-field-type-radio').length > 0) {
 			$('.bt-field-type-radio input').on('change', function () {
+				// If clicking on product_cat filter, remove excluded_product_cat from URL
+				if ($(this).attr('name') === 'product_cat') {
+					var urlParams = new URLSearchParams(window.location.search);
+					urlParams.delete('excluded_product_cat');
+					var param_str = urlParams.toString();
+					if ('' !== param_str) {
+						window.history.replaceState(null, null, `?${param_str}`);
+					} else {
+						window.history.replaceState(null, null, window.location.pathname);
+					}
+				}
+				
 				var url = $(this).closest('.item-radio').data('url');
 				if (url) {
 					window.location.href = url;
@@ -1853,6 +1885,9 @@
 				urlParams.delete(paramName);
 			});
 
+			// Remove formsearch=true when resetting filters
+			urlParams.delete('formsearch');
+
 			var param_str = urlParams.toString();
 			if ('' !== param_str) {
 				window.history.replaceState(null, null, `?${param_str}`);
@@ -1894,9 +1929,18 @@
 
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
+			
+			// Check if formsearch=true exists in URL
+			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
+			
+			// Store product_cat and formsearch from URL if formsearch=true exists
+			var preservedProductCat = '';
+			if (hasFormSearch && urlParams.has('product_cat')) {
+				preservedProductCat = urlParams.get('product_cat');
+			}
 
-			// Remove product_cat from URL params if on category page
-			if (isCategoryPage) {
+			// Remove product_cat from URL params if on category page (but preserve if formsearch=true)
+			if (isCategoryPage && !hasFormSearch) {
 				urlParams.delete('product_cat');
 			}
 
@@ -1911,24 +1955,30 @@
 			// any radio groups with no selection.
 			var dataArr = $(this).serializeArray();
 
+			// Get product_cat from form BEFORE removing it (for both ajax and URL update)
+			var formProductCat = '';
+			var productCatItem = dataArr.find(function (item) {
+				return item.name === 'product_cat';
+			});
+			if (productCatItem && productCatItem.value) {
+				formProductCat = productCatItem.value;
+			} else {
+				// Fallback: get from checked radio input
+				var productCatInput = $(this).find('input[name="product_cat"]:checked');
+				if (productCatInput.length > 0) {
+					formProductCat = productCatInput.val();
+				}
+			}
+
 			// Get category slug from form before removing it (for ajax request)
 			var categorySlug = '';
 			if (isCategoryPage) {
 				// Try to get from data attribute first (most reliable)
 				categorySlug = $sidebar.data('category-slug') || '';
 				if (!categorySlug) {
-					// Fallback: get from serializeArray
-					var productCatItem = dataArr.find(function (item) {
-						return item.name === 'product_cat';
-					});
-					if (productCatItem && productCatItem.value) {
-						categorySlug = productCatItem.value;
-					} else {
-						// Last fallback: get from checked radio input
-						var productCatInput = $(this).find('input[name="product_cat"]:checked');
-						if (productCatInput.length > 0) {
-							categorySlug = productCatInput.val();
-						}
+					// Use formProductCat if available
+					if (formProductCat) {
+						categorySlug = formProductCat;
 					}
 				}
 			}
@@ -1983,9 +2033,37 @@
 				action: 'woozio_products_filter',
 			};
 
-			// Add category slug to ajax params if on category page (but not to URL)
-			if (isCategoryPage && categorySlug) {
+			// Add category slug to ajax params
+			// Priority: form value > preserved value (when formsearch=true) > categorySlug
+			if (formProductCat) {
+				// User clicked on filter, use form value
+				param_ajax['product_cat'] = formProductCat.replace(/%2C/g, ',');
+				// Remove excluded_product_cat when clicking on product_cat filter
+				urlParams.delete('excluded_product_cat');
+				// Also remove from form data array
+				dataArr = dataArr.filter(function (item) {
+					return item.name !== 'excluded_product_cat';
+				});
+			} else if (hasFormSearch && preservedProductCat) {
+				// No form value, but formsearch=true exists, use preserved value
+				param_ajax['product_cat'] = preservedProductCat.replace(/%2C/g, ',');
+			} else if (isCategoryPage && categorySlug) {
+				// Normal category page, use categorySlug from data attribute
 				param_ajax['product_cat'] = categorySlug.replace(/%2C/g, ',');
+			}
+			
+			// Add excluded_product_cat to ajax params if exists (from form or URL)
+			var excludedProductCat = '';
+			var excludedCatItem = dataArr.find(function (item) {
+				return item.name === 'excluded_product_cat';
+			});
+			if (excludedCatItem && excludedCatItem.value) {
+				excludedProductCat = excludedCatItem.value;
+			} else if (urlParams.has('excluded_product_cat')) {
+				excludedProductCat = urlParams.get('excluded_product_cat');
+			}
+			if (excludedProductCat) {
+				param_ajax['excluded_product_cat'] = excludedProductCat.replace(/%2C/g, ',');
 			}
 
 			// Add taxonomy slug to ajax params if on taxonomy page (but not to URL)
@@ -2019,6 +2097,21 @@
 					urlParams.delete(param_key);
 				}
 			});
+
+			// Restore product_cat and formsearch if formsearch=true was in original URL
+			// Use form value if user clicked on filter, otherwise use preserved value
+			if (hasFormSearch) {
+				if (formProductCat) {
+					// User clicked on filter, use form value
+					urlParams.set('product_cat', formProductCat);
+					// Ensure excluded_product_cat is removed when clicking product_cat filter
+					urlParams.delete('excluded_product_cat');
+				} else if (preservedProductCat) {
+					// No form value, use preserved value
+					urlParams.set('product_cat', preservedProductCat);
+				}
+				urlParams.set('formsearch', 'true');
+			}
 
 			var param_str = urlParams.toString();
 			console.log(param_ajax);
