@@ -210,10 +210,23 @@
 				$ghost.val('');
 				
 				const parts = value.split(' ');
-				const lastWord = parts[parts.length - 1].toLowerCase();
+				const lastWordOriginal = parts[parts.length - 1];
+				const lastWord = lastWordOriginal.toLowerCase();
 				
 				if (!lastWord) {
 					return;
+				}
+				
+				// Check if input is valid case pattern (not mixed case)
+				const isAllUppercase = lastWordOriginal === lastWordOriginal.toUpperCase() && lastWordOriginal.length > 1;
+				const isAllLowercase = lastWordOriginal === lastWordOriginal.toLowerCase();
+				const isTitleCase = lastWordOriginal.length > 0 && 
+					lastWordOriginal[0] === lastWordOriginal[0].toUpperCase() && 
+					lastWordOriginal.slice(1) === lastWordOriginal.slice(1).toLowerCase();
+				
+				// Only show suggestion for valid case patterns
+				if (!isAllUppercase && !isAllLowercase && !isTitleCase) {
+					return; // Hide suggestion for mixed case
 				}
 				
 				const match = wordPool.find(function(w) {
@@ -221,7 +234,19 @@
 				});
 				
 				if (match) {
-					parts[parts.length - 1] = match;
+					// Preserve the case of the user's input
+					let suggestedWord = match;
+					
+					if (isAllUppercase) {
+						// All uppercase: convert match to uppercase
+						suggestedWord = match.toUpperCase();
+					} else if (isTitleCase || (lastWordOriginal.length > 0 && lastWordOriginal[0] === lastWordOriginal[0].toUpperCase())) {
+						// First letter uppercase: convert to title case
+						suggestedWord = match.charAt(0).toUpperCase() + match.slice(1);
+					}
+					// Otherwise keep lowercase (isAllLowercase)
+					
+					parts[parts.length - 1] = suggestedWord;
 					$ghost.val(parts.join(' '));
 				}
 			});
