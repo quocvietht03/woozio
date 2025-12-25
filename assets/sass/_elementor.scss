@@ -10,7 +10,7 @@
 }
 .bt-popup-search {
   &.elementor-popup-modal {
-    z-index: 99;
+    z-index: 998;
     .dialog-message {
       overflow: initial;
     }
@@ -2717,7 +2717,80 @@
       @media (max-width: $break-xs) {
         border: none;
       }
-      input {
+      
+      // Keyword suggestion wrapper
+      .bt-search-wrap {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        
+        .bt-keyword-ghost {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          border: none;
+          padding: 8px 16px;
+          color: #bbb;
+          font-family: $accent-font;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 26px;
+          border-radius: 0;
+          background: transparent;
+          pointer-events: none;
+          z-index: 1;
+          @media (max-width: $break-xs) {
+            padding: 8px 12px;
+            padding-right: 0;
+            border: 1px solid transparent;
+          }
+        }
+        
+        input.bt-search-field {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          border: none;
+          padding: 8px 16px;
+          color: $color-text;
+          font-family: $accent-font;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 26px;
+          border-radius: 0;
+          background: transparent;
+          &::placeholder {
+            color: #a0a0a0;
+          }
+          &::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            appearance: none;
+            display: none;
+            cursor: pointer;
+          }
+          &::-ms-clear {
+            display: none;
+            cursor: pointer;
+          }
+          &:focus {
+            outline: none;
+          }
+          @media (max-width: $break-xs) {
+            border: 1px solid #e9e9e9;
+            border-right: none;
+            padding: 8px 12px;
+          }
+        }
+      }
+      
+      // Fallback for input without wrapper (backward compatibility)
+      input.bt-search-field,
+      input[type="search"] {
+        position: relative;
+        z-index: 2;
         width: 100%;
         border: none;
         padding: 8px 16px;
@@ -2728,6 +2801,7 @@
         font-weight: 400;
         line-height: 26px;
         border-radius: 0;
+        background: transparent;
         &::placeholder {
           color: #a0a0a0;
         }
@@ -2740,6 +2814,9 @@
         &::-ms-clear {
           display: none;
           cursor: pointer;
+        }
+        &:focus {
+          outline: none;
         }
       }
       button {
@@ -2760,7 +2837,7 @@
       }
       @media (max-width: $break-xs) {
         flex-wrap: wrap;
-        input {
+        input.bt-search-field {
           width: calc(100% - 50px);
           padding: 8px 12px;
           border: 1px solid #e9e9e9;
@@ -3366,6 +3443,29 @@
         border-bottom: 1px solid #e9e9e9;
         border-radius: 0;
         max-width: 400px;
+        
+        .bt-search-wrap {
+          .bt-keyword-ghost {
+            padding: 12px 0;
+            color: #bbb;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 26px;
+            border: none;
+          }
+          
+          input.bt-search-field {
+            padding: 12px 0;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 26px;
+            background: transparent;
+            border: none;
+          }
+        }
+        
         input {
           padding: 12px 0;
           font-size: 16px;
@@ -3373,6 +3473,7 @@
           font-weight: 400;
           line-height: 26px;
           background: transparent;
+          border:none;
         }
         button {
           font-size: 0;
@@ -3380,6 +3481,7 @@
           padding: 0;
           display: flex;
           align-items: center;
+          border:none;
           .search-icon {
             display: block;
           }
@@ -3402,9 +3504,37 @@
         border-radius: 0;
         max-width: 100%;
         padding: 0 20px 0 8px;
+        
+        .bt-search-wrap {
+          padding-left: 0;
+          
+          .bt-keyword-ghost {
+            padding: 11px 0 11px 12px;
+            color: #bbb;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 26px;
+            @media (max-width: $break-xs) {
+              padding: 8px 12px;
+            }
+          }
+          
+          input.bt-search-field {
+            padding: 11px 0 11px 12px;
+            background: transparent;
+            @media (max-width: $break-xs) {
+              padding: 8px 12px;
+            }
+          }
+        }
+        
         input {
           padding: 11px 0 11px 12px;
           background: transparent;
+          @media (max-width: $break-xs) {
+            padding: 8px 12px;
+          }
         }
         button {
           font-size: 0;
@@ -3429,11 +3559,17 @@
             right: 0;
             top: 50%;
             transform: translateY(-50%);
+            @media (max-width: $break-xs) {
+              opacity: 0;
+            }
           }
         }
         .bt-selected-category {
           background: transparent;
           width: 155px;
+          @media (max-width: $break-xs) {
+            width: 100%;
+          }
         }
       }
       .bt-live-search-results {
@@ -3466,8 +3602,109 @@
       @media (max-width: $break-sm) {
         max-width: 100%;
       }
+      
+      // Keyword suggestion wrapper
+      .bt-search-wrap {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        
+        .bt-keyword-ghost {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          border: none;
+          padding: 10px 20px;
+          color: #bbb;
+          font-family: $accent-font;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 26px;
+          border-radius: 0;
+          background: transparent;
+          pointer-events: none;
+          z-index: 1;
+          min-height: 60px;
+          border: 1px solid transparent;
+          border-right: 0;
+          border-left: 0;
+          
+          @media (max-width: $break-sm) {
+            min-height: 50px;
+            font-size: 16px;
+            padding: 8px 15px;
+          }
+          
+          @media (max-width: $break-xs) {
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding-right: 0;
+            min-height: 46px;
+          }
+        }
+        
+        input.bt-search-field {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          border: none;
+          padding: 10px 20px;
+          color: $color-text;
+          font-family: $accent-font;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 26px;
+          border-radius: 0;
+          background: transparent;
+          min-height: 60px;
+          border: 1px solid #e9e9e9;
+          border-right: 0;
+          border-left: 0;
+          
+          @media (max-width: $break-sm) {
+            min-height: 50px;
+            font-size: 16px;
+            padding: 8px 15px;
+          }
+          
+          @media (max-width: $break-xs) {
+            padding: 8px 12px;
+            border: 1px solid #e9e9e9;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding-right: 0;
+            min-height: 46px;
+          }
+          
+          &::placeholder {
+            color: #a0a0a0;
+          }
+          &::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            appearance: none;
+            display: none;
+            cursor: pointer;
+          }
+          &::-ms-clear {
+            display: none;
+            cursor: pointer;
+          }
+          &:focus {
+            outline: none;
+          }
+        }
+      }
 
-      input {
+      // Fallback for input without wrapper (backward compatibility)
+      input.bt-search-field,
+      input[type="search"] {
+        position: relative;
+        z-index: 2;
         width: 100%;
         border: none;
         padding: 10px 20px;
@@ -3482,19 +3719,6 @@
         border: 1px solid #e9e9e9;
         border-right: 0;
         border-left: 0;
-
-        @media (max-width: $break-sm) {
-          min-height: 50px;
-          font-size: 16px;
-          padding: 8px 15px;
-        }
-
-        @media (max-width: $break-xs) {
-          min-height: 46px;
-          font-size: 16px;
-          padding: 8px 12px;
-        }
-
         &::placeholder {
           color: #a0a0a0;
         }
@@ -3523,21 +3747,28 @@
         text-transform: uppercase;
         padding: 0px 40px;
         min-height: 60px;
-
-        @media (max-width: $break-sm) {
+        .search-icon {
+          display: none;
+        }
+      }
+      @media (max-width: $break-sm) {
+        input.bt-search-field,
+        input[type="search"] {
           padding: 0px 30px;
           min-height: 50px;
           font-size: 15px;
         }
-
-        .search-icon {
-          display: none;
+        button {
+          padding: 0px 30px;
+          min-height: 50px;
+          font-size: 15px;
         }
       }
 
       @media (max-width: $break-xs) {
         flex-wrap: wrap;
-        input {
+        input.bt-search-field,
+        input[type="search"] {
           width: calc(100% - 50px);
           padding: 8px 12px;
           border: 1px solid #e9e9e9;

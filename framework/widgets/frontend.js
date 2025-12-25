@@ -168,6 +168,76 @@
 		return url + separator + paramName + '=' + encodeURIComponent(paramValue);
 	};
 
+	/* ===== KEYWORD SUGGESTION HANDLER ===== */
+	const KeywordSuggestionHandler = function($scope, $) {
+		const $keywordInputs = $scope.find('.bt-keyword-suggest');
+		
+		if ($keywordInputs.length === 0) {
+			return;
+		}
+		
+		$keywordInputs.each(function() {
+			const $input = $(this);
+			const $searchWrap = $input.closest('.bt-search-wrap');
+			const $ghost = $searchWrap.find('.bt-keyword-ghost');
+			
+			if ($ghost.length === 0 || $searchWrap.length === 0) {
+				return;
+			}
+			
+			// Get word pool from data-suggest attribute on bt-search-wrap div
+			const suggestData = $searchWrap.data('suggest');
+			let wordPool = [];
+			
+			if (suggestData && Array.isArray(suggestData)) {
+				wordPool = suggestData;
+			} else if (typeof suggestData === 'string') {
+				// Try to parse JSON if it's a string
+				try {
+					wordPool = JSON.parse(suggestData);
+				} catch (e) {
+					console.warn('Failed to parse keyword suggestions:', e);
+				}
+			}
+			
+			if (wordPool.length === 0) {
+				return;
+			}
+			
+			// Input event handler
+			$input.on('input', function() {
+				const value = $input.val();
+				$ghost.val('');
+				
+				const parts = value.split(' ');
+				const lastWord = parts[parts.length - 1].toLowerCase();
+				
+				if (!lastWord) {
+					return;
+				}
+				
+				const match = wordPool.find(function(w) {
+					return w.startsWith(lastWord) && w !== lastWord;
+				});
+				
+				if (match) {
+					parts[parts.length - 1] = match;
+					$ghost.val(parts.join(' '));
+				}
+			});
+			
+			// Tab key handler to accept suggestion
+			$input.on('keydown', function(e) {
+				if (e.key === 'Tab' && $ghost.val()) {
+					e.preventDefault();
+					$input.val($ghost.val());
+					$ghost.val('');
+					// Trigger input event to run AJAX live search
+					$input.trigger('input');
+				}
+			});
+		});
+	};
 	const SearchProductHandler = function ($scope, $) {
 		const $searchProduct = $scope.find('.bt-elwg-search-product');
 		if ($searchProduct.length) {
@@ -423,6 +493,9 @@
 					$liveSearchResults.removeClass('active');
 				}
 			});
+			
+			// Initialize keyword suggestion if enabled
+			KeywordSuggestionHandler($searchProduct, $);
 		}
 	};
 
@@ -797,7 +870,9 @@
 					}
 				}, 250); // Debounce resize events
 			});
-
+			
+			// Initialize keyword suggestion if enabled
+			KeywordSuggestionHandler($searchProduct, $);
 		}
 	};
 
