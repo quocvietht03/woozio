@@ -540,7 +540,12 @@
 			const limit = parseInt($productsDisplay.data('limit')) || 8;
 			const customProducts = $productsDisplay.data('products');
 			let typingTimer;
-			const doneTypingInterval = 500;
+			// Get typing interval based on device - mobile needs longer delay due to slower typing speed
+			const getTypingInterval = function() {
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				return isMobile ? 800 : 500; // Mobile: 800ms, Desktop: 500ms
+			};
 			let resizeTimer;
 			let previousIsMobile = $(window).width() <= 570;
 
@@ -763,7 +768,8 @@
 				clearTimeout(typingTimer);
 
 				if (searchValue.length >= 2) {
-					typingTimer = setTimeout(performSearch, doneTypingInterval);
+					const typingInterval = getTypingInterval();
+					typingTimer = setTimeout(performSearch, typingInterval);
 				} else {
 					$productsDisplay.removeClass('hidden');
 					$liveSearchResults.removeClass('active');
