@@ -540,29 +540,22 @@
 			const limit = parseInt($productsDisplay.data('limit')) || 8;
 			const customProducts = $productsDisplay.data('products');
 			let typingTimer;
-			let resizeTimer;
-			
-			// Helper functions for window width and mobile detection
-			const getWindowWidth = function() {
-				return $(window).width();
-			};
-			const isMobile = function() {
-				return getWindowWidth() <= 570;
-			};
-			
 			// Get typing interval based on device - mobile needs longer delay due to slower typing speed
 			const getTypingInterval = function() {
-				return isMobile() ? 800 : 500; // Mobile: 800ms, Desktop: 500ms
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				return isMobile ? 800 : 500; // Mobile: 800ms, Desktop: 500ms
 			};
-			
-			let previousIsMobile = isMobile();
+			let resizeTimer;
+			let previousIsMobile = $(window).width() <= 570;
 
 			// Load products display section
 			const loadProductsDisplay = function () {
 				const recentlyViewed = localStorage.getItem('recentlyViewed') || '[]';
 				const parsedRecentlyViewed = JSON.parse(recentlyViewed);
-				const currentIsMobile = isMobile();
-				previousIsMobile = currentIsMobile; // Update previous state
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				previousIsMobile = isMobile; // Update previous state
 
 				$.ajax({
 					url: AJ_Options.ajax_url,
@@ -573,7 +566,7 @@
 						limit: limit,
 						products: customProducts,
 						recently_viewed: source === 'recent_viewed' ? parsedRecentlyViewed.slice(0, limit) : [],
-						is_mobile: currentIsMobile
+						is_mobile: isMobile
 					},
 					success: function (response) {
 						if (response.success) {
@@ -612,8 +605,9 @@
 					const autocompleteLimit = $searchProduct.find('.bt-autocomplete-limit').val() || 8;
 
 					// Detect screen width to determine mobile layout
-					const currentIsMobile = isMobile();
-					previousIsMobile = currentIsMobile; // Update previous state
+					const windowWidth = $(window).width();
+					const isMobile = windowWidth <= 570;
+					previousIsMobile = isMobile; // Update previous state
 
 					$.ajax({
 						type: 'POST',
@@ -626,7 +620,7 @@
 							widget_category_include: categoryInclude,
 							widget_category_exclude: categoryExclude,
 							autocomplete_limit: autocompleteLimit,
-							is_mobile: currentIsMobile
+							is_mobile: isMobile
 						},
 						beforeSend: function () {
 							$liveSearchResults.addClass('active loading');
@@ -771,9 +765,11 @@
 			// Search on keyup - only on desktop, mobile will use submit
 			$liveSearch.on('keyup', function () {
 				const searchValue = $(this).val().trim();
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
 				
 				// On mobile, don't perform search while typing - only on submit
-				if (isMobile()) {
+				if (isMobile) {
 					if (searchValue.length < 2) {
 						$productsDisplay.removeClass('hidden');
 						$liveSearchResults.removeClass('active');
@@ -853,9 +849,11 @@
 				const $searchInput = $form.find('input[name="search_keyword"]');
 				const searchKeyword = $searchInput.length ? $searchInput.val().trim() : '';
 				const shopUrl = $form.attr('action') || '';
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
 				
 				// On mobile, perform search first before redirecting
-				if (isMobile() && searchKeyword.length >= 2) {
+				if (isMobile && searchKeyword.length >= 2) {
 					// Perform search to show results
 					performSearch();
 					// Don't redirect, let user see the results
@@ -900,11 +898,13 @@
 			// Handle trending keyword clicks
 			$searchProduct.find('.bt-trending-keyword').on('click', function () {
 				const keyword = $(this).data('keyword');
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
 				
 				$liveSearch.val(keyword);
 				
 				// On mobile, perform search directly; on desktop, trigger keyup (which will perform search)
-				if (isMobile() && keyword.length >= 2) {
+				if (isMobile && keyword.length >= 2) {
 					performSearch();
 				} else {
 					$liveSearch.trigger('keyup');
@@ -915,7 +915,8 @@
 			$(window).on('resize', function () {
 				clearTimeout(resizeTimer);
 				resizeTimer = setTimeout(function () {
-					const currentIsMobile = isMobile();
+					const windowWidth = $(window).width();
+					const currentIsMobile = windowWidth <= 570;
 
 					// Only reload if mobile state changed
 					if (currentIsMobile !== previousIsMobile) {
