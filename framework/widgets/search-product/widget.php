@@ -661,10 +661,10 @@ class Widget_SearchProduct extends Widget_Base
 					<?php if ($show_keyword_suggest) : ?>
 					<div class="bt-search-wrap" data-suggest="<?php echo esc_attr($keywords_json); ?>">
 						<input type="text" id="bt-keyword-ghost-<?php echo esc_attr($this->get_id()); ?>" class="bt-keyword-ghost" disabled autocomplete="off" aria-hidden="true" />
-						<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?> bt-keyword-suggest" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />
+						<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?> bt-keyword-suggest" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" autocomplete="off"/>
 					</div>
 					<?php else : ?>
-					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />
+					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" autocomplete="off"/>
 					<?php endif; ?>
 					<button type="submit" class="bt-search-submit">
 						<?php esc_html_e('Search', 'woozio'); ?>
