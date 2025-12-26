@@ -4316,6 +4316,51 @@
 				}
 			}, 25); // Check every 25ms for very fast response
 			
+			// Monitor for DOM changes in search results area (AJAX updates)
+			var $searchResults = $searchWidget.find('.bt-load-data');
+			if ($searchResults.length) {
+				var ajaxObserver = new MutationObserver(function(mutations) {
+					// When DOM is updated by AJAX, restore focus aggressively
+					if (shouldMaintainFocus && lastInputValue.length >= 2 && activeInput) {
+						// Wait a bit for Elementor to finish processing
+						setTimeout(function() {
+							if (document.activeElement !== activeInput) {
+								activeInput.focus();
+							}
+						}, 50);
+						
+						setTimeout(function() {
+							if (document.activeElement !== activeInput) {
+								activeInput.focus();
+								activeInput.click();
+							}
+						}, 150);
+						
+						setTimeout(function() {
+							if (document.activeElement !== activeInput) {
+								activeInput.focus();
+							}
+						}, 300);
+						
+						setTimeout(function() {
+							if (document.activeElement !== activeInput) {
+								activeInput.focus();
+							}
+						}, 500);
+					}
+				});
+				
+				ajaxObserver.observe($searchResults[0], {
+					childList: true,
+					subtree: true,
+					attributes: true,
+					attributeFilter: ['class']
+				});
+				
+				// Store observer for cleanup
+				$searchWidget.data('ajax-observer', ajaxObserver);
+			}
+			
 			// Clean up when popup closes
 			var cleanupHandler = function(e, popupId) {
 				if (popupId === id) {
@@ -4334,6 +4379,13 @@
 						popupElement.removeEventListener('touchstart', handlers.touchstart, true);
 						popupElement.removeEventListener('focusin', handlers.focusin, true);
 						$popup.removeData('focus-handlers');
+					}
+					
+					// Disconnect AJAX observer
+					var ajaxObserver = $searchWidget.data('ajax-observer');
+					if (ajaxObserver) {
+						ajaxObserver.disconnect();
+						$searchWidget.removeData('ajax-observer');
 					}
 					
 					jQuery(window).off('elementor/popup/hide', cleanupHandler);
