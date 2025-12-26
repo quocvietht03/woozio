@@ -608,12 +608,6 @@
 					const windowWidth = $(window).width();
 					const isMobile = windowWidth <= 570;
 					previousIsMobile = isMobile; // Update previous state
-					
-					// Check if widget is inside Elementor popup
-					const isInElementorPopup = $searchProduct.closest('#elementor-popup-modal').length > 0;
-					
-					// Check if input is currently focused (important for mobile keyboard)
-					const isInputFocused = document.activeElement === $liveSearch[0];
 
 					$.ajax({
 						type: 'POST',
@@ -670,69 +664,12 @@
 						`;
 								}
 							}
-							
-							// Update DOM - this might cause focus loss on mobile
 							$dataSearch.html(skeletonHtml);
-							
-							// On mobile, immediately restore focus to prevent keyboard from closing
-							if (isMobile && isInputFocused) {
-								// If in Elementor popup, use multiple attempts to restore focus
-								if (isInElementorPopup) {
-									// First attempt immediately
-									requestAnimationFrame(function() {
-										$liveSearch[0].focus();
-										// Second attempt after a short delay (for popup rendering)
-										setTimeout(function() {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 50);
-									});
-								} else {
-									// Normal page - single focus attempt
-									requestAnimationFrame(function() {
-										$liveSearch[0].focus();
-									});
-								}
-							}
 						},
 						success: function (response) {
 							if (response.success) {
 								setTimeout(function () {
 									$dataSearch.html(response.data['items']);
-									
-									// On mobile, immediately restore focus after DOM update to prevent keyboard from closing
-									// In Elementor popup, need to wait longer for Elementor to finish processing
-									if (isMobile && isInputFocused) {
-										if (isInElementorPopup) {
-											// In popup: multiple focus attempts with longer delays to wait for Elementor
-											requestAnimationFrame(function() {
-												$liveSearch[0].focus();
-												setTimeout(function() {
-													if (document.activeElement !== $liveSearch[0]) {
-														$liveSearch[0].focus();
-													}
-												}, 100);
-												// Third attempt after Elementor finishes processing
-												setTimeout(function() {
-													if (document.activeElement !== $liveSearch[0]) {
-														$liveSearch[0].focus();
-													}
-												}, 300);
-												// Fourth attempt - Elementor might take longer
-												setTimeout(function() {
-													if (document.activeElement !== $liveSearch[0]) {
-														$liveSearch[0].focus();
-													}
-												}, 500);
-											});
-										} else {
-											// Normal page - single focus attempt
-											requestAnimationFrame(function() {
-												$liveSearch[0].focus();
-											});
-										}
-									}
 
 									// Remove loading class from title
 									$liveSearchResults.removeClass('loading');
@@ -808,58 +745,11 @@
 									}
 
 									// Keep focus on input so user can continue typing
-									// On mobile, focus immediately to prevent keyboard from closing
-									if (isMobile && isInputFocused) {
-										if (isInElementorPopup) {
-											// In popup: use multiple focus attempts
-											requestAnimationFrame(function() {
-												$liveSearch[0].focus();
-											});
-										} else {
-											// Normal page
-											$liveSearch.focus();
-										}
-									} else {
-										$liveSearch.focus();
-									}
+									$liveSearch.focus();
 								}, 300);
-								// Additional focus for mobile to ensure keyboard stays open
-								if (isMobile && isInputFocused) {
-									if (isInElementorPopup) {
-										// In popup: more aggressive focus attempts with longer delays
-										setTimeout(function () {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 200);
-										setTimeout(function () {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 500);
-										setTimeout(function () {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 800);
-										setTimeout(function () {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 1200);
-									} else {
-										// Normal page - single check
-										setTimeout(function () {
-											if (document.activeElement !== $liveSearch[0]) {
-												$liveSearch[0].focus();
-											}
-										}, 100);
-									}
-								} else {
-									setTimeout(function () {
-										$liveSearch.focus();
-									}, 1000);
-								}
+								setTimeout(function () {
+									$liveSearch.focus();
+								}, 1000);
 							}
 						},
 						error: function () {
@@ -872,9 +762,22 @@
 			// Load on init
 			loadProductsDisplay();
 
-			// Search on keyup
+			// Search on keyup - only on desktop, mobile will use submit
 			$liveSearch.on('keyup', function () {
 				const searchValue = $(this).val().trim();
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				
+				// On mobile, don't perform search while typing - only on submit
+				if (isMobile) {
+					if (searchValue.length < 2) {
+						$productsDisplay.removeClass('hidden');
+						$liveSearchResults.removeClass('active');
+					}
+					return;
+				}
+				
+				// Desktop: perform search while typing
 				clearTimeout(typingTimer);
 
 				if (searchValue.length >= 2) {
@@ -946,7 +849,18 @@
 				const $searchInput = $form.find('input[name="search_keyword"]');
 				const searchKeyword = $searchInput.length ? $searchInput.val().trim() : '';
 				const shopUrl = $form.attr('action') || '';
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
 				
+				// On mobile, perform search first before redirecting
+				if (isMobile && searchKeyword.length >= 2) {
+					// Perform search to show results
+					performSearch();
+					// Don't redirect, let user see the results
+					return false;
+				}
+				
+				// Desktop or empty search: redirect normally
 				// Generate correct URL based on widget settings
 				let finalUrl = generateCategoryUrl($form);
 				
