@@ -11155,7 +11155,7 @@
                   }
                   .single_variation_wrap {
                     > * {
-                      display: none;
+                      display: none !important;
                     }
                   }
                   .woocommerce-variation {

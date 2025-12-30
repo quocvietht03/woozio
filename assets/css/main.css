@@ -28102,7 +28102,7 @@ nav .elementor-nav-menu .sub-arrow {
   display: none;
 }
 .bt-elwg-product-list-hotspot--default .bt-product-list-hotspot__list-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .variations_form .single_variation_wrap > * {
-  display: none;
+  display: none !important;
 }
 .bt-elwg-product-list-hotspot--default .bt-product-list-hotspot__list-products .bt-hotspot-product-list .bt-hotspot-product-list__item .bt-product-content .bt-product-content__inner .variations_form .woocommerce-variation > * {
   display: none;
