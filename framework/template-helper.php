@@ -387,12 +387,14 @@ if (!function_exists('woozio_popup_newslleter_form')) {
 			$subheading = !empty($newsletter_popup_setting['sub_heading']) ? $newsletter_popup_setting['sub_heading'] : esc_html__('Subscribe to our newsletter and receive 10% off your first purchase', 'woozio');
 			$note = !empty($newsletter_popup_setting['note_bottom']) ? $newsletter_popup_setting['note_bottom'] : '';
 			$image_newsletter = !empty($newsletter_popup_setting['image_newsletter']['url']) ? $newsletter_popup_setting['image_newsletter']['url'] : '';
+			$shortcode_form_newsletter = !empty($newsletter_popup_setting['shortcode_form_newsletter']) ? $newsletter_popup_setting['shortcode_form_newsletter'] : '';
 		} else {
 			$enable_newsletter_popup = false;
 			$heading = esc_html__('Subscribe to get 10% OFF', 'woozio');
 			$subheading = esc_html__('Subscribe to our newsletter and receive 10% off your first purchase', 'woozio');
 			$note = '';
 			$image_newsletter = '';
+			$shortcode_form_newsletter = '';
 		}
 		if ($enable_newsletter_popup) {
 		?>
@@ -411,10 +413,9 @@ if (!function_exists('woozio_popup_newslleter_form')) {
 						<h3 class="bt-title"><?php echo esc_html($heading); ?></h3>
 						<p class="bt-subtitle"><?php echo esc_html($subheading); ?></p>
 						<?php
-						echo do_shortcode('[newsletter_form button_label="Subscribe"]
-					[newsletter_field name="last_name" placeholder="Your name"]
-					[newsletter_field name="email" placeholder="Your e-mail"]
-					[/newsletter_form]');
+						if (!empty($shortcode_form_newsletter)) {
+							echo do_shortcode($shortcode_form_newsletter);
+						} 
 						?>
 						<?php if (!empty($note)):
 							echo '<div class="bt-newsletter-note">' . $note . '</div>';

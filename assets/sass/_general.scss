@@ -253,7 +253,9 @@
     transition: all 0.3s;
   }
 }
-
+.bt-hide{
+  display: none !important;
+}
 .bt-cover-iframe {
   position: relative;
   overflow: hidden;
@@ -1219,6 +1221,10 @@
         font-size: 14px;
       }
     }
+    form{
+      position: relative;
+      margin: 20px 0 10px 0;
+    }
     .bt-newsletter-note {
       font-size: 16px;
       font-weight: 400;
@@ -1338,11 +1344,6 @@
     .dialog-close-button.dialog-lightbox-close-button {
       width: 28px;
       height: 28px;
-      background-image: url(../images/close.svg);
-    }
-  }
-  &.bt-popup-search {
-    .dialog-close-button.dialog-lightbox-close-button {
       background-image: url(../images/close.svg);
     }
   }

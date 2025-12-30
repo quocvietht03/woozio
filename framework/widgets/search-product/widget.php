@@ -251,6 +251,68 @@ class Widget_SearchProduct extends Widget_Base
 				],
 			]
 		);
+		
+		$this->add_control(
+			'enable_keyword_suggest',
+			[
+				'label' => __('Enable Keyword Suggestion', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'no',
+				'separator' => 'before',
+			]
+		);
+		
+		$this->add_control(
+			'keyword_source',
+			[
+				'label' => __('Keyword Source', 'woozio'),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'from_titles' => __('From Product Titles', 'woozio'),
+					'manual' => __('Manual Keywords', 'woozio'),
+				],
+				'default' => 'from_titles',
+				'condition' => [
+					'enable_keyword_suggest' => 'yes',
+				],
+			]
+		);
+		
+		$this->add_control(
+			'keyword_word_limit',
+			[
+				'label' => __('Word Limit', 'woozio'),
+				'type' => Controls_Manager::NUMBER,
+				'default' => 100,
+				'min' => 1,
+				'max' => 1000,
+				'step' => 1,
+				'description' => __('Maximum number of words to extract from product titles', 'woozio'),
+				'condition' => [
+					'enable_keyword_suggest' => 'yes',
+					'keyword_source' => 'from_titles',
+				],
+			]
+		);
+		
+		$this->add_control(
+			'manual_keywords',
+			[
+				'label' => __('Manual Keywords', 'woozio'),
+				'type' => Controls_Manager::TEXTAREA,
+				'default' => '',
+				'placeholder' => __('Enter keywords, one per line or separated by commas', 'woozio'),
+				'description' => __('Enter keywords for suggestion. Each line or comma-separated value will be used.', 'woozio'),
+				'condition' => [
+					'enable_keyword_suggest' => 'yes',
+					'keyword_source' => 'manual',
+				],
+			]
+		);
+		
 		$this->end_controls_section();
 	}
 	protected function register_style_section_controls()
@@ -345,6 +407,7 @@ class Widget_SearchProduct extends Widget_Base
 				'size_units' => ['px', 'em', '%'],
 				'selectors' => [
 					'{{WRAPPER}} .bt-search--form input[type="search"]' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .bt-search--form .bt-keyword-ghost' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 				'condition' => [
 					'layout_type' => ['layout-02', 'layout-03'],
@@ -374,6 +437,93 @@ class Widget_SearchProduct extends Widget_Base
 	{
 		$this->register_query_section_controls();
 		$this->register_style_section_controls();
+	}
+
+	/**
+	 * Get keyword suggestions based on source - returns word pool array
+	 */
+	protected function get_keyword_suggestions($settings, $widget_category_slugs, $widget_category_exclude_slugs)
+	{
+		$word_pool = array();
+		
+		if (empty($settings['enable_keyword_suggest']) || $settings['enable_keyword_suggest'] !== 'yes') {
+			return $word_pool;
+		}
+		
+		$keyword_source = !empty($settings['keyword_source']) ? $settings['keyword_source'] : 'from_titles';
+		
+		if ($keyword_source === 'manual' && !empty($settings['manual_keywords'])) {
+			// Get from manual keywords - extract all words
+			$manual_keywords = $settings['manual_keywords'];
+			$keyword_list = preg_split('/[,\n]/', $manual_keywords);
+			
+			foreach ($keyword_list as $keyword) {
+				$keyword = trim($keyword);
+				if (!empty($keyword)) {
+					// Split keyword into words
+					$words = preg_split('/\s+/', strtolower($keyword));
+					foreach ($words as $word) {
+						$word = preg_replace('/[^a-z0-9]/', '', $word);
+						if (strlen($word) > 2 && !in_array($word, $word_pool)) {
+							$word_pool[] = $word;
+						}
+					}
+				}
+			}
+		} elseif ($keyword_source === 'from_titles') {
+			// Get from product titles
+			$word_limit = !empty($settings['keyword_word_limit']) ? intval($settings['keyword_word_limit']) : 100;
+			
+			$args = array(
+				'post_type' => 'product',
+				'posts_per_page' => -1,
+				'post_status' => 'publish',
+				'tax_query' => array()
+			);
+			
+			// Build tax_query based on widget settings
+			if (!empty($widget_category_slugs)) {
+				$include_slugs = array_map('trim', explode(',', $widget_category_slugs));
+				$args['tax_query'][] = array(
+					'taxonomy' => 'product_cat',
+					'field' => 'slug',
+					'terms' => $include_slugs,
+					'operator' => 'IN'
+				);
+			} elseif (!empty($widget_category_exclude_slugs)) {
+				$exclude_slugs = array_map('trim', explode(',', $widget_category_exclude_slugs));
+				$args['tax_query'][] = array(
+					'taxonomy' => 'product_cat',
+					'field' => 'slug',
+					'terms' => $exclude_slugs,
+					'operator' => 'NOT IN'
+				);
+			}
+			
+			if (!empty($args['tax_query'])) {
+				$args['tax_query']['relation'] = 'AND';
+			}
+			
+			$products = get_posts($args);
+			
+			foreach ($products as $product) {
+				$title = get_the_title($product->ID);
+				if (!empty($title)) {
+					$words = preg_split('/\s+/', strtolower($title));
+					foreach ($words as $word) {
+						$word = preg_replace('/[^a-z0-9]/', '', $word);
+						if (strlen($word) > 2 && !in_array($word, $word_pool)) {
+							$word_pool[] = $word;
+							if (count($word_pool) >= $word_limit) {
+								break 2;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return $word_pool;
 	}
 
 	protected function render()
@@ -497,7 +647,25 @@ class Widget_SearchProduct extends Widget_Base
 					<!-- bt-widget-category-exclude now contains slugs instead of IDs -->
 					<input type="hidden" name="widget_category_exclude" class="bt-widget-category-exclude" value="<?php echo esc_attr($widget_category_exclude_slugs); ?>" />
 					<input type="hidden" name="autocomplete_limit" class="bt-autocomplete-limit" value="<?php echo !empty($settings['autocomplete_limit']) ? esc_attr($settings['autocomplete_limit']) : '5'; ?>" />
-					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" />
+					<?php 
+					// Get keyword suggestions
+					$keyword_suggestions = $this->get_keyword_suggestions($settings, $widget_category_slugs, $widget_category_exclude_slugs);
+					$show_keyword_suggest = false;
+					
+					if (!empty($settings['enable_keyword_suggest']) && $settings['enable_keyword_suggest'] === 'yes' && !empty($keyword_suggestions)) {
+						$show_keyword_suggest = true;
+						// Convert array to JSON string for data attribute
+						$keywords_json = json_encode($keyword_suggestions);
+					}
+					?>
+					<?php if ($show_keyword_suggest) : ?>
+					<div class="bt-search-wrap" data-suggest="<?php echo esc_attr($keywords_json); ?>">
+						<input type="text" id="bt-keyword-ghost-<?php echo esc_attr($this->get_id()); ?>" class="bt-keyword-ghost" disabled autocomplete="off" aria-hidden="true" />
+						<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?> bt-keyword-suggest" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" autocomplete="off"/>
+					</div>
+					<?php else : ?>
+					<input type="search" class="bt-search-field <?php echo !empty($settings['enable_autocomplete']) ? ' bt-live-search' : ''; ?>" placeholder="<?php echo esc_attr($settings['placeholder_text']); ?>" value="<?php echo isset($_GET['search_keyword']) ? esc_attr($_GET['search_keyword']) : ''; ?>" name="search_keyword" autocomplete="off"/>
+					<?php endif; ?>
 					<button type="submit" class="bt-search-submit">
 						<?php esc_html_e('Search', 'woozio'); ?>
 						<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

@@ -147,6 +147,28 @@ class ElementorWidgets
 	}
 
 	/**
+	 * Get list of widgets that require Elementor Pro
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 * @return array
+	 */
+	private function get_elementor_pro_widgets()
+	{
+		return array(
+			'instagram-posts',
+			'banner-product-slider',
+			'offers-slider',
+			'brand-slider',
+			'testimonial-slider',
+			'product-testimonial-slider',
+			'the-story',
+			'testimonials-staggered-slider',
+			'store-locations-slider',
+		);
+	}
+
+	/**
 	 * Include Widgets files
 	 *
 	 * Load widgets files
@@ -156,22 +178,61 @@ class ElementorWidgets
 	 */
 	private function include_widgets_files()
 	{
+		$elementor_pro_widgets = $this->get_elementor_pro_widgets();
+		$is_elementor_pro_active = self::is_elementor_pro_active();
 
-		foreach ( $this->widgets_list() as $widget ) {
+		foreach ($this->widgets_list() as $widget) {
+			// Skip widgets that require Elementor Pro if Elementor Pro is not active
+			if (in_array($widget, $elementor_pro_widgets) && ! $is_elementor_pro_active) {
+				continue;
+			}
+
 			$widget_file = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/widget.php';
-			
+
 			// Only require if file exists and class is not already declared
-			if ( file_exists( $widget_file ) && ! class_exists( $widget ) ) {
+			if (file_exists($widget_file) && ! class_exists($widget)) {
 				require_once $widget_file;
 			}
 
 			// Include skins safely
 			$skins_path = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/skins/';
-			foreach ( glob( $skins_path . '*.php' ) as $filepath ) {
-				if ( file_exists( $filepath ) ) {
-					include $filepath;
+			if (is_dir($skins_path)) {
+				foreach (glob($skins_path . '*.php') as $filepath) {
+					if (file_exists($filepath)) {
+						include $filepath;
+					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Register widget with Elementor Pro check
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 * @param string $class_name Full class name
+	 * @param string $widget_name Widget name for placeholder
+	 * @param string $widget_title Widget title for placeholder
+	 */
+	private function register_widget_with_pro_check($class_name, $widget_name, $widget_title)
+	{
+		$widgets_manager = \Elementor\Plugin::instance()->widgets_manager;
+
+		if (class_exists($class_name)) {
+			$widgets_manager->register_widget_type(new $class_name());
+		} elseif (class_exists('Elementor\Modules\Promotions\Widgets\Pro_Widget_Promotion')) {
+			// Create wrapper class to add e-widget-pro-promotion class
+			$placeholder = new class([], [
+				'widget_name' => $widget_name,
+				'widget_title' => $widget_title,
+			]) extends \Elementor\Modules\Promotions\Widgets\Pro_Widget_Promotion {
+				protected function get_html_wrapper_class()
+				{
+					return parent::get_html_wrapper_class() . ' e-widget-pro-promotion';
+				}
+			};
+			$widgets_manager->register_widget_type($placeholder);
 		}
 	}
 
@@ -214,10 +275,9 @@ class ElementorWidgets
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteSocial\Widget_SiteSocial());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SiteCopyright\Widget_SiteCopyright());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\InstagramPosts\Widget_InstagramPosts());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\RecentPosts\Widget_RecentPosts());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BannerProductSlider\Widget_BannerProductSlider());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OffersSlider\Widget_OffersSlider());
+
+
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PageBreadcrumb\Widget_PageBreadcrumb());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\MobileMenu\Widget_MobileMenu());
 
@@ -226,7 +286,7 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle2\Widget_PostLoopItemStyle2());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostLoopItemStyle3\Widget_PostLoopItemStyle3());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\PostGrid\Widget_PostGrid());
-		
+
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItem\Widget_ProductLoopItem());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle1\Widget_ProductLoopItemStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductLoopItemStyle2\Widget_ProductLoopItemStyle2());
@@ -236,7 +296,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\AccountLogin\Widget_AccountLogin());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SearchProduct\Widget_SearchProduct());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\SearchProductStyle1\Widget_SearchProductStyle1());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BrandSlider\Widget_BrandSlider());
+
+
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductItem\Widget_ProductItem());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\HighlightedHeading\Widget_HighlightedHeading());
@@ -251,10 +312,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductSliderBottomHotspot\Widget_ProductSliderBottomHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductPopupHotspot\Widget_ProductPopupHotspot());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonial\Widget_ProductTestimonial());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductTestimonialSlider\Widget_ProductTestimonialSlider());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TheStory\Widget_TheStory());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialSlider\Widget_TestimonialSlider());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\TestimonialsStaggeredSlider\Widget_TestimonialsStaggeredSlider());
+
+
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\CountDown\Widget_CountDown());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurTeams\Widget_OurTeams());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\OurStore\Widget_OurStore());
@@ -271,7 +330,8 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle1\Widget_ProductShowcaseStyle1());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseStyle2\Widget_ProductShowcaseStyle2());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductShowcaseVertical\Widget_ProductShowcaseVertical());
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider());
+
+
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductNavImage\Widget_ProductNavImage());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\VerticalBannerSlider\Woozio_VerticalBannerSlider());
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\BundleSave\Widget_BundleSave());
@@ -280,6 +340,78 @@ class ElementorWidgets
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\FlickerCollage\Widget_FlickerCollage());
 
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Widgets\ProductBannerScrollHotspot\Widget_ProductBannerScrollHotspot());
+		// Register widgets that require Elementor Pro
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\InstagramPosts\Widget_InstagramPosts',
+			'bt-instagram-posts',
+			__('Instagram Posts', 'woozio')
+		);
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\BannerProductSlider\Widget_BannerProductSlider',
+			'bt-banner-product-slider',
+			__('Banner Product Slider', 'woozio')
+		);
+
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\OffersSlider\Widget_OffersSlider',
+			'bt-offers-slider',
+			__('Offers Slider', 'woozio')
+		);
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\BrandSlider\Widget_BrandSlider',
+			'bt-brand-slider',
+			__('Brand Slider', 'woozio')
+		);
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\ProductTestimonialSlider\Widget_ProductTestimonialSlider',
+			'bt-product-testimonial-slider',
+			__('Product Testimonial Slider', 'woozio')
+		);
+
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\TheStory\Widget_TheStory',
+			'bt-the-story',
+			__('The Story', 'woozio')
+		);
+
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\TestimonialSlider\Widget_TestimonialSlider',
+			'bt-testimonial-slider',
+			__('Testimonial Slider', 'woozio')
+		);
+
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\TestimonialsStaggeredSlider\Widget_TestimonialsStaggeredSlider',
+			'bt-testimonials-staggered-slider',
+			__('Testimonials Staggered Slider', 'woozio')
+		);
+		$this->register_widget_with_pro_check(
+			'WoozioElementorWidgets\Widgets\StoreLocationsSlider\Widget_StoreLocationsSlider',
+			'bt-store-locations-slider',
+			__('Store Locations Slider', 'woozio')
+		);
+	}
+
+	/**
+	 * Check if Elementor Pro is active
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 * @return bool
+	 */
+	public static function is_elementor_pro_active()
+	{
+		// Check if Elementor Pro class exists
+		if (class_exists('ElementorPro\Plugin')) {
+			return true;
+		}
+
+		// Fallback: Check if plugin is active
+		if (!function_exists('is_plugin_active')) {
+			include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+		}
+
+		return is_plugin_active('elementor-pro/elementor-pro.php');
 	}
 
 	/**

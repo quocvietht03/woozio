@@ -168,6 +168,101 @@
 		return url + separator + paramName + '=' + encodeURIComponent(paramValue);
 	};
 
+	/* ===== KEYWORD SUGGESTION HANDLER ===== */
+	const KeywordSuggestionHandler = function($scope, $) {
+		const $keywordInputs = $scope.find('.bt-keyword-suggest');
+		
+		if ($keywordInputs.length === 0) {
+			return;
+		}
+		
+		$keywordInputs.each(function() {
+			const $input = $(this);
+			const $searchWrap = $input.closest('.bt-search-wrap');
+			const $ghost = $searchWrap.find('.bt-keyword-ghost');
+			
+			if ($ghost.length === 0 || $searchWrap.length === 0) {
+				return;
+			}
+			
+			// Get word pool from data-suggest attribute on bt-search-wrap div
+			const suggestData = $searchWrap.data('suggest');
+			let wordPool = [];
+			
+			if (suggestData && Array.isArray(suggestData)) {
+				wordPool = suggestData;
+			} else if (typeof suggestData === 'string') {
+				// Try to parse JSON if it's a string
+				try {
+					wordPool = JSON.parse(suggestData);
+				} catch (e) {
+					console.warn('Failed to parse keyword suggestions:', e);
+				}
+			}
+			
+			if (wordPool.length === 0) {
+				return;
+			}
+			
+			// Input event handler
+			$input.on('input', function() {
+				const value = $input.val();
+				$ghost.val('');
+				
+				const parts = value.split(' ');
+				const lastWordOriginal = parts[parts.length - 1];
+				const lastWord = lastWordOriginal.toLowerCase();
+				
+				if (!lastWord) {
+					return;
+				}
+				
+				// Check if input is valid case pattern (not mixed case)
+				const isAllUppercase = lastWordOriginal === lastWordOriginal.toUpperCase() && lastWordOriginal.length > 1;
+				const isAllLowercase = lastWordOriginal === lastWordOriginal.toLowerCase();
+				const isTitleCase = lastWordOriginal.length > 0 && 
+					lastWordOriginal[0] === lastWordOriginal[0].toUpperCase() && 
+					lastWordOriginal.slice(1) === lastWordOriginal.slice(1).toLowerCase();
+				
+				// Only show suggestion for valid case patterns
+				if (!isAllUppercase && !isAllLowercase && !isTitleCase) {
+					return; // Hide suggestion for mixed case
+				}
+				
+				const match = wordPool.find(function(w) {
+					return w.startsWith(lastWord) && w !== lastWord;
+				});
+				
+				if (match) {
+					// Preserve the case of the user's input
+					let suggestedWord = match;
+					
+					if (isAllUppercase) {
+						// All uppercase: convert match to uppercase
+						suggestedWord = match.toUpperCase();
+					} else if (isTitleCase || (lastWordOriginal.length > 0 && lastWordOriginal[0] === lastWordOriginal[0].toUpperCase())) {
+						// First letter uppercase: convert to title case
+						suggestedWord = match.charAt(0).toUpperCase() + match.slice(1);
+					}
+					// Otherwise keep lowercase (isAllLowercase)
+					
+					parts[parts.length - 1] = suggestedWord;
+					$ghost.val(parts.join(' '));
+				}
+			});
+			
+			// Tab key handler to accept suggestion
+			$input.on('keydown', function(e) {
+				if (e.key === 'Tab' && $ghost.val()) {
+					e.preventDefault();
+					$input.val($ghost.val());
+					$ghost.val('');
+					// Trigger input event to run AJAX live search
+					$input.trigger('input');
+				}
+			});
+		});
+	};
 	const SearchProductHandler = function ($scope, $) {
 		const $searchProduct = $scope.find('.bt-elwg-search-product');
 		if ($searchProduct.length) {
@@ -423,6 +518,9 @@
 					$liveSearchResults.removeClass('active');
 				}
 			});
+			
+			// Initialize keyword suggestion if enabled
+			KeywordSuggestionHandler($searchProduct, $);
 		}
 	};
 
@@ -442,7 +540,12 @@
 			const limit = parseInt($productsDisplay.data('limit')) || 8;
 			const customProducts = $productsDisplay.data('products');
 			let typingTimer;
-			const doneTypingInterval = 500;
+			// Get typing interval based on device - mobile needs longer delay due to slower typing speed
+			const getTypingInterval = function() {
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				return isMobile ? 800 : 500; // Mobile: 800ms, Desktop: 500ms
+			};
 			let resizeTimer;
 			let previousIsMobile = $(window).width() <= 570;
 
@@ -659,13 +762,27 @@
 			// Load on init
 			loadProductsDisplay();
 
-			// Search on keyup
+			// Search on keyup - only on desktop, mobile will use submit
 			$liveSearch.on('keyup', function () {
 				const searchValue = $(this).val().trim();
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				
+				// On mobile, don't perform search while typing - only on submit
+				if (isMobile) {
+					if (searchValue.length < 2) {
+						$productsDisplay.removeClass('hidden');
+						$liveSearchResults.removeClass('active');
+					}
+					return;
+				}
+				
+				// Desktop: perform search while typing
 				clearTimeout(typingTimer);
 
 				if (searchValue.length >= 2) {
-					typingTimer = setTimeout(performSearch, doneTypingInterval);
+					const typingInterval = getTypingInterval();
+					typingTimer = setTimeout(performSearch, typingInterval);
 				} else {
 					$productsDisplay.removeClass('hidden');
 					$liveSearchResults.removeClass('active');
@@ -732,7 +849,18 @@
 				const $searchInput = $form.find('input[name="search_keyword"]');
 				const searchKeyword = $searchInput.length ? $searchInput.val().trim() : '';
 				const shopUrl = $form.attr('action') || '';
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
 				
+				// On mobile, perform search first before redirecting
+				if (isMobile && searchKeyword.length >= 2) {
+					// Perform search to show results
+					performSearch();
+					// Don't redirect, let user see the results
+					return false;
+				}
+				
+				// Desktop or empty search: redirect normally
 				// Generate correct URL based on widget settings
 				let finalUrl = generateCategoryUrl($form);
 				
@@ -770,8 +898,17 @@
 			// Handle trending keyword clicks
 			$searchProduct.find('.bt-trending-keyword').on('click', function () {
 				const keyword = $(this).data('keyword');
+				const windowWidth = $(window).width();
+				const isMobile = windowWidth <= 570;
+				
 				$liveSearch.val(keyword);
-				$liveSearch.trigger('keyup');
+				
+				// On mobile, perform search directly; on desktop, trigger keyup (which will perform search)
+				if (isMobile && keyword.length >= 2) {
+					performSearch();
+				} else {
+					$liveSearch.trigger('keyup');
+				}
 			});
 
 			// Handle window resize to reload AJAX with correct layout
@@ -797,7 +934,9 @@
 					}
 				}, 250); // Debounce resize events
 			});
-
+			
+			// Initialize keyword suggestion if enabled
+			KeywordSuggestionHandler($searchProduct, $);
 		}
 	};
 

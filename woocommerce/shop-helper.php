@@ -1774,7 +1774,9 @@ function woozio_products_filter()
             'pagination_type' => $pagination_type
         );
     } else {
-        $output['items'] = '<div class="not-found-products"><svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-18.34,98.34a8,8,0,0,1-11.32,11.32L88,123.31,77.66,133.66a8,8,0,0,1-11.32-11.32L76.69,112,66.34,101.66A8,8,0,0,1,77.66,90.34L88,100.69,98.34,90.34a8,8,0,0,1,11.32,11.32L99.31,112ZM128,192a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm61.66-69.66a8,8,0,0,1-11.32,11.32L168,123.31l-10.34,10.35a8,8,0,0,1-11.32-11.32L156.69,112l-10.35-10.34a8,8,0,0,1,11.32-11.32L168,100.69l10.34-10.35a8,8,0,0,1,11.32,11.32L179.31,112Z"></path></svg>' . esc_html__('Oops! We couldn\'t find any products matching your search. Try adjusting your filters or explore our full collection.', 'woozio') . '</div>';
+        $output['items'] = '<div class="not-found-products"><svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.13,104.13,0,0,0,128,24Zm-18.34,98.34a8,8,0,0,1-11.32,11.32L88,123.31,77.66,133.66a8,8,0,0,1-11.32-11.32L76.69,112,66.34,101.66A8,8,0,0,1,77.66,90.34L88,100.69,98.34,90.34a8,8,0,0,1,11.32,11.32L99.31,112ZM128,192a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm61.66-69.66a8,8,0,0,1-11.32,11.32L168,123.31l-10.34,10.35a8,8,0,0,1-11.32-11.32L156.69,112l-10.35-10.34a8,8,0,0,1,11.32-11.32L168,100.69l10.34-10.35a8,8,0,0,1,11.32,11.32L179.31,112Z"></path></svg>' . esc_html__('Oops! We couldn\'t find any products matching your search. Try adjusting your filters or explore our full collection.', 'woozio') . '
+										<a href="#" class="bt-reset-filter-product-btn">' . esc_html__('Reset All Filters', 'woozio') . '</a>
+									</div>';
         $output['pagination'] = '';
         $output['pagination_meta'] = array(
             'current_page' => 1,
@@ -4512,23 +4514,40 @@ function woozio_load_product_gallery()
     $gallery_layout = $_POST['gallery_layout'];
     $variation_id = intval($_POST['variation_id']);
     $variation = wc_get_product($variation_id);
+    
+    // Get parent product to compare images
+    $product = wc_get_product($variation->get_parent_id());
+    $product_image_id = $product ? $product->get_image_id() : 0;
+    
+    // Get variation image
     $variation_image_id = $variation->get_image_id();
-    $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
-    $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
+    
+    // Check if variation has custom image (different from parent product image)
+    // If not, use default product gallery
+    if ($variation_image_id && $variation_image_id > 0 && (int)$variation_image_id !== (int)$product_image_id) {
+        // Variation has custom image, use variation images
+        $variation_gallery = get_post_meta($variation_id, '_variation_gallery', true);
+        $gallery_images = $variation_gallery ? explode(',', $variation_gallery) : array();
+        $main_image_id = $variation_image_id;
+    } else {
+        // Variation doesn't have custom image, use default product gallery
+        $main_image_id = $product_image_id;
+        $gallery_images = $product ? $product->get_gallery_image_ids() : array();
+    }
 
     if ($gallery_layout == 'gallery-slider') {
         ob_start();
         echo '<div class="bt-gallery-slider-product bt-gallery-lightbox bt-gallery-zoomable">';
         echo '<div class="swiper-wrapper">';
-        if ($variation_image_id) {
-            $html = woozio_get_gallery_image_html($variation_image_id, true, true);
+        if ($main_image_id) {
+            $html = woozio_get_gallery_image_html($main_image_id, true, true);
 
             if (!empty($gallery_images)) {
                 foreach ($gallery_images as $key => $attachment_id) {
                     $html .= woozio_get_gallery_image_html($attachment_id, true, true);
                 }
             }
-            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $main_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
         }
         echo '</div>';
         echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -4542,14 +4561,14 @@ function woozio_load_product_gallery()
         $output['gallery-slider'] = ob_get_clean();
     } else if ($gallery_layout == 'gallery-grid' || $gallery_layout == 'gallery-grid-top') {
         ob_start();
-        $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($variation_image_id, true, false) . '</div>';
+        $html = '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($main_image_id, true, false) . '</div>';
 
         if (!empty($gallery_images)) {
             foreach ($gallery_images as $key => $attachment_id) {
                 $html .= '<div class="bt-gallery-grid-product__item">' . woozio_get_gallery_image_html($attachment_id, true, false) . '</div>';
             }
         }
-        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $main_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
 
         $itemgallery = count($gallery_images) + 1;
         $output['gallery-grid'] = ob_get_clean();
@@ -4558,15 +4577,15 @@ function woozio_load_product_gallery()
         ob_start();
         echo '<div class="woocommerce-product-gallery__slider bt-gallery-lightbox bt-gallery-zoomable">';
         echo '<div class="swiper-wrapper">';
-        if ($variation_image_id) {
-            $html = woozio_get_gallery_image_html($variation_image_id, true, true);
+        if ($main_image_id) {
+            $html = woozio_get_gallery_image_html($main_image_id, true, true);
 
             if (!empty($gallery_images)) {
                 foreach ($gallery_images as $key => $attachment_id) {
                     $html .= woozio_get_gallery_image_html($attachment_id, true, true);
                 }
             }
-            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+            echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $main_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
         }
         echo '</div>';
         echo '<div class="swiper-button-prev"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -4579,11 +4598,11 @@ function woozio_load_product_gallery()
 
         echo '<div class="woocommerce-product-gallery__slider-thumbs">';
         echo '<div class="swiper-wrapper">';
-        $html = woozio_get_gallery_image_html($variation_image_id, false, true);
+        $html = woozio_get_gallery_image_html($main_image_id, false, true);
         foreach ($gallery_images as $key => $attachment_id) {
             $html .= woozio_get_gallery_image_html($attachment_id, false, true);
         }
-        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $variation_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
+        echo apply_filters('woocommerce_single_product_image_thumbnail_html', $html, $main_image_id); // phpcs:disable WordPress.XSS.EscapeOutput.OutputNotEscaped
         echo '</div>';
         echo '</div>';
         $itemgallery = count($gallery_images) + 1;

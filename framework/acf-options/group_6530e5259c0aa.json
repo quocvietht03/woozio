@@ -2650,6 +2650,27 @@
                     "toolbar": "full",
                     "media_upload": 1,
                     "delay": 0
+                },
+                {
+                    "key": "field_69535091b6579",
+                    "label": "Shortcode Form Newsletter",
+                    "name": "shortcode_form_newsletter",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
                 }
             ]
         },
@@ -2766,5 +2787,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1766115519
+    "modified": 1767067827
 }
