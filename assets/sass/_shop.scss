@@ -1212,15 +1212,14 @@
   }
   .bt-compare-body {
     position: relative;
-    transform-origin: center center;
     max-height: 90%;
     max-width: 95%;
     z-index: 1001;
     display: flex;
     margin-top: 30px;
     margin-bottom: 20px;
-    transition: transform 0.2s ease;
-    transform: scale(0);
+    transition: opacity 0.3s ease;
+    opacity: 0;
     box-shadow: 0px 10px 25px 0px rgba(43, 52, 74, 0.12);
     @media (min-width: 1300px) {
       max-width: 1235px;
@@ -1229,7 +1228,7 @@
       max-height: 85%;
     }
     &.show {
-      transform: scale(1);
+      opacity: 1;
     }
     .bt-loading-wave {
       left: 60%;
@@ -1734,15 +1733,14 @@
   }
   .bt-quick-view-body {
     position: relative;
-    transform-origin: center center;
     max-height: 90%;
     max-width: 95%;
     z-index: 1001;
     display: flex;
     margin-top: 30px;
     margin-bottom: 20px;
-    transition: transform 0.2s ease;
-    transform: scale(0);
+    transition: opacity 0.3s ease;
+    opacity: 0;
     box-shadow: 0px 10px 25px 0px rgba(43, 52, 74, 0.12);
     width: 100%;
     @media (min-width: 1010px) {
@@ -1755,7 +1753,7 @@
       max-height: 80%;
     }
     &.show {
-      transform: scale(1);
+      opacity: 1;
     }
     .bt-quickview-title {
       h2 {

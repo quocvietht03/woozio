@@ -1282,101 +1282,100 @@
 		}
 	}
 	function WoozioshowToast(idproduct, tools = 'wishlist', status = 'add') {
-		if ($(window).width() > 1024) { // Only run for screens wider than 1024px
-			// ajax load product toast
-			var toastTimeshow;
-			if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
-				toastTimeshow = AJ_Options.wishlist_toast_time;
-			} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
-				toastTimeshow = AJ_Options.compare_toast_time;
-			} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
-				toastTimeshow = AJ_Options.cart_toast_time;
-			} else {
-				toastTimeshow = 3000; // Default fallback time
-			}
-			var param_ajax = {
-				action: 'woozio_load_product_toast',
-				idproduct: idproduct,
-				status: status,
-				tools: tools
-			};
-			$.ajax({
-				type: 'POST',
-				dataType: 'json',
-				url: AJ_Options.ajax_url,
-				data: param_ajax,
-				beforeSend: function () {
-				},
-				success: function (response) {
-					if (response.success) {
-						// Append and show new toast
-						$('.bt-toast').append(response.data['toast']);
-						const $newToast = $('.bt-toast .bt-product-toast').last();
-						setTimeout(() => {
-							$newToast.addClass('show');
-						}, 100);
-						// Handle close button click
-						$newToast.find('.bt-product-toast--close').on('click', function () {
-							removeToast($newToast);
-						});
-						let toastTimeout;
-
-						function startRemovalTimer($toast) {
-							toastTimeout = setTimeout(() => {
-								removeToast($toast);
-							}, toastTimeshow);
-						}
-
-						// Handle hover events
-						$newToast.hover(
-							function () {
-								// On mouse enter, clear the timeout
-								clearTimeout(toastTimeout);
-							},
-							function () {
-								// On mouse leave, start a new timeout
-								startRemovalTimer($(this));
-							}
-						);
-
-						// Start initial removal timer
-						startRemovalTimer($newToast);
-
-						function removeToast($toast) {
-							$toast.addClass('remove-visibility');
-
-							// Remove toast element after animation
-							setTimeout(() => {
-								$toast.addClass('remove-height');
-								setTimeout(() => {
-									$toast.remove();
-								}, 300);
-							}, 300);
-						}
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error('Ajax request failed:', {
-						status: status,
-						error: error,
-						response: xhr.responseText
-					});
-				}
-			});
+		// ajax load product toast
+		var toastTimeshow;
+		if (tools === 'wishlist' && AJ_Options.wishlist_toast_time) {
+			toastTimeshow = AJ_Options.wishlist_toast_time;
+		} else if (tools === 'compare' && AJ_Options.compare_toast_time) {
+			toastTimeshow = AJ_Options.compare_toast_time;
+		} else if (tools === 'cart' && AJ_Options.cart_toast_time) {
+			toastTimeshow = AJ_Options.cart_toast_time;
+		} else {
+			toastTimeshow = 3000; // Default fallback time
 		}
+		var param_ajax = {
+			action: 'woozio_load_product_toast',
+			idproduct: idproduct,
+			status: status,
+			tools: tools
+		};
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: AJ_Options.ajax_url,
+			data: param_ajax,
+			beforeSend: function () {
+			},
+			success: function (response) {
+				if (response.success) {
+					// Append and show new toast
+					$('.bt-toast').append(response.data['toast']);
+					const $newToast = $('.bt-toast .bt-product-toast').last();
+					setTimeout(() => {
+						$newToast.addClass('show');
+					}, 100);
+					// Handle close button click
+					$newToast.find('.bt-product-toast--close').on('click', function () {
+						removeToast($newToast);
+					});
+					let toastTimeout;
+
+					function startRemovalTimer($toast) {
+						toastTimeout = setTimeout(() => {
+							removeToast($toast);
+						}, toastTimeshow);
+					}
+
+					// Handle hover events
+					$newToast.hover(
+						function () {
+							// On mouse enter, clear the timeout
+							clearTimeout(toastTimeout);
+						},
+						function () {
+							// On mouse leave, start a new timeout
+							startRemovalTimer($(this));
+						}
+					);
+
+					// Start initial removal timer
+					startRemovalTimer($newToast);
+
+					function removeToast($toast) {
+						$toast.addClass('remove-visibility');
+
+						// Remove toast element after animation
+						setTimeout(() => {
+							$toast.addClass('remove-height');
+							setTimeout(() => {
+								$toast.remove();
+							}, 300);
+						}, 300);
+					}
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Ajax request failed:', {
+					status: status,
+					error: error,
+					response: xhr.responseText
+				});
+			}
+		});
+
 	}
 	/* load Show filter Tag */
-		function WoozioLoadFilterTagProduct() {
+	function WoozioLoadFilterTagProduct() {
 		if ($('body').hasClass('archive') && $('body').hasClass('post-type-archive-product')) {
 			const url = new URL(window.location.href);
 			const params = new URLSearchParams(url.search);
-			
+
 			// Check if formsearch=true exists in URL before deleting it
 			var hasFormSearch = params.has('formsearch') && params.get('formsearch') === 'true';
-			
+
 			// Store product_cat value IMMEDIATELY before any deletion operations
 			var productCatValue = params.get('product_cat');
-			
+
 			params.delete('current_page');
 			params.delete('sort_order');
 			params.delete('view_type');
@@ -1415,7 +1414,7 @@
 			if (isTaxonomyPage && taxonomyType) {
 				params.delete(taxonomyType);
 			}
-			
+
 			// When formsearch=true, handle product_cat based on slug count
 			if (hasFormSearch && productCatValue) {
 				const slugCount = productCatValue.split(',').filter(slug => slug.trim() !== '').length;
@@ -1425,7 +1424,7 @@
 					params.set('product_cat', productCatValue);
 				}
 			}
-			
+
 			const hasValidParams = params.size > 0;
 			if (hasValidParams) {
 				const tagsContainer = $('.bt-list-tag-filter').addClass('active');
@@ -1446,7 +1445,7 @@
 					if (isTaxonomyPage && key === taxonomyType) {
 						return;
 					}
-					
+
 					const tags = value.split(/[,; ]+/); // Split value by comma, semicolon, or space
 					tags.forEach(tag => {
 						const tagElement = $(`<span class="bt-filter-tag" data-name="${key}" data-slug="${tag.trim()}"></span>`); // Updated to use tag.trim() for data-slug
@@ -1542,7 +1541,7 @@
 		if (!$('body').hasClass('post-type-archive-product')) {
 			return;
 		}
-	// Hide topbar if not-found-products exists on page load
+		// Hide topbar if not-found-products exists on page load
 		if ($('.not-found-products').length > 0) {
 			$('.bt-products-topbar').addClass('bt-hide');
 		}
@@ -1740,7 +1739,7 @@
 						window.history.replaceState(null, null, window.location.pathname);
 					}
 				}
-				
+
 				var url = $(this).closest('.item-radio').data('url');
 				if (url) {
 					window.location.href = url;
@@ -1933,10 +1932,10 @@
 
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
-			
+
 			// Check if formsearch=true exists in URL
 			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
-			
+
 			// Store product_cat and formsearch from URL if formsearch=true exists
 			var preservedProductCat = '';
 			if (hasFormSearch && urlParams.has('product_cat')) {
@@ -2055,7 +2054,7 @@
 				// Normal category page, use categorySlug from data attribute
 				param_ajax['product_cat'] = categorySlug.replace(/%2C/g, ',');
 			}
-			
+
 			// Add excluded_product_cat to ajax params if exists (from form or URL)
 			var excludedProductCat = '';
 			var excludedCatItem = dataArr.find(function (item) {
@@ -2249,10 +2248,10 @@
 
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
-			
+
 			// Check if formsearch=true exists in URL
 			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
-			
+
 			// Store product_cat from URL if formsearch=true exists
 			var preservedProductCat = '';
 			if (hasFormSearch && urlParams.has('product_cat')) {
@@ -2472,10 +2471,10 @@
 
 			// Get current URL params
 			var urlParams = new URLSearchParams(window.location.search);
-			
+
 			// Check if formsearch=true exists in URL
 			var hasFormSearch = urlParams.has('formsearch') && urlParams.get('formsearch') === 'true';
-			
+
 			// Store product_cat from URL if formsearch=true exists
 			var preservedProductCat = '';
 			if (hasFormSearch && urlParams.has('product_cat')) {
