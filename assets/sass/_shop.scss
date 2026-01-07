@@ -2162,6 +2162,14 @@
         background: #e9e9e9;
         border-radius: 0;
         box-shadow: 0 0 1px #e9e9e9;
+        @media (max-width: $break-sm) { 
+          transform: none !important;
+          transition: none !important; 
+          img {
+            transform: none !important;
+            transition: none !important;
+          }
+        }
         &--placeholder {
           transition:
             opacity 0.3s,
@@ -2183,14 +2191,7 @@
             transform 2s cubic-bezier(0, 0, 0.44, 1.18);
           transform: scale(1.01, 1.01) translateZ(0);
         }
-        @media (max-width: $break-sm) {
-          transform: none !important;
-          transition: none !important;
-          img {
-            transform: none !important;
-            transition: none !important;
-          }
-        }
+       
       }
       .woocommerce-product-sale-label {
         position: absolute;
@@ -6806,9 +6807,10 @@
         }
         h2 {
           margin: 0;
+          display: none;
         }
         .shop_attributes {
-          margin-top: 21px;
+          margin-top: 0;
           border: none;
           th,
           td {

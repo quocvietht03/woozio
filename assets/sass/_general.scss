@@ -1072,7 +1072,7 @@
     &--button {
       display: flex;
       align-items: center;
-      margin-top:5px;
+      margin-top: 5px;
       a {
         font-size: 13px;
         font-style: normal;
@@ -1091,8 +1091,10 @@
         width: auto;
         letter-spacing: 0.5px;
         position: relative;
-        &:hover {
-          color: $color-accent;
+        @media (min-width: $break-sm) {
+          &:hover {
+            color: $color-accent;
+          }
         }
       }
       &.bt-button-cart {
@@ -1104,21 +1106,25 @@
           text-decoration: none;
           background: $color-primary;
           color: #fff;
-          &:hover {
-            background-color: $color-accent;
+          @media (min-width: $break-sm) {
+            &:hover {
+              background-color: $color-accent;
+            }
           }
           &:first-child {
             background-color: #e9e9e9;
             color: $color-primary;
-            &:hover {
-              background-color: $color-accent;
-              color: #fff;
+            @media (min-width: $break-sm) {
+              &:hover {
+                background-color: $color-accent;
+                color: #fff;
+              }
             }
           }
         }
       }
     }
-    @media (max-width: 575px) {
+    @media (max-width: $break-xs) {
       &--content {
         width: 280px;
         gap: 8px;

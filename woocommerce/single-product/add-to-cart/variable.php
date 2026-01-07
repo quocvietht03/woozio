@@ -34,7 +34,9 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 	<?php else : ?>
 		<table class="variations" cellspacing="0" role="presentation">
 			<tbody>
-				<?php foreach ($attributes as $attribute_name => $options) : ?>
+				<?php foreach ($attributes as $attribute_name => $options) : 
+					
+					?>
 					<tr>
 						<th class="label"><label for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); // WPCS: XSS ok. 
 																												?></label></th>
@@ -170,11 +172,26 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 					</div>
 					<?php
 					// Check if this is image attribute
+					// Get ordered options - same logic as wc_dropdown_variation_attribute_options
+					$ordered_options = $options;
+					if ($product && taxonomy_exists($attribute_name)) {
+						$terms = wc_get_product_terms(
+							$product->get_id(),
+							$attribute_name,
+							array('fields' => 'all')
+						);
+						$ordered_options = array();
+						foreach ($terms as $term) {
+							if (in_array($term->slug, $options, true)) {
+								$ordered_options[] = $term->slug;
+							}
+						}
+					}
+				
 					if ($is_image_attr) { ?>
 						<div class="bt-attributes--value bt-value-image">
 							<?php
-							$reversed_options = array_reverse($options);
-							foreach ($reversed_options as $option) :
+							foreach ($ordered_options as $option) :
 								$term = get_term_by('slug', $option, $attribute_name);
 								$term_id = $term ? $term->term_id : '';
 								$image_data = $term_id ? get_field('image_tax_attributes', $attribute_name . '_' . $term_id) : '';
@@ -221,8 +238,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 					<?php } elseif ($is_color_attr) { ?>
 						<div class="bt-attributes--value bt-value-color">
 							<?php
-							$reversed_options = array_reverse($options);
-							foreach ($reversed_options as $option) :
+							foreach ($ordered_options as $option) :
 								$term = get_term_by('slug', $option, $attribute_name);
 								$term_id = $term ? $term->term_id : '';
 								$color = $term_id ? get_field('color_tax_attributes', $attribute_name . '_' . $term_id) : '';
@@ -250,7 +266,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 						</div>
 					<?php } else { ?>
 						<div class="bt-attributes--value">
-							<?php foreach ($options as $option) : ?>
+							<?php foreach ($ordered_options as $option) : ?>
 								<?php
 								$term = get_term_by('slug', $option, $attribute_name);
 								$display_name = $term ? $term->name : $option;
