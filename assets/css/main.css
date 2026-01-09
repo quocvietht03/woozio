@@ -32773,20 +32773,20 @@ body {
 
 @media (min-width: 1350px) {
   .elementor-element.bt-col-container-left {
-    padding-left: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+    padding-left: max(60px, (var(--width-body) + 5px - var(--container-max-width)) / 2);
   }
   .elementor-element.bt-col-container-right {
-    padding-right: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+    padding-right: max(60px, (var(--width-body) + 5px - var(--container-max-width)) / 2);
   }
 }
 @media (min-width: 1800px) {
   .elementor-element.bt-col-container-left-1770 {
     --container-max-width: 1770px;
-    padding-left: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+    padding-left: max(60px, (var(--width-body) + 5px - var(--container-max-width)) / 2);
   }
   .elementor-element.bt-col-container-right-1770 {
     --container-max-width: 1770px;
-    padding-right: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+    padding-right: max(60px, (var(--width-body) + 5px - var(--container-max-width)) / 2);
   }
 }
 
