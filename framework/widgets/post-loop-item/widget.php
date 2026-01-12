@@ -21,7 +21,7 @@ class Widget_PostLoopItem extends Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'bt-bears-icon eicon-info-box';
+		return 'bt-bears-icon eicon-post';
 	}
 
 	public function get_categories() {

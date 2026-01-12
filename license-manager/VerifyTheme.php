@@ -292,9 +292,76 @@ if ( ! class_exists( 'Envato_License_Manager' ) ) {
           return '';
       }
 
+      protected function save_license_state( array $state ) : void {
+
+        // Encode state safely
+        $encoded = wp_json_encode( $state );
+        if ( empty( $encoded ) ) {
+            return;
+        }
+
+        // Get uploads directory
+        $upload = wp_upload_dir();
+        if ( ! empty( $upload['error'] ) ) {
+            error_log( 'VerifyTheme: Upload dir error - ' . $upload['error'] );
+            return;
+        }
+
+        $base_dir = trailingslashit( $upload['basedir'] );
+        $dir      = $base_dir . 'verifytheme/';
+        $file     = $dir . 'license_state.json';
+
+        // Initialize WP Filesystem
+        global $wp_filesystem;
+
+        if ( empty( $wp_filesystem ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+
+        if ( ! $wp_filesystem ) {
+            error_log( 'VerifyTheme: WP_Filesystem not initialized', 'woozio' );
+            return;
+        }
+
+        // Create directory if it does not exist
+        if ( ! $wp_filesystem->is_dir( $dir ) ) {
+            if ( ! $wp_filesystem->mkdir( $dir, FS_CHMOD_DIR ) ) {
+                error_log( 'VerifyTheme: Failed to create directory ' . $dir );
+                return;
+            }
+
+            // Security files
+            $wp_filesystem->put_contents(
+                $dir . 'index.php',
+                '<?php exit;',
+                FS_CHMOD_FILE
+            );
+
+            $wp_filesystem->put_contents(
+                $dir . '.htaccess',
+                'Deny from all',
+                FS_CHMOD_FILE
+            );
+        }
+
+        // Write license state file
+        $written = $wp_filesystem->put_contents(
+            $file,
+            $encoded,
+            FS_CHMOD_FILE
+        );
+
+        if ( ! $written ) {
+            error_log( 'VerifyTheme: Failed to write license_state.json' );
+        }
+      }
+
+
       protected function persist_license_state( array $state ) : void {
           if ( function_exists( 'update_option' ) ) {
               update_option( $this->option_name, wp_json_encode( $state ), false );
+              $this->save_license_state( $state );
           } else {
               $this->in_memory_state = $state;
           }
@@ -315,6 +382,22 @@ if ( ! class_exists( 'Envato_License_Manager' ) ) {
       protected function delete_stored_state() : void {
           if ( function_exists( 'delete_option' ) ) {
               delete_option( $this->option_name );
+            // remove any on-disk state saved by save_license_state()
+            if ( function_exists( 'wp_upload_dir' ) ) {
+                $up = wp_upload_dir();
+                $base = rtrim( $up['basedir'], DIRECTORY_SEPARATOR );
+            } else {
+                $base = dirname( __FILE__ );
+            }
+
+            $dir = $base . DIRECTORY_SEPARATOR . 'verifytheme';
+            $file = $dir . DIRECTORY_SEPARATOR . 'license_state.txt';
+
+            if ( is_file( $file ) ) {
+                @unlink( $file );
+                // try to remove the directory if now empty
+                @rmdir( $dir );
+            }
           } else {
               $this->in_memory_state = null;
           }
@@ -504,13 +587,13 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
               
               <div class="verifytheme-form">
                 <label for="verify_purchase_code"><?php esc_html_e( 'Purchase code', 'woozio' ); ?></label>
-                <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php echo $is_activated ? 'disabled' : ''; ?> />
+                <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php if( $is_activated ) echo 'disabled'; ?> />
                 <p class="description"><?php esc_html_e( 'Enter purchase code and click Activate.', 'woozio' ); ?></p>
                 <div class="verifytheme-buttons">
-                    <button id="verify_activate" class="button button-primary" <?php echo $is_activated ? 'disabled' : ''; ?>>
+                    <button id="verify_activate" class="button button-primary" <?php if( $is_activated ) echo 'disabled'; ?>>
                         <?php esc_html_e( 'Activate', 'woozio' ); ?>
                     </button>
-                    <button id="verify_deactivate" class="button" <?php echo ! $is_activated ? 'disabled' : ''; ?>>
+                    <button id="verify_deactivate" class="button" <?php if( ! $is_activated ) echo 'disabled'; ?>>
                         <?php esc_html_e( 'Deactivate', 'woozio' ); ?>
                     </button>
                 </div>
@@ -561,7 +644,7 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
           if ( is_wp_error( $result ) ) {
               wp_send_json_error( [ 'message' => $result->get_error_message() ] );
           }
-
+          
           wp_send_json_success( [ 'message' => 'License activated.' ] );
       }
 
@@ -578,6 +661,7 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
           if ( is_wp_error( $result ) ) {
               wp_send_json_error( [ 'message' => $result->get_error_message() ] );
           }
+
           wp_send_json_success( [ 'message' => 'License deactivated.' ] );
       }
 
