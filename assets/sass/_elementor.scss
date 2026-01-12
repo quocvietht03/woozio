@@ -2515,7 +2515,7 @@
           margin: 0 4px;
           &:hover {
             color: $color-accent;
-          } 
+          }
         }
       }
 
@@ -2718,13 +2718,13 @@
       @media (max-width: $break-xs) {
         border: none;
       }
-      
+
       // Keyword suggestion wrapper
       .bt-search-wrap {
         position: relative;
         width: 100%;
         flex: 1;
-        
+
         .bt-keyword-ghost {
           position: absolute;
           top: 0;
@@ -2748,7 +2748,7 @@
             border: 1px solid transparent;
           }
         }
-        
+
         input.bt-search-field {
           position: relative;
           z-index: 2;
@@ -2786,7 +2786,7 @@
           }
         }
       }
-      
+
       // Fallback for input without wrapper (backward compatibility)
       input.bt-search-field,
       input[type="search"] {
@@ -3444,7 +3444,7 @@
         border-bottom: 1px solid #e9e9e9;
         border-radius: 0;
         max-width: 400px;
-        
+
         .bt-search-wrap {
           .bt-keyword-ghost {
             padding: 12px 0;
@@ -3455,7 +3455,7 @@
             line-height: 26px;
             border: none;
           }
-          
+
           input.bt-search-field {
             padding: 12px 0;
             font-size: 16px;
@@ -3466,7 +3466,7 @@
             border: none;
           }
         }
-        
+
         input {
           padding: 12px 0;
           font-size: 16px;
@@ -3474,7 +3474,7 @@
           font-weight: 400;
           line-height: 26px;
           background: transparent;
-          border:none;
+          border: none;
         }
         button {
           font-size: 0;
@@ -3482,7 +3482,7 @@
           padding: 0;
           display: flex;
           align-items: center;
-          border:none;
+          border: none;
           .search-icon {
             display: block;
           }
@@ -3505,10 +3505,10 @@
         border-radius: 0;
         max-width: 100%;
         padding: 0 20px 0 8px;
-        
+
         .bt-search-wrap {
           padding-left: 0;
-          
+
           .bt-keyword-ghost {
             padding: 11px 0 11px 12px;
             color: #bbb;
@@ -3520,7 +3520,7 @@
               padding: 8px 12px;
             }
           }
-          
+
           input.bt-search-field {
             padding: 11px 0 11px 12px;
             background: transparent;
@@ -3529,7 +3529,7 @@
             }
           }
         }
-        
+
         input {
           padding: 11px 0 11px 12px;
           background: transparent;
@@ -3603,13 +3603,13 @@
       @media (max-width: $break-sm) {
         max-width: 100%;
       }
-      
+
       // Keyword suggestion wrapper
       .bt-search-wrap {
         position: relative;
         width: 100%;
         flex: 1;
-        
+
         .bt-keyword-ghost {
           position: absolute;
           top: 0;
@@ -3631,13 +3631,13 @@
           border: 1px solid transparent;
           border-right: 0;
           border-left: 0;
-          
+
           @media (max-width: $break-sm) {
             min-height: 50px;
             font-size: 16px;
             padding: 8px 15px;
           }
-          
+
           @media (max-width: $break-xs) {
             padding: 8px 12px;
             border: 1px solid transparent;
@@ -3647,7 +3647,7 @@
             min-height: 46px;
           }
         }
-        
+
         input.bt-search-field {
           position: relative;
           z-index: 2;
@@ -3666,13 +3666,13 @@
           border: 1px solid #e9e9e9;
           border-right: 0;
           border-left: 0;
-          
+
           @media (max-width: $break-sm) {
             min-height: 50px;
             font-size: 16px;
             padding: 8px 15px;
           }
-          
+
           @media (max-width: $break-xs) {
             padding: 8px 12px;
             border: 1px solid #e9e9e9;
@@ -3681,7 +3681,7 @@
             padding-right: 0;
             min-height: 46px;
           }
-          
+
           &::placeholder {
             color: #a0a0a0;
           }
@@ -9296,7 +9296,6 @@
       }
       @media (max-width: $break-md) {
         &--item-content {
-          padding: 24px 15px;
           .bt-product {
             &--category {
               font-size: 14px;
@@ -9349,6 +9348,11 @@
               padding: 10px 30px;
             }
           }
+        }
+      }
+      @media (max-width: $break-sm) {
+        &--item-content {
+          padding: 24px 15px;
         }
       }
     }
@@ -12057,29 +12061,31 @@
     }
 
     &--item:hover {
-      .bt-store-locations-slider--content {
-        background: $color-primary;
-      }
-      .bt-store-locations-slider--address,
-      .bt-store-locations-slider--phone,
-      .bt-store-locations-slider--email,
-      .bt-store-locations-slider--maps {
-        opacity: 1;
-        visibility: visible;
-        max-height: 100px;
-        margin: 4px 0;
-        a {
+      @media (min-width: $break-xs) {
+        .bt-store-locations-slider--content {
+          background: $color-primary;
+        }
+        .bt-store-locations-slider--address,
+        .bt-store-locations-slider--phone,
+        .bt-store-locations-slider--email,
+        .bt-store-locations-slider--maps {
           opacity: 1;
           visibility: visible;
           max-height: 100px;
-          margin: 0;
+          margin: 4px 0;
+          a {
+            opacity: 1;
+            visibility: visible;
+            max-height: 100px;
+            margin: 0;
+          }
         }
-      }
-      .bt-store-locations-slider--address {
-        margin-top: 12px;
-      }
-      .bt-store-locations-slider--email {
-        margin-bottom: 0;
+        .bt-store-locations-slider--address {
+          margin-top: 12px;
+        }
+        .bt-store-locations-slider--email {
+          margin-bottom: 0;
+        }
       }
     }
     @media (max-width: $break-xs) {
