@@ -600,8 +600,35 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
                 <?php if ( $is_activated ) : ?>
                     <div class="verifytheme-success">
                         <?php printf( esc_html__( 'License activated successfully on: %s ', 'woozio' ), esc_html( $domain ) ); ?><br/>
-                        <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Go to Demo Import →', 'woozio'); ?></a>
+
+
                     </div>
+
+                    <?php 
+                        $plugin_path = 'worry-proof-backup/worry-proof-backup.php';
+
+                        if ( isset( get_plugins()[$plugin_path] ) ) {
+                            if( is_plugin_active( $plugin_path ) ) {
+                                ?>
+                                    <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Import Demo Content', 'woozio'); ?></a>
+                                <?php
+                            } else {
+                                $activate_url = wp_nonce_url( self_admin_url( 'plugins.php?action=activate&plugin=' . $plugin_path ), 'activate-plugin_' . $plugin_path );
+                                
+                                esc_html_e( 'To import demo content, please activate the Worry Proof Backup plugin.', 'woozio' );
+                                ?>
+                                    <a href="<?php echo esc_url( $activate_url ); ?>"><?php esc_html_e( 'Activate Plugin', 'woozio' ); ?></a>
+                                <?php
+                            }
+                        } else { 
+                            $install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=worry-proof-backup' ), 'install-plugin_worry-proof-backup' );
+                            
+                            esc_html_e( 'To import demo content, please install the Worry Proof Backup plugin.', 'woozio' );
+                            ?>
+                                <a href="<?php echo esc_url( $install_url ); ?>"><?php esc_html_e( 'Install Plugin', 'woozio' ); ?></a>
+                            <?php
+                        }
+                    ?>
                 <?php endif; ?>
 
                 <div id="verifytheme_message" aria-live="polite"></div>

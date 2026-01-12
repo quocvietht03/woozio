@@ -10,6 +10,9 @@
 .verifytheme-wrap .__header {
   text-align: center;
 }
+.verifytheme-wrap .__header .notice {
+  display: none;
+}
 .verifytheme-wrap h1 {
   font-size: 46px;
   font-weight: 600;

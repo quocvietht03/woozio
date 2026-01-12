@@ -162,23 +162,6 @@ add_action( 'after_setup_theme', function() {
     }
 } );
 
-add_action( 'after_switch_theme', function () {
-	if ( ! current_user_can( 'manage_options' ) || get_option( '_verifytheme_settings' ) ) {
-		return;
-	}
-	?>
-	<div class="notice notice-warning">
-        <p>
-            <strong><?php esc_html_e('Welcome to Woozio 🎉', 'woozio'); ?></strong><br>
-            <?php esc_html_e('Activate your license to unlock updates and demo imports.', 'woozio'); ?> 
-            <a href="<?php echo esc_url( admin_url( 'themes.php?page=verifytheme_settings' ) ); ?>">
-                <?php esc_html_e('Activate License →', 'woozio'); ?>
-            </a>
-        </p>
-    </div>
-	<?php
-});
-
 add_filter( 'worrprba_dummy_pack_center_submenu_args', function ($submenu_args) {
     return $submenu_args = array(
 		'parent_slug' => 'themes.php',
@@ -190,8 +173,27 @@ add_filter( 'worrprba_dummy_pack_center_submenu_args', function ($submenu_args) 
 	);
 } );
 
-add_action( 'admin_init', function () {
+add_action( 'admin_notices', function() {
+	$license_data = get_option( '_verifytheme_settings' );
+	
 
+	if ( ! current_user_can( 'manage_options' ) || $license_data ) {
+		return;
+	}
+	?>
+	<div class="notice notice-warning settings-error is-dismissible">
+        <p>
+            <strong><?php esc_html_e('Welcome to Woozio 🎉', 'woozio'); ?></strong><br>
+            <?php esc_html_e('Activate your license to unlock updates and demo imports.', 'woozio'); ?> 
+            <a href="<?php echo esc_url( admin_url( 'themes.php?page=verifytheme_settings' ) ); ?>">
+                <?php esc_html_e('Activate License →', 'woozio'); ?>
+            </a>
+        </p>
+    </div>
+	<?php
+} );
+
+add_action( 'admin_init', function () {
 	$license_data = get_option( '_verifytheme_settings' );
 
     if ( $license_data ) {
@@ -214,7 +216,7 @@ add_action( 'admin_init', function () {
 		}
 
 		$raw = trim( file_get_contents( $license_file ) );
-		
+
 		if ( $raw === '' ) {
 			return;
 		}
