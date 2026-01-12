@@ -118,6 +118,19 @@ class ElementorWidgets
 	}
 
 	/**
+	 * backend_styles
+	 *
+	 * Load required core files.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 */
+	public function backend_styles()
+	{
+		wp_enqueue_style('woozio-backend-editor', get_stylesheet_directory_uri() . '/framework/widgets/backend.css', array(), false);
+	}
+
+	/**
 	 * widget_styles
 	 *
 	 * Load required core files.
@@ -424,6 +437,8 @@ class ElementorWidgets
 	 */
 	public function __construct()
 	{
+		// Enqueue backend editor styles
+		add_action('elementor/editor/after_enqueue_styles', [$this, 'backend_styles']);
 
 		// Register widget styles
 		add_action('elementor/frontend/after_register_styles', [$this, 'widget_styles']);

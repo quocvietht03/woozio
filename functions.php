@@ -202,16 +202,13 @@ if (!function_exists('woozio_enqueue_admin_scripts')) {
 	add_action('admin_enqueue_scripts', 'woozio_enqueue_admin_scripts');
 }
 
-/**
- * Theme install
- */
+/* Plugin Requred */
 require_once get_template_directory() . '/plugin-install/plugin-required.php';
-require_once get_template_directory() . '/import-pack/import-functions.php';
 
 /* ACF Options */
 require_once get_template_directory() . '/framework/acf-options.php';
 
-/* Template functions */
+/* Template Functions */
 require_once get_template_directory() . '/framework/template-helper.php';
 
 /* Post Functions */
@@ -226,7 +223,7 @@ require_once get_template_directory() . '/framework/widget-load.php';
 /* Cron Functions */
 require_once get_template_directory() . '/framework/cron-helper.php';
 
-/* Woocommerce functions */
+/* Woocommerce Functions */
 if (class_exists('Woocommerce')) {
 	require_once get_template_directory() . '/woocommerce/shop-helper.php';
 }

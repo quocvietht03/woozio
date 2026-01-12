@@ -22,7 +22,7 @@ class Widget_SearchProductStyle1 extends Widget_Base
 
 	public function get_icon()
 	{
-		return 'eicon-search';
+		return 'bt-bears-icon eicon-search';
 	}
 
 	public function get_categories()

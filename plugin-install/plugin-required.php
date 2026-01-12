@@ -51,10 +51,14 @@ add_action( 'tgmpa_register', 'woozio_register_required_plugins' );
  * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
  */
 function woozio_register_required_plugins() {
+	if ( isset( $_GET['page'] ) && $_GET['page'] === 'verifytheme_settings' ) {
+		return;
+	} 
+
 	/*
-	 * Array of plugin arrays. Required keys are name and slug.
-	 * If the source is NOT from the .org repo, then source is also required.
-	 */
+		* Array of plugin arrays. Required keys are name and slug.
+		* If the source is NOT from the .org repo, then source is also required.
+		*/
 	$pathfile = 'https://download.beplusthemes.com/';
 
   $plugin_includes = array(
@@ -92,6 +96,11 @@ function woozio_register_required_plugins() {
 		'slug'          => 'woocommerce',
 		'required'      => false,
     ),
+	array(
+		'name'          => __( 'Worry Proof Backup', 'woozio' ),
+		'slug'          => 'worry-proof-backup',
+		'required'      => false,
+    ),
 
   );
 
@@ -122,6 +131,26 @@ function woozio_register_required_plugins() {
 }
 
 /**
+ * Dummy Demo Data
+ */
+
+define('WORRPRBA_DUMMY_PACK_CENTER_SUPPORTED', true);
+define('WORRPRBA_DUMMY_PACK_CENTER_ENDPOINT', 'https://wpb-dummy-pack-center-neon.vercel.app/api/');
+define('WORRPRBA_DUMMY_PACK_CENTER_THEME_SLUG', 'woozio');
+
+add_filter( 'worrprba_dummy_pack_center_license_key', function( $purchase_code ) {
+	$verifytheme = get_option( '_verifytheme_settings' );
+	if($verifytheme) {
+		$verifytheme_ob = json_decode($verifytheme);
+		$purchase_code = $verifytheme_ob->purchase_code;
+
+		return $purchase_code;
+	}
+	return '';
+} );
+
+
+/**
  * Verify purchase code
  */
 require get_template_directory() . '/license-manager/VerifyTheme.php';
@@ -131,4 +160,32 @@ add_action( 'after_setup_theme', function() {
     if ( class_exists( 'VerifyTheme_Admin' ) ) {
         VerifyTheme_Admin::init();
     }
+} );
+
+add_action( 'after_switch_theme', function () {
+	if ( ! current_user_can( 'manage_options' ) || get_option( '_verifytheme_settings' ) ) {
+		return;
+	}
+	?>
+	<div class="notice notice-warning">
+        <p>
+            <strong><?php esc_html_e('Welcome to Woozio 🎉', 'woozio'); ?></strong><br>
+            <?php esc_html_e('Activate your license to unlock updates and demo imports.', 'woozio'); ?> 
+            <a href="<?php echo esc_url( admin_url( 'themes.php?page=verifytheme_settings' ) ); ?>">
+                <?php esc_html_e('Activate License →', 'woozio'); ?>
+            </a>
+        </p>
+    </div>
+	<?php
+});
+
+add_filter( 'worrprba_dummy_pack_center_submenu_args', function ($submenu_args) {
+    return $submenu_args = array(
+		'parent_slug' => 'themes.php',
+		'page_title'  => __('Demo Import', 'woozio'),
+		'menu_title'  => __('Demo Import', 'woozio'),
+		'capability'  => 'manage_options',
+		'menu_slug'   => 'dummy-pack-center',
+		'callback'    => 'worrprba_dummy_pack_center_page'
+	);
 } );
