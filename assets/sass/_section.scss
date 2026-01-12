@@ -14,20 +14,20 @@ body {
 .elementor-element {
     @media (min-width: 1350px) {
         &.bt-col-container-left {
-            padding-left: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+            padding-left: max(60px, calc((var(--width-body) + 5px - var(--container-max-width)) / 2));
         }
         &.bt-col-container-right {
-            padding-right: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+            padding-right: max(60px, calc((var(--width-body) + 5px - var(--container-max-width)) / 2));
         }
     }
     @media (min-width: 1800px) {
         &.bt-col-container-left-1770 {
             --container-max-width: 1770px;
-            padding-left: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+            padding-left: max(60px, calc((var(--width-body) + 5px - var(--container-max-width)) / 2));
         }
         &.bt-col-container-right-1770 {
             --container-max-width: 1770px;
-            padding-right: calc((var(--width-body) + 5px - var(--container-max-width)) / 2);
+            padding-right: max(60px, calc((var(--width-body) + 5px - var(--container-max-width)) / 2));
         }
     }
 }

@@ -3281,7 +3281,7 @@ function woozio_search_live()
                     <?php } ?>
                 </div>
             </div>
-        <?php
+            <?php
         }
         wp_reset_postdata();
         $output['items'] = ob_get_clean();
@@ -3390,7 +3390,7 @@ function woozio_search_live_style1()
                 $product_image = $product->get_image('medium');
                 $product_title = $product->get_name();
                 $product_price = $product->get_price_html();
-                ?>
+            ?>
                 <div class="bt-product-item">
                     <div class="bt-product-thumb">
                         <a href="<?php echo esc_url($product_link); ?>" class="bt-thumb">
@@ -3415,7 +3415,7 @@ function woozio_search_live_style1()
                         <?php } ?>
                     </div>
                 </div>
-                <?php
+            <?php
             }
         } else {
             // Render desktop layout (WooCommerce template)
@@ -3667,7 +3667,7 @@ function woozio_load_products_display()
                 $product_image = $product->get_image('medium');
                 $product_title = $product->get_name();
                 $product_price = $product->get_price_html();
-                ?>
+            ?>
                 <div class="bt-product-item">
                     <div class="bt-product-thumb">
                         <a href="<?php echo esc_url($product_link); ?>" class="bt-thumb">
@@ -3692,7 +3692,7 @@ function woozio_load_products_display()
                         <?php } ?>
                     </div>
                 </div>
-                <?php
+        <?php
             }
         } else {
             // Render desktop layout (WooCommerce template)
@@ -4514,14 +4514,14 @@ function woozio_load_product_gallery()
     $gallery_layout = $_POST['gallery_layout'];
     $variation_id = intval($_POST['variation_id']);
     $variation = wc_get_product($variation_id);
-    
+
     // Get parent product to compare images
     $product = wc_get_product($variation->get_parent_id());
     $product_image_id = $product ? $product->get_image_id() : 0;
-    
+
     // Get variation image
     $variation_image_id = $variation->get_image_id();
-    
+
     // Check if variation has custom image (different from parent product image)
     // If not, use default product gallery
     if ($variation_image_id && $variation_image_id > 0 && (int)$variation_image_id !== (int)$product_image_id) {
@@ -4734,20 +4734,21 @@ function woozio_load_product_toast()
                     echo wp_kses_post($message);
                     ?>
                 </p>
+                <div class="bt-product-toast--button<?php echo esc_attr($tools === 'cart' ? ' bt-button-cart' : ''); ?>">
+                    <?php
+                    if ($tools === 'wishlist') {
+                        echo '<a href="' . esc_url($wishlist_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Wishlist', 'woozio') . '</a>';
+                    } else if ($tools === 'compare') {
+                        echo '<a href="' . esc_url($compare_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Compare', 'woozio') . '</a>';
+                    } else {
+                        echo '<a href="' . esc_url($cart_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Cart', 'woozio') . '</a>';
+                        echo '<a href="' . esc_url($checkout_url) . '" class="bt-btn bt-button-hover">' . esc_html__('Checkout', 'woozio') . '</a>';
+                    }
+                    ?>
+                </div>
             </div>
         </div>
-        <div class="bt-product-toast--button<?php echo esc_attr($tools === 'cart' ? ' bt-button-cart' : ''); ?>">
-            <?php
-            if ($tools === 'wishlist') {
-                echo '<a href="' . esc_url($wishlist_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Wishlist', 'woozio') . '</a>';
-            } else if ($tools === 'compare') {
-                echo '<a href="' . esc_url($compare_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Compare', 'woozio') . '</a>';
-            } else {
-                echo '<a href="' . esc_url($cart_url) . '" class="bt-btn bt-button-hover">' . esc_html__('View Cart', 'woozio') . '</a>';
-                echo '<a href="' . esc_url($checkout_url) . '" class="bt-btn bt-button-hover">' . esc_html__('Checkout', 'woozio') . '</a>';
-            }
-            ?>
-        </div>
+
     </div>
     <?php
     $output = array(
