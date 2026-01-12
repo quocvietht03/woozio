@@ -292,76 +292,10 @@ if ( ! class_exists( 'Envato_License_Manager' ) ) {
           return '';
       }
 
-      protected function save_license_state( array $state ) : void {
-
-        // Encode state safely
-        $encoded = wp_json_encode( $state );
-        if ( empty( $encoded ) ) {
-            return;
-        }
-
-        // Get uploads directory
-        $upload = wp_upload_dir();
-        if ( ! empty( $upload['error'] ) ) {
-            error_log( 'VerifyTheme: Upload dir error - ' . $upload['error'] );
-            return;
-        }
-
-        $base_dir = trailingslashit( $upload['basedir'] );
-        $dir      = $base_dir . 'verifytheme/';
-        $file     = $dir . 'license_state.json';
-
-        // Initialize WP Filesystem
-        global $wp_filesystem;
-
-        if ( empty( $wp_filesystem ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-            WP_Filesystem();
-        }
-
-        if ( ! $wp_filesystem ) {
-            error_log( 'VerifyTheme: WP_Filesystem not initialized', 'woozio' );
-            return;
-        }
-
-        // Create directory if it does not exist
-        if ( ! $wp_filesystem->is_dir( $dir ) ) {
-            if ( ! $wp_filesystem->mkdir( $dir, FS_CHMOD_DIR ) ) {
-                error_log( 'VerifyTheme: Failed to create directory ' . $dir );
-                return;
-            }
-
-            // Security files
-            $wp_filesystem->put_contents(
-                $dir . 'index.php',
-                '<?php exit;',
-                FS_CHMOD_FILE
-            );
-
-            $wp_filesystem->put_contents(
-                $dir . '.htaccess',
-                'Deny from all',
-                FS_CHMOD_FILE
-            );
-        }
-
-        // Write license state file
-        $written = $wp_filesystem->put_contents(
-            $file,
-            $encoded,
-            FS_CHMOD_FILE
-        );
-
-        if ( ! $written ) {
-            error_log( 'VerifyTheme: Failed to write license_state.json' );
-        }
-      }
-
 
       protected function persist_license_state( array $state ) : void {
           if ( function_exists( 'update_option' ) ) {
               update_option( $this->option_name, wp_json_encode( $state ), false );
-              $this->save_license_state( $state );
           } else {
               $this->in_memory_state = $state;
           }
@@ -382,22 +316,6 @@ if ( ! class_exists( 'Envato_License_Manager' ) ) {
       protected function delete_stored_state() : void {
           if ( function_exists( 'delete_option' ) ) {
               delete_option( $this->option_name );
-            // remove any on-disk state saved by save_license_state()
-            if ( function_exists( 'wp_upload_dir' ) ) {
-                $up = wp_upload_dir();
-                $base = rtrim( $up['basedir'], DIRECTORY_SEPARATOR );
-            } else {
-                $base = dirname( __FILE__ );
-            }
-
-            $dir = $base . DIRECTORY_SEPARATOR . 'verifytheme';
-            $file = $dir . DIRECTORY_SEPARATOR . 'license_state.txt';
-
-            if ( is_file( $file ) ) {
-                @unlink( $file );
-                // try to remove the directory if now empty
-                @rmdir( $dir );
-            }
           } else {
               $this->in_memory_state = null;
           }
@@ -601,34 +519,21 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
                     <div class="verifytheme-success">
                         <?php printf( esc_html__( 'License activated successfully on: %s ', 'woozio' ), esc_html( $domain ) ); ?><br/>
 
+                        <?php 
+                            $plugin_path = 'worry-proof-backup/worry-proof-backup.php';
 
-                    </div>
-
-                    <?php 
-                        $plugin_path = 'worry-proof-backup/worry-proof-backup.php';
-
-                        if ( isset( get_plugins()[$plugin_path] ) ) {
-                            if( is_plugin_active( $plugin_path ) ) {
+                            if ( isset( get_plugins()[$plugin_path] ) && is_plugin_active( $plugin_path ) ) {
                                 ?>
                                     <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Import Demo Content', 'woozio'); ?></a>
                                 <?php
                             } else {
-                                $activate_url = wp_nonce_url( self_admin_url( 'plugins.php?action=activate&plugin=' . $plugin_path ), 'activate-plugin_' . $plugin_path );
-                                
-                                esc_html_e( 'To import demo content, please activate the Worry Proof Backup plugin.', 'woozio' );
                                 ?>
-                                    <a href="<?php echo esc_url( $activate_url ); ?>"><?php esc_html_e( 'Activate Plugin', 'woozio' ); ?></a>
+                                    <a href="<?php echo esc_url( 'themes.php?page=tgmpa-install-plugins' ); ?>"><?php esc_html_e( 'Install Plugins', 'woozio' ); ?></a>
                                 <?php
                             }
-                        } else { 
-                            $install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=worry-proof-backup' ), 'install-plugin_worry-proof-backup' );
-                            
-                            esc_html_e( 'To import demo content, please install the Worry Proof Backup plugin.', 'woozio' );
-                            ?>
-                                <a href="<?php echo esc_url( $install_url ); ?>"><?php esc_html_e( 'Install Plugin', 'woozio' ); ?></a>
-                            <?php
-                        }
-                    ?>
+                        ?>
+
+                    </div>
                 <?php endif; ?>
 
                 <div id="verifytheme_message" aria-live="polite"></div>
