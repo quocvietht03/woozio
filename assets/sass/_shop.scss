@@ -3372,7 +3372,7 @@
   &--style-2 {
     .bt-product {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       flex-wrap: wrap;
       &--image {
         width: 48%;
@@ -3381,7 +3381,7 @@
       &--content {
         width: 52%;
         padding-left: 48px;
-        @media (max-width: 1365px) and (min-width: $break-tl) {
+        @media (max-width: 1520px) and (min-width: $break-tl) {
           padding-left: 20px;
         }
       }
@@ -3478,9 +3478,37 @@
           @extend .__bt-button-style;
         }
       }
-      @media (max-width: $break-lg) and (min-width: $break-tl) {
+      @media (max-width: 1367px) and (min-width: $break-lg) {
         &--title {
           font-size: 32px;
+          margin-bottom: 12px;
+        }
+        &--info {
+          margin-bottom: 12px;
+          .onsale {
+            top: 0;
+          }
+        }
+        &--price {
+          .woocommerce-Price-amount {
+            font-size: 22px;
+          }
+          del .woocommerce-Price-amount {
+            top: 0;
+          }
+        }
+        &--short-description {
+          font-size: 16px;
+          margin-bottom: 18px;
+        }
+        &--add-to-cart a {
+          font-size: 14px;
+          padding: 12px 24px;
+        }
+      }
+      @media (max-width: $break-lg) and (min-width: $break-tl) {
+        &--title {
+          font-size: 28px;
           margin-bottom: 12px;
         }
         &--info {
