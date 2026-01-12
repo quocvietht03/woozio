@@ -24,7 +24,7 @@ class Widget_ProductNavImage extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-posts-ticker';
+        return 'bt-bears-icon eicon-product-images';
     }
 
     public function get_categories()

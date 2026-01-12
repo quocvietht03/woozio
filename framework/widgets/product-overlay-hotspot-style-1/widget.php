@@ -25,7 +25,7 @@ class Widget_ProductOverlayHotspotStyle1 extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-posts-ticker';
+        return 'bt-bears-icon eicon-image-hotspot';
     }
 
     public function get_categories()

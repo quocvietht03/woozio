@@ -12,7 +12,7 @@
  *
  * Usage:
  *   // in functions.php (or plugin bootstrap)
- *   require_once __DIR__ . '/install/license-manager/VerifyTheme.php';
+ *   require_once __DIR__ . '/license-manager/VerifyTheme.php';
  *   VerifyTheme_Admin::init(); // registers hooks and admin page
  *
  * Tests may instantiate Envato_License_Manager with 'http_client' override.
@@ -416,8 +416,8 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
       public static function add_admin_page() : void {
           add_submenu_page(
               'themes.php',
-              'Envato Settings',
-              'Envato Settings',
+              __('Envato License', 'woozio'),
+              __('Envato License', 'woozio'),
               'manage_options',
               'verifytheme_settings',
               [ __CLASS__, 'render_admin_page' ]
@@ -486,41 +486,49 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
           $purchase_code = $stored['purchase_code'] ?? '';
           $domain = $stored['domain'] ?? '';
           $is_activated = $mgr->is_activated();
+
+          $theme_data = wp_get_theme();
+          $theme_name = $theme_data->get('Name');
+
           ?>
-          <div class="wrap">
-              <h1><?php esc_html_e( 'Envato Settings', 'woozio' ); ?></h1>
-              <p>
-                <?php esc_html_e( 'Enter your Envato purchase code to activate the theme on this domain.', 'woozio' ); ?>
-                <?php esc_html_e('Find instructions on obtaining Envato discount codes by ', 'woozio'); ?>
-                <a href="<?php echo esc_url('https://docs.beplusthemes.com/ProductRegistration/'); ?>" target="_blank"><?php esc_html_e('clicking here.', 'woozio'); ?></a>
-              </p>
+          <div class="wrap verifytheme-wrap">
+            <div class="__header">
+                <h1><?php printf(__('Welcome to %s 🎉', 'woozio'), $theme_name); ?></h1>
+                <h2><?php printf(__('Thank you for choosing %s.', 'woozio'), $theme_name); ?></h2>
+                <p>
+                    <?php esc_html_e('Activate your license to enable updates and import demos in one click.', 'woozio'); ?><br/>
+                    <?php esc_html_e('Follow the steps to get your Envato purchase code.', 'woozio'); ?>
+                    <a href="<?php echo esc_url('https://beplusthemes-docs.vercel.app/product-registration'); ?>" target="_blank"><?php esc_html_e('Click here.', 'woozio'); ?></a>
+                </p>
+            </div>
+              
+              <div class="verifytheme-form">
+                <label for="verify_purchase_code"><?php esc_html_e( 'Purchase code', 'woozio' ); ?></label>
+                <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php echo $is_activated ? 'disabled' : ''; ?> />
+                <p class="description"><?php esc_html_e( 'Enter purchase code and click Activate.', 'woozio' ); ?></p>
+                <div class="verifytheme-buttons">
+                    <button id="verify_activate" class="button button-primary" <?php echo $is_activated ? 'disabled' : ''; ?>>
+                        <?php esc_html_e( 'Activate', 'woozio' ); ?>
+                    </button>
+                    <button id="verify_deactivate" class="button" <?php echo ! $is_activated ? 'disabled' : ''; ?>>
+                        <?php esc_html_e( 'Deactivate', 'woozio' ); ?>
+                    </button>
+                </div>
+                <?php if ( $is_activated ) : ?>
+                    <div class="verifytheme-success">
+                        <?php printf( esc_html__( 'License activated successfully on: %s ', 'woozio' ), esc_html( $domain ) ); ?><br/>
+                        <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Go to Demo Import →', 'woozio'); ?></a>
+                    </div>
+                <?php endif; ?>
 
-              <?php if ( $is_activated ) : ?>
-                  <div class="notice notice-success"><p>
-                      <?php printf( esc_html__( 'License activated on: %s', 'woozio' ), esc_html( $domain ) ); ?>
-                  </p></div>
-              <?php endif; ?>
-
-              <table class="form-table">
-                  <tr>
-                      <th scope="row"><label for="verify_purchase_code"><?php esc_html_e( 'Purchase code', 'woozio' ); ?></label></th>
-                      <td>
-                          <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php echo $is_activated ? 'disabled' : ''; ?> />
-                          <p class="description"><?php esc_html_e( 'Enter purchase code and click Activate.', 'woozio' ); ?></p>
-                      </td>
-                  </tr>
-              </table>
-
-              <p>
-                  <button id="verify_activate" class="button button-primary" <?php echo $is_activated ? 'disabled' : ''; ?>>
-                      <?php esc_html_e( 'Activate', 'woozio' ); ?>
-                  </button>
-                  <button id="verify_deactivate" class="button" <?php echo ! $is_activated ? 'disabled' : ''; ?>>
-                      <?php esc_html_e( 'Deactivate', 'woozio' ); ?>
-                  </button>
-              </p>
-
-              <div id="verifytheme_message" aria-live="polite"></div>
+                <div id="verifytheme_message" aria-live="polite"></div>
+              </div>
+              <div class="verifytheme-help">
+                    <ul>
+                        <li><a href="https://beplusthemes-docs.vercel.app/woozio" target="__blank"><?php esc_html_e('📘 Documentation', 'woozio'); ?></a></li>
+                        <li><a href="https://beplusthemes.com/our-support/" target="__blank"><?php esc_html_e('💬 Support Center', 'woozio'); ?></a></li>
+                    </ul>
+              </div>
           </div>
           <?php
       }

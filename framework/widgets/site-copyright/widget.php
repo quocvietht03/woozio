@@ -16,7 +16,7 @@ class Widget_SiteCopyright extends Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'eicon-posts-ticker';
+		return 'bt-bears-icon eicon-library-edit';
 	}
 
 	public function get_categories() {

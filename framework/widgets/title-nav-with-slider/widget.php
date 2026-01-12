@@ -27,7 +27,7 @@ class Widget_TitleNavWithSlider extends Widget_Base
 
     public function get_icon()
     {
-        return 'eicon-posts-ticker';
+        return 'bt-bears-icon eicon-carousel-loop';
     }
 
     public function get_categories()

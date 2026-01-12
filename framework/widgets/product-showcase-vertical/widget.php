@@ -25,7 +25,7 @@ class Widget_ProductShowcaseVertical extends Widget_Base
 
 	public function get_icon()
 	{
-		return 'eicon-posts-ticker';
+		return 'bt-bears-icon eicon-single-product';
 	}
 
 	public function get_categories()

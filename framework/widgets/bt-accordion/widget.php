@@ -19,12 +19,12 @@ class Widget_BtAccordion extends Widget_Base
 
     public function get_title()
     {
-        return __('BT Accordion', 'woozio');
+        return __('Accordion', 'woozio');
     }
 
     public function get_icon()
     {
-        return 'eicon-posts-ticker';
+        return 'bt-bears-icon eicon-accordion';
     }
 
     public function get_categories()

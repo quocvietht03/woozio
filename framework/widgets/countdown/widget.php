@@ -22,12 +22,12 @@ class Widget_CountDown extends Widget_Base
 
 	public function get_title()
 	{
-		return __('BT Countdown', 'woozio');
+		return __('Countdown', 'woozio');
 	}
 
 	public function get_icon()
 	{
-		return 'eicon-posts-ticker';
+		return 'bt-bears-icon eicon-countdown';
 	}
 
 	public function get_categories()

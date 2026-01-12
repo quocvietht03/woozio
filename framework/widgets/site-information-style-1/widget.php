@@ -16,7 +16,7 @@ class Widget_SiteInformationStyle1 extends Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'eicon-posts-ticker';
+		return 'bt-bears-icon eicon-bullet-list';
 	}
 
 	public function get_categories() {

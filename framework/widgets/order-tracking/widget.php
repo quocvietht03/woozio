@@ -23,7 +23,7 @@ class Widget_OrderTracking extends Widget_Base
 
 	public function get_icon()
 	{
-		return 'eicon-posts-ticker';
+		return 'bt-bears-icon eicon-price-list';
 	}
 
 	public function get_categories()
