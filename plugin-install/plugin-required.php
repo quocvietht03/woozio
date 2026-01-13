@@ -118,7 +118,7 @@ function woozio_are_required_plugins_active() {
             return false;
         }
     }
-	
+
     return true;
 }
 
@@ -183,7 +183,7 @@ if ( woozio_are_required_plugins_active() ) {
 	}
 	add_action( 'admin_notices', 'woozio_import_plugins_notice' );
 }
-
+ 
 /**
  * Verify purchase code
  */
