@@ -118,7 +118,7 @@ function woozio_are_required_plugins_active() {
             return false;
         }
     }
-
+	
     return true;
 }
 
