@@ -292,6 +292,7 @@ if ( ! class_exists( 'Envato_License_Manager' ) ) {
           return '';
       }
 
+
       protected function persist_license_state( array $state ) : void {
           if ( function_exists( 'update_option' ) ) {
               update_option( $this->option_name, wp_json_encode( $state ), false );
@@ -504,20 +505,20 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
               
               <div class="verifytheme-form">
                 <label for="verify_purchase_code"><?php esc_html_e( 'Purchase code', 'woozio' ); ?></label>
-                <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php echo $is_activated ? 'disabled' : ''; ?> />
+                <input id="verify_purchase_code" class="regular-text" type="text" value="<?php echo esc_attr( $purchase_code ); ?>" <?php if( $is_activated ) echo 'disabled'; ?> />
                 <p class="description"><?php esc_html_e( 'Enter purchase code and click Activate.', 'woozio' ); ?></p>
                 <div class="verifytheme-buttons">
-                    <button id="verify_activate" class="button button-primary" <?php echo $is_activated ? 'disabled' : ''; ?>>
+                    <button id="verify_activate" class="button button-primary" <?php if( $is_activated ) echo 'disabled'; ?>>
                         <?php esc_html_e( 'Activate', 'woozio' ); ?>
                     </button>
-                    <button id="verify_deactivate" class="button" <?php echo ! $is_activated ? 'disabled' : ''; ?>>
+                    <button id="verify_deactivate" class="button" <?php if( ! $is_activated ) echo 'disabled'; ?>>
                         <?php esc_html_e( 'Deactivate', 'woozio' ); ?>
                     </button>
                 </div>
                 <?php if ( $is_activated ) : ?>
                     <div class="verifytheme-success">
                         <?php printf( esc_html__( 'License activated successfully on: %s ', 'woozio' ), esc_html( $domain ) ); ?><br/>
-                        <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Go to Demo Import →', 'woozio'); ?></a>
+                        <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Import Demo Content', 'woozio'); ?></a>
                     </div>
                 <?php endif; ?>
 
@@ -561,7 +562,7 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
           if ( is_wp_error( $result ) ) {
               wp_send_json_error( [ 'message' => $result->get_error_message() ] );
           }
-
+          
           wp_send_json_success( [ 'message' => 'License activated.' ] );
       }
 
@@ -578,6 +579,7 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
           if ( is_wp_error( $result ) ) {
               wp_send_json_error( [ 'message' => $result->get_error_message() ] );
           }
+
           wp_send_json_success( [ 'message' => 'License deactivated.' ] );
       }
 
