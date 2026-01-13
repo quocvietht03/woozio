@@ -34,6 +34,10 @@ class Widget_SearchProductStyle1 extends Widget_Base
 	{
 		$supported_taxonomies = [];
 
+		if (!class_exists('WooCommerce')) {
+			return $supported_taxonomies;
+		}
+
 		$categories = get_terms(array(
 			'taxonomy' => 'product_cat',
 			'hide_empty' => false,
@@ -563,6 +567,10 @@ class Widget_SearchProductStyle1 extends Widget_Base
 
 	protected function render()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$settings = $this->get_settings_for_display();
 
 		// Get current category
