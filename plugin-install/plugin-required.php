@@ -99,13 +99,9 @@ function woozio_register_required_plugins() {
 }
 add_action( 'tgmpa_register', 'woozio_register_required_plugins' );
 
-
-
-
 /**
  * Dummy Demo Data
  */
-
 function woozio_are_required_plugins_active() {
 	$required_plugins = array(
 		'elementor/elementor.php',
@@ -114,7 +110,6 @@ function woozio_are_required_plugins_active() {
 		'advanced-custom-fields-pro/acf.php',
 		'gravityforms/gravityforms.php',
 		'woocommerce/woocommerce.php',
-		'worry-proof-backup/worry-proof-backup.php',
 	);
     include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
