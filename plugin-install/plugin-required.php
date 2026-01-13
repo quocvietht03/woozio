@@ -31,124 +31,163 @@
 
 require_once get_template_directory() . '/plugin-install/class-tgm-plugin-activation.php';
 
-add_action( 'tgmpa_register', 'woozio_register_required_plugins' );
-
-/**
- * Register the required plugins for this theme.
- *
- * In this example, we register five plugins:
- * - one included with the TGMPA library
- * - two from an external source, one from an arbitrary source, one from a GitHub repository
- * - two from the .org repo, where one demonstrates the use of the `is_callable` argument
- *
- * The variables passed to the `tgmpa()` function should be:
- * - an array of plugin arrays;
- * - optionally a configuration array.
- * If you are not changing anything in the configuration array, you can remove the array and remove the
- * variable from the function call: `tgmpa( $plugins );`.
- * In that case, the TGMPA default settings will be used.
- *
- * This function is hooked into `tgmpa_register`, which is fired on the WP `init` action on priority 10.
- */
 function woozio_register_required_plugins() {
 	if ( isset( $_GET['page'] ) && $_GET['page'] === 'verifytheme_settings' ) {
 		return;
 	} 
 
-	/*
-		* Array of plugin arrays. Required keys are name and slug.
-		* If the source is NOT from the .org repo, then source is also required.
-		*/
 	$pathfile = 'https://download.beplusthemes.com/';
 
-  $plugin_includes = array(
-    array(
-		'name'     		=> __( 'Elementor Website Builder', 'woozio' ),
-		'slug'     		=> 'elementor',
-		'required'     	=> true,
-    ),
-    array(
-		'name'          => __( 'Elementor Pro', 'woozio' ),
-		'slug'          => 'elementor-pro',
-		'source'        => $pathfile . 'elementor-pro.zip',
-		'required'      => true,
-	),
-	array(
-		'name'          => __( 'Smart Slider 3 Pro', 'woozio' ),
-		'slug'          => 'nextend-smart-slider3-pro',
-		'source'        => $pathfile . 'nextend-smart-slider3-pro.zip',
-		'required'      => true,
-	),
-	array(
-		'name'          => __( 'Advanced Custom Fields PRO', 'woozio' ),
-		'slug'          => 'advanced-custom-fields-pro',
-		'source'        => $pathfile . 'advanced-custom-fields-pro.zip',
-		'required'      => true,
-    ),
-	array(
-		'name'          => __( 'Gravity Forms', 'woozio' ),
-		'slug'          => 'gravityforms',
-		'source'        => $pathfile . 'gravityforms.zip',
-		'required'      => true,
-	),
-    array(
-		'name'          => __( 'WooCommerce', 'woozio' ),
-		'slug'          => 'woocommerce',
-		'required'      => false,
-    ),
-	array(
-		'name'          => __( 'Worry Proof Backup', 'woozio' ),
-		'slug'          => 'worry-proof-backup',
-		'required'      => false,
-    ),
+	$plugin_includes = array(
+		array(
+			'name'     		=> __( 'Elementor Website Builder', 'woozio' ),
+			'slug'     		=> 'elementor',
+			'required'     	=> true,
+		),
+		array(
+			'name'          => __( 'Elementor Pro', 'woozio' ),
+			'slug'          => 'elementor-pro',
+			'source'        => $pathfile . 'elementor-pro.zip',
+			'required'      => true,
+		),
+		array(
+			'name'          => __( 'Smart Slider 3 Pro', 'woozio' ),
+			'slug'          => 'nextend-smart-slider3-pro',
+			'source'        => $pathfile . 'nextend-smart-slider3-pro.zip',
+			'required'      => true,
+		),
+		array(
+			'name'          => __( 'Advanced Custom Fields PRO', 'woozio' ),
+			'slug'          => 'advanced-custom-fields-pro',
+			'source'        => $pathfile . 'advanced-custom-fields-pro.zip',
+			'required'      => true,
+		),
+		array(
+			'name'          => __( 'Gravity Forms', 'woozio' ),
+			'slug'          => 'gravityforms',
+			'source'        => $pathfile . 'gravityforms.zip',
+			'required'      => true,
+		),
+		array(
+			'name'          => __( 'WooCommerce', 'woozio' ),
+			'slug'          => 'woocommerce',
+			'required'      => false,
+		),
+		array(
+			'name'          => __( 'Worry Proof Backup', 'woozio' ),
+			'slug'          => 'worry-proof-backup',
+			'required'      => false,
+		),
 
-  );
+	);
 
-	/*
-	 * Array of configuration settings. Amend each line as needed.
-	 *
-	 * TGMPA will start providing localized text strings soon. If you already have translations of our standard
-	 * strings available, please help us make TGMPA even better by giving us access to these translations or by
-	 * sending in a pull-request with .po file(s) with the translations.
-	 *
-	 * Only uncomment the strings in the config array if you want to customize the strings.
-	 */
 	$config = array(
 		'id'           => 'tgmpa',                 // Unique ID for hashing notices for multiple instances of TGMPA.
 		'default_path' => '',                      // Default absolute path to bundled plugins.
 		'menu'         => 'tgmpa-install-plugins', // Menu slug.
 		'parent_slug'  => 'themes.php',            // Parent menu slug.
 		'capability'   => 'edit_theme_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
-		'has_notices'  => true,                    // Show admin notices or not.
+		'has_notices'  => false,                    // Show admin notices or not.
 		'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
 		'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-		'is_automatic' => true,                   // Automatically activate plugins after installation or not.
+		'is_automatic' => false,                   // Automatically activate plugins after installation or not.
 		'message'      => '',                      // Message to output right before the plugins table.
 
 	);
 
 	tgmpa( $plugin_includes, $config );
 }
+add_action( 'tgmpa_register', 'woozio_register_required_plugins' );
+
+
+
 
 /**
  * Dummy Demo Data
  */
 
-define('WORRPRBA_DUMMY_PACK_CENTER_SUPPORTED', true);
-define('WORRPRBA_DUMMY_PACK_CENTER_ENDPOINT', 'https://wpb-dummy-pack-center-neon.vercel.app/api/');
-define('WORRPRBA_DUMMY_PACK_CENTER_THEME_SLUG', 'woozio');
+function woozio_are_required_plugins_active() {
+	$required_plugins = array(
+		'elementor/elementor.php',
+		'elementor-pro/elementor-pro.php',
+		'nextend-smart-slider3-pro/nextend-smart-slider3-pro.php',
+		'advanced-custom-fields-pro/acf.php',
+		'gravityforms/gravityforms.php',
+		'woocommerce/woocommerce.php',
+		'worry-proof-backup/worry-proof-backup.php',
+	);
+    include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-add_filter( 'worrprba_dummy_pack_center_license_key', function( $purchase_code ) {
-	$verifytheme = get_option( '_verifytheme_settings' );
-	if($verifytheme) {
-		$verifytheme_ob = json_decode($verifytheme);
-		$purchase_code = $verifytheme_ob->purchase_code;
+    foreach ( $required_plugins as $plugin ) {
+        if ( ! is_plugin_active( $plugin ) ) {
+            return false;
+        }
+    }
 
-		return $purchase_code;
+    return true;
+}
+
+if ( woozio_are_required_plugins_active() ) {
+	define('WORRPRBA_DUMMY_PACK_CENTER_SUPPORTED', true);
+	define('WORRPRBA_DUMMY_PACK_CENTER_ENDPOINT', 'https://wpb-dummy-pack-center-neon.vercel.app/api/');
+	define('WORRPRBA_DUMMY_PACK_CENTER_THEME_SLUG', 'woozio');
+
+	add_filter( 'worrprba_dummy_pack_center_license_key', function( $purchase_code ) {
+		$verifytheme = get_option( '_verifytheme_settings' );
+		if($verifytheme) {
+			$verifytheme_ob = json_decode($verifytheme);
+			$purchase_code = $verifytheme_ob->purchase_code;
+
+			return $purchase_code;
+		}
+		return '';
+	} );
+
+	add_filter( 'worrprba_dummy_pack_center_submenu_args', function ($submenu_args) {
+		return $submenu_args = array(
+			'parent_slug' => 'themes.php',
+			'page_title'  => __('Demo Import', 'woozio'),
+			'menu_title'  => __('Demo Import', 'woozio'),
+			'capability'  => 'manage_options',
+			'menu_slug'   => 'dummy-pack-center',
+			'callback'    => 'worrprba_dummy_pack_center_page'
+		);
+	} );
+
+	add_filter('worrprba_dummy_pack_skip_install_proccess', function($skip) {
+		return ['restore_plugins']; // support: restore_uploads, restore_plugins, restore_database
+	}, 10);
+
+	add_action('worry-proof-backup:after_install_dummy_pack_done', function($payload) {
+		if ( did_action( 'elementor/loaded' ) ) {
+			\Elementor\Plugin::$instance->files_manager->clear_cache();
+		}
+
+		if ( function_exists( 'wc_delete_product_transients' ) ) {
+			wc_delete_product_transients();
+		}
+
+		flush_rewrite_rules();
+
+		return $payload;
+	}, 10, 1 );
+} else {
+	function woozio_import_plugins_notice() {
+		if ( isset( $_GET['page'] ) && $_GET['page'] === 'tgmpa-install-plugins' ) {
+			return;
+		} 
+
+		if ( woozio_are_required_plugins_active() ) {
+			return;
+		}
+
+		echo '<div class="notice notice-warning settings-error is-dismissible">';
+		echo '<p><strong>' . esc_html__( 'Demo import is available after activating Envato license and all required plugins.', 'woozio' ) . '</strong></p>';
+		echo '<p><a href="' . esc_url( admin_url( 'themes.php?page=tgmpa-install-plugins' ) ) . '">' . esc_html__( 'Install Required Plugins', 'woozio' ) . '</a></p>';
+		echo '</div>';
 	}
-	return '';
-} );
-
+	add_action( 'admin_notices', 'woozio_import_plugins_notice' );
+}
 
 /**
  * Verify purchase code
@@ -160,35 +199,4 @@ add_action( 'after_setup_theme', function() {
     if ( class_exists( 'VerifyTheme_Admin' ) ) {
         VerifyTheme_Admin::init();
     }
-} );
-
-add_filter( 'worrprba_dummy_pack_center_submenu_args', function ($submenu_args) {
-    return $submenu_args = array(
-		'parent_slug' => 'themes.php',
-		'page_title'  => __('Demo Import', 'woozio'),
-		'menu_title'  => __('Demo Import', 'woozio'),
-		'capability'  => 'manage_options',
-		'menu_slug'   => 'dummy-pack-center',
-		'callback'    => 'worrprba_dummy_pack_center_page'
-	);
-} );
-
-add_action( 'admin_notices', function() {
-	$license_data = get_option( '_verifytheme_settings' );
-	
-
-	if ( ! current_user_can( 'manage_options' ) || $license_data ) {
-		return;
-	}
-	?>
-	<div class="notice notice-warning settings-error is-dismissible">
-        <p>
-            <strong><?php esc_html_e('Welcome to Woozio 🎉', 'woozio'); ?></strong><br>
-            <?php esc_html_e('Activate your license to unlock updates and demo imports.', 'woozio'); ?> 
-            <a href="<?php echo esc_url( admin_url( 'themes.php?page=verifytheme_settings' ) ); ?>">
-                <?php esc_html_e('Activate License →', 'woozio'); ?>
-            </a>
-        </p>
-    </div>
-	<?php
 } );

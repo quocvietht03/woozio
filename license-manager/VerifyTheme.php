@@ -518,21 +518,7 @@ if ( ! class_exists( 'VerifyTheme_Admin' ) ) {
                 <?php if ( $is_activated ) : ?>
                     <div class="verifytheme-success">
                         <?php printf( esc_html__( 'License activated successfully on: %s ', 'woozio' ), esc_html( $domain ) ); ?><br/>
-
-                        <?php 
-                            $plugin_path = 'worry-proof-backup/worry-proof-backup.php';
-
-                            if ( isset( get_plugins()[$plugin_path] ) && is_plugin_active( $plugin_path ) ) {
-                                ?>
-                                    <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Import Demo Content', 'woozio'); ?></a>
-                                <?php
-                            } else {
-                                ?>
-                                    <a href="<?php echo esc_url( 'themes.php?page=tgmpa-install-plugins' ); ?>"><?php esc_html_e( 'Install Plugins', 'woozio' ); ?></a>
-                                <?php
-                            }
-                        ?>
-
+                        <a href="<?php echo esc_url('themes.php?page=dummy-pack-center'); ?>"><?php esc_html_e('Import Demo Content', 'woozio'); ?></a>
                     </div>
                 <?php endif; ?>
 
