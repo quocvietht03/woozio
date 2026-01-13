@@ -184,6 +184,10 @@ class Widget_MiniCart extends Widget_Base
 	 */
 	public function render_mini_cart_sidebar()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$free_shipping_threshold = woozio_get_free_shipping_minimum_amount();
 		$cart_total = WC()->cart->get_cart_contents_total();
 		$currency_symbol = get_woocommerce_currency_symbol();
@@ -268,6 +272,10 @@ class Widget_MiniCart extends Widget_Base
 	}
 	protected function render()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$settings = $this->get_settings_for_display();
 		$icon_cart = $settings['cart_mini_icon']['url'];
 

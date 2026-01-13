@@ -36,6 +36,10 @@ class Widget_ProductItem extends Widget_Base
 	{
 		$supported_products = [];
 
+		if (!class_exists('WooCommerce')) {
+			return $supported_products;
+		}
+
 		$args = array(
 			'post_type' => 'product',
 			'posts_per_page' => -1,
@@ -249,6 +253,10 @@ class Widget_ProductItem extends Widget_Base
 
 	protected function render()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$settings = $this->get_settings_for_display();
 
 		$products = $settings['products'];

@@ -526,6 +526,10 @@ class Widget_ProductShowcaseStyle1 extends Widget_Base
 
 	protected function render()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$settings = $this->get_settings_for_display();
 
 		$products = $settings['products'];

@@ -645,6 +645,10 @@ class Widget_BannerProductSlider extends Widget_Base
 
     protected function render()
     {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+        
         $settings = $this->get_settings_for_display();
         if (empty($settings['banner_items'])) {
             return;

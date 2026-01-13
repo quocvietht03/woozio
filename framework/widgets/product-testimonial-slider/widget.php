@@ -938,6 +938,10 @@ class Widget_ProductTestimonialSlider extends Widget_Base
     }
     protected function render()
     {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+        
         $settings = $this->get_settings_for_display();
 
         $classes = ['bt-elwg-product-testimonial--style-1'];

@@ -647,6 +647,10 @@ class Widget_ProductTestimonial extends Widget_Base
     }
     protected function render()
     {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+        
         $settings = $this->get_settings_for_display();
         $image_position = isset($settings['image_position']) ? $settings['image_position'] : 'row-reverse';
         $slider_settings = [

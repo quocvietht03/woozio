@@ -498,6 +498,10 @@ class Widget_AccordionWithProductSlider extends Widget_Base
 
     protected function render()
     {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+        
         $settings = $this->get_settings_for_display();
         $slider_settings = [
             'autoplay' => isset($settings['slider_autoplay']) && $settings['slider_autoplay'] === 'yes',

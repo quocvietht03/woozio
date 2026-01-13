@@ -164,6 +164,10 @@ class Widget_MiniWishlist extends Widget_Base
 	}
 	protected function render()
 	{
+		if (!class_exists('WooCommerce')) {
+			return;
+		}
+		
 		$settings = $this->get_settings_for_display();
 		
 		// Check if wishlist should be shown
