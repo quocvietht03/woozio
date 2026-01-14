@@ -3486,35 +3486,37 @@
 					if (response.success) {
 						$('.bt-js-add-to-cart-variable').removeClass('loading');
 						var productId = variation_id || product_id;
-						if (productId) {
-							WoozioHandleCartAction(productId);
-						}
-
-						// Update mini cart after successful add to cart
-						$.ajax({
-							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-							type: 'POST',
-							success: function (response) {
-								if (response && response.fragments) {
-									$.each(response.fragments, function (key, value) {
-										$(key).replaceWith(value);
-									});
-									const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
-									if (cartCount === 0) {
-										$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
-									} else {
-										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
-									}
-									// Trigger fragments refreshed event to update note button class
-									$(document.body).trigger('wc_fragments_refreshed');
+				
+					// Update mini cart after successful add to cart
+					$.ajax({
+						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+						type: 'POST',
+						success: function (response) {
+							if (response && response.fragments) {
+								$.each(response.fragments, function (key, value) {
+									$(key).replaceWith(value);
+								});
+								const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
+								if (cartCount === 0) {
+									$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+								} else {
+									$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
 								}
-							},
-							error: function () {
-								console.error('Failed to update mini cart.');
+								// Trigger fragments refreshed event to update note button class
+								$(document.body).trigger('wc_fragments_refreshed');
+								
+								// Open mini cart after fragments are loaded
+								if (productId) {
+									WoozioHandleCartAction(productId);
+								}
+								// Free shipping message
+								WoozioFreeShippingMessage();
 							}
-						});
-						// Free shipping message
-						WoozioFreeShippingMessage();
+						},
+						error: function () {
+							console.error('Failed to update mini cart.');
+						}
+					});
 					} else {
 						console.log('error');
 					}
@@ -3560,35 +3562,38 @@
 				success: function (response) {
 					if (response.success) {
 						$('.bt-js-add-to-cart-simple').removeClass('loading');
-						if (product_id) {
-							WoozioHandleCartAction(product_id);
-						}
+						
 
-						// Update mini cart after successful add to cart
-						$.ajax({
-							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-							type: 'POST',
-							success: function (response) {
-								if (response && response.fragments) {
-									$.each(response.fragments, function (key, value) {
-										$(key).replaceWith(value);
-									});
-									const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
-									if (cartCount === 0) {
-										$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
-									} else {
-										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
-									}
-									// Trigger fragments refreshed event to update note button class
-									$(document.body).trigger('wc_fragments_refreshed');
+					// Update mini cart after successful add to cart
+					$.ajax({
+						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+						type: 'POST',
+						success: function (response) {
+							if (response && response.fragments) {
+								$.each(response.fragments, function (key, value) {
+									$(key).replaceWith(value);
+								});
+								const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
+								if (cartCount === 0) {
+									$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+								} else {
+									$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
 								}
-							},
-							error: function () {
-								console.error('Failed to update mini cart.');
+								// Trigger fragments refreshed event to update note button class
+								$(document.body).trigger('wc_fragments_refreshed');
+								
+								// Open mini cart after fragments are loaded
+								if (product_id) {
+									WoozioHandleCartAction(product_id);
+								}
+								// Free shipping message
+								WoozioFreeShippingMessage();
 							}
-						});
-						// Free shipping message
-						WoozioFreeShippingMessage();
+						},
+						error: function () {
+							console.error('Failed to update mini cart.');
+						}
+					});
 					} else {
 						console.log('error');
 					}
@@ -4091,16 +4096,27 @@
 
 	$(document.body).on('added_to_cart', function (event, fragments, cart_hash, $button) {
 		// Only show toast if not in Elementor editor
-		WoozioFreeShippingMessage();
 		if (!$('body').hasClass('elementor-editor-active')) {
 			// Get product ID from button that triggered the event
 			var productId = null;
 			if ($button && $button.data('product_id')) {
 				productId = $button.data('product_id');
 			}
-			if (productId) {
-				WoozioHandleCartAction(productId);
+			
+			// Apply fragments if available
+			if (fragments) {
+				$.each(fragments, function (key, value) {
+					$(key).replaceWith(value);
+				});
 			}
+			
+			// Wait a bit to ensure DOM is updated before opening mini cart
+			setTimeout(function() {
+				WoozioFreeShippingMessage();
+				if (productId) {
+					WoozioHandleCartAction(productId);
+				}
+			}, 100);
 		}
 	});
 	$(document).on('removed_from_cart', function () {
