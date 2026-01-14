@@ -1024,6 +1024,11 @@
 							showComparePopup();
 							$('.bt-popup-compare .bt-compare-load').html(response.data['product']).fadeIn('slow');
 							WoozioCompareContentScroll();
+							// Update mini compare count
+							var compare_count = compare_local ? compare_local.split(',').filter(function (item) { return item !== ''; }).length : 0;
+							$('.bt-mini-compare .compare_total').html(compare_count);
+							// Trigger custom event for widget update
+							$(document).trigger('woozio_compare_updated');
 							// close popup quick view
 							if ($('.bt-popup-quick-view').hasClass('active')) {
 								$('.bt-quick-view-body').removeClass('show');
@@ -1090,6 +1095,11 @@
 			}
 			$('.bt-product-compare-btn[data-id="' + product_id + '"]').addClass('no-added');
 			$('.bt-product-compare-btn[data-id="' + product_id + '"]').removeClass('added');
+			// Update mini compare count
+			var compare_count = compare_local && compare_local !== '' ? compare_local.split(',').filter(function (item) { return item !== ''; }).length : 0;
+			$('.bt-mini-compare .compare_total').html(compare_count);
+			// Trigger custom event for widget update
+			$(document).trigger('woozio_compare_updated');
 			if (!$('.bt-popup-compare').hasClass('bt-compare-elwwg')) {
 				if (!compare_local || compare_local === '') {
 					removeComparePopup();
@@ -2661,6 +2671,19 @@
 				e.preventDefault();
 				const $mainContent = $(this).parents('.bt-main-content');
 				$mainContent.find('.bt-products-sidebar, .bt-products-dropdown, .bt-template-nosidebar-dropdown').removeClass('active');
+			});
+		}
+		if ($('.bt-elwg-filter-toggle').length > 0) {
+			$(document).on('click', '.bt-elwg-filter-toggle', function () {
+
+				// Check if bt-product-filter-toggle exists on the page
+				if ($('.bt-product-filter-toggle').length > 0) {
+					const $mainContent = $('.bt-product-filter-toggle').closest('.bt-main-content');
+					$mainContent.find('.bt-products-sidebar').addClass('active');
+					$mainContent.find('.bt-products-dropdown').toggleClass('active');
+					$mainContent.find('.bt-template-nosidebar-dropdown').addClass('active');
+
+				}
 			});
 		}
 	}
