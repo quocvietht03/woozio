@@ -18,6 +18,15 @@ Text Domain: woozio
 5. Navigate to Appearance > Theme Options in your admin panel and customize to taste.
 
 == Changelog ==
-= 1.0 =
-* Released: Dec 17, 2024
+
+Version 1.1 - January 13, 2026
+- Updated required plugins and demo import process
+- Improved license verification logic
+- Added brand logo support to Elementor widgets
+- Fixed UI issues in Elementor widgets
+- Fixed issue widgets load on child theme
+
+Version 1.0 - January 1, 2026
+Release first version!
+
 
