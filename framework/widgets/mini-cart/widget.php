@@ -67,6 +67,16 @@ class Widget_MiniCart extends Widget_Base
 				'default' => 'yes',
 			]
 		);
+		$this->add_control(
+			'cart_text',
+			[
+				'label' => esc_html__('Text', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => '',
+				'placeholder' => esc_html__('Enter text to display below icon', 'woozio'),
+			]
+		);
+
 
 		$this->end_controls_section();
 	}
@@ -168,6 +178,52 @@ class Widget_MiniCart extends Widget_Base
 				'label' => __('Typography', 'woozio'),
 				'default' => '',
 				'selector' => '{{WRAPPER}} .bt-elwg-mini-cart--default .bt-mini-cart span',
+			]
+		);
+		$this->add_control(
+			'text_cart',
+			[
+				'label' => __('Text', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+		$this->add_control(
+			'text_cart_color',
+			[
+				'label' => __('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-mini-cart--default .bt-mini-cart .bt-text-label' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'text_cart_typography',
+				'label' => __('Typography', 'woozio'),
+				'default' => '',
+				'selector' => '{{WRAPPER}} .bt-elwg-mini-cart--default .bt-mini-cart .bt-text-label',
+			]
+		);
+		$this->add_responsive_control(
+			'text_cart_spacing',
+			[
+				'label' => __('Spacing', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 50,
+						'step' => 1,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-mini-cart--default .bt-mini-cart' => 'gap: {{SIZE}}px;',
+				],
 			]
 		);
 		$this->end_controls_section();
@@ -304,6 +360,9 @@ class Widget_MiniCart extends Widget_Base
 						</svg>
 					<?php } ?>
 					<span class="cart_total"><?php echo WC()->cart->get_cart_contents_count(); ?></span></a>
+				<?php if (!empty($settings['cart_text'])) { ?>
+					<a class="bt-text-label <?php echo ('yes' === $settings['enable_sidebar_cart'] && !is_cart()) ? 'js-cart-sidebar' : ''; ?>" href="<?php echo esc_url(wc_get_cart_url()) ?>"><?php echo esc_html($settings['cart_text']); ?></a>
+				<?php } ?>
 			</div>
 		</div>
 <?php

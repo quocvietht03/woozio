@@ -50,7 +50,15 @@ class Widget_MiniWishlist extends Widget_Base
 				'media_types' => ['svg'],
 			]
 		);
-
+		$this->add_control(
+			'wishlist_text',
+			[
+				'label' => esc_html__('Text', 'woozio'),
+				'type' => Controls_Manager::TEXT,
+				'default' => '',
+				'placeholder' => esc_html__('Enter text to display below icon', 'woozio'),
+			]
+		);
 
 		$this->end_controls_section();
 	}
@@ -154,6 +162,51 @@ class Widget_MiniWishlist extends Widget_Base
 				'selector' => '{{WRAPPER}} .bt-elwg-mini-wishlist--default .bt-mini-wishlist span',
 			]
 		);
+		$this->add_control(
+			'text_wishlist',
+			[
+				'label' => __('Text', 'woozio'),
+				'type' => Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+		$this->add_control(
+			'text_wishlist_color',
+			[
+				'label' => __('Color', 'woozio'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-mini-wishlist--default .bt-mini-wishlist .bt-text-label' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'text_wishlist_typography',
+				'label' => __('Typography', 'woozio'),
+				'default' => '',
+				'selector' => '{{WRAPPER}} .bt-elwg-mini-wishlist--default .bt-mini-wishlist .bt-text-label',
+			]
+		);
+		$this->add_responsive_control(
+			'text_wishlist_spacing',
+			[
+				'label' => __('Spacing', 'woozio'),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 50,
+						'step' => 1,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .bt-elwg-mini-wishlist--default .bt-mini-wishlist' => 'gap: {{SIZE}}px;',
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 
@@ -211,6 +264,9 @@ class Widget_MiniWishlist extends Widget_Base
 						</svg>
 					<?php } ?>
 					<span class="wishlist_total"><?php echo count(WC()->session->get('productwishlistlocal', [])); ?></span></a>
+				<?php if (!empty($settings['wishlist_text'])) {
+					echo '<a href="' . esc_url($wishlist_url) . '" class="bt-text-label">' . esc_html($settings['wishlist_text']) . '</a>';
+				} ?>
 			</div>
 		</div>
 <?php

@@ -967,6 +967,8 @@
   &--default {
     .bt-mini-cart {
       display: flex;
+      flex-direction: column;
+      align-items: center;
       a {
         position: relative;
         display: inline-flex;
@@ -996,6 +998,16 @@
           top: -5.75px;
           background: $color-accent;
         }
+      }
+      .bt-text-label {
+        display: block;
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        color: $color-primary;
       }
     }
   }
@@ -1732,7 +1744,7 @@
             padding: 12px;
             border: 1px solid #e9e9e9;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 16px;
             font-family: inherit;
             resize: vertical;
             box-sizing: border-box;
@@ -1978,6 +1990,8 @@
   &--default {
     .bt-mini-wishlist {
       display: flex;
+      flex-direction: column;
+      align-items: center;
       a {
         position: relative;
         display: inline-flex;
@@ -2007,6 +2021,66 @@
           top: -5.75px;
           background: $color-accent;
         }
+      }
+      .bt-text-label {
+        display: block;
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+.bt-elwg-mini-compare {
+  &--default {
+    .bt-mini-compare {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      a {
+        position: relative;
+        display: inline-flex;
+        svg {
+          display: flex;
+          width: 24px;
+          height: 24px;
+          align-items: center;
+          justify-content: center;
+        }
+        span {
+          color: #fff;
+          text-align: center;
+          font-family: $accent-font;
+          font-size: 11px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 16px;
+          letter-spacing: 0;
+          text-transform: uppercase;
+          width: 16px;
+          height: 16px;
+          border-radius: 100%;
+          display: block;
+          position: absolute;
+          right: -7px;
+          top: -5.75px;
+          background: $color-accent;
+        }
+      }
+      .bt-text-label {
+        display: block;
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        color: $color-primary;
       }
     }
   }

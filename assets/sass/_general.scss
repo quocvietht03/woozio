@@ -1753,6 +1753,21 @@
 .mfp-fade.mfp-wrap.mfp-removing .mfp-content {
   opacity: 0;
 }
+.bt-popup-sticky-menu{
+  .bt-elwg-mini-compare--default,
+  .bt-elwg-mini-cart--default,
+  .bt-elwg-mini-wishlist--default {
+    .compare_total,
+    .cart_total,
+    .wishlist_total {
+      font-size: 9px !important;
+      line-height: 15px !important;
+      width: 15px !important;
+      height: 15px !important;
+      top: -3.5px !important;
+    }
+  }
+}
 
 /* ============================================ */
 /* PRELOADER */
