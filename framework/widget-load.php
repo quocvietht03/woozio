@@ -128,7 +128,7 @@ class ElementorWidgets
 	 */
 	public function backend_styles()
 	{
-		wp_enqueue_style('woozio-backend-editor', get_stylesheet_directory_uri() . '/framework/widgets/backend.css', array(), false);
+		wp_enqueue_style('woozio-backend-editor', get_template_directory_uri() . '/framework/widgets/backend.css', array(), false);
 	}
 
 	/**
@@ -156,7 +156,7 @@ class ElementorWidgets
 	public function widget_scripts()
 	{
 		wp_register_script('swiper-slider', get_template_directory_uri() . '/assets/libs/swiper/swiper.min.js', array('jquery'), '', true);
-		wp_register_script('elementor-widgets',  get_stylesheet_directory_uri() . '/framework/widgets/frontend.js', ['jquery'], '', true);
+		wp_register_script('elementor-widgets',  get_template_directory_uri() . '/framework/widgets/frontend.js', ['jquery'], '', true);
 		wp_register_script('magnific-popup', get_template_directory_uri() . '/assets/libs/magnific-popup/jquery.magnific-popup.js', array('jquery'), '', true);
 	}
 
@@ -223,7 +223,7 @@ class ElementorWidgets
 				continue;
 			}
 
-			$widget_file = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/widget.php';
+			$widget_file = get_template_directory() . '/framework/widgets/' . $widget . '/widget.php';
 
 			// Only require if file exists and class is not already declared
 			if (file_exists($widget_file) && ! class_exists($widget)) {
@@ -231,7 +231,7 @@ class ElementorWidgets
 			}
 
 			// Include skins safely
-			$skins_path = get_stylesheet_directory() . '/framework/widgets/' . $widget . '/skins/';
+			$skins_path = get_template_directory() . '/framework/widgets/' . $widget . '/skins/';
 			if (is_dir($skins_path)) {
 				foreach (glob($skins_path . '*.php') as $filepath) {
 					if (file_exists($filepath)) {
