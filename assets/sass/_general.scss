@@ -1621,6 +1621,59 @@
   }
 }
 
+// Zoom button for mobile lightbox
+.woocommerce-product-gallery__image {
+  position: relative;
+
+  .bt-lightbox-zoom-button {
+    display: none;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-family: $text-font;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-primary;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke: $color-primary;
+      flex-shrink: 0;
+    }
+
+    span {
+      color: $color-primary;
+    }
+  }
+
+  // Show button on mobile, hide on desktop
+  @media (max-width: 767px) {
+    .bt-lightbox-zoom-button {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .bt-lightbox-zoom-button {
+      display: none !important;
+    }
+  }
+}
+
 .__bt-swiper-navigation-style {
   --swiper-navigation-sides-offset: 15px;
   --swiper-navigation-sides-translate: 70px;
@@ -1753,7 +1806,7 @@
 .mfp-fade.mfp-wrap.mfp-removing .mfp-content {
   opacity: 0;
 }
-.bt-popup-sticky-menu{
+.bt-popup-sticky-menu {
   .bt-elwg-mini-compare--default,
   .bt-elwg-mini-cart--default,
   .bt-elwg-mini-wishlist--default {

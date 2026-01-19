@@ -74,6 +74,50 @@
 			return
 		}
 
+		const isMobile = window.innerWidth <= 767;
+
+		// Remove old lightbox zoom buttons before adding new ones
+		$('.bt-gallery-lightbox .bt-lightbox-zoom-button').remove();
+
+		// Mobile: disable direct image click, add zoom buttons
+		if (isMobile) {
+			$('.bt-gallery-lightbox .woocommerce-product-gallery__image').each(function() {
+				const $imageContainer = $(this);
+				const $img = $imageContainer.find('img');
+				
+				// Prevent direct click on image
+				$img.css('pointer-events', 'none');
+				
+				// Add zoom button if not exists
+				if ($imageContainer.find('.bt-lightbox-zoom-button').length === 0) {
+					const $zoomButton = $('<button>', {
+						class: 'bt-lightbox-zoom-button',
+						'aria-label': 'Click to enlarge',
+						html: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4m0 0v4m0-4l5 5m7-5h4m0 0v4m0-4l-5 5M8 20H4m0 0v-4m0 4l5-5m7 5h4m0 0v-4m0 4l-5-5"></path></svg><span>Click to enlarge</span>'
+					});
+					
+					$imageContainer.append($zoomButton);
+					
+					// Handle button click to open lightbox
+					$zoomButton.on('click', function(e) {
+						e.preventDefault();
+						e.stopPropagation();
+						
+						// Temporarily enable pointer events and trigger click on image
+						$img.css('pointer-events', 'auto');
+						$img.trigger('click');
+						setTimeout(function() {
+							$img.css('pointer-events', 'none');
+						}, 100);
+					});
+				}
+			});
+		} else {
+			// Desktop: enable direct image click
+			$('.bt-gallery-lightbox .woocommerce-product-gallery__image img').css('pointer-events', 'auto');
+		}
+
+		// Initialize magnificPopup
 		$('.bt-gallery-lightbox').magnificPopup({
 			delegate: 'img',
 			type: 'image',
@@ -4127,6 +4171,7 @@
 		WoozioSubmenuAuto();
 		WoozioUpdateBodyWidthVariable();
 		WoozioHandleGridViewResize();
+		WoozioGalleryLightbox();
 	});
 	$(document.body).on('updated_cart_totals', function () {
 		WoozioFreeShippingMessage();
