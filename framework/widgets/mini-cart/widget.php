@@ -334,6 +334,8 @@ class Widget_MiniCart extends Widget_Base
 		
 		$settings = $this->get_settings_for_display();
 		$icon_cart = $settings['cart_mini_icon']['url'];
+		$cart_count = WC()->cart->get_cart_contents_count();
+		$cart_empty_class = ($cart_count === 0) ? 'cart-empty' : '';
 
 		// Hook sidebar to footer if enabled and not on cart page
 		if ('yes' === $settings['enable_sidebar_cart'] && !is_cart()) {
@@ -341,7 +343,7 @@ class Widget_MiniCart extends Widget_Base
 		}
 	?>
 		<div class="bt-elwg-mini-cart--default">
-			<div class="bt-mini-cart">
+			<div class="bt-mini-cart <?php echo esc_attr($cart_empty_class); ?>">
 				<a class="bt-toggle-btn <?php echo ('yes' === $settings['enable_sidebar_cart'] && !is_cart()) ? 'js-cart-sidebar' : ''; ?>" href="<?php echo esc_url(wc_get_cart_url()) ?>">
 					<?php if (!empty($icon_cart) && 'svg' === pathinfo($icon_cart, PATHINFO_EXTENSION)) {
 						$response = wp_safe_remote_get( $icon_cart, array(
@@ -359,7 +361,7 @@ class Widget_MiniCart extends Widget_Base
 							<path d="M21.4893 19.6753L20.1525 6.42531C20.1091 6.05877 19.9321 5.72108 19.6554 5.47685C19.3786 5.23262 19.0215 5.09901 18.6525 5.10156H15.4996C15.4996 3.90809 15.0255 2.7635 14.1816 1.91958C13.3377 1.07567 12.1931 0.601563 10.9996 0.601562C9.80616 0.601563 8.66157 1.07567 7.81766 1.91958C6.97374 2.7635 6.49964 3.90809 6.49964 5.10156H3.34308C2.97399 5.09901 2.61691 5.23262 2.34016 5.47685C2.06342 5.72108 1.88644 6.05877 1.84308 6.42531L0.506201 19.6753C0.481702 19.8853 0.501861 20.0981 0.565357 20.2997C0.628852 20.5013 0.734249 20.6873 0.874639 20.8453C1.01604 21.004 1.18932 21.1311 1.38317 21.2184C1.57701 21.3056 1.78707 21.351 1.99964 21.3516H19.9921C20.206 21.352 20.4175 21.3072 20.6127 21.2199C20.8079 21.1326 20.9824 21.005 21.1246 20.8453C21.2644 20.687 21.3691 20.5009 21.4319 20.2993C21.4948 20.0976 21.5143 19.885 21.4893 19.6753ZM10.9996 2.10156C11.7953 2.10156 12.5583 2.41763 13.121 2.98024C13.6836 3.54285 13.9996 4.30591 13.9996 5.10156H7.99964C7.99964 4.30591 8.31571 3.54285 8.87832 2.98024C9.44093 2.41763 10.204 2.10156 10.9996 2.10156ZM1.99964 19.8516L3.34308 6.60156H6.49964V8.85156C6.49964 9.05048 6.57866 9.24124 6.71931 9.38189C6.85996 9.52254 7.05073 9.60156 7.24964 9.60156C7.44855 9.60156 7.63932 9.52254 7.77997 9.38189C7.92062 9.24124 7.99964 9.05048 7.99964 8.85156V6.60156H13.9996V8.85156C13.9996 9.05048 14.0787 9.24124 14.2193 9.38189C14.36 9.52254 14.5507 9.60156 14.7496 9.60156C14.9486 9.60156 15.1393 9.52254 15.28 9.38189C15.4206 9.24124 15.4996 9.05048 15.4996 8.85156V6.60156H18.6637L19.9921 19.8516H1.99964Z" fill="#181818"></path>
 						</svg>
 					<?php } ?>
-					<span class="cart_total"><?php echo WC()->cart->get_cart_contents_count(); ?></span></a>
+					<span class="cart_total"><?php echo esc_html($cart_count); ?></span></a>
 				<?php if (!empty($settings['cart_text'])) { ?>
 					<a class="bt-text-label <?php echo ('yes' === $settings['enable_sidebar_cart'] && !is_cart()) ? 'js-cart-sidebar' : ''; ?>" href="<?php echo esc_url(wc_get_cart_url()) ?>"><?php echo esc_html($settings['cart_text']); ?></a>
 				<?php } ?>

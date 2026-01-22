@@ -1823,6 +1823,7 @@
 			}
 		});
 	}
+
 	const SwitcherHandler = function ($scope, $) {
 		const $switcher = $scope.find('.js-switcher-dropdown');
 		if ($switcher.length) {

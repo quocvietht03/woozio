@@ -81,13 +81,13 @@
 
 		// Mobile: disable direct image click, add zoom buttons
 		if (isMobile) {
-			$('.bt-gallery-lightbox .woocommerce-product-gallery__image').each(function() {
+			$('.bt-gallery-lightbox .woocommerce-product-gallery__image').each(function () {
 				const $imageContainer = $(this);
 				const $img = $imageContainer.find('img');
-				
+
 				// Prevent direct click on image
 				$img.css('pointer-events', 'none');
-				
+
 				// Add zoom button if not exists
 				if ($imageContainer.find('.bt-lightbox-zoom-button').length === 0) {
 					const $zoomButton = $('<button>', {
@@ -95,18 +95,18 @@
 						'aria-label': 'Click to enlarge',
 						html: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4m0 0v4m0-4l5 5m7-5h4m0 0v4m0-4l-5 5M8 20H4m0 0v-4m0 4l5-5m7 5h4m0 0v-4m0 4l-5-5"></path></svg><span>Click to enlarge</span>'
 					});
-					
+
 					$imageContainer.append($zoomButton);
-					
+
 					// Handle button click to open lightbox
-					$zoomButton.on('click', function(e) {
+					$zoomButton.on('click', function (e) {
 						e.preventDefault();
 						e.stopPropagation();
-						
+
 						// Temporarily enable pointer events and trigger click on image
 						$img.css('pointer-events', 'auto');
 						$img.trigger('click');
-						setTimeout(function() {
+						setTimeout(function () {
 							$img.css('pointer-events', 'none');
 						}, 100);
 					});
@@ -758,7 +758,27 @@
 			});
 		}
 	}
-
+	/* Update Mini Wishlist Count - Shared function for updating mini-wishlist display */
+	function WoozioUpdateMiniWishlistCount() {
+		var wishlist_local = window.localStorage.getItem('productwishlistlocal');
+		var count = 0;
+		if (wishlist_local && wishlist_local !== '') {
+			var wishlist_arr = wishlist_local.split(',');
+			count = wishlist_arr.filter(function (item) {
+				return item !== '';
+			}).length;
+		}
+		// Update all mini-wishlist widgets on the page
+		$('.bt-mini-wishlist .wishlist_total').text(count);
+		// Update class based on count
+		$('.bt-mini-wishlist').each(function () {
+			if (count === 0) {
+				$(this).addClass('wishlist-empty');
+			} else {
+				$(this).removeClass('wishlist-empty');
+			}
+		});
+	}
 	/* Product wishlist */
 	function WoozioProductWishlist() {
 		if ($('.bt-product-wishlist-btn').length > 0) {
@@ -769,9 +789,8 @@
 					wishlist_local = window.localStorage.getItem('productwishlistlocal');
 				if (!wishlist_local) {
 					window.localStorage.setItem('productwishlistlocal', post_id);
-					wishlist_local = window.localStorage.getItem('productwishlistlocal');
-					var wishlist_count = wishlist_local ? wishlist_local.split(',').length : 0;
-					$('.bt-mini-wishlist .wishlist_total').html(wishlist_count);
+					// Update mini wishlist count using shared function
+					WoozioUpdateMiniWishlistCount();
 					$(this).addClass('loading');
 					$(this).removeClass('no-added');
 					setTimeout(function () {
@@ -792,9 +811,8 @@
 							wishlist_arr.splice(index, 1);
 						}
 						window.localStorage.setItem('productwishlistlocal', wishlist_arr);
-						wishlist_local = window.localStorage.getItem('productwishlistlocal');
-						var wishlist_count = wishlist_local ? wishlist_local.split(',').length : 0;
-						$('.bt-mini-wishlist .wishlist_total').html(wishlist_count);
+						// Update mini wishlist count using shared function
+						WoozioUpdateMiniWishlistCount();
 						$(this).addClass('loading');
 						$(this).removeClass('added');
 						setTimeout(function () {
@@ -807,9 +825,8 @@
 						}
 					} else {
 						window.localStorage.setItem('productwishlistlocal', wishlist_local + ',' + post_id);
-						wishlist_local = window.localStorage.getItem('productwishlistlocal');
-						var wishlist_count = wishlist_local ? wishlist_local.split(',').length : 0;
-						$('.bt-mini-wishlist .wishlist_total').html(wishlist_count);
+						// Update mini wishlist count using shared function
+						WoozioUpdateMiniWishlistCount();
 						$(this).addClass('loading');
 						$(this).removeClass('no-added');
 						setTimeout(function () {
@@ -844,8 +861,9 @@
 				WoozioShareLocalStorage(wishlist_str);
 
 				$(this).closest('.bt-product-item').remove();
+				// Update mini wishlist count using shared function
+				WoozioUpdateMiniWishlistCount();
 				let currentCount = $('.bt-product-item').length;
-				$('.bt-mini-wishlist .wishlist_total').html(currentCount);
 				if (currentCount == 0) {
 					$('.bt-products-wishlist-form').submit();
 				}
@@ -870,7 +888,8 @@
 					success: function (response) {
 						if (response.success) {
 							$('.bt-product-list').html(response.data['items']).fadeIn('slow');
-							$('.bt-mini-wishlist .wishlist_total').html(response.data['count']);
+							// Update mini wishlist count using shared function
+							WoozioUpdateMiniWishlistCount();
 						} else {
 							console.log('error');
 						}
@@ -887,6 +906,16 @@
 	/* Product Wishlist Load */
 	function WoozioProductWishlistLoad() {
 		var wishlist_local = window.localStorage.getItem('productwishlistlocal');
+
+		// Always update mini wishlist count (even if no elementor widget)
+		WoozioUpdateMiniWishlistCount();
+
+		// Setup storage listener for sync between browser tabs (only once)
+		if (!window.woozioWishlistStorageListenerAdded) {
+			window.addEventListener('storage', WoozioUpdateMiniWishlistCount);
+			window.woozioWishlistStorageListenerAdded = true;
+		}
+
 		if (!wishlist_local) {
 			return;
 		}
@@ -935,7 +964,6 @@
 				success: function (response) {
 					if (response.success) {
 						$('.bt-product-list').html(response.data['items']).fadeIn('slow');
-						$('.bt-mini-wishlist .wishlist_total').html(response.data['count']);
 					} else {
 						console.log('error');
 					}
@@ -1000,6 +1028,27 @@
 				}
 			});
 		}
+	}
+	/* Update Mini Compare Count - Shared function for updating mini-compare display */
+	function WoozioUpdateMiniCompareCount() {
+		var compare_local = window.localStorage.getItem('productcomparelocal');
+		var count = 0;
+		if (compare_local && compare_local !== '') {
+			var compare_arr = compare_local.split(',');
+			count = compare_arr.filter(function (item) {
+				return item !== '';
+			}).length;
+		}
+		// Update all mini-compare widgets on the page
+		$('.bt-mini-compare .compare_total').text(count);
+		// Update class based on count
+		$('.bt-mini-compare').each(function () {
+			if (count === 0) {
+				$(this).addClass('compare-empty');
+			} else {
+				$(this).removeClass('compare-empty');
+			}
+		});
 	}
 	/* Product compare */
 	function WoozioProductCompare() {
@@ -1068,10 +1117,9 @@
 							showComparePopup();
 							$('.bt-popup-compare .bt-compare-load').html(response.data['product']).fadeIn('slow');
 							WoozioCompareContentScroll();
-							// Update mini compare count
-							var compare_count = compare_local ? compare_local.split(',').filter(function (item) { return item !== ''; }).length : 0;
-							$('.bt-mini-compare .compare_total').html(compare_count);
-							// Trigger custom event for widget update
+							// Update mini compare count using shared function
+							WoozioUpdateMiniCompareCount();
+							// Trigger custom event for widget update (if needed by other code)
 							$(document).trigger('woozio_compare_updated');
 							// close popup quick view
 							if ($('.bt-popup-quick-view').hasClass('active')) {
@@ -1139,10 +1187,9 @@
 			}
 			$('.bt-product-compare-btn[data-id="' + product_id + '"]').addClass('no-added');
 			$('.bt-product-compare-btn[data-id="' + product_id + '"]').removeClass('added');
-			// Update mini compare count
-			var compare_count = compare_local && compare_local !== '' ? compare_local.split(',').filter(function (item) { return item !== ''; }).length : 0;
-			$('.bt-mini-compare .compare_total').html(compare_count);
-			// Trigger custom event for widget update
+			// Update mini compare count using shared function
+			WoozioUpdateMiniCompareCount();
+			// Trigger custom event for widget update (if needed by other code)
 			$(document).trigger('woozio_compare_updated');
 			if (!$('.bt-popup-compare').hasClass('bt-compare-elwwg')) {
 				if (!compare_local || compare_local === '') {
@@ -1169,6 +1216,16 @@
 	/* Product Compare Load */
 	function WoozioProductCompareLoad() {
 		var compare_local = window.localStorage.getItem('productcomparelocal');
+
+		// Always update mini compare count (even if no elementor widget)
+		WoozioUpdateMiniCompareCount();
+
+		// Setup storage listener for sync between browser tabs (only once)
+		if (!window.woozioCompareStorageListenerAdded) {
+			window.addEventListener('storage', WoozioUpdateMiniCompareCount);
+			window.woozioCompareStorageListenerAdded = true;
+		}
+
 		if (!compare_local) {
 			return;
 		}
@@ -2975,8 +3032,8 @@
 		var productCompareArray = productCompare ? productCompare.split(',') : [];
 		var productWishlist = localStorage.getItem('productwishlistlocal');
 		var productWishlistArray = productWishlist ? productWishlist.split(',') : [];
-		var wishlist_count = productWishlist ? productWishlist.split(',').length : 0;
-		$('.bt-mini-wishlist .wishlist_total').html(wishlist_count);
+		// Update mini wishlist count using shared function
+		WoozioUpdateMiniWishlistCount();
 		$('.bt-product-compare-btn').each(function () {
 			var productId = $(this).data('id');
 			if (productCompareArray.includes(productId.toString())) {
@@ -3530,37 +3587,39 @@
 					if (response.success) {
 						$('.bt-js-add-to-cart-variable').removeClass('loading');
 						var productId = variation_id || product_id;
-				
-					// Update mini cart after successful add to cart
-					$.ajax({
-						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-						type: 'POST',
-						success: function (response) {
-							if (response && response.fragments) {
-								$.each(response.fragments, function (key, value) {
-									$(key).replaceWith(value);
-								});
-								const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
-								if (cartCount === 0) {
-									$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
-								} else {
-									$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+
+						// Update mini cart after successful add to cart
+						$.ajax({
+							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+							type: 'POST',
+							success: function (response) {
+								if (response && response.fragments) {
+									$.each(response.fragments, function (key, value) {
+										$(key).replaceWith(value);
+									});
+									const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
+									if (cartCount === 0) {
+										$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+										$(".bt-mini-cart").addClass("cart-empty");
+									} else {
+										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+										$(".bt-mini-cart").removeClass("cart-empty");
+									}
+									// Trigger fragments refreshed event to update note button class
+									$(document.body).trigger('wc_fragments_refreshed');
+
+									// Open mini cart after fragments are loaded
+									if (productId) {
+										WoozioHandleCartAction(productId);
+									}
+									// Free shipping message
+									WoozioFreeShippingMessage();
 								}
-								// Trigger fragments refreshed event to update note button class
-								$(document.body).trigger('wc_fragments_refreshed');
-								
-								// Open mini cart after fragments are loaded
-								if (productId) {
-									WoozioHandleCartAction(productId);
-								}
-								// Free shipping message
-								WoozioFreeShippingMessage();
+							},
+							error: function () {
+								console.error('Failed to update mini cart.');
 							}
-						},
-						error: function () {
-							console.error('Failed to update mini cart.');
-						}
-					});
+						});
 					} else {
 						console.log('error');
 					}
@@ -3606,38 +3665,40 @@
 				success: function (response) {
 					if (response.success) {
 						$('.bt-js-add-to-cart-simple').removeClass('loading');
-						
 
-					// Update mini cart after successful add to cart
-					$.ajax({
-						url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
-						type: 'POST',
-						success: function (response) {
-							if (response && response.fragments) {
-								$.each(response.fragments, function (key, value) {
-									$(key).replaceWith(value);
-								});
-								const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
-								if (cartCount === 0) {
-									$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
-								} else {
-									$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+
+						// Update mini cart after successful add to cart
+						$.ajax({
+							url: wc_cart_fragments_params.wc_ajax_url.toString().replace('%%endpoint%%', 'get_refreshed_fragments'),
+							type: 'POST',
+							success: function (response) {
+								if (response && response.fragments) {
+									$.each(response.fragments, function (key, value) {
+										$(key).replaceWith(value);
+									});
+									const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
+									if (cartCount === 0) {
+										$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+										$(".bt-mini-cart").addClass("cart-empty");
+									} else {
+										$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+										$(".bt-mini-cart").removeClass("cart-empty");
+									}
+									// Trigger fragments refreshed event to update note button class
+									$(document.body).trigger('wc_fragments_refreshed');
+
+									// Open mini cart after fragments are loaded
+									if (product_id) {
+										WoozioHandleCartAction(product_id);
+									}
+									// Free shipping message
+									WoozioFreeShippingMessage();
 								}
-								// Trigger fragments refreshed event to update note button class
-								$(document.body).trigger('wc_fragments_refreshed');
-								
-								// Open mini cart after fragments are loaded
-								if (product_id) {
-									WoozioHandleCartAction(product_id);
-								}
-								// Free shipping message
-								WoozioFreeShippingMessage();
+							},
+							error: function () {
+								console.error('Failed to update mini cart.');
 							}
-						},
-						error: function () {
-							console.error('Failed to update mini cart.');
-						}
-					});
+						});
 					} else {
 						console.log('error');
 					}
@@ -4057,6 +4118,7 @@
 			clearCartNote();
 		}
 	}
+
 	/* Preloader */
 	function WoozioPreloader() {
 		var $preloader = $('#bt-preloader');
@@ -4146,16 +4208,22 @@
 			if ($button && $button.data('product_id')) {
 				productId = $button.data('product_id');
 			}
-			
+
 			// Apply fragments if available
 			if (fragments) {
 				$.each(fragments, function (key, value) {
 					$(key).replaceWith(value);
 				});
 			}
-			
+
 			// Wait a bit to ensure DOM is updated before opening mini cart
-			setTimeout(function() {
+			setTimeout(function () {
+				const cartCount = parseInt($('.bt-mini-cart .cart_total').text()) || 0;
+				if (cartCount === 0) {
+					$(".bt-mini-cart").addClass("cart-empty");
+				} else {
+					$(".bt-mini-cart").removeClass("cart-empty");
+				}
 				WoozioFreeShippingMessage();
 				if (productId) {
 					WoozioHandleCartAction(productId);
@@ -4164,6 +4232,14 @@
 		}
 	});
 	$(document).on('removed_from_cart', function () {
+		setTimeout(function () {
+			const cartCount = parseInt($('.bt-mini-cart .cart_total').text()) || 0;
+			if (cartCount === 0) {
+				$(".bt-mini-cart").addClass("cart-empty");
+			} else {
+				$(".bt-mini-cart").removeClass("cart-empty");
+			}
+		}, 100);
 		WoozioFreeShippingMessage();
 	});
 
@@ -4174,6 +4250,14 @@
 		WoozioGalleryLightbox();
 	});
 	$(document.body).on('updated_cart_totals', function () {
+		setTimeout(function () {
+			const cartCount = parseInt($('.bt-mini-cart .cart_total').text()) || 0;
+			if (cartCount === 0) {
+				$(".bt-mini-cart").addClass("cart-empty");
+			} else {
+				$(".bt-mini-cart").removeClass("cart-empty");
+			}
+		}, 100);
 		WoozioFreeShippingMessage();
 	});
 	/* Check if cart is empty */
@@ -4181,8 +4265,10 @@
 		const cartCount = parseInt($('.bt-mini-cart .cart_total').text());
 		if (cartCount === 0) {
 			$(".bt-mini-cart-sidebar .bt-progress-content").addClass("bt-hide");
+			$(".bt-mini-cart").addClass("cart-empty");
 		} else {
 			$(".bt-mini-cart-sidebar .bt-progress-content").removeClass("bt-hide");
+			$(".bt-mini-cart").removeClass("cart-empty");
 		}
 	});
 	// Handle search-product-style-1 widget in Elementor popup

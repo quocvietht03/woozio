@@ -969,6 +969,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      &.cart-empty {
+        .cart_total {
+          opacity: 0 !important;
+        }
+      }
       a {
         position: relative;
         display: inline-flex;
@@ -1992,6 +1997,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      &.wishlist-empty{
+        .wishlist_total{
+          opacity: 0;
+        }
+      }
       a {
         position: relative;
         display: inline-flex;
@@ -2042,6 +2052,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      &.compare-empty{
+        .compare_total{
+         opacity: 0;
+        }
+      }
       a {
         position: relative;
         display: inline-flex;

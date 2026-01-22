@@ -246,9 +246,10 @@ class Widget_MiniCompare extends Widget_Base
 
         // Get compare count from localStorage (will be updated by JavaScript)
         $compare_count = 0;
+        $compare_empty_class = ($compare_count === 0) ? 'compare-empty' : '';
 ?>
         <div class="bt-elwg-mini-compare--default">
-            <div class="bt-mini-compare">
+            <div class="bt-mini-compare <?php echo esc_attr($compare_empty_class); ?>">
                 <a class="bt-toggle-btn" href="<?php echo esc_url($compare_url); ?>">
                     <?php if (!empty($icon_compare) && 'svg' === pathinfo($icon_compare, PATHINFO_EXTENSION)) {
                         $response = wp_safe_remote_get($icon_compare, array(
@@ -272,37 +273,6 @@ class Widget_MiniCompare extends Widget_Base
                 } ?>
             </div>
         </div>
-        <script>
-            (function() {
-                // Update compare count from localStorage
-                function updateCompareCount() {
-                    var compare_local = window.localStorage.getItem('productcomparelocal');
-                    var count = 0;
-                    if (compare_local && compare_local !== '') {
-                        var compare_arr = compare_local.split(',');
-                        count = compare_arr.filter(function(item) {
-                            return item !== '';
-                        }).length;
-                    }
-                    jQuery('.bt-mini-compare .compare_total').text(count);
-                }
-
-                // Update on page load
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', updateCompareCount);
-                } else {
-                    updateCompareCount();
-                }
-
-                // Listen for storage changes
-                window.addEventListener('storage', updateCompareCount);
-
-                // Also update when compare is modified (for same-tab updates)
-                if (typeof jQuery !== 'undefined') {
-                    jQuery(document).on('woozio_compare_updated', updateCompareCount);
-                }
-            })();
-        </script>
 <?php
     }
 
