@@ -206,11 +206,8 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 				'return_value' => 'yes',
 				'default' => 'no',
 				'description' => __('Hide sale marquee and countdown timer elements', 'woozio'),
-				'selectors' => [
-					'{{WRAPPER}} .bt-product-sale-marquee,{{WRAPPER}} .bt-product-countdown-timer' => 'display: none !important;',
-				],
 				'condition' => [
-					'layout_style' => ['default','style-2'],
+					'layout_style' => ['default', 'style-2'],
 				],
 			]
 		);
@@ -490,6 +487,7 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 		$text_align = isset($settings['content_text_align']) ? $settings['content_text_align'] : 'left';
 		$custom_location_attributes = isset($settings['custom_location_attributes']) ? $settings['custom_location_attributes'] : '';
 		$disable_hover_effect = isset($settings['disable_hover_effect']) ? $settings['disable_hover_effect'] : 'no';
+		$disable_sale_marquee_countdown = isset($settings['disable_sale_marquee_countdown']) ? $settings['disable_sale_marquee_countdown'] : 'no';
 		
 		// Ensure custom_location_attributes is an array
 		if (!is_array($custom_location_attributes)) {
@@ -544,6 +542,14 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 				$custom_css .= 'display: none !important;';
 				$custom_css .= '}';
 			}
+		}
+		
+		// Generate CSS for hiding sale marquee and countdown timer if option is enabled
+		if ($disable_sale_marquee_countdown === 'yes') {
+			$custom_css .= '#' . esc_attr($widget_id) . ' .bt-product-sale-marquee,';
+			$custom_css .= '#' . esc_attr($widget_id) . ' .bt-product-countdown-timer {';
+			$custom_css .= 'display: none !important;';
+			$custom_css .= '}';
 		}
 ?>
 		<div id="<?php echo esc_attr($widget_id); ?>" class="<?php echo esc_attr($wrapper_class); ?>">

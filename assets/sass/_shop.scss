@@ -3838,14 +3838,14 @@
           span.price {
             opacity: 1;
             visibility: visible;
-            height: auto;
-            overflow: visible;
           }
           .bt-custom-location-attributes {
-            opacity: 1;
-            visibility: visible;
-            height: auto;
-            overflow: visible;
+             .bt-attributes--item{
+              opacity: 1;
+              visibility: visible;
+              position: static;
+              top: 0;
+             }
           }
         }
       }
@@ -3888,14 +3888,14 @@
           span.price {
             opacity: 1;
             visibility: visible;
-            height: auto;
-            overflow: visible;
           }
           .bt-custom-location-attributes {
-            opacity: 1;
-            visibility: visible;
-            height: auto;
-            overflow: visible;
+             .bt-attributes--item{
+              opacity: 1;
+              visibility: visible;
+              position: static;
+              top: 0;
+             }
           }
         }
       }
