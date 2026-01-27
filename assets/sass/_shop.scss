@@ -3062,10 +3062,12 @@
     &.layout-default.bt-has-custom-attributes {
       .woocommerce-loop-product__infor {
         .bt-custom-location-attributes {
-          opacity: 0;
-          visibility: hidden;
-          height: 0;
-          overflow: hidden;
+          .bt-attributes--item{
+            position: absolute;
+            top: -28px;
+            opacity: 0;
+            visibility: hidden;
+          }
         }
       }
       @media (min-width: $break-sm) {
@@ -3074,14 +3076,12 @@
             span.price {
               opacity: 0;
               visibility: hidden;
-              height: 0;
-              overflow: hidden;
             }
             span.price ~ .bt-custom-location-attributes {
-              opacity: 1;
+              .bt-attributes--item{
+               opacity: 1;
               visibility: visible;
-              height: auto;
-              overflow: visible;
+              }
             }
           }
         }

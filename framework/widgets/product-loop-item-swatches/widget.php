@@ -196,6 +196,24 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 			]
 		);
 
+		$this->add_control(
+			'disable_sale_marquee_countdown',
+			[
+				'label' => __('Disable Sale Marquee & Countdown Timer', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'no',
+				'description' => __('Hide sale marquee and countdown timer elements', 'woozio'),
+				'selectors' => [
+					'{{WRAPPER}} .bt-product-sale-marquee,{{WRAPPER}} .bt-product-countdown-timer' => 'display: none !important;',
+				],
+				'condition' => [
+					'layout_style' => ['default','style-2'],
+				],
+			]
+		);
 		$this->end_controls_section();
 	}
 
