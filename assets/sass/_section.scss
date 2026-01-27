@@ -33,6 +33,20 @@ body {
 }
 
 .elementor-element {
+    .woocommerce-loop-product{
+        .bt-product-rating{
+            .star-rating{
+                &:before{
+                    width: 101%;
+                }
+                span{
+                    &::before{
+                        width: 101%;
+                    }
+                }
+            }
+        }
+    }
     &.bt-tabs-section-product {
         @media (max-width: 370px) {
             --n-tabs-title-font-size: 18px !important;

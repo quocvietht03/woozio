@@ -2991,6 +2991,7 @@
         }
       }
     }
+    
     @media (min-width: $break-sm) {
       &:hover {
         .woocommerce-loop-product__thumbnail {
@@ -3264,7 +3265,9 @@
     }
     // product loop item layout 2
     .bt-add-to-cart-style-2 {
-      width: 100%;
+      left: -1px;
+      right: -1px;
+      width: calc(100% + 2px);
       padding-top: 16px;
       transform: translateY(100%);
       background: #fff;
@@ -3465,7 +3468,6 @@
     }
     &.layout-style-2 {
       position: relative;
-      overflow: hidden;
       @media (min-width: $break-sm) {
         &:hover {
           .woocommerce-loop-product__infor {
