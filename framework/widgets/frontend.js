@@ -4045,6 +4045,83 @@
 		}
 	};
 
+	/**
+	 * Product Loop Item Swatches - Sync variation clicks between top and bottom sections
+	 * 
+	 * When clicking a variation in the bottom section (style-1, style-2, style-3 layouts),
+	 * automatically click the corresponding variation in the top section.
+	 */
+	const ProductLoopItemSwatchesHandler = function ($scope, $) {
+		// Only process products with layout style-1, style-2, or style-3
+		const $products = $scope.find('.woocommerce-loop-product.layout-style-1, .woocommerce-loop-product.layout-style-2, .woocommerce-loop-product.layout-style-3');
+		
+		if ($products.length === 0) {
+			return;
+		}
+
+		$products.each(function () {
+			const $product = $(this);
+			const layout = $product.hasClass('layout-style-1') ? 'style-1' : 
+			              ($product.hasClass('layout-style-2') ? 'style-2' : 'style-3');
+			
+			// Find the top variation section (in .bt-add-to-cart)
+			const $topVariationSection = $product.find('.bt-add-to-cart .bt-product-add-to-cart-variable');
+			
+			// Find the bottom variation section based on layout
+			let $bottomVariationSection;
+			if (layout === 'style-1' || layout === 'style-3') {
+				$bottomVariationSection = $product.find('.bt-add-to-cart-' + layout + ' .bt-product-add-to-cart-variable');
+			} else if (layout === 'style-2') {
+				$bottomVariationSection = $product.find('.bt-add-to-cart-style-2 .bt-product-add-to-cart-variable');
+			}
+
+			// If both sections exist, set up the sync
+			if ($topVariationSection.length > 0 && $bottomVariationSection.length > 0) {
+				// Remove any existing handlers to prevent duplicates
+				$bottomVariationSection.off('click.woozio-sync-variation', '.bt-js-item');
+				
+				// Listen for clicks on variation items in the bottom section
+				$bottomVariationSection.on('click.woozio-sync-variation', '.bt-js-item', function (e) {
+					const $clickedItem = $(this);
+					
+					// Don't sync if item is disabled
+					if ($clickedItem.hasClass('disabled')) {
+						return;
+					}
+					
+					const variationValue = $clickedItem.data('value');
+					
+					if (!variationValue) {
+						return;
+					}
+
+					// Find the corresponding variation item in the top section
+					// Match by data-value and same attribute name
+					const $attributeItem = $clickedItem.closest('.bt-attributes--item');
+					const attributeName = $attributeItem.data('attribute-name');
+					
+					if (attributeName) {
+						// Find the same attribute in top section
+						const $topAttributeItem = $topVariationSection.find('.bt-attributes--item[data-attribute-name="' + attributeName + '"]');
+						
+						if ($topAttributeItem.length > 0) {
+							// Find the variation item with matching data-value
+							const $topVariationItem = $topAttributeItem.find('.bt-js-item[data-value="' + variationValue + '"]');
+							
+							if ($topVariationItem.length > 0 && !$topVariationItem.hasClass('disabled')) {
+								// Trigger click on the top variation item
+								// Use a small delay to ensure the bottom click completes first
+								setTimeout(function() {
+									$topVariationItem.trigger('click');
+								}, 10);
+							}
+						}
+					}
+				});
+			}
+		});
+	};
+
 	// Make sure you run this code under Elementor.
 	$(window).on('elementor/frontend/init', function () {
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-mobile-menu.default', SubmenuToggleHandler);
@@ -4088,6 +4165,7 @@
 		elementorFrontend.hooks.addAction('frontend/element_ready/list-text-image-hover.default', ImageListWidgetHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/flicker-collage.default', FlickerCollageHandler);
 		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-popup-hotspot.default', ProductPopupHotspotHandler);
+		elementorFrontend.hooks.addAction('frontend/element_ready/bt-product-loop-item-swatches.default', ProductLoopItemSwatchesHandler);
 	});
 
 })(jQuery);

@@ -3188,7 +3188,8 @@
         }
         .variations,
         .woocommerce-variation-description,
-        .woocommerce-variation-price {
+        .woocommerce-variation-price,
+        .woocommerce-variation-availability{
           display: none !important;
         }
         .woocommerce-variation-add-to-cart {
@@ -3254,8 +3255,20 @@
     }
     &.layout-style-1 {
       .bt-product-sale-marquee,
-      .bt-product-countdown-timer {
+      .bt-product-countdown-timer{
         display: none;
+      }
+      .woocommerce-loop-product__thumbnail{
+        .bt-add-to-cart{
+          .bt-attributes-wrap{
+            display: none !important;
+          }
+          .single_variation_wrap{
+            .woocommerce-variation-add-to-cart{
+              display: none !important;
+            }
+          }
+        }
       }
       .woocommerce-loop-product__infor {
         > * {
@@ -3405,7 +3418,8 @@
         }
         .variations,
         .woocommerce-variation-description,
-        .woocommerce-variation-price {
+        .woocommerce-variation-price,
+        .woocommerce-variation-availability{
           display: none !important;
         }
         .woocommerce-variation-add-to-cart {
@@ -3468,6 +3482,18 @@
     }
     &.layout-style-2 {
       position: relative;
+      .woocommerce-loop-product__thumbnail{
+        .bt-add-to-cart{
+          .bt-attributes-wrap{
+            display: none !important;
+          }
+          .single_variation_wrap{
+            .woocommerce-variation-add-to-cart{
+              display: none !important;
+            }
+          }
+        }
+      }
       @media (min-width: $break-sm) {
         &:hover {
           .woocommerce-loop-product__infor {
@@ -3632,7 +3658,8 @@
         }
         .variations,
         .woocommerce-variation-description,
-        .woocommerce-variation-price {
+        .woocommerce-variation-price,
+        .woocommerce-variation-availability{
           display: none !important;
         }
         .woocommerce-variation-add-to-cart {
@@ -3718,6 +3745,18 @@
       .bt-product-sale-marquee,
       .bt-product-countdown-timer {
         display: none;
+      }
+      .woocommerce-loop-product__thumbnail{
+        .bt-add-to-cart{
+          .bt-attributes-wrap{
+            display: none !important;
+          }
+          .single_variation_wrap{
+            .woocommerce-variation-add-to-cart{
+              display: none !important;
+            }
+          }
+        }
       }
       .woocommerce-loop-product__infor {
         position: absolute;

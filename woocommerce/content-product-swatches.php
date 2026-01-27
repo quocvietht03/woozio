@@ -73,19 +73,15 @@ if (!empty($custom_location_attributes) && is_array($custom_location_attributes)
 			echo wc_get_stock_html($product); // WPCS: XSS ok. 
 		}
 		?>
-
-		<?php if ($layout !== 'style-2' && $layout !== 'style-3' && $layout !== 'style-1') : ?>
-			<div class="bt-add-to-cart">
-				<?php
-				if (!$product->is_type('variable')) {
-					do_action('woozio_woocommerce_template_loop_add_to_cart');
-				} else {
-					do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
-				}
-				?>
-			</div>
-		<?php endif; ?>
-
+		<div class="bt-add-to-cart">
+			<?php
+			if (!$product->is_type('variable')) {
+				do_action('woozio_woocommerce_template_loop_add_to_cart');
+			} else {
+				do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
+			}
+			?>
+		</div>
 		<?php
 		$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
 		$show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;

@@ -32,7 +32,10 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 	{
 		return ['woozio'];
 	}
-
+	public function get_script_depends()
+    {
+        return ['elementor-widgets'];
+    }
 	/**
 	 * Get all product attributes for select options
 	 * 
