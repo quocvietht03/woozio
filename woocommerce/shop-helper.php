@@ -5827,3 +5827,174 @@ if (!function_exists('woozio_track_order_callback')) {
     add_action('wp_ajax_woozio_track_order', 'woozio_track_order_callback');
     add_action('wp_ajax_nopriv_woozio_track_order', 'woozio_track_order_callback');
 }
+
+/**
+ * Display custom location attributes for product loop
+ * 
+ * @param array $custom_location_attributes Array of attribute slugs to display
+ * @param WC_Product|null $product Product object (optional, uses global if not provided)
+ * @return void
+ */
+if (!function_exists('woozio_display_custom_location_attributes')) {
+    function woozio_display_custom_location_attributes($custom_location_attributes, $product_param = null)
+    {
+        global $product;
+        
+        // Use provided product or fall back to global
+        if (!$product_param) {
+            $product_param = $product;
+        }
+        
+        // Display custom location attributes if set
+        if (!empty($custom_location_attributes) && is_array($custom_location_attributes) && $product_param) {
+            $product_attributes = $product_param->get_attributes();
+            echo '<div class="bt-attributes-wrap bt-custom-location-attributes">';
+            // Loop through each selected attribute
+            foreach ($custom_location_attributes as $custom_attr_slug) {
+                $attribute = null;
+
+                // Try to find the attribute by slug (handle both with and without pa_ prefix)
+                $attribute_slug = $custom_attr_slug;
+                if (strpos($attribute_slug, 'pa_') !== 0) {
+                    $attribute_slug = 'pa_' . $attribute_slug;
+                }
+
+                // Check both the original slug and the prefixed version
+                if (isset($product_attributes[$custom_attr_slug])) {
+                    $attribute = $product_attributes[$custom_attr_slug];
+                } elseif (isset($product_attributes[$attribute_slug])) {
+                    $attribute = $product_attributes[$attribute_slug];
+                }
+
+                if ($attribute) {
+                    $attribute_name = $attribute->get_name();
+                    $data_attribute_slug = sanitize_title($attribute_name);
+
+                    // Check if this is color or image attribute
+                    $color_taxonomy = function_exists('woozio_get_color_taxonomy') ? woozio_get_color_taxonomy() : false;
+                    $image_taxonomy = function_exists('woozio_get_image_taxonomy') ? woozio_get_image_taxonomy() : false;
+
+                    // Prioritize image over color
+                    $is_image_attr = $image_taxonomy && ($attribute_name === $image_taxonomy);
+                    $is_color_attr = !$is_image_attr && $color_taxonomy && ($attribute_name === $color_taxonomy);
+
+                    $attr_class = $is_image_attr ? ' bt-is-image-attribute' : ($is_color_attr ? ' bt-is-color-attribute' : '');
+
+                    // Get ordered options
+                    $ordered_options = array();
+                    if ($attribute->is_taxonomy()) {
+                        $terms = wc_get_product_terms(
+                            $product_param->get_id(),
+                            $attribute_name,
+                            array('fields' => 'all')
+                        );
+                        foreach ($terms as $term) {
+                            $ordered_options[] = $term->slug;
+                        }
+                    } else {
+                        $ordered_options = $attribute->get_options();
+                    }
+
+                    if (!empty($ordered_options)) {
+                        // Get selected value (from request or default variation attribute)
+                        $selected_value = isset($_REQUEST['attribute_' . $data_attribute_slug]) ? wc_clean(wp_unslash($_REQUEST['attribute_' . $data_attribute_slug])) : '';
+                        if (empty($selected_value) && $product_param->is_type('variable')) {
+                            $selected_value = $product_param->get_variation_default_attribute($attribute_name);
+                        }
+
+
+                        echo '<div class="bt-attributes--item' . esc_attr($attr_class) . '" data-attribute-name="' . esc_attr($data_attribute_slug) . '">';
+                        echo '<div class="bt-attributes--name">';
+                        echo '<div class="bt-name">' . esc_html(wc_attribute_label($attribute_name)) . ':</div>';
+                        echo '<div class="bt-result"></div>';
+                        echo '</div>';
+
+                        if ($is_image_attr) {
+                            echo '<div class="bt-attributes--value bt-value-image">';
+                            foreach ($ordered_options as $option) {
+                                $term = get_term_by('slug', $option, $attribute_name);
+                                $term_id = $term ? $term->term_id : '';
+                                $image_data = $term_id ? get_field('image_tax_attributes', $attribute_name . '_' . $term_id) : '';
+
+                                // Get image ID from ACF field
+                                $image_id = 0;
+                                if ($image_data) {
+                                    if (is_array($image_data) && isset($image_data['ID'])) {
+                                        $image_id = $image_data['ID'];
+                                    } elseif (is_numeric($image_data)) {
+                                        $image_id = $image_data;
+                                    }
+                                }
+
+                                // Get image URL
+                                $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
+                                $is_selected = ($selected_value === $option);
+                                $class_active = $is_selected ? ' active' : '';
+                            ?>
+                                <div class="bt-js-item bt-item-image<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
+                                    <div class="bt-image">
+                                        <?php if ($image_url) : ?>
+                                            <span style="background-image: url('<?php echo esc_url($image_url); ?>');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                                    <path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
+                                                </svg>
+                                            </span>
+                                        <?php else : ?>
+                                            <span style="background-color: #e5e7eb;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                                    <path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
+                                                </svg>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <label><?php echo esc_html($term ? $term->name : $option); ?></label>
+                                </div>
+                            <?php
+                            }
+                            echo '</div>';
+                        } elseif ($is_color_attr) {
+                            echo '<div class="bt-attributes--value bt-value-color">';
+                            foreach ($ordered_options as $option) {
+                                $term = get_term_by('slug', $option, $attribute_name);
+                                $term_id = $term ? $term->term_id : '';
+                                $color = $term_id ? get_field('color_tax_attributes', $attribute_name . '_' . $term_id) : '';
+                                if (!$color) {
+                                    $color = $option;
+                                }
+                                $is_selected = ($selected_value === $option);
+                                $class_active = $is_selected ? ' active' : '';
+                            ?>
+                                <div class="bt-js-item bt-item-color<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>">
+                                    <div class="bt-color">
+                                        <span style="background-color: <?php echo esc_attr($color); ?>;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                                <path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.19089C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5994 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM21.7075 13.7075L14.7075 20.7075C14.6146 20.8005 14.5043 20.8742 14.3829 20.9246C14.2615 20.9749 14.1314 21.0008 14 21.0008C13.8686 21.0008 13.7385 20.9749 13.6171 20.9246C13.4957 20.8742 13.3854 20.8005 13.2925 20.7075L10.2925 17.7075C10.1049 17.5199 9.99945 17.2654 9.99945 17C9.99945 16.7346 10.1049 16.4801 10.2925 16.2925C10.4801 16.1049 10.7346 15.9994 11 15.9994C11.2654 15.9994 11.5199 16.1049 11.7075 16.2925L14 18.5862L20.2925 12.2925C20.3854 12.1996 20.4957 12.1259 20.6171 12.0756C20.7385 12.0253 20.8686 11.9994 21 11.9994C21.1314 11.9994 21.2615 12.0253 21.3829 12.0756C21.5043 12.1259 21.6146 12.1996 21.7075 12.2925C21.8004 12.3854 21.8741 12.4957 21.9244 12.6171C21.9747 12.7385 22.0006 12.8686 22.0006 13C22.0006 13.1314 21.9747 13.2615 21.9244 13.3829C21.8741 13.5043 21.8004 13.6146 21.7075 13.7075Z" fill="white" />
+                                            </span>
+                                        </div>
+                                        <label><?php echo esc_html($term ? $term->name : $option); ?></label>
+                                    </div>
+                                <?php
+                                }
+                                echo '</div>';
+                            } else {
+                                echo '<div class="bt-attributes--value">';
+                                foreach ($ordered_options as $option) {
+                                    $term = get_term_by('slug', $option, $attribute_name);
+                                    $display_name = $term ? $term->name : $option;
+                                    $is_selected = ($selected_value === $option);
+                                    $class_active = $is_selected ? ' active' : '';
+                                ?>
+                                    <span class="bt-js-item bt-item-value<?php echo esc_attr($class_active); ?>" data-value="<?php echo esc_attr($option); ?>"><?php echo esc_html($display_name); ?></span>
+            <?php
+                                }
+                                echo '</div>';
+                            }
+
+                            echo '</div>'; // .bt-attributes--item
+                        }
+                    } // End if ($attribute)
+                } // End foreach ($custom_location_attributes)
+                echo '</div>'; // .bt-attributes-wrap
+            }
+        }
+    }

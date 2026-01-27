@@ -323,4 +323,13 @@ body {
             }
         }
     }
+    &.bt-loop-product-swatches-3{
+        @media (max-width: 1200px) and (min-width: 1025px){
+            &.elementor-grid-4{
+                .elementor-grid{
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+        }
+    }
 }

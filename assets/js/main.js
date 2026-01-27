@@ -614,6 +614,7 @@
 
 				// Function to update available options based on current selections
 				var updateAvailableOptions = function () {
+					// Update items in variations form
 					$currentForm.find('.bt-attributes-wrap .bt-js-item').each(function () {
 						var $item = $(this);
 						var valueItem = $item.data('value');
@@ -652,6 +653,48 @@
 						// Toggle disabled class
 						$item.toggleClass('disabled', !isAvailable);
 					});
+
+					// Also update items in custom location attributes (product loop)
+					var $productLoop = $currentForm.closest('.woocommerce-loop-product');
+					if ($productLoop.length > 0 && $productLoop.find('.bt-custom-location-attributes').length > 0) {
+						$productLoop.find('.bt-custom-location-attributes .bt-js-item').each(function () {
+							var $item = $(this);
+							var valueItem = $item.data('value');
+
+							// Skip if valueItem is missing
+							if (!valueItem) {
+								$item.addClass('disabled');
+								return;
+							}
+
+							var $attributesItem = $item.closest('.bt-attributes--item');
+							var attributeName = $attributesItem.data('attribute-name');
+
+							// Skip if attributeName is missing
+							if (!attributeName) {
+								$item.addClass('disabled');
+								return;
+							}
+
+							// Find the select element for this attribute
+							var $select = $currentForm.find('select#' + attributeName);
+
+							// Check if select exists
+							if ($select.length === 0) {
+								$item.addClass('disabled');
+								return;
+							}
+
+							// Find the option with matching value
+							var $option = $select.find('option[value="' + valueItem.replace(/"/g, '\\"') + '"]');
+
+							// Check if option exists and is NOT disabled
+							var isAvailable = $option.length > 0 && !$option.prop('disabled');
+
+							// Toggle disabled class
+							$item.toggleClass('disabled', !isAvailable);
+						});
+					}
 				};
 
 				// Listen to WooCommerce variation update event to update immediately
@@ -664,6 +707,37 @@
 			});
 		}
 	}
+
+	/**
+	 * Handle clicks on custom location attributes in product loop
+	 * Trigger click on corresponding .bt-js-item in variations_form
+	 */
+	function WoozioCustomLocationAttributesHandler() {
+		$(document).on('click', '.bt-custom-location-attributes .bt-js-item', function (e) {
+			e.preventDefault();
+			
+			var $clickedItem = $(this);
+			var valueItem = $clickedItem.data('value');
+			var attributeName = $clickedItem.closest('.bt-attributes--item').data('attribute-name');
+			
+			if (!valueItem || !attributeName) {
+				return;
+			}
+			
+			// Find variations form in the same product
+			var $productLoop = $clickedItem.closest('.woocommerce-loop-product');
+			var $variationsForm = $productLoop.find('.variations_form');
+			
+			if ($variationsForm.length > 0) {
+				// Find and trigger click on corresponding item in variations form
+				var $formItem = $variationsForm.find('.bt-attributes-wrap .bt-attributes--item[data-attribute-name="' + attributeName + '"] .bt-js-item[data-value="' + valueItem + '"]');
+				if ($formItem.length > 0) {
+					$formItem.trigger('click');
+				}
+			}
+		});
+	}
+
 	/* load Shop Quick View */
 	function WoozioLoadShopQuickView() {
 		if ($('.bt-quickview-product').length > 0) {
@@ -4153,6 +4227,7 @@
 		WoozioToggleSubMenuMobile();
 		WoozioShop();
 		WoozioProductVariationHandler();
+		WoozioCustomLocationAttributesHandler();
 		WoozioCommentValidation();
 		WoozioProductCompare();
 		WoozioProductCompareLoad();
