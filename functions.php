@@ -1,7 +1,7 @@
 <?php
 /* Theme Version - Update this when deploying to bust cache */
 if (!defined('BT_VER')) {
-	define('BT_VER', '1.0.2');
+	define('BT_VER', '1.0.3');
 }
 
 /* Register Sidebar */

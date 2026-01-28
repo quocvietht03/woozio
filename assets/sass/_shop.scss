@@ -4088,11 +4088,6 @@
               margin: 0;
               display: block;
               text-align: left;
-              @media (min-width: $break-sm) {
-                &:hover {
-                  color: $color-accent;
-                }
-              }
             }
           }
           .bt-product-info-wrapper {
@@ -4403,6 +4398,14 @@
           visibility: visible;
           span.price {
             display: flex;
+          }
+        }
+      }
+      &.layout-style-5 {
+        .woocommerce-loop-product__thumbnail {
+          .bt-add-to-cart {
+            opacity: 1;
+            visibility: visible;
           }
         }
       }
