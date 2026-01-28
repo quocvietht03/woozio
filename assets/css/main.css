@@ -10679,7 +10679,7 @@ nav .elementor-nav-menu .sub-arrow {
   left: -1px;
   right: -1px;
   width: calc(100% + 2px);
-  padding-top: 16px;
+  padding: 16px 1px 0 1px;
   transform: translateY(100%);
   background: #fff;
   position: absolute;
