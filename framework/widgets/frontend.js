@@ -4048,12 +4048,22 @@
 	/**
 	 * Product Loop Item Swatches - Sync variation clicks between top and bottom sections
 	 * 
-	 * When clicking a variation in the bottom section (style-1, style-2, style-3 layouts),
-	 * automatically click the corresponding variation in the top section.
+	 * When clicking a variation in the bottom section, automatically click the corresponding 
+	 * variation in the top section. Uses common class 'bt-has-dual-variation' on widget wrapper.
 	 */
 	const ProductLoopItemSwatchesHandler = function ($scope, $) {
-		// Only process products with layout style-1, style-2, or style-3
-		const $products = $scope.find('.woocommerce-loop-product.layout-style-1, .woocommerce-loop-product.layout-style-2, .woocommerce-loop-product.layout-style-3');
+		// Check if widget has dual variation sync enabled (common class on wrapper)
+
+		if (!$scope.find('.bt-elwg-product-loop-item-swatches').hasClass('bt-has-dual-variation')) {
+			return;
+		}
+	
+		// Get layout from widget wrapper class (layout-style-X)
+		const layoutMatch = $scope.find('.bt-elwg-product-loop-item-swatches').attr('class').match(/layout-(style-\d+)/);
+		const layout = layoutMatch ? layoutMatch[1] : 'style-1';
+		
+		console.log(layout);
+		const $products = $scope.find('.woocommerce-loop-product');
 		
 		if ($products.length === 0) {
 			return;
@@ -4061,19 +4071,12 @@
 
 		$products.each(function () {
 			const $product = $(this);
-			const layout = $product.hasClass('layout-style-1') ? 'style-1' : 
-			              ($product.hasClass('layout-style-2') ? 'style-2' : 'style-3');
 			
 			// Find the top variation section (in .bt-add-to-cart)
 			const $topVariationSection = $product.find('.bt-add-to-cart .bt-product-add-to-cart-variable');
 			
 			// Find the bottom variation section based on layout
-			let $bottomVariationSection;
-			if (layout === 'style-1' || layout === 'style-3') {
-				$bottomVariationSection = $product.find('.bt-add-to-cart-' + layout + ' .bt-product-add-to-cart-variable');
-			} else if (layout === 'style-2') {
-				$bottomVariationSection = $product.find('.bt-add-to-cart-style-2 .bt-product-add-to-cart-variable');
-			}
+			const $bottomVariationSection = $product.find('.bt-add-to-cart-' + layout + ' .bt-product-add-to-cart-variable');
 
 			// If both sections exist, set up the sync
 			if ($topVariationSection.length > 0 && $bottomVariationSection.length > 0) {

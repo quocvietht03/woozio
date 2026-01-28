@@ -87,6 +87,8 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 					'style-1' => __('Style 1', 'woozio'),
 					'style-2' => __('Style 2', 'woozio'),
 					'style-3' => __('Style 3', 'woozio'),
+					'style-4' => __('Style 4', 'woozio'),
+					'style-5' => __('Style 5', 'woozio'),
 				],
 			]
 		);
@@ -161,7 +163,7 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 					'{{WRAPPER}} .woocommerce-loop-product__thumbnail .bt-custom-location-attributes.bt-attributes-wrap' => 'align-items: {{VALUE}};',
 				],
 				'condition' => [
-					'layout_style' => ['style-1'],
+					'layout_style' => ['style-1', 'style-4'],
 				],
 			]
 		);
@@ -180,7 +182,7 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 					'maximumSelectionLength' => 2,
 				],
 				'condition' => [
-					'layout_style' => ['default', 'style-1'],
+					'layout_style' => ['default', 'style-1', 'style-4', 'style-5'],
 				],
 			]
 		);
@@ -508,6 +510,11 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 			$text_align,
 			'layout-' . $layout_style
 		);
+		
+		// Add common class for layouts with dual variation sync
+		if (in_array($layout_style, ['style-1', 'style-2', 'style-3', 'style-4'])) {
+			$wrapper_classes[] = 'bt-has-dual-variation';
+		}
 		
 		// Add class to disable hover effect
 		if ($disable_hover_effect === 'yes') {

@@ -40,6 +40,8 @@ body {
                     width: 101%;
                 }
                 span{
+                    padding-top: 1em;
+                    height: 0;
                     &::before{
                         width: 101%;
                     }

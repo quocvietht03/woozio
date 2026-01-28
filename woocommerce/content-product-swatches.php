@@ -75,6 +75,21 @@ if (!empty($custom_location_attributes) && is_array($custom_location_attributes)
 		?>
 		<div class="bt-add-to-cart">
 			<?php
+			if ($layout === 'style-5') {
+				echo '<div class="bt-product-info-wrapper">';
+				// Display custom location attributes if set (for style-5 layout)
+				if ($layout === 'style-5') {
+					if (function_exists('woozio_display_custom_location_attributes')) {
+						woozio_display_custom_location_attributes($custom_location_attributes, $product);
+					}
+				}
+				do_action('woozio_woocommerce_template_loop_product_link_open');
+				do_action('woozio_woocommerce_template_loop_product_title');
+				do_action('woozio_woocommerce_template_loop_product_link_close');
+				do_action('woozio_woocommerce_template_loop_price');
+				do_action('woozio_woocommerce_template_loop_rating');
+				echo '</div>';
+			}
 			if (!$product->is_type('variable')) {
 				do_action('woozio_woocommerce_template_loop_add_to_cart');
 			} else {
@@ -117,8 +132,8 @@ if (!empty($custom_location_attributes) && is_array($custom_location_attributes)
 		<?php do_action('woozio_template_loop_product_countdown_and_sale') ?>
 
 		<?php
-		// Display custom location attributes if set (for style-1 layout)
-		if ($layout === 'style-1') {
+		// Display custom location attributes if set (for style-1 and style-4 layout)
+		if ($layout === 'style-1' || $layout === 'style-4') {
 			if (function_exists('woozio_display_custom_location_attributes')) {
 				woozio_display_custom_location_attributes($custom_location_attributes, $product);
 			}
@@ -127,38 +142,45 @@ if (!empty($custom_location_attributes) && is_array($custom_location_attributes)
 
 	</div>
 
-	<div class="woocommerce-loop-product__infor">
-		<?php
-		do_action('woozio_woocommerce_template_loop_product_link_open');
-		do_action('woozio_woocommerce_template_loop_product_title');
-		do_action('woozio_woocommerce_template_loop_product_link_close');
-		do_action('woozio_woocommerce_template_loop_price');
-		do_action('woozio_woocommerce_template_loop_rating');
-		?>
-		<?php if ($layout === 'style-3' || $layout === 'style-1') : ?>
-			<div class="bt-add-to-cart-<?php echo esc_attr($layout); ?>">
-				<?php
-				do_action('woozio_woocommerce_template_loop_product_link_open');
-				do_action('woozio_woocommerce_template_loop_product_title');
-				do_action('woozio_woocommerce_template_loop_product_link_close');
+	<?php if ($layout !== 'style-5') : ?>
+		<div class="woocommerce-loop-product__infor">
+			<?php
+			do_action('woozio_woocommerce_template_loop_product_link_open');
+			do_action('woozio_woocommerce_template_loop_product_title');
+			do_action('woozio_woocommerce_template_loop_product_link_close');
+			if ($layout !== 'style-1') :
 				do_action('woozio_woocommerce_template_loop_price');
-				if (!$product->is_type('variable')) {
-					do_action('woozio_woocommerce_template_loop_add_to_cart');
-				} else {
-					do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
+				do_action('woozio_woocommerce_template_loop_rating');
+			endif;
+
+			if ($layout === 'style-3' || $layout === 'style-1' || $layout === 'style-4') : ?>
+				<div class="bt-add-to-cart-<?php echo esc_attr($layout); ?>">
+					<?php
+					do_action('woozio_woocommerce_template_loop_product_link_open');
+					do_action('woozio_woocommerce_template_loop_product_title');
+					do_action('woozio_woocommerce_template_loop_product_link_close');
+					do_action('woozio_woocommerce_template_loop_price');
+					if (!$product->is_type('variable')) {
+						do_action('woozio_woocommerce_template_loop_add_to_cart');
+					} else {
+						do_action('woozio_woocommerce_template_loop_add_to_cart_variable');
+					}
+					?>
+				</div>
+			<?php endif;
+			if ($layout === 'style-1') :
+				do_action('woozio_woocommerce_template_loop_price');
+				do_action('woozio_woocommerce_template_loop_rating');
+			endif;
+			// Display custom location attributes if set (for default layout)
+			if ($layout !== 'style-1' && $layout !== 'style-4') {
+				if (function_exists('woozio_display_custom_location_attributes')) {
+					woozio_display_custom_location_attributes($custom_location_attributes, $product);
 				}
-				?>
-			</div>
-		<?php endif; ?>
-		<?php
-		// Display custom location attributes if set (for default layout)
-		if ($layout !== 'style-1') {
-			if (function_exists('woozio_display_custom_location_attributes')) {
-				woozio_display_custom_location_attributes($custom_location_attributes, $product);
 			}
-		}
-		?>
-	</div>
+			?>
+		</div>
+	<?php endif; ?>
 	<?php if ($layout === 'style-2') : ?>
 		<div class="bt-add-to-cart-style-2">
 			<?php
