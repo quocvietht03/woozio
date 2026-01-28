@@ -4062,7 +4062,7 @@
 		const layoutMatch = $scope.find('.bt-elwg-product-loop-item-swatches').attr('class').match(/layout-(style-\d+)/);
 		const layout = layoutMatch ? layoutMatch[1] : 'style-1';
 		
-		console.log(layout);
+
 		const $products = $scope.find('.woocommerce-loop-product');
 		
 		if ($products.length === 0) {
