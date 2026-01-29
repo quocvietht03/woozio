@@ -89,6 +89,7 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 					'style-3' => __('Style 3', 'woozio'),
 					'style-4' => __('Style 4', 'woozio'),
 					'style-5' => __('Style 5', 'woozio'),
+					'style-6' => __('Style 6 (Quick View)', 'woozio'),
 				],
 			]
 		);
