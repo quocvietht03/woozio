@@ -213,7 +213,7 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 				'default' => 'no',
 				'description' => __('Hide sale marquee and countdown timer elements', 'woozio'),
 				'condition' => [
-					'layout_style' => ['default', 'style-2'],
+					'layout_style' => ['default', 'style-2', 'style-6'],
 				],
 			]
 		);
