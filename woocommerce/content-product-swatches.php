@@ -26,6 +26,11 @@ global $product, $is_ajax_filter_product;
 $layout = isset($args['layout']) ? $args['layout'] : 'default';
 $custom_location_attributes = isset($args['custom_location_attributes']) ? $args['custom_location_attributes'] : '';
 
+$archive_shop_options = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
+$show_wishlist = isset($args['show_wishlist']) ? (bool) $args['show_wishlist'] : (isset($archive_shop_options['show_wishlist']) ? $archive_shop_options['show_wishlist'] : true);
+$show_compare = isset($args['show_compare']) ? (bool) $args['show_compare'] : (isset($archive_shop_options['show_compare']) ? $archive_shop_options['show_compare'] : true);
+$show_quickview = isset($args['show_quickview']) ? (bool) $args['show_quickview'] : (isset($archive_shop_options['show_quickview']) ? $archive_shop_options['show_quickview'] : true);
+
 // Ensure custom_location_attributes is an array
 if (!is_array($custom_location_attributes)) {
 	$custom_location_attributes = !empty($custom_location_attributes) ? array($custom_location_attributes) : array();
@@ -98,12 +103,6 @@ if (!empty($custom_location_attributes) && is_array($custom_location_attributes)
 				}
 				?>
 			</div>
-			<?php
-			$archive_shop = function_exists('get_field') ? get_field('archive_shop', 'options') : array();
-			$show_wishlist = isset($archive_shop['show_wishlist']) ? $archive_shop['show_wishlist'] : true;
-			$show_compare = isset($archive_shop['show_compare']) ? $archive_shop['show_compare'] : true;
-			$show_quickview = isset($archive_shop['show_quickview']) ? $archive_shop['show_quickview'] : true;
-			?>
 			<?php if ($show_wishlist || $show_compare || $show_quickview) : ?>
 				<div class="bt-product-icon-btn">
 					<?php if ($show_wishlist) : ?>

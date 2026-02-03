@@ -217,6 +217,50 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 				],
 			]
 		);
+
+		$this->add_control(
+			'show_wishlist',
+			[
+				'label' => __('Show Wishlist', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'condition' => [
+					'layout_style!' => ['style-6'],
+				],
+			]
+		);
+		$this->add_control(
+			'show_compare',
+			[
+				'label' => __('Show Compare', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'condition' => [
+					'layout_style!' => ['style-6'],
+				],
+			]
+		);
+		$this->add_control(
+			'show_quickview',
+			[
+				'label' => __('Show Quick View', 'woozio'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'woozio'),
+				'label_off' => __('No', 'woozio'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'condition' => [
+					'layout_style!' => ['style-6'],
+				],
+			]
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -494,6 +538,9 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 		$custom_location_attributes = isset($settings['custom_location_attributes']) ? $settings['custom_location_attributes'] : '';
 		$disable_hover_effect = isset($settings['disable_hover_effect']) ? $settings['disable_hover_effect'] : 'no';
 		$disable_sale_marquee_countdown = isset($settings['disable_sale_marquee_countdown']) ? $settings['disable_sale_marquee_countdown'] : 'no';
+		$show_wishlist = isset($settings['show_wishlist']) && $settings['show_wishlist'] === 'yes';
+		$show_compare = isset($settings['show_compare']) && $settings['show_compare'] === 'yes';
+		$show_quickview = isset($settings['show_quickview']) && $settings['show_quickview'] === 'yes';
 		
 		// Ensure custom_location_attributes is an array
 		if (!is_array($custom_location_attributes)) {
@@ -528,7 +575,12 @@ class Widget_ProductLoopItemSwatches extends Widget_Base
 		$widget_id = 'bt-widget-swatches-' . $this->get_id();
 		
 		// Prepare template args
-		$template_args = array('layout' => $layout_style);
+		$template_args = array(
+			'layout' => $layout_style,
+			'show_wishlist' => $show_wishlist,
+			'show_compare' => $show_compare,
+			'show_quickview' => $show_quickview,
+		);
 		if (!empty($custom_location_attributes) && is_array($custom_location_attributes)) {
 			$template_args['custom_location_attributes'] = $custom_location_attributes;
 		}
