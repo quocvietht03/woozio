@@ -2399,13 +2399,8 @@
           transition:
             opacity 0.3s,
             transform 2s cubic-bezier(0, 0, 0.44, 1.18);
-          opacity: 0;
-        }
-        img {
-          transition:
-            opacity 0.3s,
-            transform 2s cubic-bezier(0, 0, 0.44, 1.18);
           transform: scale(1.01, 1.01) translateZ(0);
+          opacity: 0;
         }
       }
       .woocommerce-product-sale-label {
