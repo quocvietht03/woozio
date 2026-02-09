@@ -12283,7 +12283,7 @@ nav .elementor-nav-menu .sub-arrow {
 .bt-elwg-product-loop-item--style-2 .bt-product--add-to-cart a {
   text-transform: uppercase;
 }
-@media (max-width: 1520px) and (min-width: 1199.98px) {
+@media (max-width: 1600px) and (min-width: 1199.98px) {
   .bt-elwg-product-loop-item--style-2 .bt-product--title {
     font-size: 32px;
     margin-bottom: 12px;
