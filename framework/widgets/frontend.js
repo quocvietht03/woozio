@@ -2345,6 +2345,7 @@
 					loopedSlides: 5,
 					watchSlidesVisibility: true,
 					watchSlidesProgress: true,
+					threshold: 5,
 					breakpoints: {
 						0: {
 							slidesPerView: 'vertical' == thumbDirection ? 'auto' : 3,
