@@ -137,29 +137,23 @@ body {
         }
     }
     &.bt-section-cat-toy-game {
-        @media (max-width: 1600px) and (min-width: 1367px) {
+        @media (max-width: 1500px) and (min-width: 1367px) {
             .bt-elwg-product-category-loop {
                 &--style-4 {
                     .bt-product-category {
-                        &--thumb {
-                            .bt-cover-image {
-                                width: 50px;
-                            }
-                        }
                         &--inner {
-                            padding: 10px;
+                            padding: 16px 10px;
                         }
                         &--content {
-                            width: calc(100% - 50px);
-                            padding-left: 12px;
+                            padding-top: 12px;
                             margin-bottom: 0;
                         }
                         &--name {
-                            font-size: 16px;
+                            font-size: 18px;
                             line-height: 1.5;
                         }
                         &--count {
-                            font-size: 15px;
+                            font-size: 16px;
                             line-height: 1.3;
                         }
                     }

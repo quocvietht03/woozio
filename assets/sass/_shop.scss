@@ -2399,13 +2399,8 @@
           transition:
             opacity 0.3s,
             transform 2s cubic-bezier(0, 0, 0.44, 1.18);
-          opacity: 0;
-        }
-        img {
-          transition:
-            opacity 0.3s,
-            transform 2s cubic-bezier(0, 0, 0.44, 1.18);
           transform: scale(1.01, 1.01) translateZ(0);
+          opacity: 0;
         }
       }
       .woocommerce-product-sale-label {
@@ -4122,7 +4117,7 @@
                 .bt-attributes--value {
                   background: transparent;
                   padding: 0;
-                  &:not(.bt-value-image):not(.bt-value-color){
+                  &:not(.bt-value-image):not(.bt-value-color) {
                     gap: 3px;
                     border-radius: 30px;
                     overflow: hidden;
@@ -4232,6 +4227,77 @@
         &:hover {
           .woocommerce-loop-product__thumbnail {
             .bt-add-to-cart {
+              opacity: 1;
+              visibility: visible;
+            }
+          }
+        }
+      }
+    }
+    &.layout-style-6 {
+      .woocommerce-loop-product__thumbnail {
+        .bt-product-quick-view {
+          position: absolute;
+          bottom: -60px;
+          transform: translate(-50%, 0);
+          left: 50%;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          text-align: center;
+          a {
+            background: $color-primary;
+            display: inline-flex;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #fff;
+            width: 80%;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            justify-content: center;
+            > * {
+              display: none !important;
+            }
+            &:hover {
+              background: $color-accent;
+            }
+            &::after {
+              content: "";
+              position: absolute;
+              top: 35% !important;
+              left: 47% !important;
+              right: auto !important;
+              bottom: auto;
+              width: 16px;
+              height: 16px;
+              z-index: 9999;
+              background-image: url("../images/loading-white.svg");
+              background-repeat: no-repeat;
+              background-size: cover;
+              animation-name: effectSpin;
+              animation-duration: 1s;
+              animation-iteration-count: infinite;
+              animation-timing-function: linear;
+              opacity: 0;
+            }
+            &.loading {
+              color: transparent;
+              &::after {
+                opacity: 1;
+              }
+            }
+          }
+        }
+      }
+      @media (min-width: $break-sm) {
+        &:hover {
+          .woocommerce-loop-product__thumbnail {
+            .bt-product-quick-view {
+              bottom: 20px;
               opacity: 1;
               visibility: visible;
             }
@@ -4351,6 +4417,15 @@
           }
         }
       }
+      &.layout-style-6 {
+        .woocommerce-loop-product__thumbnail {
+          .bt-product-quick-view {
+            bottom: 20px;
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+      }
     }
   }
   @media (max-width: $break-sm) {
@@ -4404,6 +4479,15 @@
       &.layout-style-5 {
         .woocommerce-loop-product__thumbnail {
           .bt-add-to-cart {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+      }
+      &.layout-style-6 {
+        .woocommerce-loop-product__thumbnail {
+          .bt-product-quick-view {
+            bottom: 20px;
             opacity: 1;
             visibility: visible;
           }
@@ -4910,13 +4994,17 @@
           @extend .__bt-button-style;
         }
       }
-      @media (max-width: 1367px) and (min-width: $break-lg) {
+      @media (max-width: 1600px) and (min-width: $break-lg) {
         &--title {
           font-size: 32px;
           margin-bottom: 12px;
         }
         &--info {
           margin-bottom: 12px;
+        }
+      }
+      @media (max-width: 1367px) and (min-width: $break-lg) {
+        &--info {
           .onsale {
             top: 0;
           }
@@ -6866,6 +6954,7 @@
               position: absolute;
               z-index: 1;
               box-sizing: border-box;
+              pointer-events: none;
             }
           }
         }
