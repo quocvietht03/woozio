@@ -74,8 +74,9 @@ function woozio_register_required_plugins() {
 			'required'      => false,
 		),
 		array(
-			'name'          => __( 'Worry Proof Backup', 'woozio' ),
+			'name'          => __( 'Worry Proof Backup', 'alone' ),
 			'slug'          => 'worry-proof-backup',
+			'source'   => $pathfile . 'worry-proof-backup.zip',
 			'required'      => false,
 		),
 
