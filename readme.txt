@@ -18,15 +18,26 @@ Text Domain: woozio
 5. Navigate to Appearance > Theme Options in your admin panel and customize to taste.
 
 == Changelog ==
+= 1.1.3 – Mar 06, 2026 =
+* Updated: Compatibility with the latest plugins
+* Updated: Required plugins and demo import process
 
-Version 1.1 - January 13, 2026
-- Updated required plugins and demo import process
-- Improved license verification logic
-- Added brand logo support to Elementor widgets
-- Fixed UI issues in Elementor widgets
-- Fixed issue widgets load on child theme
+= 1.1.2 – Feb 05, 2026 =
+* Updated: Compatibility with the latest WordPress and plugins
+* Updated: Outdated WooCommerce templates
+* Fixed: UI issues in widgets
 
-Version 1.0 - January 1, 2026
-Release first version!
+= 1.1.1 – Jan 13, 2026 =
+* Updated: Compatibility with WordPress 6.9 and latest plugins
+* Updated: Required plugins and demo import process
+* Improved: License verification logic
+
+= 1.1.0 – Jan 13, 2026 =
+* Added: Brand logo support for Elementor widgets
+* Fixed: UI issues in Elementor widgets
+* Fixed: Widget loading issue when using child theme
+
+= 1.0.0 – Jan 01, 2026 =
+* Initial release
 
 
